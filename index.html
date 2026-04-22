@@ -1,82 +1,107 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club v8.1.5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GY-GY CLUB | V8-RESCUE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --gold: #d4af37; --black: #000; }
-        body { margin: 0; background: var(--black); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; }
-        .block { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: 0.8s; }
-        .active { display: flex !important; opacity: 1; }
-        .btn-gy { min-width: 260px; padding: 15px; border: 2px solid var(--gold); background: none; color: var(--gold); cursor: pointer; margin: 10px; text-transform: uppercase; }
+        body { margin: 0; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; }
+        
+        /* ЦЕНТРОВКА */
+        .stage { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .active { display: flex; }
+
+        /* КНОПКИ */
+        .btn-gy { min-width: 260px; padding: 15px; border: 2px solid var(--gold); background: none; color: var(--gold); cursor: pointer; margin: 10px; font-family: inherit; font-size: 1.1rem; transition: 0.3s; }
+        .btn-gy:hover { background: rgba(212, 175, 55, 0.2); }
         .btn-sleep { opacity: 0.2; pointer-events: none; }
-        #main-door { width: 250px; cursor: pointer; filter: drop-shadow(0 0 15px var(--gold)); transition: 1.2s; background: linear-gradient(45deg, #1a1a1a, #333); border: 2px solid var(--gold); }
-        .lang-gateway { position: fixed; top: 15px; left: 15px; z-index: 100; }
-        #qr-box { background: white; padding: 5px; margin-top: 15px; }
-        .avatar-box { width: 100px; height: 100px; border: 2px solid var(--gold); margin-bottom: 10px; overflow: hidden; background: #111; }
+
+        /* ДВЕРЬ */
+        #door { width: 200px; height: 300px; border: 4px double var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 1s; box-shadow: 0 0 20px var(--gold); }
+        
+        /* ЯЗЫК */
+        .lang-fixed { position: fixed; top: 15px; left: 15px; z-index: 100; border: 1px solid var(--gold); padding: 5px 10px; background: #000; }
+
+        /* АВАТАР */
+        .av-box { width: 120px; height: 120px; border: 2px solid var(--gold); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; background: #111; cursor: pointer; overflow: hidden; }
+        #av-img { width: 100%; height: 100%; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="lang-gateway">
-        <button class="btn-gy" style="min-width:auto; padding:5px 10px;" id="lang-btn">🌐 RU</button>
-    </div>
+    <div class="lang-fixed" id="lang-ind">RU</div>
 
-    <section id="scr-1" class="block active">
-        <div id="main-door" onclick="openDoor()">
-            <p style="padding: 50px 10px;">GY-GY CLUB<br>CLICK TO ENTER</p>
+    <section id="s1" class="stage active">
+        <div id="door" onclick="enter()">
+            <div style="font-size: 1.5rem;">GY-GY<br>ENTER</div>
         </div>
     </section>
 
-    <section id="scr-2" class="block">
-        <h2 id="q-txt">...</h2>
-        <div class="avatar-box" onclick="newAv()"><img id="av-img" style="display:none; width:100%;"> <span id="av-hint">AVATAR</span></div>
-        <div id="id-num">#GY-000</div>
-        <div id="qr-box"></div>
-        <button class="btn-gy" onclick="save()">SAVE & ENTER</button>
+    <section id="s2" class="stage">
+        <h2 id="quote">«Every joke has a grain of whiskey»</h2>
+        <button class="btn-gy" onclick="go(3)" id="btn-id">GET ID</button>
+        <button class="btn-gy btn-sleep" id="btn-hall">TO HALL</button>
+    </section>
+
+    <section id="s3" class="stage">
+        <div class="av-box" onclick="newAv()">
+            <img id="av-img" src="">
+            <span id="av-txt">CLICK FOR AVATAR</span>
+        </div>
+        <div style="font-size: 1.5rem; margin-bottom: 20px;" id="my-id">#GY-000</div>
+        <button class="btn-gy" onclick="save()">SAVE & FINISH</button>
     </section>
 
     <script>
-        const langData = {
-            ru: { n: "RU", q: "«В каждой шутке есть доля виски»", btn: "ВОЙТИ" },
-            en: { n: "EN", q: "«Every joke has a grain of whiskey»", btn: "ENTER" }
+        const content = {
+            ru: { q: "«В каждой шутке есть доля виски»", b1: "ПОЛУЧИТЬ ID", b2: "СОХРАНИТЬ", av: "ЖМИ АВАТАР" },
+            en: { q: "«Every joke has a grain of whiskey»", b1: "GET ID", b2: "SAVE PROFILE", av: "CLICK FOR AVATAR" }
         };
-        let cur = 'ru';
-        let myId = "GY-" + Math.floor(Math.random()*900+100);
 
+        let currentLang = 'en';
+        let idGenerated = "GY-" + Math.floor(Math.random()*900 + 100);
+
+        // СЕНСОР
         window.onload = () => {
             const sys = navigator.language.split('-')[0];
-            setLang(langData[sys] ? sys : 'en');
+            currentLang = (sys === 'ru' || sys === 'ua') ? 'ru' : 'en';
+            updateUI();
         };
 
-        function setLang(l) {
-            cur = l;
-            document.getElementById('lang-btn').innerText = "🌐 " + langData[l].n;
-            document.getElementById('q-txt').innerText = langData[l].q;
+        function updateUI() {
+            const d = content[currentLang];
+            document.getElementById('lang-ind').innerText = currentLang.toUpperCase();
+            document.getElementById('quote').innerText = d.q;
+            document.getElementById('btn-id').innerText = d.b1;
+            document.getElementById('av-txt').innerText = d.av;
         }
 
-        function openDoor() {
-            document.getElementById('main-door').style.transform = "scale(4) rotate(15deg)";
-            document.getElementById('main-door').style.opacity = "0";
-            setTimeout(() => {
-                document.getElementById('scr-1').classList.remove('active');
-                document.getElementById('scr-2').classList.add('active');
-                document.getElementById('id-num').innerText = myId;
-                new QRCode(document.getElementById("qr-box"), { text: myId, width: 80, height: 80 });
-            }, 800);
+        function enter() {
+            const d = document.getElementById('door');
+            d.style.transform = "scale(5)";
+            d.style.opacity = "0";
+            setTimeout(() => go(2), 800);
         }
 
         function newAv() {
             const img = document.getElementById('av-img');
             img.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
             img.style.display = "block";
-            document.getElementById('av-hint').style.display = "none";
+            document.getElementById('av-txt').style.display = "none";
         }
 
-        function save() { alert("Saved: " + myId); }
+        function save() {
+            alert("SUCCESS! ID: " + idGenerated);
+            location.reload(); 
+        }
+
+        function go(n) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.getElementById('s' + n).classList.add('active');
+            if(n === 3) document.getElementById('my-id').innerText = "#" + idGenerated;
+        }
     </script>
 </body>
 </html>
