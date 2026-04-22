@@ -2,106 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY CLUB | V8-RESCUE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style>
-        :root { --gold: #d4af37; --black: #000; }
-        body { margin: 0; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; }
-        
-        /* ЦЕНТРОВКА */
-        .stage { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .active { display: flex; }
-
-        /* КНОПКИ */
-        .btn-gy { min-width: 260px; padding: 15px; border: 2px solid var(--gold); background: none; color: var(--gold); cursor: pointer; margin: 10px; font-family: inherit; font-size: 1.1rem; transition: 0.3s; }
-        .btn-gy:hover { background: rgba(212, 175, 55, 0.2); }
-        .btn-sleep { opacity: 0.2; pointer-events: none; }
-
-        /* ДВЕРЬ */
-        #door { width: 200px; height: 300px; border: 4px double var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 1s; box-shadow: 0 0 20px var(--gold); }
-        
-        /* ЯЗЫК */
-        .lang-fixed { position: fixed; top: 15px; left: 15px; z-index: 100; border: 1px solid var(--gold); padding: 5px 10px; background: #000; }
-
-        /* АВАТАР */
-        .av-box { width: 120px; height: 120px; border: 2px solid var(--gold); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; background: #111; cursor: pointer; overflow: hidden; }
-        #av-img { width: 100%; height: 100%; display: none; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club | Global Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
-    <div class="lang-fixed" id="lang-ind">RU</div>
+    <div class="lang-gateway">
+        <button class="btn-main-lang" id="lang-trigger">
+            <img id="cur-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
+            <span id="cur-name">ENGLISH</span>
+        </button>
+        <div id="lang-list" class="lang-dropdown"></div>
+    </div>
 
-    <section id="s1" class="stage active">
-        <div id="door" onclick="enter()">
-            <div style="font-size: 1.5rem;">GY-GY<br>ENTER</div>
+    <section id="scr-entry" class="block active">
+        <img src="door_1.jpg" id="main-door" alt="Door">
+    </section>
+
+    <section id="scr-welcome" class="block">
+        <h2 id="quote" data-key="q_whiskey">...</h2>
+        <button class="btn-gy" id="go-id" data-key="btn_get_id">GET ID TOKEN</button>
+        <button class="btn-gy btn-sleep" id="go-hall" data-key="btn_to_hall">PROCEED</button>
+    </section>
+
+    <section id="scr-id" class="block">
+        <div class="id-creator">
+            <div id="avatar-zone" class="box-final" onclick="generateAvatar()">
+                <img id="user-photo" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="label-av" data-key="label_avatar">AVATAR</span>
+            </div>
+            <div id="qr-reg" class="box-final"></div>
+        </div>
+        <div class="id-number-box"><span id="id-label">#GY-000</span></div>
+        <button class="btn-gy" id="save-btn" data-key="btn_save">SAVE</button>
+        <button class="btn-gy btn-sleep" id="final-hall" data-key="btn_to_hall">GO TO HALL</button>
+    </section>
+
+    <section id="scr-hall" class="block">
+        <div class="id-card-final">
+            <div id="h-id" class="card-id-text">#GY-000</div>
+            <div class="avatar-wrap">
+                <img id="h-photo" src="" class="main-av">
+                <img id="h-flag" src="" class="mini-flag">
+            </div>
+            <div id="qr-hall" class="qr-small"></div>
+            <button class="btn-gy" id="btn-enter-bar" data-key="btn_enter">ENTER BAR</button>
         </div>
     </section>
 
-    <section id="s2" class="stage">
-        <h2 id="quote">«Every joke has a grain of whiskey»</h2>
-        <button class="btn-gy" onclick="go(3)" id="btn-id">GET ID</button>
-        <button class="btn-gy btn-sleep" id="btn-hall">TO HALL</button>
-    </section>
-
-    <section id="s3" class="stage">
-        <div class="av-box" onclick="newAv()">
-            <img id="av-img" src="">
-            <span id="av-txt">CLICK FOR AVATAR</span>
-        </div>
-        <div style="font-size: 1.5rem; margin-bottom: 20px;" id="my-id">#GY-000</div>
-        <button class="btn-gy" onclick="save()">SAVE & FINISH</button>
-    </section>
-
-    <script>
-        const content = {
-            ru: { q: "«В каждой шутке есть доля виски»", b1: "ПОЛУЧИТЬ ID", b2: "СОХРАНИТЬ", av: "ЖМИ АВАТАР" },
-            en: { q: "«Every joke has a grain of whiskey»", b1: "GET ID", b2: "SAVE PROFILE", av: "CLICK FOR AVATAR" }
-        };
-
-        let currentLang = 'en';
-        let idGenerated = "GY-" + Math.floor(Math.random()*900 + 100);
-
-        // СЕНСОР
-        window.onload = () => {
-            const sys = navigator.language.split('-')[0];
-            currentLang = (sys === 'ru' || sys === 'ua') ? 'ru' : 'en';
-            updateUI();
-        };
-
-        function updateUI() {
-            const d = content[currentLang];
-            document.getElementById('lang-ind').innerText = currentLang.toUpperCase();
-            document.getElementById('quote').innerText = d.q;
-            document.getElementById('btn-id').innerText = d.b1;
-            document.getElementById('av-txt').innerText = d.av;
-        }
-
-        function enter() {
-            const d = document.getElementById('door');
-            d.style.transform = "scale(5)";
-            d.style.opacity = "0";
-            setTimeout(() => go(2), 800);
-        }
-
-        function newAv() {
-            const img = document.getElementById('av-img');
-            img.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-            img.style.display = "block";
-            document.getElementById('av-txt').style.display = "none";
-        }
-
-        function save() {
-            alert("SUCCESS! ID: " + idGenerated);
-            location.reload(); 
-        }
-
-        function go(n) {
-            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-            document.getElementById('s' + n).classList.add('active');
-            if(n === 3) document.getElementById('my-id').innerText = "#" + idGenerated;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
