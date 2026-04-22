@@ -1,67 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | v8.1.0 Official</title>
-    
-    <link rel="stylesheet" href="style.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club v8.1.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --gold: #d4af37; --black: #000; }
+        body { margin: 0; background: var(--black); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; }
+        .block { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: 0.8s; }
+        .active { display: flex !important; opacity: 1; }
+        .btn-gy { min-width: 260px; padding: 15px; border: 2px solid var(--gold); background: none; color: var(--gold); cursor: pointer; margin: 10px; text-transform: uppercase; }
+        .btn-sleep { opacity: 0.2; pointer-events: none; }
+        #main-door { width: 250px; cursor: pointer; filter: drop-shadow(0 0 15px var(--gold)); transition: 1.2s; background: linear-gradient(45deg, #1a1a1a, #333); border: 2px solid var(--gold); }
+        .lang-gateway { position: fixed; top: 15px; left: 15px; z-index: 100; }
+        #qr-box { background: white; padding: 5px; margin-top: 15px; }
+        .avatar-box { width: 100px; height: 100px; border: 2px solid var(--gold); margin-bottom: 10px; overflow: hidden; background: #111; }
+    </style>
 </head>
 <body>
 
-    <div style="position: fixed; bottom: 5px; right: 10px; font-size: 8px; opacity: 0.3; color: var(--gold); z-index: 100;">v8.1.0</div>
-
     <div class="lang-gateway">
-        <button class="btn-main-lang" id="lang-trigger">
-            <img id="cur-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
-            <span id="cur-name">ENGLISH</span>
-        </button>
-        <div id="lang-list" class="lang-dropdown">
-            </div>
+        <button class="btn-gy" style="min-width:auto; padding:5px 10px;" id="lang-btn">🌐 RU</button>
     </div>
 
-    <section id="scr-entry" class="block active">
-        <img src="door_1.jpg" id="main-door" alt="Door">
-    </section>
-
-    <section id="scr-welcome" class="block">
-        <h2 id="quote" data-key="q_whiskey">...</h2>
-        <button class="btn-gy" id="go-id" data-key="btn_get_id">GET ID TOKEN</button>
-        <button class="btn-gy btn-sleep" id="go-hall" data-key="btn_to_hall">TO HALL</button>
-    </section>
-
-    <section id="scr-id" class="block">
-        <div class="id-creator">
-            <div id="avatar-zone" class="box-final" onclick="generateAvatar()">
-                <img id="user-photo" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="label-av" data-key="label_avatar">AVATAR</span>
-            </div>
-            <div id="qr-reg" class="box-final"></div>
-        </div>
-        
-        <div class="id-number-box">
-            <span id="id-label">#GY-000</span>
-        </div>
-
-        <button class="btn-gy" id="save-btn" data-key="btn_save">SAVE PROFILE</button>
-        <button class="btn-gy btn-sleep" id="final-hall" data-key="btn_to_hall">PROCEED TO HALL</button>
-    </section>
-
-    <section id="scr-hall" class="block">
-        <div class="id-card-final">
-            <div id="h-id" class="card-id-text">#GY-000</div>
-            <div class="avatar-wrap">
-                <img id="h-photo" src="" class="main-av">
-                <img id="h-flag" src="" class="mini-flag">
-            </div>
-            <div id="qr-hall" class="qr-small"></div>
-            <button class="btn-gy" data-key="btn_enter">ENTER BAR</button>
+    <section id="scr-1" class="block active">
+        <div id="main-door" onclick="openDoor()">
+            <p style="padding: 50px 10px;">GY-GY CLUB<br>CLICK TO ENTER</p>
         </div>
     </section>
 
-    <script src="script.js"></script>
+    <section id="scr-2" class="block">
+        <h2 id="q-txt">...</h2>
+        <div class="avatar-box" onclick="newAv()"><img id="av-img" style="display:none; width:100%;"> <span id="av-hint">AVATAR</span></div>
+        <div id="id-num">#GY-000</div>
+        <div id="qr-box"></div>
+        <button class="btn-gy" onclick="save()">SAVE & ENTER</button>
+    </section>
+
+    <script>
+        const langData = {
+            ru: { n: "RU", q: "«В каждой шутке есть доля виски»", btn: "ВОЙТИ" },
+            en: { n: "EN", q: "«Every joke has a grain of whiskey»", btn: "ENTER" }
+        };
+        let cur = 'ru';
+        let myId = "GY-" + Math.floor(Math.random()*900+100);
+
+        window.onload = () => {
+            const sys = navigator.language.split('-')[0];
+            setLang(langData[sys] ? sys : 'en');
+        };
+
+        function setLang(l) {
+            cur = l;
+            document.getElementById('lang-btn').innerText = "🌐 " + langData[l].n;
+            document.getElementById('q-txt').innerText = langData[l].q;
+        }
+
+        function openDoor() {
+            document.getElementById('main-door').style.transform = "scale(4) rotate(15deg)";
+            document.getElementById('main-door').style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById('scr-1').classList.remove('active');
+                document.getElementById('scr-2').classList.add('active');
+                document.getElementById('id-num').innerText = myId;
+                new QRCode(document.getElementById("qr-box"), { text: myId, width: 80, height: 80 });
+            }, 800);
+        }
+
+        function newAv() {
+            const img = document.getElementById('av-img');
+            img.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+            img.style.display = "block";
+            document.getElementById('av-hint').style.display = "none";
+        }
+
+        function save() { alert("Saved: " + myId); }
+    </script>
 </body>
 </html>
