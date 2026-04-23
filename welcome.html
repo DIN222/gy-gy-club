@@ -1,1 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY | WELCOME</title>
+    <link rel="stylesheet" href="shared-core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        .welcome-zone {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
 
+        #horse {
+            width: 350px;
+            max-width: 90%;
+            filter: drop-shadow(0 0 20px var(--gold));
+            margin-bottom: 30px;
+            /* Дышащая анимация */
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--gold-dim)); }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 25px var(--gold)); }
+        }
+
+        .quote-box {
+            font-size: 1.2rem;
+            min-height: 3em;
+            max-width: 600px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        /* Панель языков */
+        .lang-panel {
+            position: fixed;
+            bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .lang-btn {
+            background: none; border: 1px solid var(--gold-dim);
+            color: var(--gold-dim); padding: 5px 10px;
+            cursor: pointer; font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .lang-btn.active {
+            border-color: var(--gold); color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="fixed-header">
+        <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
+    </header>
+
+    <main class="welcome-zone">
+        <img src="horse_glow.png" id="horse" alt="Glowing Horse">
+
+        <div class="quote-box" data-key="quote">...</div>
+
+        <button class="btn-gy" data-key="btn_id" onclick="window.location.href='reg.html'">GET ID</button>
+
+        <div class="lang-panel">
+            <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+            <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+            <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
+            <button class="lang-btn" onclick="setLanguage('es')">ES</button>
+            <button class="lang-btn" onclick="setLanguage('it')">IT</button>
+            <button class="lang-btn" onclick="setLanguage('zh')">ZH</button>
+            <button class="lang-btn" onclick="setLanguage('ja')">JA</button>
+            <button class="lang-btn" onclick="setLanguage('ko')">KO</button>
+            <button class="lang-btn" onclick="setLanguage('ar')">AR</button>
+            <button class="lang-btn" onclick="setLanguage('tr')">TR</button>
+            <button class="lang-btn" onclick="setLanguage('hi')">HI</button>
+        </div>
+    </main>
+
+    <script src="shared-logic.js"></script>
+</body>
+</html>
