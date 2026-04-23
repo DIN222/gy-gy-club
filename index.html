@@ -2,53 +2,28 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY CLUB | v9.0.0</title>
+    <title>GY-GY DEBUG</title>
     <link rel="stylesheet" href="shared-core.css">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style>
-        .portal-zone {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--black);
-        }
-        #main-door {
-            width: 300px;
-            cursor: pointer;
-            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s;
-        }
-        .door-open {
-            transform: scale(10) rotate(10deg);
-            opacity: 0;
-            pointer-events: none;
-        }
-    </style>
 </head>
 <body>
-
-    <header class="fixed-header">
-        <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
+    <header class="fixed-header" style="border: 2px solid red;">
+        <div style="color: white;">HEADER IS HERE (RED BORDER)</div>
     </header>
 
-    <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" onclick="handleEntry()">
-    </main>
+    <div style="margin-top: 100px; text-align: center;">
+        <h1 id="test-text">TESTING SYSTEM...</h1>
+        <p>If the background is BLACK, CSS is working.</p>
+        <p>If you see a GY-ID below, JS is working.</p>
+        <h2 id="global-id-display" style="color: yellow;">WAITING FOR JS...</h2>
+    </div>
 
     <script src="shared-logic.js"></script>
     <script>
-        function handleEntry() {
-            const audio = new Audio('door_open.mp3');
-            audio.play().catch(() => {});
-
-            const door = document.getElementById('main-door');
-            door.classList.add('door-open');
-
-            setTimeout(() => {
-                window.location.href = 'welcome.html';
-            }, 1200);
-        }
+        // Проверка JS прямо здесь
+        setTimeout(() => {
+            document.getElementById('test-text').innerText = "SYSTEM IS ALIVE!";
+            document.getElementById('global-id-display').innerText = "JS DETECTED";
+        }, 1000);
     </script>
 </body>
 </html>
