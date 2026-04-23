@@ -7,113 +7,43 @@
     <link rel="stylesheet" href="shared-core.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        .welcome-zone {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-        }
-
-        #horse {
-            width: 320px;
-            max-width: 80%;
-            filter: drop-shadow(0 0 15px var(--gold));
-            margin-bottom: 20px;
-            animation: breathe 4s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.02); opacity: 1; }
-        }
-
-        .quote-box {
-            font-size: 1.1rem;
-            min-height: 2.5em;
-            margin-bottom: 30px;
-            color: var(--gold);
-            max-width: 500px;
-        }
-
-        .btn-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            align-items: center;
-        }
-
-        .lang-panel {
-            position: fixed;
-            bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            max-width: 90%;
-        }
-
-        .lang-btn {
-            background: none; border: 1px solid rgba(212, 175, 55, 0.2);
-            color: rgba(212, 175, 55, 0.5); padding: 4px 8px;
-            cursor: pointer; font-size: 0.7rem;
-        }
-
-        .lang-btn.active { border-color: var(--gold); color: var(--gold); }
-        
-        /* Кнопка Назад в хедере */
-        .back-link {
-            cursor: pointer;
-            font-size: 0.9rem;
-            text-decoration: none;
-            color: var(--gold);
-            opacity: 0.7;
-            transition: 0.3s;
-        }
-        .back-link:hover { opacity: 1; }
+        .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        #horse { width: 320px; max-width: 80%; filter: drop-shadow(0 0 15px var(--gold)); margin-bottom: 20px; animation: breathe 4s ease-in-out infinite; }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.02); opacity: 1; } }
+        .quote-box { font-size: 1.1rem; min-height: 2.5em; margin-bottom: 30px; max-width: 500px; }
+        .btn-container { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
+        .back-link { cursor: pointer; color: var(--gold); opacity: 0.7; text-decoration: none; }
     </style>
 </head>
 <body>
-
-    <header class="fixed-header" style="justify-content: space-between;">
-        <a onclick="goBack()" class="back-link" data-key="btn_back">← BACK</a>
-        <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
+    <header class="fixed-header">
+        <a onclick="location.href='index.html'" class="back-link" data-key="btn_back">← BACK</a>
+        <div class="logo-link"><img src="logo.png"></div>
     </header>
 
     <main class="welcome-zone">
-        <img src="horse_welcome.png" id="horse" alt="Welcome Horse">
-
+        <img src="horse_welcome.png" id="horse">
         <div class="quote-box" data-key="quote">...</div>
-
         <div class="btn-container">
-            <button class="btn-gy" data-key="btn_reg" onclick="window.location.href='reg.html'">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
-            <button class="btn-gy btn-sleep" data-key="btn_hall" onclick="window.location.href='hall.html'">ПРОЙДИТЕ В ХОЛЛ</button>
+            <button class="btn-gy" data-key="btn_reg" onclick="location.href='reg.html'">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
+            <button class="btn-gy btn-sleep" data-key="btn_hall" onclick="location.href='hall.html'">ПРОЙДИТЕ В ХОЛЛ</button>
         </div>
 
         <div class="lang-panel">
-            <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
-            <button class="lang-btn" onclick="setLanguage('en')">EN</button>
-            <button class="lang-btn" onclick="setLanguage('de')">DE</button>
-            <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-            <button class="lang-btn" onclick="setLanguage('es')">ES</button>
-            <button class="lang-btn" onclick="setLanguage('it')">IT</button>
-            <button class="lang-btn" onclick="setLanguage('zh')">ZH</button>
-            <button class="lang-btn" onclick="setLanguage('ja')">JA</button>
-            <button class="lang-btn" onclick="setLanguage('ko')">KO</button>
-            <button class="lang-btn" onclick="setLanguage('ar')">AR</button>
-            <button class="lang-btn" onclick="setLanguage('tr')">TR</button>
-            <button class="lang-btn" onclick="setLanguage('hi')">HI</button>
+            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> EN</button>
+            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> RU</button>
+            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> UA</button>
+            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> PL</button>
+            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DE</button>
+            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FR</button>
+            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> IT</button>
+            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ES</button>
+            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> CN</button>
+            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> JP</button>
+            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> AE</button>
+            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> BR</button>
         </div>
     </main>
-
     <script src="shared-logic.js"></script>
-    <script>
-        function goBack() {
-            window.location.href = 'index.html';
-        }
-    </script>
 </body>
 </html>
