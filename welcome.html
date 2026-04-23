@@ -18,63 +18,80 @@
         }
 
         #horse {
-            width: 350px;
-            max-width: 90%;
-            filter: drop-shadow(0 0 20px var(--gold));
-            margin-bottom: 30px;
-            /* Дышащая анимация */
+            width: 320px;
+            max-width: 80%;
+            filter: drop-shadow(0 0 15px var(--gold));
+            margin-bottom: 20px;
             animation: breathe 4s ease-in-out infinite;
         }
 
         @keyframes breathe {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--gold-dim)); }
-            50% { transform: scale(1.03); filter: drop-shadow(0 0 25px var(--gold)); }
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.02); opacity: 1; }
         }
 
         .quote-box {
-            font-size: 1.2rem;
-            min-height: 3em;
-            max-width: 600px;
-            margin-bottom: 40px;
-            font-style: italic;
+            font-size: 1.1rem;
+            min-height: 2.5em;
+            margin-bottom: 30px;
+            color: var(--gold);
+            max-width: 500px;
         }
 
-        /* Панель языков */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            align-items: center;
+        }
+
         .lang-panel {
             position: fixed;
             bottom: 20px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            max-width: 80%;
+            gap: 8px;
+            max-width: 90%;
         }
 
         .lang-btn {
-            background: none; border: 1px solid var(--gold-dim);
-            color: var(--gold-dim); padding: 5px 10px;
-            cursor: pointer; font-size: 0.8rem;
-            transition: 0.3s;
+            background: none; border: 1px solid rgba(212, 175, 55, 0.2);
+            color: rgba(212, 175, 55, 0.5); padding: 4px 8px;
+            cursor: pointer; font-size: 0.7rem;
         }
 
-        .lang-btn.active {
-            border-color: var(--gold); color: var(--gold);
-            background: rgba(212, 175, 55, 0.1);
+        .lang-btn.active { border-color: var(--gold); color: var(--gold); }
+        
+        /* Кнопка Назад в хедере */
+        .back-link {
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            color: var(--gold);
+            opacity: 0.7;
+            transition: 0.3s;
         }
+        .back-link:hover { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <header class="fixed-header">
+    <header class="fixed-header" style="justify-content: space-between;">
+        <a onclick="goBack()" class="back-link" data-key="btn_back">← BACK</a>
         <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
     </header>
 
     <main class="welcome-zone">
-        <img src="horse_glow.png" id="horse" alt="Glowing Horse">
+        <img src="horse_welcome.png" id="horse" alt="Welcome Horse">
 
         <div class="quote-box" data-key="quote">...</div>
 
-        <button class="btn-gy" data-key="btn_id" onclick="window.location.href='reg.html'">GET ID</button>
+        <div class="btn-container">
+            <button class="btn-gy" data-key="btn_reg" onclick="window.location.href='reg.html'">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
+            <button class="btn-gy btn-sleep" data-key="btn_hall" onclick="window.location.href='hall.html'">ПРОЙДИТЕ В ХОЛЛ</button>
+        </div>
 
         <div class="lang-panel">
             <button class="lang-btn" onclick="setLanguage('ru')">RU</button>
@@ -93,5 +110,10 @@
     </main>
 
     <script src="shared-logic.js"></script>
+    <script>
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
 </body>
 </html>
