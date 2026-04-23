@@ -1,37 +1,30 @@
-/* . [BLOCK: LOGIC_v9.1.0] */
+/* . [BLOCK: LOGIC_v9.2.5] */
 const STORAGE_KEY = 'gy_club_v9';
 
-// 1. Словарь на 12 языков (добавляй свои фразы сюда)
 const translations = {
-    ru: { n: 'RU', flag: 'ru', quote: "«В каждой шутке есть доля виски»", btn_id: "ПОЛУЧИТЬ ID", welcome: "ДОБРО ПОЖАЛОВАТЬ" },
-    en: { n: 'EN', flag: 'gb', quote: "«Every joke has a grain of whiskey»", btn_id: "GET ID", welcome: "WELCOME" },
-    de: { n: 'DE', flag: 'de', quote: "«Jeder Witz hat свой Anteil Whiskey»", btn_id: "ID ERHALTEN", welcome: "WILLKOMMEN" },
-    fr: { n: 'FR', flag: 'fr', quote: "«Chaque blague a sa part de whiskey»", btn_id: "OBTENIR ID", welcome: "BIENVENUE" },
-    es: { n: 'ES', flag: 'es', quote: "«Cada broma tiene su parte de whiskey»", btn_id: "OBTENER ID", welcome: "BIENVENIDO" },
-    it: { n: 'IT', flag: 'it', quote: "«Ogni scherzo ha la sua parte di whiskey»", btn_id: "OTTIENI ID", welcome: "BENVENUTO" },
-    zh: { n: 'ZH', flag: 'cn', quote: "«每个笑话都有一份威士忌»", btn_id: "获取 ID", welcome: "欢迎" },
-    ja: { n: 'JA', flag: 'jp', quote: "«すべてのジョークにはウイスキーの粒が含まれています»", btn_id: "IDを取得", welcome: "ようこそ" },
-    ko: { n: 'KO', flag: 'kr', quote: "«모든 농담에는 위스키 한 알이 들어있다»", btn_id: "ID 받기", welcome: "환영합니다" },
-    ar: { n: 'AR', flag: 'sa', quote: "«كل نكتة فيها ذرة من الويسكي»", btn_id: "الحصول على معرف", welcome: "أهلاً بك" },
-    tr: { n: 'TR', flag: 'tr', quote: "«Her şakanın içinde bir miktar viski vardır»", btn_id: "ID AL", welcome: "HOŞ GELDİNİZ" },
-    hi: { n: 'HI', flag: 'in', quote: "«हर मजाक में व्हिस्की का एक अंश होता है»", btn_id: "आईडी प्राप्त करें", welcome: "स्वागत है" }
+    ru: { btn_back: "← НАЗАД", quote: "«В каждой шутке есть доля виски»", btn_reg: "ПРОЙДИТЕ НА РЕГИСТРАЦИЮ", btn_hall: "ПРОЙДИТЕ В ХОЛЛ" },
+    en: { btn_back: "← BACK", quote: "«Every joke has a grain of whiskey»", btn_reg: "PROCEED TO REGISTRATION", btn_hall: "PROCEED TO THE HALL" },
+    ua: { btn_back: "← НАЗАД", quote: "«У кожному жарті є частка віскі»", btn_reg: "ПРОЙДИТЕ НА РЕГІСТРАЦІЮ", btn_hall: "ПРОЙДИТЕ ДО ХОЛУ" },
+    pl: { btn_back: "← COFNIJ", quote: "«W każdym żarcie jest kropla whisky»", btn_reg: "PRZEJDŹ DO REJESTRACJI", btn_hall: "PRZEJDŹ DO HOLU" },
+    de: { btn_back: "← ZURÜCK", quote: "«Jeder Witz hat einen Teil Whiskey»", btn_reg: "ZUR REGISTRIERUNG", btn_hall: "ZUR HALLE GEHEN" },
+    fr: { btn_back: "← RETOUR", quote: "«Chaque blague a sa part de whisky»", btn_reg: "PASSER À L'ENREGISTREMENT", btn_hall: "ALLER AU SALON" },
+    it: { btn_back: "← INDIETRO", quote: "«Ogni scherzo ha la sua parte di whisky»", btn_reg: "VAI ALLA REGISTRAZIONE", btn_hall: "VAI ALLA SALA" },
+    es: { btn_back: "← VOLVER", quote: "«Cada broma tiene su parte de whisky»", btn_reg: "IR A REGISTRO", btn_hall: "IR AL VESTÍBULO" },
+    cn: { btn_back: "← 返回", quote: "«每个笑话里都藏着威士忌»", btn_reg: "前往注册", btn_hall: "前往大厅" },
+    jp: { btn_back: "← 戻る", quote: "«すべてのジョークにはウイスキーのひとしずくがある»", btn_reg: "登録へ進む", btn_hall: "ホールへ進む" },
+    ae: { btn_back: "← عودة", quote: "«كل نكتة تحتوي على قطرة من الويسكي»", btn_reg: "التوجه إلى التسجيل", btn_hall: "التوجه إلى القاعة" },
+    br: { btn_back: "← VOLTAR", quote: "«Cada piada tem sua parte de uísque»", btn_reg: "IR PARA O REGISTRO", btn_hall: "IR PARA O SALÃO" }
 };
 
-// 2. Авто-определение (как в чате)
 const getInitialLang = () => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (saved && saved.lang) return saved.lang;
-    
-    const browserLang = navigator.language.split('-')[0];
-    return translations[browserLang] ? browserLang : 'en';
+    const bLang = navigator.language.split('-')[0];
+    return translations[bLang] ? bLang : 'en';
 };
 
-let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-    lang: getInitialLang(),
-    id: null
-};
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { lang: getInitialLang(), id: null };
 
-// 3. Функция смены языка
 function setLanguage(langCode) {
     state.lang = langCode;
     saveState();
@@ -40,21 +33,16 @@ function setLanguage(langCode) {
 
 function applyTranslation() {
     const data = translations[state.lang];
+    if (!data) return;
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
         if (data[key]) el.innerText = data[key];
     });
-    // Обновляем активную кнопку в панели (если она есть)
     document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes(state.lang));
+        const btnLang = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        btn.classList.toggle('active', btnLang === state.lang);
     });
 }
 
-function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-// При загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
-    applyTranslation();
-});
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+document.addEventListener('DOMContentLoaded', applyTranslation);
