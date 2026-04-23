@@ -15,8 +15,7 @@
         .back-link { cursor: pointer; color: var(--gold); opacity: 0.7; text-decoration: none; }
     </style>
 </head>
-<body>
-    <header class="fixed-header">
+<body onclick="startAmbient()"> <header class="fixed-header">
         <a onclick="location.href='index.html'" class="back-link" data-key="btn_back">← BACK</a>
         <div class="logo-link"><img src="logo.png"></div>
     </header>
@@ -44,6 +43,23 @@
             <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> BR</button>
         </div>
     </main>
+
+    <audio id="bg-audio" loop>
+        <source src="bar_ambient.mp3" type="audio/mpeg">
+    </audio>
+
     <script src="shared-logic.js"></script>
+    <script>
+        const audio = document.getElementById('bg-audio');
+        
+        function startAmbient() {
+            audio.play().catch(() => {
+                console.log("Ждем взаимодействия пользователя для звука...");
+            });
+        }
+
+        // Пытаемся запустить сразу (сработает, если был клик на двери в index.html)
+        window.addEventListener('load', startAmbient);
+    </script>
 </body>
 </html>
