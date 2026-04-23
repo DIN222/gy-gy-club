@@ -1,6 +1,7 @@
-/* . [BLOCK: CORE_v9.0.0] */
+/* . [BLOCK: CORE_v9.2.5] */
 :root {
     --gold: #d4af37;
+    --gold-dim: rgba(212, 175, 55, 0.5);
     --black: #000;
     --transition: 0.8s;
 }
@@ -16,27 +17,37 @@ body, html {
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* СКВОЗНОЙ ХЕДЕР: Теперь логотип Справа */
 .fixed-header {
-    position: fixed; top: 0; left: 0; 
-    width: 100%; height: 70px;
-    display: flex; 
-    justify-content: flex-end; /* Логотип уходит вправо */
-    align-items: center;
-    padding: 0 25px; 
-    z-index: 9999;
-    box-sizing: border-box;
-    pointer-events: none; /* Чтобы хедер не мешал кликать по двери */
+    position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 25px; z-index: 9999; box-sizing: border-box;
 }
 
-.logo-link {
-    pointer-events: auto; /* А само лого кликабельно */
+.logo-link img { height: 40px; }
+
+.btn-gy {
+    background: none; border: 1px solid var(--gold);
+    color: var(--gold); padding: 12px 25px;
+    font-family: 'Share Tech Mono', monospace;
+    cursor: pointer; transition: 0.3s;
+    text-transform: uppercase; letter-spacing: 2px;
 }
 
-.logo-link img { 
-    height: 40px; 
-    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2));
+.btn-gy:hover { background: var(--gold); color: var(--black); }
+.btn-sleep { opacity: 0.4; cursor: not-allowed; }
+
+.lang-panel {
+    position: fixed; bottom: 20px; display: flex;
+    flex-wrap: wrap; justify-content: center; gap: 8px;
+    max-width: 90%; left: 50%; transform: translateX(-50%);
 }
 
-.fade-out { animation: fadeOut var(--transition) forwards; }
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+.lang-btn {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--gold-dim);
+    color: var(--gold-dim); padding: 5px 8px;
+    cursor: pointer; font-size: 0.7rem; transition: 0.3s;
+}
+
+.lang-btn img { width: 16px; height: auto; border-radius: 2px; }
+.lang-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
