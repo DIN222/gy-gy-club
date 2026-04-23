@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY CLUB | v9.0.0</title>
+    <title>GY-GY CLUB | v9.0.1</title>
     <link rel="stylesheet" href="shared-core.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
@@ -13,19 +13,16 @@
             align-items: center;
             justify-content: center;
             background: var(--black);
-            overflow: hidden;
         }
         #main-door {
-            width: 320px; /* Оптимальный размер под мобилки и десктоп */
-            max-width: 80%;
+            width: 320px;
+            max-width: 85%;
             cursor: pointer;
             transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3));
         }
         .door-open {
-            transform: scale(8) rotate(5deg);
+            transform: scale(10) rotate(5deg);
             opacity: 0;
-            pointer-events: none;
         }
     </style>
 </head>
@@ -36,20 +33,18 @@
     </header>
 
     <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" alt="Gate" onclick="handleEntry()">
+        <img src="door_1.jpg" id="main-door" onclick="handleEntry()">
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
         function handleEntry() {
-            // Твой рабочий звуковой файл
             const audio = new Audio('door_open.mp3');
-            audio.play().catch(() => console.log("Audio waiting for interaction"));
+            audio.play().catch(() => {});
 
             const door = document.getElementById('main-door');
             door.classList.add('door-open');
 
-            // Уходим на страницу с Конём через 1.2 секунды
             setTimeout(() => {
                 window.location.href = 'welcome.html';
             }, 1200);
