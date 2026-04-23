@@ -2,28 +2,58 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY DEBUG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY CLUB | v9.0.0</title>
     <link rel="stylesheet" href="shared-core.css">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        .portal-zone {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--black);
+            overflow: hidden;
+        }
+        #main-door {
+            width: 320px; /* Оптимальный размер под мобилки и десктоп */
+            max-width: 80%;
+            cursor: pointer;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.3));
+        }
+        .door-open {
+            transform: scale(8) rotate(5deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-    <header class="fixed-header" style="border: 2px solid red;">
-        <div style="color: white;">HEADER IS HERE (RED BORDER)</div>
+
+    <header class="fixed-header">
+        <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
     </header>
 
-    <div style="margin-top: 100px; text-align: center;">
-        <h1 id="test-text">TESTING SYSTEM...</h1>
-        <p>If the background is BLACK, CSS is working.</p>
-        <p>If you see a GY-ID below, JS is working.</p>
-        <h2 id="global-id-display" style="color: yellow;">WAITING FOR JS...</h2>
-    </div>
+    <main class="portal-zone">
+        <img src="door_1.jpg" id="main-door" alt="Gate" onclick="handleEntry()">
+    </main>
 
     <script src="shared-logic.js"></script>
     <script>
-        // Проверка JS прямо здесь
-        setTimeout(() => {
-            document.getElementById('test-text').innerText = "SYSTEM IS ALIVE!";
-            document.getElementById('global-id-display').innerText = "JS DETECTED";
-        }, 1000);
+        function handleEntry() {
+            // Твой рабочий звуковой файл
+            const audio = new Audio('door_open.mp3');
+            audio.play().catch(() => console.log("Audio waiting for interaction"));
+
+            const door = document.getElementById('main-door');
+            door.classList.add('door-open');
+
+            // Уходим на страницу с Конём через 1.2 секунды
+            setTimeout(() => {
+                window.location.href = 'welcome.html';
+            }, 1200);
+        }
     </script>
 </body>
 </html>
