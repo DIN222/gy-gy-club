@@ -2,51 +2,38 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY CLUB | GATE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY CLUB</title>
     <link rel="stylesheet" href="shared-core.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style>
-        .portal-zone { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--black); }
-        #main-door { width: 320px; max-width: 80%; cursor: pointer; transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s; }
-        .door-open { transform: scale(10) rotate(5deg); opacity: 0; }
-        /* Принудительное выравнивание хедера для этой страницы */
-        .fixed-header { justify-content: flex-end !important; }
-    </style>
 </head>
 <body>
+
+    <div class="lang-container">
+        <div class="lang-trigger">🌐 <span data-key="current_lang">LANG</span></div>
+        <div class="lang-panel">
+            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
+            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
+            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
+            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
+            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
+            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
+            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
+            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
+            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
+            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> العربية</button>
+            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
+        </div>
+    </div>
 
     <header class="fixed-header">
         <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
     </header>
 
-    <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" onclick="handleEntry()">
-    </main>
-
-    <div class="lang-panel">
-        <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> EN</button>
-        <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> RU</button>
-        <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> UA</button>
-        <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> PL</button>
-        <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DE</button>
-        <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FR</button>
-        <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> IT</button>
-        <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ES</button>
-        <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> CN</button>
-        <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> JP</button>
-        <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> AE</button>
-        <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> BR</button>
-    </div>
+    <main style="height: 100vh; display: flex; align-items: center; justify-content: center;">
+        </main>
 
     <script src="shared-logic.js"></script>
-    <script>
-        function handleEntry() {
-            const audio = new Audio('door_open.mp3');
-            audio.play().catch(() => {});
-            document.getElementById('main-door').classList.add('door-open');
-            setTimeout(() => { window.location.href = 'welcome.html'; }, 1200);
-        }
-    </script>
 </body>
 </html>
