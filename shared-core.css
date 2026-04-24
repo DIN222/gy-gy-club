@@ -1,6 +1,17 @@
-/* . [BLOCK: CORE_v9.4.8] */
+/* . [BLOCK: CORE_RECOVERY_v9.4.9] */
+:root {
+    --gold: #d4af37;
+    --black: #000;
+}
 
-/* HEADER: Логотип (Уменьшен еще на 5% -> Итого ~2.4rem) */
+body, html {
+    margin: 0; padding: 0;
+    background: var(--black);
+    color: var(--gold);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+/* HEADER: Текстовый логотип (Уменьшенный) */
 .fixed-header {
     position: fixed; top: 0; right: 0; height: 100px;
     display: flex; align-items: center; padding-right: 40px; z-index: 999;
@@ -12,50 +23,42 @@
     text-transform: uppercase;
     letter-spacing: 3px;
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-    user-select: none;
 }
 
-/* ЯЗЫКОВАЯ ПАНЕЛЬ: Единый размер рамок */
+/* ЯЗЫКОВАЯ ПАНЕЛЬ: Тот самый рабочий вариант без жестких границ */
 .lang-container { 
     position: fixed; top: 30px; left: 30px; z-index: 1000;
-    padding-bottom: 15px; 
+    padding-bottom: 15px;
 }
-
 .lang-trigger {
     background: #000; border: 1px solid var(--gold);
     color: var(--gold); padding: 8px 15px; cursor: pointer;
-    display: flex; align-items: center; gap: 10px; 
-    width: 180px; /* Фиксированная ширина для обеих рамок */
-    box-sizing: border-box;
+    display: flex; align-items: center; gap: 10px;
 }
+.lang-trigger img { width: 22px; }
 
 .lang-panel {
-    position: absolute; top: 100%; left: 0; 
-    display: none; flex-direction: column; 
-    background: #0a0a0a; border: 1px solid var(--gold); 
-    margin-top: -10px;
-    width: 180px; /* Строго как у триггера */
-    max-height: 350px; 
-    overflow-y: auto; 
-    overflow-x: hidden;
-    box-sizing: border-box;
+    position: absolute; top: 100%; left: 0; display: none;
+    flex-direction: column; background: #0a0a0a;
+    border: 1px solid var(--gold); margin-top: -10px;
+    max-height: 400px; /* Скролл на всякий случай оставляем */
+    overflow-y: auto;
+    min-width: 100%; /* Чтобы панель не была уже кнопки */
 }
-
-/* Скролл внутри панели, чтобы не расширял рамку */
-.lang-panel::-webkit-scrollbar {
-    width: 3px;
-}
-.lang-panel::-webkit-scrollbar-thumb {
-    background: var(--gold);
-}
-
 .lang-container:hover .lang-panel { display: flex; }
 
 .lang-btn {
     display: flex; align-items: center; gap: 10px; padding: 10px 15px;
     border: none; background: none; color: #aaa;
     cursor: pointer; width: 100%; text-align: left;
-    font-family: inherit;
+    white-space: nowrap; /* Чтобы названия не переносились */
 }
 .lang-btn:hover { background: #1a1a1a; color: var(--gold); }
-.lang-btn img { width: 20px; pointer-events: none; }
+.lang-btn img { width: 20px; }
+
+/* ДВЕРЬ */
+.portal-zone { 
+    height: 100vh; display: flex; align-items: center; justify-content: center; 
+}
+#main-door { width: 320px; cursor: pointer; transition: 0.5s; }
+.door-open { transform: scale(1.2); opacity: 0; }
