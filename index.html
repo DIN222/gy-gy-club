@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY CLUB</title>
+    <title>GY-GY CLUB | GATE</title>
     <link rel="stylesheet" href="shared-core.css">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div class="lang-container">
-        <div class="lang-trigger">🌐 <span data-key="current_lang">LANG</span></div>
+        <div class="lang-trigger">🌐 <span id="current-lang-label">РУССКИЙ</span></div>
         <div class="lang-panel">
-            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
             <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
             <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
             <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
             <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
@@ -31,9 +31,17 @@
         <div class="logo-link"><img src="logo.png" alt="GY-GY"></div>
     </header>
 
-    <main style="height: 100vh; display: flex; align-items: center; justify-content: center;">
-        </main>
+    <main class="portal-zone">
+        <img src="door_1.jpg" id="main-door" onclick="enterClub()">
+    </main>
 
     <script src="shared-logic.js"></script>
+    <script>
+        function enterClub() {
+            new Audio('door_open.mp3').play().catch(()=>{});
+            document.getElementById('main-door').classList.add('door-open');
+            setTimeout(() => { window.location.href = 'welcome.html'; }, 1000);
+        }
+    </script>
 </body>
 </html>
