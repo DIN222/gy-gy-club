@@ -1,4 +1,4 @@
-/* . [BLOCK: CORE_v9.3.0] */
+/* . [BLOCK: CORE_v9.3.5] */
 :root {
     --gold: #d4af37;
     --gold-dim: rgba(212, 175, 55, 0.5);
@@ -12,37 +12,52 @@ body, html {
     font-family: 'Share Tech Mono', monospace;
 }
 
+/* HEADER: Лого крупнее и справа */
 .fixed-header {
-    position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-    display: flex; 
-    justify-content: flex-end; /* Логотип вправо по умолчанию */
-    align-items: center;
-    padding: 0 25px; z-index: 9999; box-sizing: border-box;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100px;
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 0 40px; z-index: 9999; box-sizing: border-box;
     pointer-events: none;
 }
 
 .logo-link { pointer-events: auto; }
-.logo-link img { height: 40px; }
+.logo-link img { height: 65px; transition: 0.3s; } /* Увеличенное лого */
+.logo-link img:hover { filter: drop-shadow(0 0 10px var(--gold)); }
 
+/* ВЫПАДАЮЩАЯ ПАНЕЛЬ ЯЗЫКОВ СЛЕВА */
+.lang-container {
+    position: fixed; top: 20px; left: 20px; z-index: 10000;
+}
+
+.lang-trigger {
+    background: rgba(0,0,0,0.8); border: 1px solid var(--gold);
+    color: var(--gold); padding: 10px 15px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+}
+
+.lang-panel {
+    position: absolute; top: 100%; left: 0;
+    display: none; flex-direction: column; 
+    background: rgba(0,0,0,0.95); border: 1px solid var(--gold);
+    margin-top: 5px; width: 180px; max-height: 70vh; overflow-y: auto;
+}
+
+.lang-container:hover .lang-panel { display: flex; }
+
+.lang-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 15px; border: none; background: none;
+    color: var(--gold-dim); cursor: pointer; text-align: left;
+    width: 100%; border-bottom: 1px solid rgba(212,175,55,0.1);
+}
+
+.lang-btn:hover { background: rgba(212,175,55,0.1); color: var(--gold); }
+.lang-btn.active { color: var(--gold); background: rgba(212,175,55,0.2); }
+.lang-btn img { width: 20px; border-radius: 2px; }
+
+/* КНОПКИ */
 .btn-gy {
     background: none; border: 1px solid var(--gold);
     color: var(--gold); padding: 12px 25px;
     cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
 }
-
-.lang-panel {
-    position: fixed; bottom: 20px; left: 50%; 
-    transform: translateX(-50%);
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
-    max-width: 95%; z-index: 1000;
-}
-
-.lang-btn {
-    display: flex; align-items: center; gap: 5px;
-    background: rgba(0,0,0,0.6); border: 1px solid var(--gold-dim);
-    color: var(--gold-dim); padding: 5px 8px;
-    cursor: pointer; font-size: 0.7rem;
-}
-
-.lang-btn img { width: 16px; border-radius: 2px; }
-.lang-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
