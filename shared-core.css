@@ -44,9 +44,31 @@ body, html {
 }
 .lang-trigger img { width: 22px; pointer-events: none; }
 .lang-panel {
-    position: absolute; top: 100%; left: 0; 
-    display: none; flex-direction: column; 
-    background: #0a0a0a; border: 1px solid var(--gold); margin-top: -10px;
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    display: none; 
+    flex-direction: column; 
+    background: #0a0a0a; 
+    border: 1px solid var(--gold); 
+    margin-top: -10px;
+    
+    /* ВОЗВРАЩАЕМ СКРОЛЛ */
+    max-height: 400px; /* Высота, после которой появится прокрутка */
+    overflow-y: auto;  /* Включает вертикальный скролл */
+    width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+/* Стилизация скролла, чтобы он был тонким и золотым (в стиле GY-GY) */
+.lang-panel::-webkit-scrollbar {
+    width: 4px;
+}
+.lang-panel::-webkit-scrollbar-track {
+    background: #000;
+}
+.lang-panel::-webkit-scrollbar-thumb {
+    background: var(--gold);
 }
 .lang-container:hover .lang-panel { display: flex; }
 .lang-btn {
