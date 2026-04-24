@@ -1,4 +1,4 @@
-/* . [BLOCK: LOGIC_v9.4.6] */
+/* . [BLOCK: LOGIC_FINAL_STABLE] */
 const translations = {
     ru: { label: "РУССКИЙ", flag: "ru" },
     en: { label: "ENGLISH", flag: "gb" },
@@ -18,16 +18,11 @@ function setLanguage(langCode) {
     localStorage.setItem('gy_lang', langCode);
     applyTranslation();
 
-    // ВОТ ТУТ МАГИЯ: Принудительно скрываем панель после выбора
+    // Панель мгновенно исчезает после выбора
     const panel = document.querySelector('.lang-panel');
     if (panel) {
-        panel.style.display = 'none'; 
-        
-        // Возвращаем возможность показа через 200мс, 
-        // чтобы при следующем наведении она снова выпадала
-        setTimeout(() => {
-            panel.style.display = '';
-        }, 200);
+        panel.style.display = 'none';
+        setTimeout(() => { panel.style.display = ''; }, 200);
     }
 }
 
