@@ -1,4 +1,4 @@
-/* . [BLOCK: CORE_v9.4.1] */
+/* . [BLOCK: CORE_v9.4.3] */
 :root {
     --gold: #d4af37;
     --black: #000;
@@ -13,17 +13,20 @@ body, html {
     overflow: hidden;
 }
 
-/* HEADER: Логотип */
+/* HEADER: Логотип справа */
 .fixed-header {
-    position: fixed; top: 0; right: 0; height: 100px;
+    position: fixed; top: 0; right: 0; height: 120px;
     display: flex; align-items: center; padding-right: 40px; z-index: 999;
 }
-.logo-link img { height: 90px; width: auto; display: block; border: none; }
+.logo-link img { 
+    height: 90px; width: auto; 
+    display: block; border: none;
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); /* Подсветка, если лого темное */
+}
 
 /* ЯЗЫКОВАЯ ПАНЕЛЬ */
-.lang-container { 
-    position: fixed; top: 30px; left: 30px; z-index: 1000; 
-}
+.lang-container { position: fixed; top: 30px; left: 30px; z-index: 1000; }
+
 .lang-trigger {
     background: #000; border: 1px solid var(--gold);
     color: var(--gold); padding: 8px 15px; cursor: pointer;
@@ -37,7 +40,12 @@ body, html {
     border: 1px solid var(--gold); margin-top: 2px;
     width: 200px; max-height: 70vh; overflow-y: auto;
 }
+
+/* Это заставляет меню исчезать, когда мы уводим мышь */
 .lang-container:hover .lang-panel { display: flex; }
+
+/* КЛАСС ДЛЯ ПРИНУДИТЕЛЬНОГО СКРЫТИЯ ПОСЛЕ КЛИКА */
+.force-hide { display: none !important; }
 
 .lang-btn {
     display: flex; align-items: center; gap: 10px; padding: 12px;
@@ -45,12 +53,3 @@ body, html {
     cursor: pointer; width: 100%; text-align: left; font-family: inherit;
 }
 .lang-btn:hover { background: #1a1a1a; color: var(--gold); }
-.lang-btn img { width: 20px; }
-
-/* ЦЕНТР */
-.portal-zone { 
-    width: 100%; height: 100%; 
-    display: flex; align-items: center; justify-content: center; 
-}
-#main-door { width: 320px; cursor: pointer; transition: 0.8s ease; }
-.door-open { transform: scale(2.5); opacity: 0; }
