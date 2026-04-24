@@ -1,4 +1,4 @@
-/* . [BLOCK: LOGIC_v9.4.3] */
+/* . [BLOCK: LOGIC_v9.4.5] */
 const translations = {
     ru: { label: "РУССКИЙ", flag: "ru" },
     en: { label: "ENGLISH", flag: "gb" },
@@ -17,26 +17,13 @@ const translations = {
 function setLanguage(langCode) {
     localStorage.setItem('gy_lang', langCode);
     applyTranslation();
-    
-    // МАГИЯ ИСЧЕЗНОВЕНИЯ:
-    const panel = document.querySelector('.lang-panel');
-    if (panel) {
-        panel.classList.add('force-hide'); // Принудительно прячем
-        
-        // Когда мышка уйдет с контейнера и вернется, меню снова будет работать
-        panel.parentElement.addEventListener('mouseleave', () => {
-            panel.classList.remove('force-hide');
-        }, { once: true });
-    }
 }
 
 function applyTranslation() {
     const lang = localStorage.getItem('gy_lang') || 'ru';
     const data = translations[lang];
-    
     const label = document.getElementById('current-lang-label');
     const flagImg = document.getElementById('current-lang-flag');
-    
     if (label) label.innerText = data.label;
     if (flagImg) flagImg.src = `https://flagcdn.com/w40/${data.flag}.png`;
 }
