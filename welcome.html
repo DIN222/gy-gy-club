@@ -12,10 +12,30 @@
         @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.02); opacity: 1; } }
         .quote-box { font-size: 1.1rem; min-height: 2.5em; margin-bottom: 30px; max-width: 500px; }
         .btn-container { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
-        .back-link { cursor: pointer; color: var(--gold); opacity: 0.7; text-decoration: none; }
+        .back-link { cursor: pointer; color: var(--gold); opacity: 0.7; text-decoration: none; position: absolute; top: 35px; left: 140px; z-index: 10001; }
     </style>
 </head>
-<body onclick="startAmbient()"> <header class="fixed-header">
+<body onclick="startAmbient()">
+
+    <div class="lang-container">
+        <div class="lang-trigger">🌐 <span data-key="current_lang">LANG</span></div>
+        <div class="lang-panel">
+            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
+            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
+            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
+            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
+            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
+            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
+            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
+            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
+            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
+            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> العربية</button>
+            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
+        </div>
+    </div>
+
+    <header class="fixed-header">
         <a onclick="location.href='index.html'" class="back-link" data-key="btn_back">← BACK</a>
         <div class="logo-link"><img src="logo.png"></div>
     </header>
@@ -27,38 +47,14 @@
             <button class="btn-gy" data-key="btn_reg" onclick="location.href='reg.html'">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
             <button class="btn-gy btn-sleep" data-key="btn_hall" onclick="location.href='hall.html'">ПРОЙДИТЕ В ХОЛЛ</button>
         </div>
-
-        <div class="lang-panel">
-            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> EN</button>
-            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> RU</button>
-            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> UA</button>
-            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> PL</button>
-            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DE</button>
-            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FR</button>
-            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> IT</button>
-            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ES</button>
-            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> CN</button>
-            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> JP</button>
-            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> AE</button>
-            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> BR</button>
-        </div>
     </main>
 
-    <audio id="bg-audio" loop>
-        <source src="bar_ambient.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bg-audio" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
 
     <script src="shared-logic.js"></script>
     <script>
         const audio = document.getElementById('bg-audio');
-        
-        function startAmbient() {
-            audio.play().catch(() => {
-                console.log("Ждем взаимодействия пользователя для звука...");
-            });
-        }
-
-        // Пытаемся запустить сразу (сработает, если был клик на двери в index.html)
+        function startAmbient() { audio.play().catch(() => {}); }
         window.addEventListener('load', startAmbient);
     </script>
 </body>
