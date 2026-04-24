@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,10 @@
 <body>
 
     <div class="lang-container">
-        <div class="lang-trigger">🌐 <span id="current-lang-label">РУССКИЙ</span></div>
+        <div class="lang-trigger">
+            <img src="" id="current-lang-flag"> 
+            <span id="current-lang-label">РУССКИЙ</span>
+        </div>
         <div class="lang-panel">
             <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
             <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
@@ -27,7 +30,9 @@
     </div>
 
     <header class="fixed-header">
-        <div class="logo-link"><img src="logo.png"></div>
+        <div class="logo-link">
+            <img src="logo.png" alt="" onerror="this.style.display='none'">
+        </div>
     </header>
 
     <main class="portal-zone">
@@ -37,9 +42,17 @@
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
-            new Audio('door_open.mp3').play().catch(()=>{});
-            document.getElementById('main-door').classList.add('door-open');
-            setTimeout(() => { window.location.href = 'welcome.html'; }, 1000);
+            try {
+                new Audio('door_open.mp3').play();
+            } catch(e) {}
+            
+            const door = document.getElementById('main-door');
+            door.classList.add('door-open');
+            
+            // Ждем завершения анимации и уходим на страницу
+            setTimeout(() => {
+                window.location.assign('welcome.html');
+            }, 800);
         }
     </script>
 </body>
