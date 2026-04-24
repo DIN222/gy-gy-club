@@ -1,6 +1,7 @@
-/* . [BLOCK: LOGIC_v9.2.5] */
+/* . [BLOCK: LOGIC_v9.3.0] */
 const STORAGE_KEY = 'gy_club_v9';
 
+// Твой список из 12 языков
 const translations = {
     ru: { btn_back: "← НАЗАД", quote: "«В каждой шутке есть доля виски»", btn_reg: "ПРОЙДИТЕ НА РЕГИСТРАЦИЮ", btn_hall: "ПРОЙДИТЕ В ХОЛЛ" },
     en: { btn_back: "← BACK", quote: "«Every joke has a grain of whiskey»", btn_reg: "PROCEED TO REGISTRATION", btn_hall: "PROCEED TO THE HALL" },
@@ -19,15 +20,19 @@ const translations = {
 const getInitialLang = () => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (saved && saved.lang) return saved.lang;
+    
+    // Детектор как в чате
     const bLang = navigator.language.split('-')[0];
+    
+    // Если язык нам знаком - ставим его. Если нет (исландский и т.д.) - ставим 'en'
     return translations[bLang] ? bLang : 'en';
 };
 
-let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { lang: getInitialLang(), id: null };
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { lang: getInitialLang() };
 
 function setLanguage(langCode) {
     state.lang = langCode;
-    saveState();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     applyTranslation();
 }
 
@@ -44,5 +49,4 @@ function applyTranslation() {
     });
 }
 
-function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 document.addEventListener('DOMContentLoaded', applyTranslation);
