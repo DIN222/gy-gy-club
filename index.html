@@ -46,8 +46,6 @@
         function enterClub() {
             const doorSound = document.getElementById('door-audio');
             
-            // Если звук еще не загрузился или браузер его блокирует,
-            // мы всё равно пытаемся его пнуть
             if (doorSound) {
                 doorSound.currentTime = 0;
                 doorSound.play().catch(err => {
@@ -55,7 +53,7 @@
                 });
             }
 
-            // Анимация
+            // Анимация: дверь только увеличивается
             const door = document.getElementById('main-door');
             door.classList.add('door-open');
 
