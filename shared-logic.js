@@ -1,4 +1,4 @@
-/* . [BLOCK: LOGIC_FINAL_STABLE] */
+/* . [BLOCK: LOGIC_FINAL_v9.5.1] */
 const translations = {
     ru: { label: "РУССКИЙ", flag: "ru" },
     en: { label: "ENGLISH", flag: "gb" },
@@ -17,8 +17,6 @@ const translations = {
 function setLanguage(langCode) {
     localStorage.setItem('gy_lang', langCode);
     applyTranslation();
-
-    // Панель мгновенно исчезает после выбора
     const panel = document.querySelector('.lang-panel');
     if (panel) {
         panel.style.display = 'none';
@@ -31,7 +29,6 @@ function applyTranslation() {
     const data = translations[lang];
     const label = document.getElementById('current-lang-label');
     const flagImg = document.getElementById('current-lang-flag');
-    
     if (label) label.innerText = data.label;
     if (flagImg) flagImg.src = `https://flagcdn.com/w40/${data.flag}.png`;
 }
