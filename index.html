@@ -41,10 +41,20 @@
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
-            try { new Audio('door_open.mp3').play(); } catch(e) {}
+            const doorSound = new Audio('door_open.mp3');
+            doorSound.volume = 0.8;
+            
+            // Запускаем звук
+            doorSound.play().catch(e => console.log("Sound error"));
+
+            // Запускаем анимацию
             const door = document.getElementById('main-door');
             door.classList.add('door-open');
-            setTimeout(() => { window.location.href = 'welcome.html'; }, 500);
+
+            // Ждем 800мс (почти секунду), чтобы звук прозвучал, и только потом идем дальше
+            setTimeout(() => { 
+                window.location.href = 'welcome.html'; 
+            }, 800);
         }
     </script>
 </body>
