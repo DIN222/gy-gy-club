@@ -47,7 +47,7 @@
             font-style: italic;
         }
 
-        /* Кнопки в ряд, ширина 224px (-20%) */
+        /* Кнопки в ряд, ширина 224px, БЕЗ ПОДСВЕТКИ */
         .btn-group { 
             display: flex; 
             flex-direction: row; 
@@ -70,10 +70,16 @@
             font-size: 13px;
         }
 
-        .btn-gy:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+        /* Только смена цвета, без теней и свечения */
+        .btn-gy:hover { 
+            background: var(--gold); 
+            color: #000; 
+            box-shadow: none !important; 
+        }
+
         .btn-sleep { opacity: 0.2; pointer-events: none; }
 
-        /* Позиционирование навигации */
+        /* Навигация */
         .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
         .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
         .btn-back-nav { min-width: auto; padding: 10px 20px; font-size: 14px; background: rgba(0,0,0,0.6); }
@@ -107,20 +113,13 @@
 
     <script src="shared-logic.js"></script>
     <script>
-        // РОВНО 12 ЯЗЫКОВ
         const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'}, 
-            {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, 
-            {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'}, 
-            {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'}, 
-            {c:'es', n:'ЕSPAÑOL', f:'es'},
-            {c:'cn', n:'中文', f:'cn'}, 
-            {c:'jp', n:'日本語', f:'jp'},
-            {c:'ae', n:'العربية', f:'ae'}, 
-            {c:'br', n:'PORTUGUÊS', f:'br'}
+            {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, {c:'es', n:'ЕSPAÑOL', f:'es'},
+            {c:'cn', n:'中文', f:'cn'}, {c:'jp', n:'日本語', f:'jp'},
+            {c:'ae', n:'العربية', f:'ae'}, {c:'br', n:'PORTUGUÊS', f:'br'}
         ];
 
         document.getElementById('lang-list-full').innerHTML = langs.map(l => `
