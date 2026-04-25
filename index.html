@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>GY-GY CLUB</title>
     <link rel="stylesheet" href="shared-core.css">
+    <link rel="preload" href="door_open.mp3" as="audio">
 </head>
 <body>
+
+    <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
 
     <div class="lang-container">
         <div class="lang-trigger">
@@ -41,17 +44,22 @@
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
-            const doorSound = new Audio('door_open.mp3');
-            doorSound.volume = 0.8;
+            const doorSound = document.getElementById('door-audio');
             
-            // Запускаем звук
-            doorSound.play().catch(e => console.log("Sound error"));
+            // Если звук еще не загрузился или браузер его блокирует,
+            // мы всё равно пытаемся его пнуть
+            if (doorSound) {
+                doorSound.currentTime = 0;
+                doorSound.play().catch(err => {
+                    console.log("Автозапуск звука блокирован. Обычное дело.");
+                });
+            }
 
-            // Запускаем анимацию
+            // Анимация
             const door = document.getElementById('main-door');
             door.classList.add('door-open');
 
-            // Ждем 800мс (почти секунду), чтобы звук прозвучал, и только потом идем дальше
+            // Задержка 800мс, чтобы звук успел начаться
             setTimeout(() => { 
                 window.location.href = 'welcome.html'; 
             }, 800);
