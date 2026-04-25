@@ -9,31 +9,56 @@
     
     <style>
         * { -webkit-tap-highlight-color: transparent; }
-        body, html { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
-        .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
+        body, html { width: 100%; height: 100%; background: #000; color: #D4AF37; font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
         
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: var(--gold); max-width: 85%; margin-bottom: 5px; }
+        .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: #D4AF37; max-width: 85%; margin-bottom: 5px; }
         
         #welcome-horse { max-height: 45vh; width: auto; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)); transition: 0.5s ease; }
         
-        .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: var(--gold); text-transform: uppercase; font-style: italic; }
+        .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
         
-        /* Кнопки: строго без подсветки, матовые */
+        /* КНОПКИ: ЧЕРНЫЙ ФОН + ЗОЛОТОЙ ТЕКСТ */
         .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
+        
         .btn-gy { 
-            min-width: 224px; padding: 15px 10px; background: transparent; 
-            border: 2px solid var(--gold); color: var(--gold); cursor: pointer; 
-            text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
-            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important;
+            min-width: 224px; 
+            padding: 15px 10px; 
+            background: #000 !important; /* Всегда черный фон */
+            border: 2px solid #D4AF37; 
+            color: #D4AF37; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono', monospace; 
+            transition: 0.3s; 
+            font-size: 13px; 
+            outline: none;
+            box-shadow: none !important;
+            text-shadow: none !important;
         }
-        .btn-gy:hover { background: var(--gold); color: #000; box-shadow: none !important; }
-        .btn-sleep { opacity: 0.2; pointer-events: none; }
+
+        /* При наведении — фон остается черным, только золото становится насыщеннее */
+        .btn-gy:hover { 
+            background: #000 !important; 
+            color: #FFD700; 
+            border-color: #FFD700;
+            box-shadow: none !important;
+            filter: none !important;
+        }
+
+        .btn-sleep { opacity: 0.15; pointer-events: none; }
 
         .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
         .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
-        .btn-back-nav { min-width: auto; padding: 10px 20px; font-size: 14px; background: rgba(0,0,0,0.6); }
+        
+        .btn-back-nav { 
+            min-width: auto; 
+            padding: 10px 20px; 
+            font-size: 14px; 
+            background: #000 !important; 
+        }
 
-        /* Скрываем интерфейс переводчика */
         .skiptranslate, .goog-te-banner-frame { display: none !important; }
         body { top: 0px !important; }
     </style>
@@ -43,19 +68,18 @@
     <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
     <div id="google_translate_element" style="display:none;"></div>
 
-    <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
+    <header class="fixed-header"><div class="logo-text" style="color:#D4AF37;">GY-GY</div></header>
 
     <nav class="back-nav">
         <button class="btn-gy btn-back-nav" onclick="window.history.back()">← Назад</button>
     </nav>
 
     <div class="lang-container">
-        <div class="lang-trigger">
+        <div class="lang-trigger" style="border-color:#D4AF37; color:#D4AF37; background:#000;">
             <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
             <span id="current-lang-label">РУССКИЙ</span>
         </div>
-        <div id="lang-list-12" class="lang-panel">
-            </div>
+        <div id="lang-list-12" class="lang-panel" style="background:#000; border-color:#D4AF37;"></div>
     </div>
 
     <main class="welcome-zone">
@@ -69,7 +93,6 @@
     </main>
 
     <script>
-        // СПИСОК ИЗ 12 ЯЗЫКОВ
         const langs = [
             {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
             {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
@@ -81,7 +104,7 @@
 
         const panel = document.getElementById('lang-list-12');
         panel.innerHTML = langs.map(l => `
-            <button class="lang-btn" onclick="execTranslate('${l.c}', '${l.f}', '${l.n}')">
+            <button class="lang-btn" style="color:#D4AF37; background:#000; border:none;" onclick="execTranslate('${l.c}', '${l.f}', '${l.n}')">
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>
         `).join('');
@@ -89,10 +112,10 @@
         function execTranslate(code, flag, name) {
             document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${flag}.png`;
             document.getElementById('current-lang-label').innerText = name;
-            const frame = document.querySelector('.goog-te-combo');
-            if (frame) {
-                frame.value = code;
-                frame.dispatchEvent(new Event('change'));
+            const select = document.querySelector('.goog-te-combo');
+            if (select) {
+                select.value = code;
+                select.dispatchEvent(new Event('change'));
             }
         }
 
