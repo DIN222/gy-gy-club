@@ -18,13 +18,13 @@
         
         .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
         
-        /* КНОПКИ: ЧЕРНЫЙ ФОН + ЗОЛОТОЙ ТЕКСТ */
+        /* КНОПКИ: СТРОГО БЕЗ СВЕЧЕНИЯ */
         .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
         
         .btn-gy { 
             min-width: 224px; 
             padding: 15px 10px; 
-            background: #000 !important; /* Всегда черный фон */
+            background: #000 !important; 
             border: 2px solid #D4AF37; 
             color: #D4AF37; 
             cursor: pointer; 
@@ -34,30 +34,24 @@
             transition: 0.3s; 
             font-size: 13px; 
             outline: none;
-            box-shadow: none !important;
+            box-shadow: none !important; /* Убираем свечение */
             text-shadow: none !important;
         }
 
-        /* При наведении — фон остается черным, только золото становится насыщеннее */
         .btn-gy:hover { 
             background: #000 !important; 
             color: #FFD700; 
             border-color: #FFD700;
-            box-shadow: none !important;
+            box-shadow: none !important; /* Гарантия отсутствия свечения при наведении */
             filter: none !important;
         }
 
         .btn-sleep { opacity: 0.15; pointer-events: none; }
 
+        /* Навигация */
         .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
         .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
-        
-        .btn-back-nav { 
-            min-width: auto; 
-            padding: 10px 20px; 
-            font-size: 14px; 
-            background: #000 !important; 
-        }
+        .btn-back-nav { min-width: auto; padding: 10px 20px; font-size: 14px; background: #000 !important; }
 
         .skiptranslate, .goog-te-banner-frame { display: none !important; }
         body { top: 0px !important; }
@@ -75,11 +69,11 @@
     </nav>
 
     <div class="lang-container">
-        <div class="lang-trigger" style="border-color:#D4AF37; color:#D4AF37; background:#000;">
+        <div class="lang-trigger">
             <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
             <span id="current-lang-label">РУССКИЙ</span>
         </div>
-        <div id="lang-list-12" class="lang-panel" style="background:#000; border-color:#D4AF37;"></div>
+        <div id="lang-list-12" class="lang-panel"></div>
     </div>
 
     <main class="welcome-zone">
@@ -104,7 +98,7 @@
 
         const panel = document.getElementById('lang-list-12');
         panel.innerHTML = langs.map(l => `
-            <button class="lang-btn" style="color:#D4AF37; background:#000; border:none;" onclick="execTranslate('${l.c}', '${l.f}', '${l.n}')">
+            <button class="lang-btn" onclick="execTranslate('${l.c}', '${l.f}', '${l.n}')">
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>
         `).join('');
