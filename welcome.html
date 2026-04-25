@@ -18,40 +18,24 @@
         
         .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
         
-        /* КНОПКИ: СТРОГО БЕЗ СВЕЧЕНИЯ */
+        /* КНОПКИ: МАТОВЫЕ, БЕЗ СВЕЧЕНИЯ */
         .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
-        
         .btn-gy { 
-            min-width: 224px; 
-            padding: 15px 10px; 
-            background: #000 !important; 
-            border: 2px solid #D4AF37; 
-            color: #D4AF37; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono', monospace; 
-            transition: 0.3s; 
-            font-size: 13px; 
-            outline: none;
-            box-shadow: none !important; /* Убираем свечение */
-            text-shadow: none !important;
+            min-width: 224px; padding: 15px 10px; background: #000 !important; 
+            border: 2px solid #D4AF37; color: #D4AF37; cursor: pointer; 
+            text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
+            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important;
         }
+        .btn-gy:hover { background: #000 !important; color: #FFD700; border-color: #FFD700; box-shadow: none !important; }
 
-        .btn-gy:hover { 
-            background: #000 !important; 
-            color: #FFD700; 
-            border-color: #FFD700;
-            box-shadow: none !important; /* Гарантия отсутствия свечения при наведении */
-            filter: none !important;
-        }
-
-        .btn-sleep { opacity: 0.15; pointer-events: none; }
-
-        /* Навигация */
-        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
+        /* ПАНЕЛЬ ЯЗЫКОВ: ПРИНУДИТЕЛЬНО 12 ПОЗИЦИЙ */
         .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
-        .btn-back-nav { min-width: auto; padding: 10px 20px; font-size: 14px; background: #000 !important; }
+        .lang-panel { 
+            max-height: 400px !important; /* Даем место для всех 12 */
+            overflow-y: auto !important; 
+            background: #000; 
+            border: 1px solid #D4AF37;
+        }
 
         .skiptranslate, .goog-te-banner-frame { display: none !important; }
         body { top: 0px !important; }
@@ -64,8 +48,8 @@
 
     <header class="fixed-header"><div class="logo-text" style="color:#D4AF37;">GY-GY</div></header>
 
-    <nav class="back-nav">
-        <button class="btn-gy btn-back-nav" onclick="window.history.back()">← Назад</button>
+    <nav class="back-nav" style="position: fixed; top: 25px; left: 25px;">
+        <button class="btn-gy" style="min-width: auto; padding: 10px 20px;" onclick="window.history.back()">← Назад</button>
     </nav>
 
     <div class="lang-container">
@@ -81,23 +65,29 @@
         <div class="horse-container"><img src="horse_welcome.png" alt="Horse" id="welcome-horse"></div>
         <h1 class="welcome-title">WELCOME</h1>
         <div class="btn-group">
-            <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="location.href='hall.html'">В ХОЛЛ</button>
+            <button id="btn-w-hall" class="btn-gy" style="opacity:0.15; pointer-events:none;" onclick="location.href='hall.html'">В ХОЛЛ</button>
             <button class="btn-gy" onclick="location.href='registration.html'">РЕГИСТРАЦИЯ</button>
         </div>
     </main>
 
     <script>
+        // ВОТ ОНИ, ВСЕ 12:
         const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'}, {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'}, {c:'es', n:'ESPAÑOL', f:'es'},
-            {c:'zh-CN', n:'中文', f:'cn'}, {c:'ja', n:'日本語', f:'jp'},
-            {c:'ar', n:'العربية', f:'ae'}, {c:'pt', n:'PORTUGUÊS', f:'br'}
+            {c:'ru', n:'РУССКИЙ', f:'ru'},
+            {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'},
+            {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'},
+            {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'},
+            {c:'es', n:'ESPAÑOL', f:'es'},
+            {c:'zh-CN', n:'中文', f:'cn'},
+            {c:'ja', n:'日本語', f:'jp'},
+            {c:'ar', n:'العربية', f:'ae'},
+            {c:'pt', n:'PORTUGUÊS', f:'br'}
         ];
 
-        const panel = document.getElementById('lang-list-12');
-        panel.innerHTML = langs.map(l => `
+        document.getElementById('lang-list-12').innerHTML = langs.map(l => `
             <button class="lang-btn" onclick="execTranslate('${l.c}', '${l.f}', '${l.n}')">
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>
@@ -119,11 +109,12 @@
 
         document.body.addEventListener('click', () => {
             const amb = document.getElementById('snd-ambient');
-            if(amb.paused) { amb.volume = 0.4; amb.play(); }
+            if(amb.paused) { amb.volume = 0.4; amb.play().catch(e=>{}); }
         }, { once: true });
 
         if(localStorage.getItem('gy_user_id')) {
-            document.getElementById('btn-w-hall').classList.remove('btn-sleep');
+            document.getElementById('btn-w-hall').style.opacity = "1";
+            document.getElementById('btn-w-hall').style.pointerEvents = "auto";
         }
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
