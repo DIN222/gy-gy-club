@@ -1,1 +1,192 @@
 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY | Registration Monolith</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root { --gold: #d4af37; --black: #000; --paper: #F5F5DC; }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
+
+        /* HEADER UI */
+        .ui-header { position: fixed; top: 15px; left: 15px; right: 25px; display: flex; justify-content: space-between; align-items: flex-start; z-index: 10000; }
+        .logo-text { font-size: 24px; letter-spacing: 5px; font-weight: bold; color: var(--gold); }
+        
+        /* LANG PANEL */
+        .lang-gateway { width: 170px; }
+        .btn-main-lang { width: 100%; padding: 8px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        .lang-dropdown { display: none; flex-direction: column; background: #000; border: 1.5px solid var(--gold); position: absolute; width: 170px; max-height: 60vh; overflow-y: auto; z-index: 10001; }
+        .lang-dropdown.open { display: flex; }
+        .btn-sub-lang { background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; width: 100%; text-align: left; }
+        .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
+
+        /* REGISTRATION CORE */
+        .reg-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 50px; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; max-width: 85%; line-height: 1.2; margin-bottom: 20px; }
+
+        /* ТЕ САМЫЕ 4 РАМКИ */
+        .grid-identity { display: flex; gap: 10px; margin-bottom: 25px; }
+        .box-frame { width: 85px; height: 85px; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; background: #050505; }
+        .box-frame img { width: 100%; height: 100%; object-fit: cover; }
+        .label-mini { font-size: 9px; font-weight: 900; text-align: center; }
+
+        .nickname-input { background: transparent; border: none; border-bottom: 1.5px solid var(--gold); color: var(--gold); text-align: center; font-size: 22px; width: 280px; margin-bottom: 25px; font-family: inherit; padding: 5px; }
+
+        .btn-gy { min-width: 280px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
+        .btn-gy:active { background: var(--gold); color: #000; }
+        .btn-sleep { opacity: 0.2 !important; pointer-events: none !important; }
+
+        .back-nav { margin-top: 15px; font-size: 10px; text-decoration: underline; cursor: pointer; opacity: 0.7; }
+        .rtl { direction: rtl; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
+
+    <div class="ui-header">
+        <div class="lang-gateway">
+            <button class="btn-main-lang" onclick="document.getElementById('lang-list').classList.toggle('open')">
+                <img id="cur-flag" src="https://flagcdn.com/w20/ru.png" class="flag-icon">
+                <span id="cur-name">РУССКИЙ</span>
+            </button>
+            <div id="lang-list" class="lang-dropdown">
+                </div>
+        </div>
+        <div class="logo-text">GY-GY</div>
+    </div>
+
+    <main class="reg-zone">
+        <div class="quote-text" data-key="q_champ">«Шампанского много не бывает»</div>
+
+        <div class="grid-identity">
+            <div class="box-frame" id="id-label" style="font-size: 10px;">#ID</div>
+            <div class="box-frame" id="qr-box-reg"></div>
+            <div class="box-frame" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
+                <img id="pp-img" style="display:none;">
+                <span id="pp-txt" class="label-mini" data-key="label_photo">ФОТО</span>
+            </div>
+            <div class="box-frame" style="cursor:pointer;" onclick="generateAvatar()">
+                <img id="av-img" style="display:none;">
+                <span id="av-txt" class="label-mini" data-key="label_avatar">AVATAR<br>GEN</span>
+            </div>
+        </div>
+
+        <input type="text" id="nick-in" class="nickname-input" placeholder="...">
+
+        <button id="btn-save" class="btn-gy" onclick="finalizeReg()" data-key="btn_save">ПОЛУЧИТЬ КАРТУ</button>
+        
+        <div class="back-nav" onclick="location.href='welcome.html'" data-key="btn_back_welcome">← НАЗАД</div>
+    </main>
+
+<script>
+    const langData = {
+        en: { q_champ: "«No such thing as too much champagne»", btn_save: "GET CLUB CARD", label_photo: "PHOTO", label_avatar: "AVATAR GEN", btn_back_welcome: "← BACK" },
+        ru: { q_champ: "«Шампанского много не бывает»", btn_save: "ПОЛУЧИТЬ КАРТУ", label_photo: "ФОТО", label_avatar: "ГЕН АВАТАР", btn_back_welcome: "← НАЗАД" },
+        uk: { q_champ: "«Шампанського багато не буває»", btn_save: "ОТРИМАТИ КАРТУ", label_photo: "ФОТО", label_avatar: "ГЕН АВАТАР", btn_back_welcome: "← НАЗАД" },
+        pl: { q_champ: "«Szampana nigdy za wiele»", btn_save: "POBIERZ KARTĘ", label_photo: "FOTO", label_avatar: "AWATAR", btn_back_welcome: "← POWRÓТ" },
+        de: { q_champ: "«Champagner geht immer»", btn_save: "KARTE ERHALTEN", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← ZURÜCK" },
+        fr: { q_champ: "«Jamais trop de champagne»", btn_save: "OBTENIR LA CARTE", label_photo: "PHOTO", label_avatar: "AVATAR", btn_back_welcome: "← RETOUR" },
+        it: { q_champ: "«Mai troppo champagne»", btn_save: "OTTIENI CARTA", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← INDIETRO" },
+        es: { q_champ: "«Nunca es suficiente champán»", btn_save: "OBTENER TARJETA", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← VOLVER" },
+        cn: { q_champ: "«香槟永远不嫌多»", btn_save: "获取会员卡", label_photo: "照片", label_avatar: "生成头像", btn_back_welcome: "← 返回" },
+        ja: { q_champ: "«シャンパンはいくらあっても足りない»", btn_save: "カードを取得", label_photo: "写真", label_avatar: "アバター生成", btn_back_welcome: "← 戻る" },
+        ar: { q_champ: "«الشمبانيا لا تكفي أبدا»", btn_save: "احصل على البطاقة", label_photo: "صورة", label_avatar: "توليد الصورة", btn_back_welcome: "← العودة" },
+        pt: { q_champ: "«Champanhe nunca é demais»", btn_save: "OBTER CARTÃO", label_photo: "FOTO", label_avatar: "GERAR AVATAR", btn_back_welcome: "← VOLTAR" }
+    };
+
+    const langs = [
+       {c:'ru', n:'РУССКИЙ', f:'ru'}, 
+            {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, 
+            {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, 
+            {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, 
+            {c:'es', n:'ESPAÑOL', f:'es'},
+            {c:'cn', n:'中文', f:'cn'}, 
+            {c:'ja', n:'日本語', f:'jp'},
+            {c:'ar', n:'العربية', f:'ae'}, 
+            {c:'pt', n:'PORTUGUÊS', f:'br'}
+    ];
+
+    let currentID = localStorage.getItem('gy_trace') || "";
+
+    // Отрисовка списка языков
+    document.getElementById('lang-list').innerHTML = langs.map(l => `
+        <button class="btn-sub-lang" onclick="pickL('${l.c}','${l.f}','${l.n}')">
+            <img src="https://flagcdn.com/w20/${l.f}.png" class="flag-icon"> ${l.n}
+        </button>
+    `).join('');
+
+    function pickL(l, f, n) {
+        document.getElementById('cur-flag').src = `https://flagcdn.com/w20/${f}.png`;
+        document.getElementById('cur-name').innerText = n;
+        document.body.classList.toggle('rtl', l === 'ar');
+        document.querySelectorAll('[data-key]').forEach(el => {
+            const k = el.getAttribute('data-key');
+            el.innerText = langData[l] ? langData[l][k] : langData['en'][k];
+        });
+        document.getElementById('lang-list').classList.remove('open');
+        localStorage.setItem('gy_lang', l);
+    }
+
+    function generateAvatar() {
+        const seed = Math.random();
+        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
+        document.getElementById('av-img').src = url;
+        document.getElementById('av-img').style.display = "block";
+        document.getElementById('av-txt').style.display = "none";
+        localStorage.setItem('gy_avatar', url);
+    }
+
+    function preview(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('pp-img').src = e.target.result;
+                document.getElementById('pp-img').style.display = "block";
+                document.getElementById('pp-txt').style.display = "none";
+                localStorage.setItem('gy_photo', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function finalizeReg() {
+        const nick = document.getElementById('nick-in').value || "Аноним";
+        localStorage.setItem('gy_nick', nick);
+        alert("ID Записан. Добро пожаловать в GY-GY!");
+        location.href = 'hall.html';
+    }
+
+    window.onload = () => {
+        // Запуск звука при первом клике
+        document.body.addEventListener('click', () => {
+            const amb = document.getElementById('snd-ambient');
+            if(amb.paused) { amb.volume = 0.3; amb.play().catch(e=>{}); }
+        }, { once: true });
+
+        // Генерация ID если нет
+        if (!currentID) {
+            currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            localStorage.setItem('gy_trace', currentID);
+        }
+        
+        document.getElementById('id-label').innerText = currentID;
+        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+        
+        // Применяем язык
+        const savedL = localStorage.getItem('gy_lang') || 'ru';
+        const initial = langs.find(x => x.c === savedL) || langs[0];
+        pickL(initial.c, initial.f, initial.n);
+    };
+</script>
+</body>
+</html>
