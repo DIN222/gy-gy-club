@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY 01| Welcome</title>
+    <title>GY-GY | Welcome</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="shared-core.css">
     
@@ -11,28 +11,37 @@
         * { -webkit-tap-highlight-color: transparent; }
         body, html { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
         .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: var(--gold); max-width: 85%; margin-bottom: 5px; letter-spacing: 1px; }
-        .horse-container { position: relative; margin: 0; }
+        
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: var(--gold); max-width: 85%; margin-bottom: 5px; }
+        
         #welcome-horse { max-height: 45vh; width: auto; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)); transition: 0.5s ease; }
+        
         .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: var(--gold); text-transform: uppercase; font-style: italic; }
         
-        /* Кнопки в ряд */
+        /* Кнопки: строго без подсветки, матовые */
         .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
-        .btn-gy { min-width: 224px; padding: 15px 10px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; transition: 0.3s; font-size: 13px; }
+        .btn-gy { 
+            min-width: 224px; padding: 15px 10px; background: transparent; 
+            border: 2px solid var(--gold); color: var(--gold); cursor: pointer; 
+            text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
+            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important;
+        }
         .btn-gy:hover { background: var(--gold); color: #000; box-shadow: none !important; }
         .btn-sleep { opacity: 0.2; pointer-events: none; }
 
-        /* Навигация */
         .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
         .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
         .btn-back-nav { min-width: auto; padding: 10px 20px; font-size: 14px; background: rgba(0,0,0,0.6); }
-        #google_translate_element { display: none; }
+
+        /* Скрываем интерфейс переводчика */
+        .skiptranslate, .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="google_translate_element"></div>
     <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
+    <div id="google_translate_element" style="display:none;"></div>
 
     <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
 
@@ -45,7 +54,8 @@
             <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
             <span id="current-lang-label">РУССКИЙ</span>
         </div>
-        <div id="lang-list-12" class="lang-panel"></div>
+        <div id="lang-list-12" class="lang-panel">
+            </div>
     </div>
 
     <main class="welcome-zone">
@@ -58,38 +68,31 @@
         </div>
     </main>
 
-    <script src="shared-logic.js"></script>
     <script>
-        // ПОЛНЫЙ СПИСОК: РОВНО 12 ЯЗЫКОВ
+        // СПИСОК ИЗ 12 ЯЗЫКОВ
         const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'},
-            {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'},
-            {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'},
-            {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'},
-            {c:'es', n:'ESPAÑOL', f:'es'},
-            {c:'zh-CN', n:'中文', f:'cn'},
-            {c:'ja', n:'日本語', f:'jp'},
-            {c:'ar', n:'العربية', f:'ae'},
-            {c:'pt', n:'PORTUGUÊS', f:'br'}
+            {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, {c:'es', n:'ESPAÑOL', f:'es'},
+            {c:'zh-CN', n:'中文', f:'cn'}, {c:'ja', n:'日本語', f:'jp'},
+            {c:'ar', n:'العربية', f:'ae'}, {c:'pt', n:'PORTUGUÊS', f:'br'}
         ];
 
-        const langPanel = document.getElementById('lang-list-12');
-        langPanel.innerHTML = langs.map(l => `
-            <button class="lang-btn" onclick="applyLang('${l.c}', '${l.f}', '${l.n}')">
+        const panel = document.getElementById('lang-list-12');
+        panel.innerHTML = langs.map(l => `
+            <button class="lang-btn" onclick="execTranslate('${l.c}', '${l.f}', '${l.n}')">
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>
         `).join('');
 
-        function applyLang(code, flag, name) {
+        function execTranslate(code, flag, name) {
             document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${flag}.png`;
             document.getElementById('current-lang-label').innerText = name;
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                select.value = code;
-                select.dispatchEvent(new Event('change'));
+            const frame = document.querySelector('.goog-te-combo');
+            if (frame) {
+                frame.value = code;
+                frame.dispatchEvent(new Event('change'));
             }
         }
 
@@ -99,7 +102,7 @@
 
         document.body.addEventListener('click', () => {
             const amb = document.getElementById('snd-ambient');
-            if(amb.paused) { amb.volume = 0.4; amb.play().catch(e => {}); }
+            if(amb.paused) { amb.volume = 0.4; amb.play(); }
         }, { once: true });
 
         if(localStorage.getItem('gy_user_id')) {
