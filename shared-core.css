@@ -1,8 +1,9 @@
-/* . [BLOCK: CORE_FINAL_v9.5.1] */
+/* . [BLOCK: CORE_FINAL_v9.5.2] */
 :root {
     --gold: #d4af37;
     --black: #000;
 }
+
 body, html {
     margin: 0; padding: 0;
     width: 100%; height: 100%;
@@ -11,10 +12,13 @@ body, html {
     font-family: 'Share Tech Mono', monospace;
     overflow: hidden;
 }
+
+/* HEADER: Текстовый логотип */
 .fixed-header {
     position: fixed; top: 0; right: 0; height: 100px;
     display: flex; align-items: center; padding-right: 40px; z-index: 999;
 }
+
 .logo-text { 
     font-size: 2.4rem; 
     font-weight: bold;
@@ -24,16 +28,21 @@ body, html {
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
     user-select: none;
 }
+
+/* ЯЗЫКОВАЯ ПАНЕЛЬ: Стабильная зона наведения */
 .lang-container { 
     position: fixed; top: 30px; left: 30px; z-index: 1000;
     padding-bottom: 15px; 
 }
+
 .lang-trigger {
     background: #000; border: 1px solid var(--gold);
     color: var(--gold); padding: 8px 15px; cursor: pointer;
     display: flex; align-items: center; gap: 10px;
     min-width: 160px;
 }
+.lang-trigger img { width: 22px; pointer-events: none; }
+
 .lang-panel {
     position: absolute; top: 100%; left: 0; 
     display: none; flex-direction: column; 
@@ -44,9 +53,12 @@ body, html {
     min-width: 100%;
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
+
 .lang-panel::-webkit-scrollbar { width: 4px; }
 .lang-panel::-webkit-scrollbar-thumb { background: var(--gold); }
+
 .lang-container:hover .lang-panel { display: flex; }
+
 .lang-btn {
     display: flex; align-items: center; gap: 10px; padding: 12px 15px;
     border: none; background: none; color: #aaa;
@@ -55,8 +67,12 @@ body, html {
 }
 .lang-btn:hover { background: #1a1a1a; color: var(--gold); }
 .lang-btn img { width: 20px; pointer-events: none; }
+
+/* ПОРТАЛ: Исправленная анимация двери */
 .portal-zone { 
     height: 100vh; display: flex; align-items: center; justify-content: center; 
 }
-#main-door { width: 320px; cursor: pointer; transition: 0.8s ease-in-out; }
-.door-open { transform: scale(2) rotate(5deg); opacity: 0; filter: blur(5px); }
+#main-door { width: 320px; cursor: pointer; transition: 0.8s ease-out; }
+
+/* ТЕПЕРЬ ТОЛЬКО МАСШТАБ И ПРОЗРАЧНОСТЬ, НИКАКИХ ПОВОРОТОВ */
+.door-open { transform: scale(1.5); opacity: 0; }
