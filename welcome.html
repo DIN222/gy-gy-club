@@ -72,13 +72,28 @@
     </main>
 
     <script>
-        // 1. ЗВУКИ БАРА В САМОМ НАЧАЛЕ
-        document.body.addEventListener('click', () => {
-            const amb = document.getElementById('snd-ambient');
-            if(amb.paused) { amb.volume = 0.4; amb.play().catch(e=>{}); }
-        }, { once: true });
+        // 1. ПЛАВНЫЙ ЗАПУСК ЗВУКА (САМ ПО СЕБЕ)
+        const audio = document.getElementById('snd-ambient');
+        
+        function fadeInAudio() {
+            audio.volume = 0;
+            audio.play().then(() => {
+                let vol = 0;
+                const interval = setInterval(() => {
+                    if (vol < 0.4) {
+                        vol += 0.02;
+                        audio.volume = vol;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 100); // Нарастание за ~2 секунды
+            }).catch(e => console.log("Waiting for user interaction..."));
+        }
 
-        // БЛОК 1: СЛОВАРЬ (12)
+        // Запуск при любом первом клике по документу
+        document.addEventListener('click', fadeInAudio, { once: true });
+
+        // 2. БЛОК 1: СЛОВАРЬ (12)
         const dictionary = {
             ru: { nav_back: "← Назад", quote: "«В каждой шутке есть доля виски»", btn_hall: "В ХОЛЛ", btn_reg: "РЕГИСТРАЦИЯ" },
             en: { nav_back: "← Back", quote: "«Every joke has a drop of whiskey»", btn_hall: "TO HALL", btn_reg: "REGISTRATION" },
@@ -94,9 +109,9 @@
             pt: { nav_back: "← Voltar", quote: "«Cada piada tem uma gota de uísque»", btn_hall: "AO SALÃO", btn_reg: "REGISTRO" }
         };
 
-        // БЛОК 2: СПИСОК ЯЗЫКОВ (12)
+        // 3. БЛОК 2: СПИСОК ЯЗЫКОВ (12)
         const langs = [
-           {c:'ru', n:'РУССКИЙ', f:'ru'}, 
+             {c:'ru', n:'РУССКИЙ', f:'ru'}, 
             {c:'en', n:'ENGLISH', f:'gb'},
             {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, 
             {c:'pl', n:'POLSKI', f:'pl'},
