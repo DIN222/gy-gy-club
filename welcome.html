@@ -33,7 +33,6 @@
         #welcome-horse {
             max-height: 45vh;
             width: auto;
-            /* Золотой ореол вокруг коня */
             filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)) drop-shadow(0 0 5px rgba(212, 175, 55, 0.2));
             transition: 0.5s ease;
         }
@@ -71,12 +70,40 @@
         .btn-gy:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
         .btn-sleep { opacity: 0.2; pointer-events: none; }
 
-        .back-nav { position: fixed; top: 30px; left: 210px; z-index: 1001; }
+        /* --- НОВАЯ НАВИГАЦИЯ (Разнесено) --- */
+
+        /* Назад в самый край */
+        .back-nav { 
+            position: fixed; 
+            top: 25px; 
+            left: 25px; 
+            z-index: 10001; 
+        }
+
+        /* Языки опускаем ниже кнопки назад */
+        .lang-container { 
+            position: fixed; 
+            top: 80px; 
+            left: 25px; 
+            z-index: 10000; 
+        }
+
+        /* Тонкая настройка кнопки Назад */
+        .btn-back-nav {
+            min-width: auto; 
+            padding: 10px 20px; 
+            font-size: 14px;
+            background: rgba(0,0,0,0.6);
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
+
+    <nav class="back-nav">
+        <button class="btn-gy btn-back-nav" onclick="window.history.back()">← Назад</button>
+    </nav>
 
     <div class="lang-container">
         <div class="lang-trigger">
@@ -86,10 +113,6 @@
         <div id="lang-list-12" class="lang-panel">
             </div>
     </div>
-
-    <nav class="back-nav">
-        <button class="btn-gy" style="min-width: auto; padding: 8px 15px; font-size: 14px;" onclick="window.history.back()">← Назад</button>
-    </nav>
 
     <main class="welcome-zone">
         <div class="quote-text">«В каждой шутке есть доля виски»</div>
@@ -103,20 +126,13 @@
 
     <script src="shared-logic.js"></script>
     <script>
-        // ЧЕСТНЫЙ СПИСОК ИЗ 12 ЯЗЫКОВ
         const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'}, 
-            {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, 
-            {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'}, 
-            {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'}, 
-            {c:'es', n:'ESPAÑOL', f:'es'},
-            {c:'cn', n:'中文', f:'cn'}, 
-            {c:'jp', n:'日本語', f:'jp'},
-            {c:'ae', n:'العربية', f:'ae'}, 
-            {c:'br', n:'PORTUGUÊS', f:'br'}
+            {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, {c:'es', n:'ESPAÑOL', f:'es'},
+            {c:'cn', n:'中文', f:'cn'}, {c:'jp', n:'日本語', f:'jp'},
+            {c:'ae', n:'العربية', f:'ae'}, {c:'br', n:'PORTUGUÊS', f:'br'}
         ];
 
         document.getElementById('lang-list-12').innerHTML = langs.map(l => `
@@ -124,7 +140,6 @@
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>`).join('');
 
-        // Проверка ID для пробуждения кнопки
         if(localStorage.getItem('gy_user_id')) {
             document.getElementById('btn-w-hall').classList.remove('btn-sleep');
         }
