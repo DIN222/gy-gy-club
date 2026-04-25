@@ -8,89 +8,39 @@
     <link rel="stylesheet" href="shared-core.css">
     
     <style>
-        /* Глобальные настройки темы */
         * { -webkit-tap-highlight-color: transparent; }
-        body, html { 
-            width: 100%; height: 100%; 
-            background: #000; color: #D4AF37; 
-            font-family: 'Share Tech Mono', 'PingFang SC', 'Microsoft YaHei', monospace; 
-            margin: 0; padding: 0; overflow: hidden; 
-        }
+        body, html { width: 100%; height: 100%; background: #000; color: #D4AF37; font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
         
-        /* Главная зона */
-        .welcome-zone { 
-            height: 100vh; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-start; 
-            text-align: center; padding-top: 8vh; 
-        }
-
-        .quote-text { 
-            font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 28px; color: #D4AF37; max-width: 85%; 
-            margin-bottom: 5px; min-height: 80px; 
-        }
+        .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: #D4AF37; max-width: 85%; margin-bottom: 5px; }
         
-        #welcome-horse { 
-            max-height: 45vh; width: auto; 
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3)); 
-            transition: 0.5s ease; 
-        }
-
-        .welcome-title { 
-            font-family: 'Playfair Display', serif; font-size: 38px; 
-            font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; 
-            color: #D4AF37; text-transform: uppercase; font-style: italic; 
-        }
+        #welcome-horse { max-height: 45vh; width: auto; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)); transition: 0.5s ease; }
         
-        /* КНОПКИ: МАТОВЫЕ, БЕЗ СВЕЧЕНИЯ */
+        .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
+        
         .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
         
         .btn-gy { 
-            min-width: 224px; padding: 15px 10px; 
-            background: #000 !important; 
-            border: 2px solid #D4AF37; color: #D4AF37; 
-            cursor: pointer; text-transform: uppercase; 
-            font-weight: 900; font-family: inherit; 
-            transition: 0.3s; font-size: 13px; 
-            outline: none; 
-            box-shadow: none !important; /* ЗАПРЕТ СВЕЧЕНИЯ */
-            text-shadow: none !important;
+            min-width: 224px; padding: 15px 10px; background: #000 !important; 
+            border: 2px solid #D4AF37; color: #D4AF37; cursor: pointer; 
+            text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
+            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important; text-shadow: none !important;
         }
 
-        .btn-gy:hover { 
-            background: #000 !important; 
-            color: #FFD700; border-color: #FFD700; 
-            box-shadow: none !important; 
-            filter: none !important;
-        }
+        .btn-gy:hover { background: #000 !important; color: #FFD700; border-color: #FFD700; box-shadow: none !important; filter: none !important; }
 
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
         .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
         
-        .lang-panel { 
-            max-height: 400px !important; 
-            overflow-y: auto !important; 
-            background: #000; border: 1px solid #D4AF37;
-            display: none;
-        }
-
+        .lang-panel { max-height: 400px !important; overflow-y: auto !important; background: #000; border: 1px solid #D4AF37; display: none; }
         .lang-container:hover .lang-panel { display: block; }
-        
-        .lang-trigger { 
-            border: 1px solid #D4AF37; background: #000; 
-            padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-        }
 
-        .lang-btn {
-            width: 100%; padding: 10px; background: #000; 
-            color: #D4AF37; border: none; text-align: left;
-            cursor: pointer; display: flex; align-items: center; gap: 8px;
-            font-family: inherit; transition: 0.2s;
-        }
-
+        .lang-trigger { border: 1px solid #D4AF37; background: #000; padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .lang-btn { width: 100%; padding: 10px; background: #000; color: #D4AF37; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
         .lang-btn:hover { background: #111; color: #FFD700; }
-        
-        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
+
+        .skiptranslate, .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -105,7 +55,7 @@
 
     <div class="lang-container">
         <div class="lang-trigger">
-            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag" alt="f"> 
+            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
             <span id="current-lang-label">РУССКИЙ</span>
         </div>
         <div id="lang-list-12" class="lang-panel"></div>
@@ -122,25 +72,31 @@
     </main>
 
     <script>
-        // 1. СЛОВАРЬ (12 ПЕРЕВОДОВ КОНТЕНТА)
+        // 1. ЗВУКИ БАРА В САМОМ НАЧАЛЕ
+        document.body.addEventListener('click', () => {
+            const amb = document.getElementById('snd-ambient');
+            if(amb.paused) { amb.volume = 0.4; amb.play().catch(e=>{}); }
+        }, { once: true });
+
+        // БЛОК 1: СЛОВАРЬ (12)
         const dictionary = {
             ru: { nav_back: "← Назад", quote: "«В каждой шутке есть доля виски»", btn_hall: "В ХОЛЛ", btn_reg: "РЕГИСТРАЦИЯ" },
             en: { nav_back: "← Back", quote: "«Every joke has a drop of whiskey»", btn_hall: "TO HALL", btn_reg: "REGISTRATION" },
             uk: { nav_back: "← Назад", quote: "«У кожному жарті є частка віскі»", btn_hall: "В ХОЛ", btn_reg: "РЕЄСТРАЦІЯ" },
-            pl: { nav_back: "← Wstecz", quote: "«W każdym żarcie jest kropla whisky»", btn_hall: "DO HOLU", btn_reg: "REJESTRACJA" },
+            pl: { nav_back: "← Wstecz", quote: "«В каждом żarcie jest kropla whisky»", btn_hall: "DO HOLU", btn_reg: "REJESTRACJA" },
             de: { nav_back: "← Zurück", quote: "«In jedem Witz steckt ein Tropfen Whisky»", btn_hall: "ZUR HALLE", btn_reg: "REGISTRIERUNG" },
             fr: { nav_back: "← Retour", quote: "«Chaque blague contient une goutte de whisky»", btn_hall: "AU HALL", btn_reg: "INSCRIPTION" },
             it: { nav_back: "← Indietro", quote: "«In ogni scherzo c'è una goccia di whisky»", btn_hall: "AL PADIGLIONE", btn_reg: "REGISTRAZIONE" },
             es: { nav_back: "← Atrás", quote: "«Cada broma tiene una gota de whisky»", btn_hall: "AL VESTÍBULO", btn_reg: "REGISTRO" },
             cn: { nav_back: "← 返回", quote: "“每个笑话里都有一点威士忌”", btn_hall: "前往大厅", btn_reg: "注册" },
-            ja: { nav_back: "← 戻る", quote: "「すべてのジョークには一滴のウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
-            ar: { nav_back: "← عودة", quote: "«كل نكتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
+            ja: { nav_back: "← 戻る", quote: "「すべてのジョークには一滴의 ウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
+            ar: { nav_back: "← عودة", quote: "«كل نکتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
             pt: { nav_back: "← Voltar", quote: "«Cada piada tem uma gota de uísque»", btn_hall: "AO SALÃO", btn_reg: "REGISTRO" }
         };
 
-        // 2. СПИСОК (12 НАЦИОНАЛЬНЫХ НАЗВАНИЙ ДЛЯ МЕНЮ)
+        // БЛОК 2: СПИСОК ЯЗЫКОВ (12)
         const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'}, 
+           {c:'ru', n:'РУССКИЙ', f:'ru'}, 
             {c:'en', n:'ENGLISH', f:'gb'},
             {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, 
             {c:'pl', n:'POLSKI', f:'pl'},
@@ -154,42 +110,29 @@
             {c:'pt', n:'PORTUGUÊS', f:'br'}
         ];
 
-        // Отрисовка кнопок выбора
         document.getElementById('lang-list-12').innerHTML = langs.map(l => `
             <button class="lang-btn" onclick="applyTranslation('${l.c}', '${l.f}', '${l.n}')">
-                <img src="https://flagcdn.com/w20/${l.f}.png" alt="f"> ${l.n}
+                <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>
         `).join('');
 
         function applyTranslation(code, flag, name) {
-            // Обновляем визуальный индикатор
             document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${flag}.png`;
             document.getElementById('current-lang-label').innerText = name;
-            
-            // Динамический перевод текста
             const texts = dictionary[code] || dictionary['en'];
             document.querySelectorAll('[data-t]').forEach(el => {
                 const key = el.getAttribute('data-t');
                 if(texts[key]) el.innerText = texts[key];
             });
-            
             localStorage.setItem('gy_lang', code);
         }
 
-        // Звук
-        document.body.addEventListener('click', () => {
-            const amb = document.getElementById('snd-ambient');
-            if(amb.paused) { amb.volume = 0.4; amb.play().catch(e=>{}); }
-        }, { once: true });
-
-        // Разблокировка входа
         if(localStorage.getItem('gy_user_id')) {
-            const hBtn = document.getElementById('btn-w-hall');
-            hBtn.style.opacity = "1";
-            hBtn.style.pointerEvents = "auto";
+            const hallBtn = document.getElementById('btn-w-hall');
+            hallBtn.style.opacity = "1";
+            hallBtn.style.pointerEvents = "auto";
         }
 
-        // Инициализация
         const savedLang = localStorage.getItem('gy_lang') || 'ru';
         const initial = langs.find(l => l.c === savedLang) || langs[0];
         applyTranslation(initial.c, initial.f, initial.n);
