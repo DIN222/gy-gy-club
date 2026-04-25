@@ -28,17 +28,12 @@
             margin-bottom: 5px;
         }
 
-        /* ПОДСВЕТКА КОНЯ */
         .horse-container { position: relative; margin: 0; }
         #welcome-horse {
             max-height: 45vh;
             width: auto;
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)) drop-shadow(0 0 5px rgba(212, 175, 55, 0.2));
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4));
             transition: 0.5s ease;
-        }
-        #welcome-horse:hover {
-            filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.7));
-            transform: scale(1.01);
         }
 
         .welcome-title {
@@ -52,11 +47,18 @@
             font-style: italic;
         }
 
-        .btn-group { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        /* Кнопки в ряд, ширина 224px (-20%) */
+        .btn-group { 
+            display: flex; 
+            flex-direction: row; 
+            gap: 20px; 
+            justify-content: center;
+            width: 100%;
+        }
 
         .btn-gy {
-            min-width: 280px;
-            padding: 15px;
+            min-width: 224px;
+            padding: 15px 10px;
             background: transparent;
             border: 2px solid var(--gold);
             color: var(--gold);
@@ -65,36 +67,16 @@
             font-weight: 900;
             font-family: 'Share Tech Mono', monospace;
             transition: 0.3s;
+            font-size: 13px;
         }
 
         .btn-gy:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
         .btn-sleep { opacity: 0.2; pointer-events: none; }
 
-        /* --- НОВАЯ НАВИГАЦИЯ (Разнесено) --- */
-
-        /* Назад в самый край */
-        .back-nav { 
-            position: fixed; 
-            top: 25px; 
-            left: 25px; 
-            z-index: 10001; 
-        }
-
-        /* Языки опускаем ниже кнопки назад */
-        .lang-container { 
-            position: fixed; 
-            top: 80px; 
-            left: 25px; 
-            z-index: 10000; 
-        }
-
-        /* Тонкая настройка кнопки Назад */
-        .btn-back-nav {
-            min-width: auto; 
-            padding: 10px 20px; 
-            font-size: 14px;
-            background: rgba(0,0,0,0.6);
-        }
+        /* Позиционирование навигации */
+        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
+        .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
+        .btn-back-nav { min-width: auto; padding: 10px 20px; font-size: 14px; background: rgba(0,0,0,0.6); }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -110,8 +92,7 @@
             <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
             <span id="current-lang-label">РУССКИЙ</span>
         </div>
-        <div id="lang-list-12" class="lang-panel">
-            </div>
+        <div id="lang-list-full" class="lang-panel"></div>
     </div>
 
     <main class="welcome-zone">
@@ -119,23 +100,30 @@
         <div class="horse-container"><img src="horse_welcome.png" id="welcome-horse"></div>
         <h1 class="welcome-title">WELCOME</h1>
         <div class="btn-group">
-            <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="location.href='hall.html'">ПРОЙДИТЕ В ХОЛЛ</button>
-            <button class="btn-gy" onclick="location.href='registration.html'">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
+            <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="location.href='hall.html'">В ХОЛЛ</button>
+            <button class="btn-gy" onclick="location.href='registration.html'">РЕГИСТРАЦИЯ</button>
         </div>
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
+        // РОВНО 12 ЯЗЫКОВ
         const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'}, {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'}, {c:'es', n:'ESPAÑOL', f:'es'},
-            {c:'cn', n:'中文', f:'cn'}, {c:'jp', n:'日本語', f:'jp'},
-            {c:'ae', n:'العربية', f:'ae'}, {c:'br', n:'PORTUGUÊS', f:'br'}
+            {c:'ru', n:'РУССКИЙ', f:'ru'}, 
+            {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, 
+            {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, 
+            {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, 
+            {c:'es', n:'ЕSPAÑOL', f:'es'},
+            {c:'cn', n:'中文', f:'cn'}, 
+            {c:'jp', n:'日本語', f:'jp'},
+            {c:'ae', n:'العربية', f:'ae'}, 
+            {c:'br', n:'PORTUGUÊS', f:'br'}
         ];
 
-        document.getElementById('lang-list-12').innerHTML = langs.map(l => `
+        document.getElementById('lang-list-full').innerHTML = langs.map(l => `
             <button class="lang-btn" onclick="setLanguage('${l.c}')">
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>`).join('');
