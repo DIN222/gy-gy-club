@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GY-GY</title>
     <link rel="stylesheet" href="shared-core.css">
+    
     <style>
-        /* Базовая верстка центральной зоны */
+        /* Стили только для этой страницы, чтобы не трогать shared-core.css */
         .welcome-zone {
             height: 100vh;
             display: flex;
@@ -14,90 +15,77 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding-top: 20px;
         }
 
-        /* 1. СЛОГАН (Над конем) */
         .slogan {
             font-size: 1.6rem;
-            color: var(--gold);
+            color: #d4af37; /* Золото напрямую */
             margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        /* 2. ГЕРОЙ (Конь) */
-        .horse-container { 
-            margin-bottom: 0; 
-        }
+        .horse-container { margin-bottom: 0; }
+        
         #welcome-horse {
             width: 380px;
             filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
             display: block;
         }
 
-        /* 3. СЛОВО (Под конем) */
         .welcome-title {
             font-size: 3.5rem;
             font-weight: 900;
-            color: var(--gold);
-            margin: -10px 0 40px 0; /* Отрицательный margin прижимает текст к копытам */
+            color: #d4af37;
+            margin: -10px 0 40px 0;
             letter-spacing: 12px;
             text-transform: uppercase;
         }
 
-        /* 4. КНОПКИ (Действие) */
-        .btn-group { 
-            display: flex; 
-            gap: 25px; 
-        }
+        .btn-group { display: flex; gap: 25px; }
+
         .action-btn {
             background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold);
+            border: 1px solid #d4af37;
+            color: #d4af37;
             padding: 14px 28px;
             font-size: 1rem;
-            font-family: 'Share Tech Mono', monospace;
             cursor: pointer;
-            transition: 0.3s;
             text-transform: uppercase;
             min-width: 260px;
-            letter-spacing: 1px;
-        }
-        .action-btn:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 20px var(--gold);
-        }
-
-        /* Навигация (Слева вверху) */
-        .back-nav {
-            position: fixed;
-            top: 30px;
-            left: 210px; 
-            z-index: 1001;
-        }
-        .back-btn {
-            background: none;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 8px 15px;
-            cursor: pointer;
-            font-family: inherit;
-            text-transform: uppercase;
-            font-size: 0.85rem;
+            font-family: 'Share Tech Mono', monospace;
             transition: 0.3s;
         }
-        .back-btn:hover { background: rgba(212, 175, 55, 0.2); }
+
+        .action-btn:hover {
+            background: #d4af37;
+            color: #000;
+            box-shadow: 0 0 20px #d4af37;
+        }
+
+        /* Кнопка Назад - отдельный стиль, чтобы не лезть в общие файлы */
+        .nav-back-fixed {
+            position: fixed;
+            top: 30px;
+            left: 210px;
+            z-index: 1001;
+        }
+        .btn-back-style {
+            background: none;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 8px 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
 
     <header class="fixed-header">
-        <div class="logo-link">
-            <div class="logo-text">GY-GY</div>
-        </div>
+        <div class="logo-text">GY-GY</div>
     </header>
 
     <div class="lang-container">
@@ -105,22 +93,20 @@
             <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
             <span id="current-lang-label">РУССКИЙ</span>
         </div>
-        <div id="lang-list" class="lang-panel"></div>
+        <div id="welcome-lang-list" class="lang-panel">
+            </div>
     </div>
 
-    <nav class="back-nav">
-        <button class="back-btn" onclick="window.history.back()">← Назад</button>
+    <nav class="nav-back-fixed">
+        <button class="btn-back-style" onclick="window.history.back()">← Назад</button>
     </nav>
 
     <main class="welcome-zone">
         <div class="slogan">В каждой шутке есть доля виски</div>
-        
         <div class="horse-container">
             <img src="horse.png" alt="Horse" id="welcome-horse">
         </div>
-
         <h1 class="welcome-title">WELCOME</h1>
-
         <div class="btn-group">
             <button class="action-btn" onclick="location.href='hall.html'">Пройдите в холл</button>
             <button class="action-btn" onclick="location.href='registration.html'">Пройдите на регистрацию</button>
@@ -128,22 +114,33 @@
     </main>
 
     <script src="shared-logic.js"></script>
+    
     <script>
-        // Инициализация 12 языков
-        const list = document.getElementById('lang-list');
-        const langs = [
-            {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'}, {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'}, {c:'es', n:'ESPAÑOL', f:'es'},
-            {c:'cn', n:'中文', f:'cn'}, {c:'jp', n:'日本語', f:'jp'},
-            {c:'ae', n:'العربية', f:'ae'}, {c:'br', n:'PORTUGUÊS', f:'br'}
+        // Инициализация именно 12 языков только для этой страницы
+        const welcomeLangs = [
+            {c:'ru', n:'РУССКИЙ', f:'ru'}, 
+            {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, 
+            {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, 
+            {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, 
+            {c:'es', n:'ESPAÑOL', f:'es'},
+            {c:'cn', n:'中文', f:'cn'}, 
+            {c:'jp', n:'日本語', f:'jp'},
+            {c:'ae', n:'العربية', f:'ae'}, 
+            {c:'br', n:'PORTUGUÊS', f:'br'}
         ];
-        list.innerHTML = langs.map(l => `
+
+        const langPanel = document.getElementById('welcome-lang-list');
+        langPanel.innerHTML = welcomeLangs.map(l => `
             <button class="lang-btn" onclick="setLanguage('${l.c}')">
                 <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
             </button>
         `).join('');
+
+        // Если функция setLanguage в shared-logic.js работает через localStorage, 
+        // она подхватит выбор и здесь.
     </script>
 </body>
 </html>
