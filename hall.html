@@ -1,172 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club - The Hall001</title>
-    <link rel="stylesheet" href="shared-core.css">
-    <style>
-        body {
-            background: url('hall_bg_jpg.jpg') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0; color: white; font-family: 'Arial', sans-serif;
-        }
-        .hall-overlay {
-            width: 100%; height: 100vh;
-            background: rgba(0, 0, 0, 0.6); /* Чуть темнее для атмосферы */
-            display: flex; flex-direction: column; align-items: center;
-        }
+<script src="shared-logic.js"></script>
+<script>
+    // Уникальный словарь Холла
+    const hallDict = {
+        en: { hall_slogan: "STYLE IS A JOKE", nav_bar: "BAR", nav_atelier: "ATELIER" },
+        ru: { hall_slogan: "СТИЛЬ ЭТО ШУТКА", nav_bar: "БАР", nav_atelier: "АТЕЛЬЕ" }
+    };
 
-        /* КАРТОЧКА ЮЗЕРА (Постоянный атрибут) */
-        .user-card {
-            margin-top: 60px;
-            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(0,0,0,0.9));
-            border: 2px solid #ffd700;
-            padding: 25px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 215, 0, 0.2);
-            min-width: 280px;
-            position: relative;
-        }
-        .user-avatar {
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            border: 3px solid gold;
-            margin-bottom: 15px;
-            object-fit: cover;
-        }
-        .user-nick { font-size: 1.8rem; color: gold; font-weight: 900; letter-spacing: 2px; }
-        .user-id-tag { font-size: 0.7rem; color: #888; margin-top: 10px; }
+    window.onload = () => {
+        // 1. Рисуем атрибуты (Назад, Лого, Язык) - на 1-й странице это НЕ вызываем!
+        injectPermanentAttributes();
 
-        /* СЛОГАН ХОЛЛА */
-        .hall-slogan {
-            margin: 30px 0;
-            font-size: 1.2rem;
-            color: #eee;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-align: center;
-            max-width: 80%;
-        }
+        // 2. Переводим контент
+        applyTranslations(hallDict);
 
-        /* НАВИГАЦИЯ: БАР И АТЕЛЬЕ */
-        .hall-nav {
-            display: flex;
-            gap: 25px;
-            margin-top: 20px;
-        }
-        .nav-link-main {
-            width: 160px;
-            height: 160px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid gold;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: gold;
-        }
-        .nav-link-main:hover {
-            background: gold;
-            color: black;
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px gold;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="hall-overlay">
-        <div style="position: absolute; top: 20px; left: 20px;">
-            <button class="btn-gy" onclick="location.href='registration.html'" data-t="btn_back">← BACK</button>
-        </div>
-
-        <div style="position: absolute; top: 20px; right: 20px; display: flex; align-items: center; gap: 20px;">
-            <div id="lang-trigger" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                <img id="cur-flag" src="" width="30">
-                <span id="cur-label" style="color: gold; font-weight: bold;"></span>
-            </div>
-            <div style="font-size: 2.2rem; font-weight: 900; color: gold; text-shadow: 0 0 10px gold;">GY-GY</div>
-        </div>
-
-        <div class="user-card">
-            <img id="u-avatar" src="default_avatar.png" class="user-avatar">
-            <div id="u-nick" class="user-nick">...</div>
-            <div class="user-id-tag">DIGITAL TRACE ID: <span id="u-id">XXXXXX</span></div>
-        </div>
-
-        <div class="hall-slogan" data-t="hall_slogan">
-            "STYLE IS THE ONLY JOKE THAT NEVER FADES"
-        </div>
-
-        <div class="hall-nav">
-            <a href="bar.html" class="nav-link-main">
-                <span style="font-size: 2.5rem;">🍷</span>
-                <span data-t="nav_bar" style="font-weight: bold; margin-top: 10px;">BAR</span>
-            </a>
-            <a href="atelier.html" class="nav-link-main">
-                <span style="font-size: 2.5rem;">✂️</span>
-                <span data-t="nav_atelier" style="font-weight: bold; margin-top: 10px;">ATELIER</span>
-            </a>
-        </div>
-    </div>
-
-    <script src="shared-logic.js"></script>
-    <script>
-        // Полный список для инициализации панели
-        const langs = [
-            {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
-            {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
-            {c:'de', f:'de', n:'DEUTSCH'}, {c:'fr', f:'fr', n:'FRANÇAIS'},
-            {c:'it', f:'it', n:'ITALIANO'}, {c:'es', f:'es', n:'ESPAÑOL'},
-            {c:'cn', f:'cn', n:'中文'}, {c:'jp', f:'jp', n:'日本語'},
-            {c:'ae', f:'ae', n:'العربية'}, {c:'br', f:'br', n:'PORTUGUÊS'}
-        ];
-
-        // Словарь для Холла
-        const localTranslations = {
-            en: { 
-                btn_back: "← BACK", nav_bar: "BAR", nav_atelier: "ATELIER",
-                hall_slogan: "STYLE IS THE ONLY JOKE THAT NEVER FADES"
-            },
-            ru: { 
-                btn_back: "← НАЗАД", nav_bar: "БАР", nav_atelier: "АТЕЛЬЕ",
-                hall_slogan: "СТИЛЬ — ЭТО ЕДИНСТВЕННАЯ ШУТКА, КОТОРАЯ НЕ СТАРЕЕТ"
-            }
-        };
-
-        window.onload = () => {
-            // 1. ОПРЕДЕЛЯЕМ ЯЗЫК (База EN)
-            const savedLang = localStorage.getItem('gy_lang') || 'en';
-            const initial = langs.find(l => l.c === savedLang) || langs[0];
-            
-            // Настраиваем панель
-            document.getElementById('cur-label').innerText = initial.n;
-            document.getElementById('cur-flag').src = `https://flagcdn.com/w40/${initial.f}.png`;
-
-            // Применяем переводы к [data-t]
-            document.querySelectorAll('[data-t]').forEach(el => {
-                const key = el.getAttribute('data-t');
-                if (localTranslations[savedLang] && localTranslations[savedLang][key]) {
-                    el.innerText = localTranslations[savedLang][key];
-                }
-            });
-
-            // 3. ЗАПОЛНЯЕМ КАРТОЧКУ ЮЗЕРА
-            document.getElementById('u-nick').innerText = localStorage.getItem('gy_nick') || 'GUEST';
-            document.getElementById('u-avatar').src = localStorage.getItem('gy_avatar') || 'default_avatar.png';
-            document.getElementById('u-id').innerText = localStorage.getItem('gy_user_id') || '000-GY';
-
-            // Звук
-            const barAmbiance = new Audio('bar_ambient.mp3');
-            barAmbiance.loop = true;
-            document.body.addEventListener('click', () => barAmbiance.play(), { once: true });
-        };
-    </script>
-</body>
-</html>
+        // 3. Заполняем карточку юзера (только в Холле)
+        document.getElementById('u-nick').innerText = localStorage.getItem('gy_nick') || 'GUEST';
+        document.getElementById('u-id').innerText = localStorage.getItem('gy_user_id') || '000-GY';
+    };
+</script>
