@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY | Hall  001 </title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --black: #000; --white: #fff; }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
+        
+        html, body { 
+            width: 100%; height: 100%; 
+            background: var(--black) url('hall_bg_jpg.jpg') no-repeat center center; 
+            background-size: cover;
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; margin: 0; 
+        }
+
+        /* Оверлей для читаемости, если картинка слишком светлая */
+        body::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); z-index: 1;
+        }
+
+        /* FIXED UI ELEMENTS */
+        .logo-right { position: fixed; top: 25px; right: 25px; font-size: 24px; letter-spacing: 5px; font-weight: bold; z-index: 100; }
+        .nav-back-top { position: fixed; top: 25px; left: 25px; z-index: 101; }
+        .lang-gateway { position: fixed; top: 80px; left: 25px; width: 170px; z-index: 100; }
+        
+        .btn-main-lang { width: 100%; padding: 8px; background: rgba(0,0,0,0.7); border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        .lang-dropdown { display: none; flex-direction: column; background: var(--black); border: 1.5px solid var(--gold); position: absolute; width: 170px; max-height: 40vh; overflow-y: auto; }
+        .lang-dropdown.open { display: flex; }
+        .btn-sub-lang { background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; width: 100%; text-align: left; }
+
+        /* CONTENT */
+        .hall-container { position: relative; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
+
+        /* ОТОБРАЖЕНИЕ НИКНЕЙМА */
+        .user-welcome { text-align: center; margin-bottom: 50px; }
+        .user-name { font-family: 'Playfair Display', serif; font-size: 42px; font-style: italic; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
+        .user-id { font-size: 12px; opacity: 0.8; letter-spacing: 3px; }
+
+        /* КНОПКИ ПЕРЕХОДА */
+        .hall-nav { display: flex; gap: 20px; }
+        .btn-hall-gate { 
+            background: rgba(0, 0, 0, 0.6); border: 2px solid var(--gold); color: var(--gold); 
+            padding: 20px 40px; font-size: 18px; font-weight: 900; cursor: pointer; 
+            text-transform: uppercase; transition: 0.3s; letter-spacing: 4px;
+        }
+        .btn-hall-gate:hover { background: var(--gold); color: var(--black); }
+
+        .btn-gy { background: rgba(0,0,0,0.7); border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: inherit; padding: 10px 20px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <audio id="bar-ambient" loop>
+        <source src="bar_ambient.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="nav-back-top">
+        <button class="btn-gy" onclick="location.href='registration.html'">← НАЗАД</button>
+    </div>
+
+    <div class="lang-gateway">
+        <button class="btn-main-lang" onclick="document.getElementById('lang-list').classList.toggle('open')">
+            <span id="cur-name">РУССКИЙ</span>
+        </button>
+        <div id="lang-list" class="lang-dropdown">
+            </div>
+    </div>
+
+    <div class="logo-right">GY-GY</div>
+
+    <div class="hall-container">
+        <div class="user-welcome">
+            <div class="user-id" id="u-id">#ID</div>
+            <div class="user-name" id="u-nick">GUEST</div>
+        </div>
+
+        <div class="hall-nav">
+            <button class="btn-hall-gate" onclick="location.href='bar.html'">БАР</button>
+            <button class="btn-hall-gate" onclick="location.href='tables.html'">СТОЛИКИ</button>
+        </div>
+    </div>
+
+<script>
+    const langs = [{c:'ru',n:'РУССКИЙ'},{c:'en',n:'ENGLISH'},{c:'uk',n:'УКРАЇНСЬКА'}];
+
+    window.onload = () => {
+        // Загрузка данных
+        const nick = localStorage.getItem('gy_nick') || 'Guest';
+        const id = localStorage.getItem('gy_trace') || 'GY-000-0000';
+        document.getElementById('u-nick').innerText = nick;
+        document.getElementById('u-id').innerText = id;
+
+        // Языковая панель
+        const list = document.getElementById('lang-list');
+        list.innerHTML = langs.map(l => `<button class="btn-sub-lang" onclick="setL('${l.c}','${l.n}')">${l.n}</button>`).join('');
+
+        // Звук (запускается при первом взаимодействии, если заблокирован)
+        const audio = document.getElementById('bar-ambient');
+        audio.volume = 0.4;
+        audio.play().catch(() => {
+            // Если автоплей запрещен, звук включится при клике по любой кнопке
+            document.addEventListener('click', () => { audio.play(); }, {once: true});
+        });
+    };
+
+    function setL(c, n) {
+        document.getElementById('cur-name').innerText = n;
+        document.getElementById('lang-list').classList.remove('open');
+        localStorage.setItem('gy_lang', c);
+    }
+</script>
+</body>
+</html>
