@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -8,17 +8,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root { --gold: #d4af37; --black: #000; }
+        :root { --gold: #d4af37; --black: #000; --white: #fff; }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
 
         /* HEADER UI */
         .logo-right { position: fixed; top: 25px; right: 25px; font-size: 24px; letter-spacing: 5px; font-weight: bold; color: var(--gold); z-index: 10000; }
         
-        /* КНОПКА НАЗАД — ВОЗВРАЩЕНА НА МЕСТО */
+        /* КНОПКА НАЗАД — БЕЗ ЖЕЛТОГО ФОНА */
         .nav-back-top { position: fixed; top: 25px; left: 25px; z-index: 10001; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ — ОПУЩЕНА ПОД КНОПКУ НАЗАД */
         .lang-gateway { position: fixed; top: 80px; left: 25px; width: 170px; z-index: 10000; }
         
         .btn-main-lang { width: 100%; padding: 8px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
@@ -28,19 +27,19 @@
         .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
 
         /* REG ZONE */
-        .reg-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 40px; }
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; max-width: 85%; line-height: 1.2; margin-bottom: 25px; }
+        .reg-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 20px; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; max-width: 85%; line-height: 1.2; margin-bottom: 20px; }
 
         /* 4 РАМКИ */
-        .grid-identity { display: flex; gap: 10px; margin-bottom: 20px; }
-        .box-frame { width: 85px; height: 85px; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; background: #050505; transition: 0.3s; }
+        .grid-identity { display: flex; gap: 10px; margin-bottom: 15px; }
+        .box-frame { width: 85px; height: 85px; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; transition: 0.3s; }
         .box-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .label-mini { font-size: 9px; font-weight: 900; text-align: center; line-height: 1.1; }
+        .label-mini { font-size: 9px; font-weight: 900; text-align: center; line-height: 1.1; color: #000; }
 
         /* INPUTS & BUTTONS */
-        .nickname-input { background: transparent; border: none; border-bottom: 1.5px solid var(--gold); color: var(--gold); text-align: center; font-size: 22px; width: 280px; margin-top: 15px; margin-bottom: 25px; font-family: inherit; padding: 5px; }
+        .nickname-input { background: transparent; border: none; border-bottom: 1.5px solid var(--gold); color: var(--gold); text-align: center; font-size: 22px; width: 280px; margin-top: 10px; margin-bottom: 20px; font-family: inherit; padding: 5px; }
 
-        .btn-gy { min-width: 280px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 5px 0; font-family: inherit; transition: 0.3s; }
+        .btn-gy { min-width: 280px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 4px 0; font-family: inherit; transition: 0.3s; }
         .btn-gy:hover { background: rgba(212, 175, 55, 0.1); }
         .btn-gy:active { background: var(--gold); color: #000; }
         .btn-sleep { opacity: 0.2 !important; pointer-events: none !important; }
@@ -71,15 +70,15 @@
 
         <div class="grid-identity">
             <div class="box-frame" id="id-label" style="font-size: 10px; background: #000;">#ID</div>
-            <div class="box-frame" id="qr-box-reg"></div>
+            <div class="box-frame" id="qr-box-reg" style="background: #000; padding: 5px;"></div>
             
-            <div class="box-frame" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-frame" style="cursor:pointer; background: var(--white);" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="usePhoto(this)" style="display:none;">
                 <img id="pp-img" style="display:none;">
                 <span id="pp-txt" class="label-mini" data-key="label_photo">ИЛИ<br>ФОТО</span>
             </div>
             
-            <div class="box-frame" style="cursor:pointer;" onclick="useAvatar()">
+            <div class="box-frame" style="cursor:pointer; background: var(--white);" onclick="useAvatar()">
                 <img id="av-img" style="display:none;">
                 <span id="av-txt" class="label-mini" data-key="label_avatar">ИЛИ<br>АВАТАР</span>
             </div>
@@ -194,7 +193,7 @@
             localStorage.setItem('gy_trace', currentID);
         }
         document.getElementById('id-label').innerText = currentID;
-        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 75, height: 75, colorDark: "#d4af37", colorLight: "#000000" });
         
         const savedL = localStorage.getItem('gy_lang') || 'ru';
         const initial = langs.find(x => x.c === savedL) || langs[0];
