@@ -152,8 +152,12 @@
             hallBtn.style.pointerEvents = "auto";
         }
 
-        const savedLang = localStorage.getItem('gy_lang') || 'ru';
-        const initial = langs.find(l => l.c === savedLang) || langs[0];
+     // 1. Если в памяти пусто, берем 'en'
+const savedLang = localStorage.getItem('gy_lang') || 'en';
+
+// 2. Ищем данные этого языка в массиве. 
+// Если вдруг 'en' не найден в списке (что вряд ли, но всё же), берем первый доступный.
+const initial = langs.find(l => l.c === savedLang) || langs[0];
         applyTranslation(initial.c, initial.f, initial.n);
     </script>
 </body>
