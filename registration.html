@@ -11,30 +11,36 @@
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
         html, body { width: 100%; height: 100%; background: var(--black); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin: 0; }
 
-        /* HEADER UI */
+        /* UI FIXED ELEMENTS */
         .logo-right { position: fixed; top: 25px; right: 25px; font-size: 24px; letter-spacing: 5px; font-weight: bold; z-index: 10; }
         .nav-back-top { position: fixed; top: 25px; left: 25px; z-index: 11; }
         .lang-gateway { position: fixed; top: 80px; left: 25px; width: 170px; z-index: 10; }
         
+        /* DROPDOWN STYLE */
         .btn-main-lang { width: 100%; padding: 8px; background: var(--black); border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-dropdown { display: none; flex-direction: column; background: var(--black); border: 1.5px solid var(--gold); position: absolute; width: 170px; max-height: 45vh; overflow-y: auto; }
+        .lang-dropdown { display: none; flex-direction: column; background: var(--black); border: 1.5px solid var(--gold); position: absolute; width: 170px; max-height: 40vh; overflow-y: auto; }
         .lang-dropdown.open { display: flex; }
         .btn-sub-lang { background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; width: 100%; text-align: left; }
         .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
 
-        /* REG ZONE */
-        .reg-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; max-width: 80%; text-align: center; margin-bottom: 20px; line-height: 1.1; }
+        /* MAIN CONTENT STACK */
+        .reg-container { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* ЕДИНЫЙ ОТСТУП ДЛЯ ВСЕХ БЛОКОВ — 30px */
+        .content-stack > * { margin-bottom: 30px; }
+        .content-stack > *:last-child { margin-bottom: 0; }
 
-        .grid-identity { display: flex; gap: 10px; margin-bottom: 20px; }
-        .box-frame { width: 85px; height: 85px; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: var(--black); }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; max-width: 320px; text-align: center; line-height: 1.2; }
+
+        .grid-identity { display: flex; gap: 10px; justify-content: center; }
+        .box-frame { width: 80px; height: 80px; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: var(--black); }
         .box-frame img { width: 100%; height: 100%; object-fit: cover; }
         .label-mini { font-size: 9px; font-weight: 900; text-align: center; color: var(--black); line-height: 1.1; text-transform: uppercase; }
 
-        .nickname-input { background: transparent; border: none; color: var(--gold); text-align: center; font-size: 26px; width: 300px; margin-bottom: 20px; font-family: inherit; letter-spacing: 1px; }
+        .nickname-input { background: transparent; border: none; color: var(--gold); text-align: center; font-size: 26px; width: 300px; font-family: inherit; letter-spacing: 2px; }
 
-        .action-row { display: flex; gap: 10px; width: 300px; }
-        .btn-gy { background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: inherit; flex: 1; padding: 14px 0; font-size: 11px; }
+        .action-row { display: flex; gap: 10px; width: 350px; }
+        .btn-gy { background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: inherit; flex: 1; padding: 15px 0; font-size: 11px; }
         .btn-back { padding: 10px 20px; font-size: 13px; flex: none; }
         .btn-sleep { opacity: 0.1 !important; pointer-events: none !important; }
         
@@ -57,28 +63,32 @@
 
     <div class="logo-right">GY-GY</div>
 
-    <main class="reg-zone">
-        <div class="quote-text" data-key="q_champ">«Шампанского много не бывает»</div>
+    <div class="reg-container">
+        <div class="content-stack" style="display: flex; flex-direction: column; align-items: center;">
+            
+            <div class="quote-text" data-key="q_champ">«Шампанского много не бывает»</div>
 
-        <div class="grid-identity">
-            <div class="box-frame" id="id-label" style="font-size: 10px;">#ID</div>
-            <div class="box-frame" id="qr-box" style="padding: 6px;"></div>
-            <div class="box-frame" style="background: var(--white); cursor:pointer;" onclick="document.getElementById('f-in').click()">
-                <input type="file" id="f-in" hidden onchange="upImg(this)" accept="image/*">
-                <img id="p-img" style="display:none;"><span id="p-txt" class="label-mini" data-key="label_photo">ИЛИ<br>ФОТО</span>
+            <div class="grid-identity">
+                <div class="box-frame" id="id-label" style="font-size: 10px;">#ID</div>
+                <div class="box-frame" id="qr-box" style="padding: 5px;"></div>
+                <div class="box-frame" style="background: var(--white); cursor:pointer;" onclick="document.getElementById('f-in').click()">
+                    <input type="file" id="f-in" hidden onchange="upImg(this)" accept="image/*">
+                    <img id="p-img" style="display:none;"><span id="p-txt" class="label-mini" data-key="label_photo">ИЛИ<br>ФОТО</span>
+                </div>
+                <div class="box-frame" style="background: var(--white); cursor:pointer;" onclick="upAv()">
+                    <img id="a-img" style="display:none;"><span id="a-txt" class="label-mini" data-key="label_avatar">ИЛИ<br>АВАТАР</span>
+                </div>
             </div>
-            <div class="box-frame" style="background: var(--white); cursor:pointer;" onclick="upAv()">
-                <img id="a-img" style="display:none;"><span id="a-txt" class="label-mini" data-key="label_avatar">ИЛИ<br>АВАТАР</span>
+
+            <input type="text" id="nick-in" class="nickname-input" autocomplete="off" spellcheck="false">
+
+            <div class="action-row">
+                <button id="btn-s" class="btn-gy" onclick="saveP()" data-key="btn_save">СОХРАНИТЬ</button>
+                <button id="btn-h" class="btn-gy btn-sleep" onclick="location.href='hall.html'" data-key="btn_enter">В ХОЛЛ</button>
             </div>
+            
         </div>
-
-        <input type="text" id="nick-in" class="nickname-input" autocomplete="off" spellcheck="false">
-
-        <div class="action-row">
-            <button id="btn-s" class="btn-gy" onclick="saveP()" data-key="btn_save">СОХРАНИТЬ</button>
-            <button id="btn-h" class="btn-gy btn-sleep" onclick="location.href='hall.html'" data-key="btn_enter">В ХОЛЛ</button>
-        </div>
-    </main>
+    </div>
 
 <script>
     const langData = {
@@ -147,10 +157,10 @@
         let id=localStorage.getItem('gy_trace') || `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
         localStorage.setItem('gy_trace',id);
         document.getElementById('id-label').innerText=id;
-        new QRCode(document.getElementById("qr-box"),{text:id,width:73,height:73,colorDark:"#ffffff",colorLight:"#000000",correctLevel:QRCode.CorrectLevel.H});
+        new QRCode(document.getElementById("qr-box"),{text:id,width:70,height:70,colorDark:"#ffffff",colorLight:"#000000",correctLevel:QRCode.CorrectLevel.H});
         document.getElementById('lang-list').innerHTML=langs.map(l=>`<button class="btn-sub-lang" onclick="pickL('${l.c}','${l.f}','${l.n}')"><img src="https://flagcdn.com/w20/${l.f}.png" class="flag-icon"> ${l.n}</button>`).join('');
         const curL = localStorage.getItem('gy_lang') || 'ru';
-        const L = langs.find(x=>x.c===curL);
+        const L = langs.find(x=>x.c===curL) || langs[0];
         pickL(L.c, L.f, L.n);
     };
 </script>
