@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v1.2] */
+/* . [BLOCK: SHARED_LOGIC_v1.3] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -14,18 +14,18 @@ function injectPermanentAttributes() {
 
     const header = document.createElement('div');
     header.id = 'gy-header';
-    // Фиксируем шапку, чтобы она не перекрывала контент
-    header.style = "position: absolute; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 20px; box-sizing: border-box; z-index: 1000;";
+    header.style = "position: absolute; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; box-sizing: border-box; z-index: 1000;";
+    
     header.innerHTML = `
         <div class="gy-nav-left">
-            <button class="btn-gy-circle" onclick="history.back()" title="BACK"> « </button>
+            <span onclick="history.back()" style="cursor:pointer; color:gold; font-size: 2.2rem; font-weight: 900; line-height: 1;">«</span>
         </div>
-        <div class="gy-nav-right" style="display: flex; align-items: center; gap: 15px;">
-            <div id="gy-lang-trigger" style="cursor:pointer; color:gold; display: flex; align-items: center; gap: 5px;">
-                <img src="https://flagcdn.com/w40/${current.f}.png" width="25">
-                <span>${current.c.toUpperCase()}</span>
+        <div class="gy-nav-right" style="display: flex; align-items: center; gap: 25px;">
+            <div id="gy-lang-trigger" style="cursor:pointer; color:gold; display: flex; align-items: center; gap: 8px;">
+                <img src="https://flagcdn.com/w40/${current.f}.png" width="30">
+                <span style="font-weight: bold; font-size: 1.1rem;">${current.c.toUpperCase()}</span>
             </div>
-            <div style="font-size: 1.8rem; font-weight: 900; color: gold; letter-spacing: 2px;">GY-GY</div>
+            <div style="font-size: 2.2rem; font-weight: 900; color: gold; letter-spacing: 3px;">GY-GY</div>
         </div>
     `;
     document.body.prepend(header);
