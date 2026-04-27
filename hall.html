@@ -6,60 +6,89 @@
     <title>GY-GY Hall</title>
     <link rel="stylesheet" href="shared-core.css">
     <style>
-        /* Если фон пропадает, фиксируем его здесь */
         body { 
-            background: #000 url('hall_bg_jpg.jpg') no-repeat center center fixed; 
-            background-size: cover; margin: 0; color: gold; 
+            margin: 0; padding: 0; color: gold; 
+            /* Подкладываем картинку фоном */
+            background: #000 url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070') no-repeat center center fixed; 
+            background-size: cover;
+            font-family: 'Arial Black', sans-serif;
         }
-        .hall-content {
-            display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; height: 100vh; gap: 30px;
+        /* Затемнение, чтобы текст читался на фоне */
+        .overlay {
+            width: 100%; height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 40px;
         }
-        .user-passport { border: 1px solid gold; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.7); text-align: center; min-width: 200px; }
-        .nav-grid { display: flex; gap: 20px; }
-        .btn-large { width: 150px; height: 150px; border: 2px solid gold; background: rgba(0,0,0,0.5); color: gold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; border-radius: 10px; }
-        .btn-large:hover { background: gold; color: black; }
-        /* Кнопка-стрелка */
-        .btn-gy-circle { background: none; border: 1px solid gold; color: gold; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem; }
+        .user-passport {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid gold;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            min-width: 260px;
+        }
+        .avatar-frame {
+            width: 100px; height: 100px;
+            border: 2px solid gold;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            background-size: cover;
+            background-position: center;
+        }
+        .nav-grid { display: flex; gap: 30px; }
+        .nav-card {
+            width: 180px; height: 180px;
+            border: 3px solid gold;
+            background: rgba(0,0,0,0.4);
+            color: gold;
+            text-decoration: none;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+        .nav-card:hover { background: gold; color: black; transform: translateY(-10px); }
+        .nav-card span { font-size: 3rem; margin-bottom: 10px; }
+        .nav-label { font-size: 1.3rem; font-weight: 900; }
     </style>
 </head>
 <body>
 
-    <div class="hall-content">
+    <div class="overlay">
         <div class="user-passport">
-            <div id="u-avatar" style="width: 80px; height: 80px; margin: 0 auto 10px; border: 1px solid gold; border-radius: 50%;"></div>
-            <div id="u-nick" style="font-weight: bold; font-size: 1.2rem;">...</div>
-            <div id="u-id" style="font-size: 0.8rem; opacity: 0.6;">...</div>
+            <div id="u-avatar" class="avatar-frame"></div>
+            <div id="u-nick" style="font-size: 1.8rem; letter-spacing: 1px;">...</div>
+            <div id="u-id" style="font-family: monospace; font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">...</div>
         </div>
 
-        <div data-t="hall_slogan" style="font-style: italic; letter-spacing: 1px;">"STYLE IS THE ONLY JOKE"</div>
-
         <nav class="nav-grid">
-            <a href="bar.html" class="btn-large">
-                <span style="font-size: 2rem;">🍷</span>
-                <span data-t="nav_bar">BAR</span>
+            <a href="bar.html" class="nav-card">
+                <span>🍷</span>
+                <div class="nav-label" data-t="nav_bar">BAR</div>
             </a>
-            <a href="atelier.html" class="btn-large">
-                <span style="font-size: 2rem;">✂️</span>
-                <span data-t="nav_atelier">ATELIER</span>
+            <a href="atelier.html" class="nav-card">
+                <span>✂️</span>
+                <div class="nav-label" data-t="nav_atelier">ATELIER</div>
             </a>
         </nav>
+
+        <div data-t="hall_slogan" style="font-size: 1rem; opacity: 0.8; letter-spacing: 2px;">...</div>
     </div>
 
     <script src="shared-logic.js"></script>
     <script>
         const hallDict = {
-            en: { hall_slogan: "WHERE HUMOR MEETS STYLE", nav_bar: "BAR", nav_atelier: "ATELIER" },
-            ru: { hall_slogan: "ГДЕ ЮМОР ВСТРЕЧАЕТ СТИЛЬ", nav_bar: "БАР", nav_atelier: "АТЕЛЬЕ" }
+            en: { hall_slogan: "STYLE IS THE ONLY JOKE", nav_bar: "BAR", nav_atelier: "ATELIER" },
+            ru: { hall_slogan: "СТИЛЬ — ЭТО ЕДИНСТВЕННАЯ ШУТКА", nav_bar: "БАР", nav_atelier: "АТЕЛЬЕ" }
         };
 
         window.onload = () => {
-            injectPermanentAttributes(); // Рисуем Лого и стрелки ««
-            applyTranslations(hallDict); // Переводим текст
+            injectPermanentAttributes(); 
+            applyTranslations(hallDict);
             
-            // Заполняем данные юзера
             document.getElementById('u-nick').innerText = localStorage.getItem('gy_nick') || 'GUEST';
-            document.getElementById('u-id').innerText = localStorage.getItem('gy_user_id') || 'ID-LOST';
+            document.getElementById('u-id').innerText = `ID: ${localStorage.getItem('gy_user_id') || '000-GY'}`;
             const av = localStorage.getItem('gy_avatar');
             if(av) document.getElementById('u-avatar').style.backgroundImage = `url(${av})`;
         };
