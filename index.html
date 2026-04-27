@@ -4,35 +4,41 @@
     <meta charset="UTF-8">
     <title>GY-GY CLUB 005</title>
     <link rel="stylesheet" href="shared-core.css">
-    <link rel="preload" href="door_open.mp3" as="audio">
     <style>
-        /* Гарантируем корректное отображение */
-        .portal-zone { cursor: pointer; position: relative; z-index: 10; }
-        #main-door { transition: transform 0.8s ease; }
-        .door-open { transform: scale(2.5); opacity: 0; pointer-events: none; }
-        .lang-panel { display: none; } /* Скрыта по умолчанию */
-        .lang-panel.active { display: block; position: absolute; background: rgba(0,0,0,0.9); border: 1px solid gold; padding: 10px; z-index: 1002; }
+        .portal-zone { cursor: pointer; position: relative; z-index: 10; text-align: center; }
+        #main-door { transition: opacity 0.8s ease, transform 0.8s ease; width: 100%; max-width: 600px; }
+        
+        /* Возвращаем как было: легкий эффект, без раздувания на весь экран */
+        .door-open { transform: scale(1.05); opacity: 0; pointer-events: none; }
+
+        .lang-panel { display: none; }
+        .lang-panel.active { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            position: absolute; background: rgba(0,0,0,0.95); 
+            border: 1px solid gold; padding: 15px; z-index: 1002; margin-top: 10px;
+        }
+        .lang-btn { background: none; border: 1px solid transparent; color: gold; cursor: pointer; text-align: left; padding: 5px; font-weight: bold; transition: 0.2s; }
+        .lang-btn:hover { border-color: gold; }
     </style>
 </head>
 <body>
 
     <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
 
-    <div class="lang-container" style="position: fixed; top: 20px; left: 20px; z-index: 1001;">
-        <div class="lang-trigger" onclick="toggleLangPanel()" style="cursor:pointer; color:gold; display:flex; align-items:center; gap:10px;">
-            <img src="" id="current-lang-flag" width="40"> 
-            <span id="current-lang-label" style="font-weight:900;">РУССКИЙ</span>
+    <div class="lang-container" style="position: fixed; top: 25px; left: 25px; z-index: 1001;">
+        <div class="lang-trigger" onclick="toggleLangPanel()" style="cursor:pointer; color:gold; display:flex; align-items:center; gap:12px;">
+            <img src="" id="current-lang-flag" width="40" style="border: 1px solid gold;"> 
+            <span id="current-lang-label" style="font-weight:900; font-size: 1.2rem;">...</span>
         </div>
-        <div class="lang-panel" id="lang-panel">
-            </div>
+        <div class="lang-panel" id="lang-panel"></div>
     </div>
 
-    <header class="fixed-header" style="text-align: right; padding: 30px 40px;">
-        <div class="logo-text" style="font-size: 3.5rem; font-weight: 900; color: gold; letter-spacing: 5px;">GY-GY</div>
+    <header style="position: absolute; top: 30px; right: 40px;">
+        <div style="font-size: 3.5rem; font-weight: 900; color: gold; letter-spacing: 5px;">GY-GY</div>
     </header>
 
-    <main class="portal-zone" id="door-click-area">
-        <img src="door_1.jpg" id="main-door" style="width:100%; max-width:600px; display:block; margin: 0 auto;">
+    <main class="portal-zone" id="door-area" style="margin-top: 15vh;">
+        <img src="door_1.jpg" id="main-door">
     </main>
 
     <script src="shared-logic.js"></script>
@@ -43,19 +49,19 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Установка языка (EN по умолчанию)
             if (!localStorage.getItem('gy_lang')) localStorage.setItem('gy_lang', 'en');
             const savedLang = localStorage.getItem('gy_lang');
 
-            // 2. Инициализация твоего левого блока
-            updateLeftLangUI(savedLang);
+            // Инициализация интерфейса
+            const data = GY_LANGS.find(l => l.c === savedLang) || GY_LANGS[0];
+            document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${data.f}.png`;
+            document.getElementById('current-lang-label').innerText = data.n;
+
             renderLangButtons();
             applyTranslations(doorsDict);
 
-            // 3. Оживление двери
-            const doorArea = document.getElementById('door-click-area');
-            doorArea.onclick = (e) => {
-                // Если клик по языку — не открываем дверь
+            // Клик по двери
+            document.getElementById('door-area').onclick = (e) => {
                 if (e.target.closest('.lang-container')) return;
                 enterClub();
             };
@@ -63,41 +69,29 @@
 
         function renderLangButtons() {
             const panel = document.getElementById('lang-panel');
-            panel.innerHTML = '';
             GY_LANGS.forEach(l => {
-                const btn = document.createElement('button');
+                const btn = document.createElement('div');
                 btn.className = 'lang-btn';
-                btn.style = "display:block; width:100%; background:none; border:none; color:gold; cursor:pointer; text-align:left; padding:5px; font-weight:bold;";
                 btn.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}`;
-                btn.onclick = () => setLanguage(l.c);
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    localStorage.setItem('gy_lang', l.c);
+                    location.reload();
+                };
                 panel.appendChild(btn);
             });
         }
 
-        function setLanguage(lang) {
-            localStorage.setItem('gy_lang', lang);
-            location.reload();
-        }
-
-        function updateLeftLangUI(lang) {
-            const data = GY_LANGS.find(l => l.c === lang) || GY_LANGS[0];
-            document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${data.f}.png`;
-            document.getElementById('current-lang-label').innerText = data.n;
-        }
-
         function toggleLangPanel() {
-            const panel = document.getElementById('lang-panel');
-            panel.classList.toggle('active');
+            document.getElementById('lang-panel').classList.toggle('active');
         }
 
         function enterClub() {
-            const doorSound = document.getElementById('door-audio');
-            const doorImg = document.getElementById('main-door');
+            const audio = document.getElementById('door-audio');
+            if (audio) audio.play();
+            
+            document.getElementById('main-door').classList.add('door-open');
 
-            if (doorSound) doorSound.play();
-            if (doorImg) doorImg.classList.add('door-open');
-
-            // Переход с задержкой 1 сек (чтобы звук успел начаться)
             setTimeout(() => {
                 location.href = 'welcome.html';
             }, 1000);
