@@ -1,119 +1,107 @@
 <!DOCTYPE html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>GY-GY CLUB 005</title>
     <link rel="stylesheet" href="shared-core.css">
     <link rel="preload" href="door_open.mp3" as="audio">
+    <style>
+        /* Гарантируем корректное отображение */
+        .portal-zone { cursor: pointer; position: relative; z-index: 10; }
+        #main-door { transition: transform 0.8s ease; }
+        .door-open { transform: scale(2.5); opacity: 0; pointer-events: none; }
+        .lang-panel { display: none; } /* Скрыта по умолчанию */
+        .lang-panel.active { display: block; position: absolute; background: rgba(0,0,0,0.9); border: 1px solid gold; padding: 10px; z-index: 1002; }
+    </style>
 </head>
 <body>
 
     <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
 
-    <div class="lang-container">
-        <div class="lang-trigger">
-            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
-            <span id="current-lang-label">РУССКИЙ</span>
+    <div class="lang-container" style="position: fixed; top: 20px; left: 20px; z-index: 1001;">
+        <div class="lang-trigger" onclick="toggleLangPanel()" style="cursor:pointer; color:gold; display:flex; align-items:center; gap:10px;">
+            <img src="" id="current-lang-flag" width="40"> 
+            <span id="current-lang-label" style="font-weight:900;">РУССКИЙ</span>
         </div>
-        <div class="lang-panel">
-            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
-            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
-            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
-            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
-            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
-            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
-            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
-            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
-            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
-            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
-            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> العربية</button>
-            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
-        </div>
+        <div class="lang-panel" id="lang-panel">
+            </div>
     </div>
 
-    <header class="fixed-header">
-        <div class="logo-link">
-            <div class="logo-text">GY-GY</div>
-        </div>
+    <header class="fixed-header" style="text-align: right; padding: 30px 40px;">
+        <div class="logo-text" style="font-size: 3.5rem; font-weight: 900; color: gold; letter-spacing: 5px;">GY-GY</div>
     </header>
 
-    <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" onclick="enterClub()">
+    <main class="portal-zone" id="door-click-area">
+        <img src="door_1.jpg" id="main-door" style="width:100%; max-width:600px; display:block; margin: 0 auto;">
     </main>
 
-  <script src="shared-logic.js"></script>
-<script>
-    const doorsDict = {
-        en: { doors_slogan: "STYLE IS THE ONLY JOKE", enter_btn: "ENTER" },
-        ru: { doors_slogan: "СТИЛЬ — ЭТО ЕДИНСТВЕННАЯ ШУТКА", enter_btn: "ВОЙТИ" }
-    };
+    <script src="shared-logic.js"></script>
+    <script>
+        const doorsDict = {
+            en: { doors_slogan: "STYLE IS THE ONLY JOKE" },
+            ru: { doors_slogan: "СТИЛЬ — ЭТО ЕДИНСТВЕННАЯ ШУТКА" }
+        };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. Принудительный English при первом входе
-        if (!localStorage.getItem('gy_lang')) localStorage.setItem('gy_lang', 'en');
-        
-        // 2. Рисуем только выбор языка
-        renderDoorsLangOnly(); 
-        applyTranslations(doorsDict);
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Установка языка (EN по умолчанию)
+            if (!localStorage.getItem('gy_lang')) localStorage.setItem('gy_lang', 'en');
+            const savedLang = localStorage.getItem('gy_lang');
 
-        // 3. Исправляем клик: находим дверь по ID или классу
-        const doorBtn = document.getElementById('main-door') || document.querySelector('.portal-zone');
-        
-        if (doorBtn) {
-            doorBtn.style.cursor = 'pointer';
-            doorBtn.onclick = (e) => {
-                // Если кликнули по языку — не входим
-                if (e.target.closest('#gy-lang-selector')) return;
-                
+            // 2. Инициализация твоего левого блока
+            updateLeftLangUI(savedLang);
+            renderLangButtons();
+            applyTranslations(doorsDict);
+
+            // 3. Оживление двери
+            const doorArea = document.getElementById('door-click-area');
+            doorArea.onclick = (e) => {
+                // Если клик по языку — не открываем дверь
+                if (e.target.closest('.lang-container')) return;
                 enterClub();
             };
-        }
-    });
-
-    function enterClub() {
-        const doorSound = document.getElementById('door-audio');
-        if (doorSound) {
-            doorSound.play().catch(err => console.log("Sound interaction required"));
-        }
-
-        // Анимация (если есть класс в CSS)
-        const doorImg = document.getElementById('main-door');
-        if (doorImg) doorImg.classList.add('door-open');
-
-        // Уходим в следующую зону через 1 сек (чтобы звук двери успел начаться)
-        setTimeout(() => {
-            location.href = 'welcome.html';
-        }, 1000);
-    }
-
-    function renderDoorsLangOnly() {
-        const lang = localStorage.getItem('gy_lang') || 'en';
-        const current = GY_LANGS.find(l => l.c === lang) || GY_LANGS[0];
-        const div = document.createElement('div');
-        div.id = "gy-lang-selector";
-        div.style = "position: fixed; top: 30px; right: 40px; z-index: 10001; cursor: pointer;";
-        div.innerHTML = `
-            <div onclick="toggleGyLangMenu()" style="display:flex; align-items:center; gap:10px; color:gold;">
-                <img src="https://flagcdn.com/w40/${current.f}.png" width="35">
-                <span style="font-weight:900; font-size:1.4rem;">${current.c.toUpperCase()}</span>
-            </div>
-            <div id="gy-lang-menu" style="display:none; position:absolute; right:0; top:50px; background:rgba(0,0,0,0.9); border:1px solid gold; padding:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; pointer-events:auto;"></div>
-        `;
-        document.body.appendChild(div);
-        
-        const menu = document.getElementById('gy-lang-menu');
-        GY_LANGS.forEach(l => {
-            const img = document.createElement('img');
-            img.src = `https://flagcdn.com/w40/${l.f}.png`;
-            img.style = "width:25px; cursor:pointer; margin:5px;";
-            img.onclick = (e) => { 
-                e.stopPropagation();
-                localStorage.setItem('gy_lang', l.c); 
-                location.reload(); 
-            };
-            menu.appendChild(img);
         });
-    }
-</script>
+
+        function renderLangButtons() {
+            const panel = document.getElementById('lang-panel');
+            panel.innerHTML = '';
+            GY_LANGS.forEach(l => {
+                const btn = document.createElement('button');
+                btn.className = 'lang-btn';
+                btn.style = "display:block; width:100%; background:none; border:none; color:gold; cursor:pointer; text-align:left; padding:5px; font-weight:bold;";
+                btn.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}`;
+                btn.onclick = () => setLanguage(l.c);
+                panel.appendChild(btn);
+            });
+        }
+
+        function setLanguage(lang) {
+            localStorage.setItem('gy_lang', lang);
+            location.reload();
+        }
+
+        function updateLeftLangUI(lang) {
+            const data = GY_LANGS.find(l => l.c === lang) || GY_LANGS[0];
+            document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${data.f}.png`;
+            document.getElementById('current-lang-label').innerText = data.n;
+        }
+
+        function toggleLangPanel() {
+            const panel = document.getElementById('lang-panel');
+            panel.classList.toggle('active');
+        }
+
+        function enterClub() {
+            const doorSound = document.getElementById('door-audio');
+            const doorImg = document.getElementById('main-door');
+
+            if (doorSound) doorSound.play();
+            if (doorImg) doorImg.classList.add('door-open');
+
+            // Переход с задержкой 1 сек (чтобы звук успел начаться)
+            setTimeout(() => {
+                location.href = 'welcome.html';
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
