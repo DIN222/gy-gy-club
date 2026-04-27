@@ -1,20 +1,68 @@
-<script src="shared-logic.js"></script>
-<script>
-    // Уникальный словарь Холла
-    const hallDict = {
-        en: { hall_slogan: "STYLE IS A JOKE", nav_bar: "BAR", nav_atelier: "ATELIER" },
-        ru: { hall_slogan: "СТИЛЬ ЭТО ШУТКА", nav_bar: "БАР", nav_atelier: "АТЕЛЬЕ" }
-    };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Hall</title>
+    <link rel="stylesheet" href="shared-core.css">
+    <style>
+        /* Если фон пропадает, фиксируем его здесь */
+        body { 
+            background: #000 url('hall_bg_jpg.jpg') no-repeat center center fixed; 
+            background-size: cover; margin: 0; color: gold; 
+        }
+        .hall-content {
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; height: 100vh; gap: 30px;
+        }
+        .user-passport { border: 1px solid gold; padding: 20px; border-radius: 15px; background: rgba(0,0,0,0.7); text-align: center; min-width: 200px; }
+        .nav-grid { display: flex; gap: 20px; }
+        .btn-large { width: 150px; height: 150px; border: 2px solid gold; background: rgba(0,0,0,0.5); color: gold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; border-radius: 10px; }
+        .btn-large:hover { background: gold; color: black; }
+        /* Кнопка-стрелка */
+        .btn-gy-circle { background: none; border: 1px solid gold; color: gold; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
 
-    window.onload = () => {
-        // 1. Рисуем атрибуты (Назад, Лого, Язык) - на 1-й странице это НЕ вызываем!
-        injectPermanentAttributes();
+    <div class="hall-content">
+        <div class="user-passport">
+            <div id="u-avatar" style="width: 80px; height: 80px; margin: 0 auto 10px; border: 1px solid gold; border-radius: 50%;"></div>
+            <div id="u-nick" style="font-weight: bold; font-size: 1.2rem;">...</div>
+            <div id="u-id" style="font-size: 0.8rem; opacity: 0.6;">...</div>
+        </div>
 
-        // 2. Переводим контент
-        applyTranslations(hallDict);
+        <div data-t="hall_slogan" style="font-style: italic; letter-spacing: 1px;">"STYLE IS THE ONLY JOKE"</div>
 
-        // 3. Заполняем карточку юзера (только в Холле)
-        document.getElementById('u-nick').innerText = localStorage.getItem('gy_nick') || 'GUEST';
-        document.getElementById('u-id').innerText = localStorage.getItem('gy_user_id') || '000-GY';
-    };
-</script>
+        <nav class="nav-grid">
+            <a href="bar.html" class="btn-large">
+                <span style="font-size: 2rem;">🍷</span>
+                <span data-t="nav_bar">BAR</span>
+            </a>
+            <a href="atelier.html" class="btn-large">
+                <span style="font-size: 2rem;">✂️</span>
+                <span data-t="nav_atelier">ATELIER</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="shared-logic.js"></script>
+    <script>
+        const hallDict = {
+            en: { hall_slogan: "WHERE HUMOR MEETS STYLE", nav_bar: "BAR", nav_atelier: "ATELIER" },
+            ru: { hall_slogan: "ГДЕ ЮМОР ВСТРЕЧАЕТ СТИЛЬ", nav_bar: "БАР", nav_atelier: "АТЕЛЬЕ" }
+        };
+
+        window.onload = () => {
+            injectPermanentAttributes(); // Рисуем Лого и стрелки ««
+            applyTranslations(hallDict); // Переводим текст
+            
+            // Заполняем данные юзера
+            document.getElementById('u-nick').innerText = localStorage.getItem('gy_nick') || 'GUEST';
+            document.getElementById('u-id').innerText = localStorage.getItem('gy_user_id') || 'ID-LOST';
+            const av = localStorage.getItem('gy_avatar');
+            if(av) document.getElementById('u-avatar').style.backgroundImage = `url(${av})`;
+        };
+    </script>
+</body>
+</html>
