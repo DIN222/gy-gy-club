@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>GY-GY CLUB</title>
@@ -41,72 +41,26 @@
         <img src="door_1.jpg" id="main-door" onclick="enterClub()">
     </main>
 
-   <script src="shared-logic.js"></script>
+    <script src="shared-logic.js"></script>
     <script>
-        const doorsDict = {
-            en: { doors_slogan: "LAUGH OR LEAVE", enter_btn: "ENTER" },
-            ru: { doors_slogan: "СМЕЙСЯ ИЛИ УХОДИ", enter_btn: "ВОЙТИ" }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Контроль языка (база - EN)
-            if (!localStorage.getItem('gy_lang')) localStorage.setItem('gy_lang', 'en');
+        function enterClub() {
+            const doorSound = document.getElementById('door-audio');
             
-            // 2. Рисуем только флаг в углу
-            renderDoorsLangOnly(); 
-            
-            // 3. Переводим тексты на странице
-            if (typeof applyTranslations === 'function') {
-                applyTranslations(doorsDict);
+            if (doorSound) {
+                doorSound.currentTime = 0;
+                doorSound.play().catch(err => {
+                    console.log("Автозапуск звука блокирован. Обычное дело.");
+                });
             }
 
-            // 4. ОЖИВЛЯЕМ КЛИК ПО ДВЕРИ
-            // Ищем элемент двери (замени '.door-element' на свой класс, если он другой)
-            const doorElement = document.querySelector('.door-element') || document.body;
-            
-            doorElement.onclick = (e) => {
-                // Если кликнули по флагу или меню языка — вход не срабатывает
-                if (e.target.closest('#gy-lang-selector')) return;
+            // Анимация: дверь только увеличивается
+            const door = document.getElementById('main-door');
+            door.classList.add('door-open');
 
-                // Запускаем твою анимацию открытия (если она есть) или просто входим
-                console.log("Входим...");
-                location.href = 'welcome.html';
-            };
-        });
-
-        function renderDoorsLangOnly() {
-            const lang = localStorage.getItem('gy_lang') || 'en';
-            const current = GY_LANGS.find(l => l.c === lang) || GY_LANGS[0];
-            
-            const div = document.createElement('div');
-            div.id = "gy-lang-selector";
-            div.style = "position: fixed; top: 30px; right: 40px; z-index: 10001; cursor: pointer;";
-            div.innerHTML = `
-                <div onclick="toggleGyLangMenu()" style="display:flex; align-items:center; gap:10px; color:gold;">
-                    <img src="https://flagcdn.com/w40/${current.f}.png" width="35">
-                    <span style="font-weight:900; font-size:1.4rem;">${current.c.toUpperCase()}</span>
-                </div>
-                <div id="gy-lang-menu" style="display:none; position:absolute; right:0; top:50px; background:rgba(0,0,0,0.9); border:1px solid gold; padding:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px;"></div>
-            `;
-            document.body.appendChild(div);
-            
-            const menu = document.getElementById('gy-lang-menu');
-            GY_LANGS.forEach(l => {
-                const img = document.createElement('img');
-                img.src = `https://flagcdn.com/w40/${l.f}.png`;
-                img.style = "width:25px; cursor:pointer; margin: 5px;";
-                img.onclick = (e) => { 
-                    e.stopPropagation(); // Чтобы дверь не открылась при смене языка
-                    localStorage.setItem('gy_lang', l.c); 
-                    location.reload(); 
-                };
-                menu.appendChild(img);
-            });
-        }
-
-        function toggleGyLangMenu() {
-            const m = document.getElementById('gy-lang-menu');
-            if (m) m.style.display = m.style.display === 'none' ? 'grid' : 'none';
+            // Задержка 800мс, чтобы звук успел начаться
+            setTimeout(() => { 
+                window.location.href = 'welcome.html'; 
+            }, 800);
         }
     </script>
 </body>
