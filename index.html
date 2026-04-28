@@ -6,14 +6,8 @@
     <link rel="stylesheet" href="shared-core.css">
     <style>
         body { background: #000; overflow: hidden; margin: 0; }
-        .portal-zone { 
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; cursor: pointer; 
-        }
-        #main-door { 
-            width: 60%; max-width: 350px; 
-            transition: opacity 0.8s ease, transform 0.8s ease; 
-        }
+        .portal-zone { display: flex; justify-content: center; align-items: center; height: 100vh; cursor: pointer; }
+        #main-door { width: 60%; max-width: 350px; transition: opacity 0.8s ease, transform 0.8s ease; }
         .door-open { transform: scale(1.1); opacity: 0; }
     </style>
 </head>
@@ -29,14 +23,12 @@
     <script>
         function enterClub() {
             const doorAudio = document.getElementById('door-audio');
-            
-            // 1. Звук двери
             if (doorAudio) doorAudio.play();
 
-            // 2. ПРИНУДИТЕЛЬНЫЙ ЗАПУСК ФОНА БАРА
-            // Клик по двери - это легальное взаимодействие, которое разблокирует звук
+            // ПРИНУДИТЕЛЬНЫЙ ЗАПУСК ЗВУКА БАРА
+            // Клик по двери дает скрипту право играть звуки на всех следующих страницах
             if (typeof playZoneSound === 'function') {
-                playZoneSound(0.4, 0.1); // Включаем тихо сразу при клике
+                playZoneSound(0.4, 0.1); 
             }
 
             document.getElementById('main-door').classList.add('door-open');
