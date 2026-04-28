@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v2.5_PRO] */
+/* . [BLOCK: SHARED_LOGIC_v2.7_FINAL] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -8,37 +8,28 @@ const GY_LANGS = [
     {c:'ae', f:'ae', n:'العربية'}, {c:'br', f:'br', n:'PORTUGUÊS'}
 ];
 
-function playZoneSound(volume, delay = 0) {
-    const safeVolume = Math.min(Math.max(volume, 0), 1);
-    
-    // Функция запуска
-    const startAudio = () => {
-        let bgAudio = document.getElementById('gy-bg-audio');
-        if (!bgAudio) {
-            bgAudio = document.createElement('audio');
-            bgAudio.id = 'gy-bg-audio';
-            bgAudio.loop = true;
-            bgAudio.src = "bar_ambient.mp3";
-            document.body.appendChild(bgAudio);
-        }
-        bgAudio.volume = safeVolume;
-        bgAudio.play().catch(() => {
-            // Если браузер всё еще ворчит, ждем клика
-            document.addEventListener('click', () => bgAudio.play(), { once: true });
-        });
-    };
-
-    if (delay === 0) startAudio();
-    else setTimeout(startAudio, delay * 1000);
+function playZoneSound(volume) {
+    let bgAudio = document.getElementById('gy-bg-audio');
+    if (!bgAudio) {
+        bgAudio = document.createElement('audio');
+        bgAudio.id = 'gy-bg-audio';
+        bgAudio.loop = true;
+        bgAudio.src = "bar_ambient.mp3";
+        document.body.appendChild(bgAudio);
+    }
+    bgAudio.volume = volume;
+    bgAudio.play().catch(() => {
+        document.addEventListener('click', () => bgAudio.play(), { once: true });
+    });
 }
 
 function injectPermanentAttributes() {
     if (document.getElementById('gy-header')) return;
-    
+
     const path = window.location.pathname;
-    const isIndex = path.endsWith('index.html') || path === '/' || path.split('/').pop() === "";
-    
-    // ГАРАНТИЯ ЯЗЫКА: Берем строго из памяти
+    const isIndex = path.endsWith('index.html') || path === '/' || path === '';
+
+    // ГАРАНТИЯ: Берем язык из localStorage
     const saved = localStorage.getItem('gy_lang') || 'en';
     const current = GY_LANGS.find(l => l.c === saved) || GY_LANGS[0];
 
@@ -46,12 +37,10 @@ function injectPermanentAttributes() {
     header.id = 'gy-header';
     header.style = "position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; box-sizing: border-box; z-index: 2000; pointer-events: none;";
     
-    const boxWidth = "150px";
-
     header.innerHTML = `
         <div class="gy-left-side" style="pointer-events: auto; display: flex; align-items: center; gap: 20px;">
             ${!isIndex ? `<span onclick="history.back()" style="cursor:pointer; color:gold; font-size: 3.5rem; font-weight: 900; line-height: 0.8;">«</span>` : ''}
-            <div id="gy-lang-wrapper" style="position: relative; width: ${boxWidth};">
+            <div id="gy-lang-wrapper" style="position: relative; width: 150px;">
                 <div onclick="toggleGyLang()" style="cursor:pointer; display:flex; align-items:center; justify-content: space-between; color:gold; border: 1px solid gold; padding: 8px 10px; background: rgba(0,0,0,0.8); width: 100%; box-sizing: border-box;">
                     <div style="display:flex; align-items:center; gap:8px;">
                         <img src="https://flagcdn.com/w40/${current.f}.png" width="25">
@@ -73,19 +62,17 @@ function injectPermanentAttributes() {
         const item = document.createElement('div');
         item.style = "padding: 10px; color: gold; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid rgba(255,215,0,0.2); font-size: 0.85rem;";
         item.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png" width="20"> <span>${l.n}</span>`;
-        item.onclick = (e) => { 
-            e.stopPropagation();
-            localStorage.setItem('gy_lang', l.c); 
-            location.reload(); 
+        item.onclick = (e) => {
+            e.stopPropagation(); // Чтобы клик не улетел на дверь
+            localStorage.setItem('gy_lang', l.c);
+            window.location.reload(); 
         };
         list.appendChild(item);
     });
 
-    // АВТОЗАПУСК ЗВУКА НА ВТОРОЙ СТРАНИЦЕ
-    if (!isIndex) {
-        // Если мы на welcome.html, включаем звук сразу
-        if (path.includes('welcome.html')) playZoneSound(0.5, 0.1);
-        if (path.includes('hall.html')) playZoneSound(0.8, 0.1);
+    // Авто-звук для второй страницы
+    if (!isIndex && path.includes('welcome.html')) {
+        playZoneSound(0.5);
     }
 }
 
@@ -94,5 +81,4 @@ function toggleGyLang() {
     if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
 }
 
-// Запуск при загрузке
 window.addEventListener('DOMContentLoaded', injectPermanentAttributes);
