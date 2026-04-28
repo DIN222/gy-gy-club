@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v2.7_FINAL] */
+/* . [BLOCK: SHARED_LOGIC_v2.8_FINAL_UA_FIX] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -18,20 +18,26 @@ function playZoneSound(volume) {
         document.body.appendChild(bgAudio);
     }
     bgAudio.volume = volume;
-    bgAudio.play().catch(() => {
-        document.addEventListener('click', () => bgAudio.play(), { once: true });
-    });
+    
+    // Пытаемся запустить сразу
+    const start = () => {
+        bgAudio.play().catch(() => {
+            console.log("Audio needs user gesture");
+            document.addEventListener('click', () => bgAudio.play(), { once: true });
+        });
+    };
+    start();
 }
 
 function injectPermanentAttributes() {
     if (document.getElementById('gy-header')) return;
 
     const path = window.location.pathname;
-    const isIndex = path.endsWith('index.html') || path === '/' || path === '';
+    const isIndex = path.includes('index.html') || path.endsWith('/');
 
-    // ГАРАНТИЯ: Берем язык из localStorage
-    const saved = localStorage.getItem('gy_lang') || 'en';
-    const current = GY_LANGS.find(l => l.c === saved) || GY_LANGS[0];
+    // ЧИТАЕМ ТОЛЬКО КОД (ua, ru, en)
+    const savedCode = localStorage.getItem('gy_lang_code') || 'en';
+    const current = GY_LANGS.find(l => l.c === savedCode) || GY_LANGS[0];
 
     const header = document.createElement('div');
     header.id = 'gy-header';
@@ -63,15 +69,15 @@ function injectPermanentAttributes() {
         item.style = "padding: 10px; color: gold; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 0.5px solid rgba(255,215,0,0.2); font-size: 0.85rem;";
         item.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png" width="20"> <span>${l.n}</span>`;
         item.onclick = (e) => {
-            e.stopPropagation(); // Чтобы клик не улетел на дверь
-            localStorage.setItem('gy_lang', l.c);
+            e.stopPropagation();
+            localStorage.setItem('gy_lang_code', l.c); // Сохраняем код (ua), а не текст
             window.location.reload(); 
         };
         list.appendChild(item);
     });
 
-    // Авто-звук для второй страницы
-    if (!isIndex && path.includes('welcome.html')) {
+    // ЗВУК: Если не главная страница - включаем
+    if (!isIndex) {
         playZoneSound(0.5);
     }
 }
@@ -81,4 +87,4 @@ function toggleGyLang() {
     if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
 }
 
-window.addEventListener('DOMContentLoaded', injectPermanentAttributes);
+window.addEventListener('load', injectPermanentAttributes);
