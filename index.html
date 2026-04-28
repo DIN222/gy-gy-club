@@ -7,12 +7,11 @@
     <style>
         body { background: #000; overflow: hidden; margin: 0; }
         .portal-zone { display: flex; justify-content: center; align-items: center; height: 100vh; cursor: pointer; }
-        #main-door { width: 60%; max-width: 350px; transition: opacity 0.8s ease, transform 0.8s ease; }
+        #main-door { width: 60%; max-width: 350px; transition: 0.8s; }
         .door-open { transform: scale(1.1); opacity: 0; }
     </style>
 </head>
 <body>
-
     <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
 
     <main class="portal-zone" onclick="enterClub()">
@@ -22,19 +21,20 @@
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
+            // 1. Звук замка
             const doorAudio = document.getElementById('door-audio');
             if (doorAudio) doorAudio.play();
 
-            // ПРИНУДИТЕЛЬНЫЙ ЗАПУСК ЗВУКА БАРА
-            // Клик по двери дает скрипту право играть звуки на всех следующих страницах
+            // 2. Активируем фоновый звук ПРЯМО ТУТ
+            // Это "прогревает" аудио-движок для следующей страницы
             if (typeof playZoneSound === 'function') {
-                playZoneSound(0.4, 0.1); 
+                playZoneSound(0.1, 0); // Включаем на фоне очень тихо
             }
 
             document.getElementById('main-door').classList.add('door-open');
 
             setTimeout(() => {
-                location.href = 'welcome.html';
+                window.location.href = 'welcome.html';
             }, 1000);
         }
     </script>
