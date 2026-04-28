@@ -1,156 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Welcome 004</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="shared-core.css">
-    
+    <title>Welcome to GY-GY</title>
     <style>
-        * { -webkit-tap-highlight-color: transparent; }
-        body, html { width: 100%; height: 100%; background: #000; color: #D4AF37; font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
+        body { background: #000; margin: 0; color: gold; font-family: 'Arial Black', sans-serif; overflow: hidden; }
         
-        .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: #D4AF37; max-width: 85%; margin-bottom: 5px; }
-        
-        #welcome-horse { max-height: 45vh; width: auto; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)); transition: 0.5s ease; }
-        
-        .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
-        
-        .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
-        
-        .btn-gy { 
-            min-width: 224px; padding: 15px 10px; background: #000 !important; 
-            border: 2px solid #D4AF37; color: #D4AF37; cursor: pointer; 
-            text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
-            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important; text-shadow: none !important;
+        .main-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; text-align: center;
+            /* ВАЖНО: Освобождаем место под шапку скрипта */
+            padding-top: 80px; 
+            box-sizing: border-box;
         }
 
-        .btn-gy:hover { background: #000 !important; color: #FFD700; border-color: #FFD700; box-shadow: none !important; filter: none !important; }
-
-        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
-        .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
+        .horse-container { position: relative; margin-bottom: 10px; }
+        .horse-img { width: 180px; filter: drop-shadow(0 0 15px gold); }
+        .slogan { font-size: 1rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 5px; }
+        .welcome-title { font-size: 4.5rem; margin: 0; line-height: 1; }
         
-        .lang-panel { max-height: 400px !important; overflow-y: auto !important; background: #000; border: 1px solid #D4AF37; display: none; }
-        .lang-container:hover .lang-panel { display: block; }
-
-        .lang-trigger { border: 1px solid #D4AF37; background: #000; padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .lang-btn { width: 100%; padding: 10px; background: #000; color: #D4AF37; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-btn:hover { background: #111; color: #FFD700; }
-
-        .skiptranslate, .goog-te-banner-frame { display: none !important; }
-        body { top: 0px !important; }
+        .btn-group { display: flex; gap: 20px; margin-top: 30px; }
+        .gy-btn {
+            padding: 12px 35px; border: 2px solid gold; background: transparent;
+            color: gold; font-weight: 900; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; font-size: 0.9rem;
+        }
+        .gy-btn:hover { background: gold; color: black; box-shadow: 0 0 20px gold; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
-
-    <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
-
-    <nav class="back-nav">
-        <button class="btn-gy" style="min-width: auto; padding: 10px 20px;" onclick="window.history.back()" data-t="nav_back">← Назад</button>
-    </nav>
-
-    <div class="lang-container">
-        <div class="lang-trigger">
-            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
-            <span id="current-lang-label">РУССКИЙ</span>
+    <div class="main-container">
+        <div class="slogan">THE BEST CLUB IN THE WORLD</div>
+        <div class="horse-container">
+            <img src="horse.png" class="horse-img" alt="Horse">
         </div>
-        <div id="lang-list-12" class="lang-panel"></div>
-    </div>
-
-    <main class="welcome-zone">
-        <div class="quote-text" data-t="quote">«В каждой шутке есть доля виски»</div>
-        <div class="horse-container"><img src="horse_welcome.png" alt="Horse" id="welcome-horse"></div>
         <h1 class="welcome-title">WELCOME</h1>
         <div class="btn-group">
-            <button id="btn-w-hall" class="btn-gy" style="opacity:0.15; pointer-events:none;" onclick="location.href='hall.html'" data-t="btn_hall">В ХОЛЛ</button>
-            <button class="btn-gy" onclick="location.href='registration.html'" data-t="btn_reg">РЕГИСТРАЦИЯ</button>
+            <button class="gy-btn">ENTER ROOM</button>
+            <button class="gy-btn">ABOUT US</button>
         </div>
-    </main>
+    </div>
 
-    <script>
-        // 1. ПЛАВНЫЙ ЗАПУСК ЗВУКА (САМ ПО СЕБЕ)
-        const audio = document.getElementById('snd-ambient');
-        
-        function fadeInAudio() {
-            audio.volume = 0;
-            audio.play().then(() => {
-                let vol = 0;
-                const interval = setInterval(() => {
-                    if (vol < 0.4) {
-                        vol += 0.02;
-                        audio.volume = vol;
-                    } else {
-                        clearInterval(interval);
-                    }
-                }, 100); // Нарастание за ~2 секунды
-            }).catch(e => console.log("Waiting for user interaction..."));
-        }
-
-        // Запуск при любом первом клике по документу
-        document.addEventListener('click', fadeInAudio, { once: true });
-
-        // 2. БЛОК 1: СЛОВАРЬ (12)
-        const dictionary = {
-            ru: { nav_back: "← Назад", quote: "«В каждой шутке есть доля виски»", btn_hall: "В ХОЛЛ", btn_reg: "РЕГИСТРАЦИЯ" },
-            en: { nav_back: "← Back", quote: "«Every joke has a drop of whiskey»", btn_hall: "TO HALL", btn_reg: "REGISTRATION" },
-            uk: { nav_back: "← Назад", quote: "«У кожному жарті є частка віскі»", btn_hall: "В ХОЛ", btn_reg: "РЕЄСТРАЦІЯ" },
-            pl: { nav_back: "← Wstecz", quote: "«В каждом żarcie jest kropla whisky»", btn_hall: "DO HOLU", btn_reg: "REJESTRACJA" },
-            de: { nav_back: "← Zurück", quote: "«In jedem Witz steckt ein Tropfen Whisky»", btn_hall: "ZUR HALLE", btn_reg: "REGISTRIERUNG" },
-            fr: { nav_back: "← Retour", quote: "«Chaque blague contient une goutte de whisky»", btn_hall: "AU HALL", btn_reg: "INSCRIPTION" },
-            it: { nav_back: "← Indietro", quote: "«In ogni scherzo c'è una goccia di whisky»", btn_hall: "AL PADIGLIONE", btn_reg: "REGISTRAZIONE" },
-            es: { nav_back: "← Atrás", quote: "«Cada broma tiene una gota de whisky»", btn_hall: "AL VESTÍBULO", btn_reg: "REGISTRO" },
-            cn: { nav_back: "← 返回", quote: "“每个笑话里都有一点威士忌”", btn_hall: "前往大厅", btn_reg: "注册" },
-            ja: { nav_back: "← 戻る", quote: "「すべてのジョークには一滴의 ウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
-            ar: { nav_back: "← عودة", quote: "«كل نکتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
-            pt: { nav_back: "← Voltar", quote: "«Cada piada tem uma gota de uísque»", btn_hall: "AO SALÃO", btn_reg: "REGISTRO" }
-        };
-
-        // 3. БЛОК 2: СПИСОК ЯЗЫКОВ (12)
-        const langs = [
-             {c:'ru', n:'РУССКИЙ', f:'ru'}, 
-            {c:'en', n:'ENGLISH', f:'gb'},
-            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, 
-            {c:'pl', n:'POLSKI', f:'pl'},
-            {c:'de', n:'DEUTSCH', f:'de'}, 
-            {c:'fr', n:'FRANÇAIS', f:'fr'},
-            {c:'it', n:'ITALIANO', f:'it'}, 
-            {c:'es', n:'ESPAÑOL', f:'es'},
-            {c:'cn', n:'中文', f:'cn'}, 
-            {c:'ja', n:'日本語', f:'jp'},
-            {c:'ar', n:'العربية', f:'ae'}, 
-            {c:'pt', n:'PORTUGUÊS', f:'br'}
-        ];
-
-        document.getElementById('lang-list-12').innerHTML = langs.map(l => `
-            <button class="lang-btn" onclick="applyTranslation('${l.c}', '${l.f}', '${l.n}')">
-                <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
-            </button>
-        `).join('');
-
-        function applyTranslation(code, flag, name) {
-            document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${flag}.png`;
-            document.getElementById('current-lang-label').innerText = name;
-            const texts = dictionary[code] || dictionary['en'];
-            document.querySelectorAll('[data-t]').forEach(el => {
-                const key = el.getAttribute('data-t');
-                if(texts[key]) el.innerText = texts[key];
-            });
-            localStorage.setItem('gy_lang', code);
-        }
-
-        if(localStorage.getItem('gy_user_id')) {
-            const hallBtn = document.getElementById('btn-w-hall');
-            hallBtn.style.opacity = "1";
-            hallBtn.style.pointerEvents = "auto";
-        }
-
-        const savedLang = localStorage.getItem('gy_lang') || 'ru';
-        const initial = langs.find(l => l.c === savedLang) || langs[0];
-        applyTranslation(initial.c, initial.f, initial.n);
-    </script>
+    <script src="shared-logic.js"></script>
 </body>
 </html>
