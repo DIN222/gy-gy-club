@@ -10,9 +10,9 @@
             display: flex; justify-content: center; align-items: center; 
             height: 100vh; cursor: pointer; 
         }
-        /* Дверь стала меньше */
+        /* Дверь компактного размера */
         #main-door { 
-            width: 80%; max-width: 400px; 
+            width: 60%; max-width: 350px; 
             transition: opacity 0.8s ease, transform 0.8s ease; 
         }
         .door-open { transform: scale(1.1); opacity: 0; }
@@ -28,22 +28,20 @@
 
     <script src="shared-logic.js"></script>
     <script>
-        // Первая страница сама вызовет атрибуты из shared-logic.js
         function enterClub() {
             const doorAudio = document.getElementById('door-audio');
             
-            // 1. Звук замка
+            // 1. Звук двери
             if (doorAudio) doorAudio.play();
 
-            // 2. СРАЗУ включаем фон бара (тихо), имитируя звук из-за открывающейся двери
+            // 2. Включаем звук бара (0.4 громкость) ПРЯМО ПРИ КЛИКЕ
+            // Это "разблокирует" аудио для всех последующих страниц
             if (typeof playZoneSound === 'function') {
-                playZoneSound(0.3, 0.2); 
+                playZoneSound(0.4, 0.1); 
             }
 
-            // 3. Визуал
             document.getElementById('main-door').classList.add('door-open');
 
-            // 4. Переход
             setTimeout(() => {
                 location.href = 'welcome.html';
             }, 1000);
