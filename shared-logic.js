@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v3.6_STRICT_CLEAN] */
+/* . [BLOCK: SHARED_LOGIC_v3.7_FINAL_OVERLAY] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -19,6 +19,7 @@ function playZoneSound(vol) {
     }
     audio.volume = vol;
     audio.play().catch(() => {
+        // Если браузер блокирует автоплей, звук включится при первом клике по странице
         document.addEventListener('click', () => audio.play(), { once: true });
     });
 }
@@ -29,14 +30,16 @@ function initSharedAttributes() {
     const path = window.location.pathname;
     const isIndex = path.includes('index.html') || path.endsWith('/');
 
+    // Синхронизация языка из памяти
     const saved = localStorage.getItem('gy_lang_code') || 'en';
     const current = GY_LANGS.find(l => l.c === saved) || GY_LANGS[0];
 
+    // Создаем невидимый контейнер для атрибутов
     const header = document.createElement('div');
     header.id = 'gy-header';
     header.style = "position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 30px; box-sizing: border-box; z-index: 10000; pointer-events: none;";
 
-    // Смещение языка только на страницах кроме главной
+    // На второй странице смещаем язык вниз под стрелку
     const langMargin = !isIndex ? "margin-top: 60px;" : "margin-top: 0px;";
 
     header.innerHTML = `
@@ -75,6 +78,7 @@ function initSharedAttributes() {
         list.appendChild(item);
     });
 
+    // Запускаем звук бара только на второй странице
     if (!isIndex) playZoneSound(0.5);
 }
 
@@ -83,4 +87,5 @@ function toggleGyLang() {
     if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
 }
 
+// Инициализация при загрузке
 window.addEventListener('DOMContentLoaded', initSharedAttributes);
