@@ -10,7 +10,6 @@
             display: flex; justify-content: center; align-items: center; 
             height: 100vh; cursor: pointer; 
         }
-        /* Дверь компактного размера */
         #main-door { 
             width: 60%; max-width: 350px; 
             transition: opacity 0.8s ease, transform 0.8s ease; 
@@ -34,10 +33,10 @@
             // 1. Звук двери
             if (doorAudio) doorAudio.play();
 
-            // 2. Включаем звук бара (0.4 громкость) ПРЯМО ПРИ КЛИКЕ
-            // Это "разблокирует" аудио для всех последующих страниц
+            // 2. ПРИНУДИТЕЛЬНЫЙ ЗАПУСК ФОНА БАРА
+            // Клик по двери - это легальное взаимодействие, которое разблокирует звук
             if (typeof playZoneSound === 'function') {
-                playZoneSound(0.4, 0.1); 
+                playZoneSound(0.4, 0.1); // Включаем тихо сразу при клике
             }
 
             document.getElementById('main-door').classList.add('door-open');
