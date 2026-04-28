@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v3.5_STRICT_STYLE] */
+/* . [BLOCK: SHARED_LOGIC_v3.6_STRICT_CLEAN] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -36,7 +36,7 @@ function initSharedAttributes() {
     header.id = 'gy-header';
     header.style = "position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 30px; box-sizing: border-box; z-index: 10000; pointer-events: none;";
 
-    // Смещение только для блока языка на второй странице
+    // Смещение языка только на страницах кроме главной
     const langMargin = !isIndex ? "margin-top: 60px;" : "margin-top: 0px;";
 
     header.innerHTML = `
