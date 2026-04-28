@@ -1,94 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY Welcome 001</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY | Welcome 002</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="shared-core.css">
+    
     <style>
-        body { background: #000; margin: 0; overflow: hidden; color: gold; }
+        * { -webkit-tap-highlight-color: transparent; }
+        body, html { width: 100%; height: 100%; background: #000; color: #D4AF37; font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
         
-        /* Контейнер шапки один к одному с первой страницы */
-        .header-mirror {
-            position: fixed; top: 0; width: 100%; 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 20px 30px; box-sizing: border-box; z-index: 9999;
+        .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: #D4AF37; max-width: 85%; margin-bottom: 5px; }
+        
+        #welcome-horse { max-height: 45vh; width: auto; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)); transition: 0.5s ease; }
+        
+        .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
+        
+        .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
+        
+        .btn-gy { 
+            min-width: 224px; padding: 15px 10px; background: #000 !important; 
+            border: 2px solid #D4AF37; color: #D4AF37; cursor: pointer; 
+            text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
+            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important; text-shadow: none !important;
         }
 
-        /* Блок навигации и языка слева */
-        .left-controls {
-            display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
-        }
+        .btn-gy:hover { background: #000 !important; color: #FFD700; border-color: #FFD700; box-shadow: none !important; filter: none !important; }
 
-        /* Стрелка возврата на освободившемся месте (сверху) */
-        .back-arrow {
-            cursor: pointer; color: gold; font-size: 50px; font-weight: 900; 
-            line-height: 0.5; user-select: none; margin-left: 5px;
-        }
+        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
+        .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
+        
+        .lang-panel { max-height: 400px !important; overflow-y: auto !important; background: #000; border: 1px solid #D4AF37; display: none; }
+        .lang-container:hover .lang-panel { display: block; }
 
-        /* Язык смещен на 10% вниз (примерно 15-20px) */
-        #gy-lang-wrapper {
-            margin-top: 15px; /* Смещение вниз */
-            position: relative; width: 150px; border: 1px solid gold; background: rgba(0,0,0,0.9);
-            pointer-events: auto;
-        }
+        .lang-trigger { border: 1px solid #D4AF37; background: #000; padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .lang-btn { width: 100%; padding: 10px; background: #000; color: #D4AF37; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        .lang-btn:hover { background: #111; color: #FFD700; }
 
-        /* Логотип (35px как договорились) */
-        .logo-mirror {
-            font-size: 35px; font-weight: 900; color: gold; 
-            letter-spacing: 4px; line-height: 1; text-shadow: 2px 2px 5px black;
-        }
-
-        .content {
-            display: flex; justify-content: center; align-items: center; height: 100vh;
-            font-size: 2rem; text-align: center;
-        }
+        .skiptranslate, .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <div class="header-mirror">
-        <div class="left-controls">
-            <div class="back-arrow" onclick="location.href='index.html'">«</div>
-            
-            <div id="gy-lang-wrapper">
-                <div onclick="toggleGyLang()" style="cursor:pointer; display:flex; align-items:center; justify-content: space-between; color:gold; padding: 8px 10px;">
-                    <div id="current-lang-view" style="display:flex; align-items:center; gap:8px;">
-                        <span id="lang-code-text">EN</span>
-                    </div>
-                    <span>▼</span>
-                </div>
-                <div id="gy-lang-list" style="display:none; position:absolute; top:100%; left:-1px; width:calc(100% + 2px); max-height:250px; overflow-y:auto; background:black; border: 1px solid gold; border-top:none;">
-                    </div>
-            </div>
+    <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
+
+    <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
+
+    <nav class="back-nav">
+        <button class="btn-gy" style="min-width: auto; padding: 10px 20px;" onclick="window.history.back()" data-t="nav_back">← Назад</button>
+    </nav>
+
+    <div class="lang-container">
+        <div class="lang-trigger">
+            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
+            <span id="current-lang-label">РУССКИЙ</span>
         </div>
-
-        <div class="logo-mirror">GY-GY</div>
+        <div id="lang-list-12" class="lang-panel"></div>
     </div>
 
-    <main class="content">
-        <h1>ДОБРО ПОЖАЛОВАТЬ В КЛУБ</h1>
+    <main class="welcome-zone">
+        <div class="quote-text" data-t="quote">«В каждой шутке есть доля виски»</div>
+        <div class="horse-container"><img src="horse_welcome.png" alt="Horse" id="welcome-horse"></div>
+        <h1 class="welcome-title">WELCOME</h1>
+        <div class="btn-group">
+            <button id="btn-w-hall" class="btn-gy" style="opacity:0.15; pointer-events:none;" onclick="location.href='hall.html'" data-t="btn_hall">В ХОЛЛ</button>
+            <button class="btn-gy" onclick="location.href='registration.html'" data-t="btn_reg">РЕГИСТРАЦИЯ</button>
+        </div>
     </main>
 
-    <script src="shared-logic.js"></script>
     <script>
-        // Принудительно запускаем звук и обновляем язык ПРИ ЗАГРУЗКЕ
-        window.onload = function() {
-            // 1. Запуск музыки (0.5 громкость)
-            if (typeof playZoneSound === 'function') {
-                playZoneSound(0.5);
-            }
+        // 1. ПЛАВНЫЙ ЗАПУСК ЗВУКА (САМ ПО СЕБЕ)
+        const audio = document.getElementById('snd-ambient');
+        
+        function fadeInAudio() {
+            audio.volume = 0;
+            audio.play().then(() => {
+                let vol = 0;
+                const interval = setInterval(() => {
+                    if (vol < 0.4) {
+                        vol += 0.02;
+                        audio.volume = vol;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 100); // Нарастание за ~2 секунды
+            }).catch(e => console.log("Waiting for user interaction..."));
+        }
 
-            // 2. Синхронизация отображения языка
-            const saved = localStorage.getItem('gy_lang_code') || 'en';
-            document.getElementById('lang-code-text').innerText = saved.toUpperCase();
-            
-            // Если в shared-logic есть функция отрисовки списка, она сработает сама,
-            // но мы подстрахуемся и вызовем инициализацию атрибутов
-            if (typeof injectPermanentAttributes === 'function') {
-                // Мы не вызываем её здесь, чтобы не плодить вторую шапку, 
-                // так как в welcome.html мы её уже прописали вручную для точности.
-            }
+        // Запуск при любом первом клике по документу
+        document.addEventListener('click', fadeInAudio, { once: true });
+
+        // 2. БЛОК 1: СЛОВАРЬ (12)
+        const dictionary = {
+            ru: { nav_back: "← Назад", quote: "«В каждой шутке есть доля виски»", btn_hall: "В ХОЛЛ", btn_reg: "РЕГИСТРАЦИЯ" },
+            en: { nav_back: "← Back", quote: "«Every joke has a drop of whiskey»", btn_hall: "TO HALL", btn_reg: "REGISTRATION" },
+            uk: { nav_back: "← Назад", quote: "«У кожному жарті є частка віскі»", btn_hall: "В ХОЛ", btn_reg: "РЕЄСТРАЦІЯ" },
+            pl: { nav_back: "← Wstecz", quote: "«В каждом żarcie jest kropla whisky»", btn_hall: "DO HOLU", btn_reg: "REJESTRACJA" },
+            de: { nav_back: "← Zurück", quote: "«In jedem Witz steckt ein Tropfen Whisky»", btn_hall: "ZUR HALLE", btn_reg: "REGISTRIERUNG" },
+            fr: { nav_back: "← Retour", quote: "«Chaque blague contient une goutte de whisky»", btn_hall: "AU HALL", btn_reg: "INSCRIPTION" },
+            it: { nav_back: "← Indietro", quote: "«In ogni scherzo c'è una goccia di whisky»", btn_hall: "AL PADIGLIONE", btn_reg: "REGISTRAZIONE" },
+            es: { nav_back: "← Atrás", quote: "«Cada broma tiene una gota de whisky»", btn_hall: "AL VESTÍBULO", btn_reg: "REGISTRO" },
+            cn: { nav_back: "← 返回", quote: "“每个笑话里都有一点威士忌”", btn_hall: "前往大厅", btn_reg: "注册" },
+            ja: { nav_back: "← 戻る", quote: "「すべてのジョークには一滴의 ウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
+            ar: { nav_back: "← عودة", quote: "«كل نکتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
+            pt: { nav_back: "← Voltar", quote: "«Cada piada tem uma gota de uísque»", btn_hall: "AO SALÃO", btn_reg: "REGISTRO" }
         };
+
+        // 3. БЛОК 2: СПИСОК ЯЗЫКОВ (12)
+        const langs = [
+             {c:'ru', n:'РУССКИЙ', f:'ru'}, 
+            {c:'en', n:'ENGLISH', f:'gb'},
+            {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, 
+            {c:'pl', n:'POLSKI', f:'pl'},
+            {c:'de', n:'DEUTSCH', f:'de'}, 
+            {c:'fr', n:'FRANÇAIS', f:'fr'},
+            {c:'it', n:'ITALIANO', f:'it'}, 
+            {c:'es', n:'ESPAÑOL', f:'es'},
+            {c:'cn', n:'中文', f:'cn'}, 
+            {c:'ja', n:'日本語', f:'jp'},
+            {c:'ar', n:'العربية', f:'ae'}, 
+            {c:'pt', n:'PORTUGUÊS', f:'br'}
+        ];
+
+        document.getElementById('lang-list-12').innerHTML = langs.map(l => `
+            <button class="lang-btn" onclick="applyTranslation('${l.c}', '${l.f}', '${l.n}')">
+                <img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}
+            </button>
+        `).join('');
+
+        function applyTranslation(code, flag, name) {
+            document.getElementById('current-lang-flag').src = `https://flagcdn.com/w40/${flag}.png`;
+            document.getElementById('current-lang-label').innerText = name;
+            const texts = dictionary[code] || dictionary['en'];
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if(texts[key]) el.innerText = texts[key];
+            });
+            localStorage.setItem('gy_lang', code);
+        }
+
+        if(localStorage.getItem('gy_user_id')) {
+            const hallBtn = document.getElementById('btn-w-hall');
+            hallBtn.style.opacity = "1";
+            hallBtn.style.pointerEvents = "auto";
+        }
+
+        const savedLang = localStorage.getItem('gy_lang') || 'ru';
+        const initial = langs.find(l => l.c === savedLang) || langs[0];
+        applyTranslation(initial.c, initial.f, initial.n);
     </script>
 </body>
 </html>
