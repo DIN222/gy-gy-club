@@ -2,31 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB 006</title>
-    <link rel="stylesheet" href="shared-core.css">
+    <title>GY-GY CLUB 005</title>
     <style>
-        body { background: #000; overflow: hidden; margin: 0; }
-        .portal-zone { display: flex; justify-content: center; align-items: center; height: 100vh; cursor: pointer; }
-        #main-door { width: 60%; max-width: 350px; transition: 0.8s; }
+        body { background: #000; margin: 0; overflow: hidden; }
+        .portal { display: flex; justify-content: center; align-items: center; height: 100vh; cursor: pointer; }
+        #main-door { width: 350px; transition: 0.8s; }
         .door-open { transform: scale(1.1); opacity: 0; }
     </style>
 </head>
 <body>
-    <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
+    <audio id="door-audio" src="door_open.mp3"></audio>
 
-    <main class="portal-zone" onclick="enterClub()">
+    <main class="portal" onclick="enterClub()">
         <img src="door_1.jpg" id="main-door">
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
-            const doorAudio = document.getElementById('door-audio');
-            if (doorAudio) doorAudio.play();
+            // Играем звук замка
+            const da = document.getElementById('door-audio');
+            if(da) da.play();
 
-            // Активация аудио-контекста
+            // Активируем аудио-канал бара ПРЯМО ЗДЕСЬ (тихо)
+            // Это критически важно для перехода на welcome.html
             if (typeof playZoneSound === 'function') {
-                playZoneSound(0.4); 
+                playZoneSound(0.2); 
             }
 
             document.getElementById('main-door').classList.add('door-open');
