@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v3.1_CORE] */
+/* . [BLOCK: SHARED_LOGIC_v3.2_STABLE] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -27,23 +27,24 @@ function initSharedElements() {
     if (document.getElementById('gy-header')) return;
 
     const path = window.location.pathname;
-    const isIndex = path.endsWith('index.html') || path.endsWith('/') || path === '';
+    const isIndex = path.includes('index.html') || path.endsWith('/');
 
     const saved = localStorage.getItem('gy_lang_code') || 'en';
     const current = GY_LANGS.find(l => l.c === saved) || GY_LANGS[0];
 
     const header = document.createElement('div');
     header.id = 'gy-header';
-    header.style = "position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 30px; box-sizing: border-box; z-index: 9999; pointer-events: none;";
+    // Используем fixed и z-index 10000, чтобы быть ПОВЕРХ всего
+    header.style = "position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 30px; box-sizing: border-box; z-index: 10000; pointer-events: none;";
 
-    // На welcome.html язык уходит вниз на 10% (ок. 60px от верха), освобождая место стрелке
-    const langOffset = !isIndex ? "margin-top: 60px;" : "margin-top: 0px;";
+    // Если не главная, язык уходит ниже, освобождая место стрелке (смещение ~60px)
+    const langStyle = !isIndex ? "margin-top: 55px;" : "margin-top: 0px;";
 
     header.innerHTML = `
         <div style="pointer-events: auto; display: flex; flex-direction: column; align-items: flex-start;">
-            ${!isIndex ? `<span onclick="location.href='index.html'" style="cursor:pointer; color:gold; font-size: 50px; font-weight: 900; line-height: 0.2; margin-bottom: 5px; user-select: none;">«</span>` : ''}
+            ${!isIndex ? `<div onclick="location.href='index.html'" style="cursor:pointer; color:gold; font-size: 60px; font-weight: 900; line-height: 0.5; margin-bottom: 15px; user-select: none; filter: drop-shadow(0 0 5px black);">«</div>` : ''}
             
-            <div id="gy-lang-wrapper" style="position: relative; width: 150px; border: 1px solid gold; background: rgba(0,0,0,0.9); ${langOffset}">
+            <div id="gy-lang-wrapper" style="position: relative; width: 150px; border: 1px solid gold; background: rgba(0,0,0,0.95); ${langStyle}">
                 <div onclick="toggleGyLang()" style="cursor:pointer; display:flex; align-items:center; justify-content: space-between; color:gold; padding: 8px 10px;">
                     <div style="display:flex; align-items:center; gap:8px;">
                         <img src="https://flagcdn.com/w40/${current.f}.png" width="25">
@@ -56,7 +57,7 @@ function initSharedElements() {
         </div>
         
         <div style="pointer-events: auto;">
-            <div style="font-size: 35px; font-weight: 900; color: gold; letter-spacing: 4px; line-height: 1;">GY-GY</div>
+            <div style="font-size: 35px; font-weight: 900; color: gold; letter-spacing: 4px; line-height: 1; filter: drop-shadow(0 0 5px black);">GY-GY</div>
         </div>
     `;
 
