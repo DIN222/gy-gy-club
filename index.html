@@ -2,38 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB 008</title>
+    <title>GY-GY CLUB  010</title>
     <style>
         body { background: #000; margin: 0; overflow: hidden; }
-        .portal { display: flex; justify-content: center; align-items: center; height: 100vh; cursor: pointer; }
-        #main-door { width: 350px; transition: 0.8s; }
-        .door-open { transform: scale(1.1); opacity: 0; }
+        .portal { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #door { width: 320px; cursor: pointer; transition: 0.8s ease; }
+        .open { transform: scale(1.1); opacity: 0; }
     </style>
 </head>
 <body>
-    <audio id="door-audio" src="door_open.mp3"></audio>
+    <audio id="door-snd" src="door_open.mp3" preload="auto"></audio>
 
-    <main class="portal" onclick="enterClub()">
-        <img src="door_1.jpg" id="main-door">
-    </main>
+    <div class="portal">
+        <img src="door_1.jpg" id="door" onclick="go()">
+    </div>
 
     <script src="shared-logic.js"></script>
     <script>
-        function enterClub() {
-            // Играем звук замка
-            const da = document.getElementById('door-audio');
-            if(da) da.play();
+        function go() {
+            // 1. Звук двери
+            const s = document.getElementById('door-snd');
+            if(s) s.play();
+            
+            // 2. Активируем контекст бара (ВАЖНО!)
+            if(window.playZoneSound) playZoneSound(0.2);
 
-            // Активируем аудио-канал бара ПРЯМО ЗДЕСЬ (тихо)
-            // Это критически важно для перехода на welcome.html
-            if (typeof playZoneSound === 'function') {
-                playZoneSound(0.2); 
-            }
-
-            document.getElementById('main-door').classList.add('door-open');
-
+            document.getElementById('door').classList.add('open');
+            
             setTimeout(() => {
-                window.location.href = 'welcome.html';
+                window.location.href = "welcome.html";
             }, 1000);
         }
     </script>
