@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v2.2] */
+/* . [BLOCK: SHARED_LOGIC_v2.3_FIX] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -8,6 +8,7 @@ const GY_LANGS = [
     {c:'ae', f:'ae', n:'العربية'}, {c:'br', f:'br', n:'PORTUGUÊS'}
 ];
 
+// --- ОБНОВЛЕННЫЙ АУДИО-ДВИЖОК ---
 function playZoneSound(volume, delay = 0) {
     const safeVolume = Math.min(Math.max(volume, 0), 1);
     setTimeout(() => {
@@ -20,14 +21,22 @@ function playZoneSound(volume, delay = 0) {
             document.body.appendChild(bgAudio);
         }
         bgAudio.volume = safeVolume;
-        // Браузеры требуют взаимодействия, поэтому мы пробуем играть при любом клике
-        const startPlay = () => {
-            bgAudio.play();
-            document.removeEventListener('click', startPlay);
-        };
-        bgAudio.play().catch(() => {
-            document.addEventListener('click', startPlay);
-        });
+        
+        // Бронебойный запуск: пробуем играть сразу
+        const promise = bgAudio.play();
+        if (promise !== undefined) {
+            promise.then(() => {
+                console.log("Audio started successfully");
+            }).catch(error => {
+                console.log("Autoplay blocked. Waiting for click.");
+                // Резервный запуск по клику на документ
+                const startOnInterract = () => {
+                    bgAudio.play();
+                    document.removeEventListener('click', startOnInterract);
+                };
+                document.addEventListener('click', startOnInterract);
+            });
+        }
     }, delay * 1000);
 }
 
@@ -43,7 +52,7 @@ function injectPermanentAttributes() {
     header.id = 'gy-header';
     header.style = "position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; box-sizing: border-box; z-index: 2000; pointer-events: none;";
     
-    // Вычисляем ширину для выравнивания кнопки и списка
+    // Ширина блока языка (кнопка и список равны)
     const boxWidth = "150px";
 
     header.innerHTML = `
@@ -62,7 +71,7 @@ function injectPermanentAttributes() {
             </div>
         </div>
         <div style="pointer-events: auto;">
-            <div style="font-size: 2.5rem; font-weight: 900; color: gold; letter-spacing: 4px; line-height: 1;">GY-GY</div>
+            <div style="font-size: 35px; font-weight: 900; color: gold; letter-spacing: 4px; line-height: 1;">GY-GY</div>
         </div>
     `;
     document.body.prepend(header);
@@ -76,8 +85,9 @@ function injectPermanentAttributes() {
         list.appendChild(item);
     });
 
+    // Автозапуск звука для зон (теперь надежнее)
     if (!isIndex) {
-        if (path.includes('welcome.html')) playZoneSound(0.5, 0.5);
+        if (path.includes('welcome.html')) playZoneSound(0.5, 0.2);
         if (path.includes('hall.html')) playZoneSound(0.8, 0.1);
     }
 }
