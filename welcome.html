@@ -3,37 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Welcome 008</title>
+    <title>GY-GY | Welcome 5,9</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="shared-core.css">
     
     <style>
+        /* Базовые настройки */
         * { -webkit-tap-highlight-color: transparent; }
-        body, html { width: 100%; height: 100%; background: #000; color: #D4AF37; font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; }
+        body, html { 
+            width: 100%; height: 100%; background: #000; color: #D4AF37; 
+            font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; 
+        }
+        
+        /* Постоянные атрибуты (Стилизация под оригинал первой страницы) */
+        .fixed-header { 
+            position: fixed; top: 20px; right: 30px; z-index: 10000; 
+            background: none !important; border: none !important; 
+        }
+        .logo-text { font-size: 35px; font-weight: 900; color: #D4AF37; letter-spacing: 4px; }
+        
+        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
+        
+        .lang-container { 
+            position: fixed; top: 80px; left: 25px; z-index: 10000; 
+            font-family: 'Share Tech Mono', monospace; 
+        }
+        .lang-trigger { 
+            border: 1px solid #D4AF37; background: rgba(0,0,0,0.8); padding: 5px 10px; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px; width: 110px; justify-content: space-between;
+        }
+        .lang-panel { 
+            max-height: 400px !important; overflow-y: auto !important; background: #000; 
+            border: 1px solid #D4AF37; border-top: none; display: none; position: absolute; top: 100%; left: 0; width: 132px; 
+        }
+        .lang-container:hover .lang-panel { display: block; }
+
+        /* Контент страницы */
         .welcome-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding-top: 8vh; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; color: #D4AF37; max-width: 85%; margin-bottom: 5px; }
+        
         #welcome-horse { max-height: 45vh; width: auto; filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4)); transition: 0.5s ease; }
+        
         .welcome-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; letter-spacing: 12px; margin: 5px 0 25px 0; color: #D4AF37; text-transform: uppercase; font-style: italic; }
+        
         .btn-group { display: flex; flex-direction: row; gap: 20px; justify-content: center; width: 100%; }
+        
         .btn-gy { 
             min-width: 224px; padding: 15px 10px; background: #000 !important; 
             border: 2px solid #D4AF37; color: #D4AF37; cursor: pointer; 
             text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono', monospace; 
-            transition: 0.3s; font-size: 13px; outline: none; box-shadow: none !important; text-shadow: none !important;
+            transition: 0.3s; font-size: 13px; outline: none;  box-shadow: none !important; text-shadow: none !important;
         }
-        .btn-gy:hover { background: #000 !important; color: #FFD700; border-color: #FFD700; box-shadow: none !important; filter: none !important; }
-        
-        /* Постоянные позиции атрибутов */
-        .fixed-header { position: fixed; top: 20px; right: 30px; z-index: 10000; }
-        .logo-text { font-size: 35px; font-weight: 900; color: #D4AF37; letter-spacing: 4px; }
-        .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
-        .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
-        
-        .lang-panel { max-height: 400px !important; overflow-y: auto !important; background: #000; border: 1px solid #D4AF37; display: none; position: absolute; top: 100%; left: 0; width: 150px; }
-        .lang-container:hover .lang-panel { display: block; }
-        .lang-trigger { border: 1px solid #D4AF37; background: #000; padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .lang-btn { width: 100%; padding: 10px; background: #000; color: #D4AF37; border: none; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-btn:hover { background: #111; color: #FFD700; }
+        .btn-gy:hover { background: #111 !important; color: #FFD700; border-color: #FFD700; }
+
         .skiptranslate, .goog-te-banner-frame { display: none !important; }
         body { top: 0px !important; }
     </style>
@@ -42,11 +64,19 @@
 
     <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
 
-  
-   
+    <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
+
+    <nav class="back-nav">
+        <div style="cursor:pointer; color:#D4AF37; font-size: 50px; font-weight: 900; line-height: 0.5; user-select: none;" onclick="window.history.back()">«</div>
+    </nav>
+
+    <div class="lang-container">
         <div class="lang-trigger">
-            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
-            <span id="current-lang-label">РУССКИЙ</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="" id="current-lang-flag" width="25"> 
+                <span id="current-lang-label" style="font-weight: 900; font-size: 14px;"></span>
+            </div>
+            <span style="font-size: 10px;">▼</span>
         </div>
         <div id="lang-list-12" class="lang-panel"></div>
     </div>
@@ -62,7 +92,7 @@
     </main>
 
     <script>
-        // Уникальный словарь для этой страницы
+        // Словарь переводов
         const dictionary = {
             ru: { quote: "«В каждой шутке есть доля виски»", btn_hall: "В ХОЛЛ", btn_reg: "РЕГИСТРАЦИЯ" },
             en: { quote: "«Every joke has a drop of whiskey»", btn_hall: "TO HALL", btn_reg: "REGISTRATION" },
@@ -73,25 +103,26 @@
             it: { quote: "«In ogni scherzo c'è una goccia di whisky»", btn_hall: "AL PADIGLIONE", btn_reg: "REGISTRAZIONE" },
             es: { quote: "«Cada broma tiene una gota de whisky»", btn_hall: "AL VESTÍBULO", btn_reg: "REGISTRO" },
             cn: { quote: "“每个笑话里都有一点威士忌”", btn_hall: "前往大厅", btn_reg: "注册" },
-            ja: { quote: "「すべてのジョークには一滴의 ウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
-            ar: { quote: "«كل نکتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
+            ja: { quote: "「すべてのジョークには一滴のウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
+            ar: { quote: "«كل نكتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
             pt: { quote: "«Cada piada tem uma gota de uísque»", btn_hall: "AO SALÃO", btn_reg: "REGISTRO" }
         };
 
-        // Звук
+        // Логика звука (активация по клику)
         const audio = document.getElementById('snd-ambient');
         document.addEventListener('click', () => {
             audio.volume = 0.4;
-            audio.play();
+            audio.play().catch(e => console.log("Audio play error"));
         }, { once: true });
 
-        // Проверка авторизации
+        // Проверка авторизации пользователя
         if(localStorage.getItem('gy_user_id')) {
             const hallBtn = document.getElementById('btn-w-hall');
             hallBtn.style.opacity = "1";
             hallBtn.style.pointerEvents = "auto";
         }
     </script>
+
     <script src="shared-logic.js"></script>
 </body>
 </html>
