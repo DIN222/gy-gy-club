@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v2.4_STABLE] */
+/* . [BLOCK: SHARED_LOGIC_v2.5_PRO] */
 const GY_LANGS = [
     {c:'en', f:'gb', n:'ENGLISH'}, {c:'ru', f:'ru', n:'РУССКИЙ'},
     {c:'ua', f:'ua', n:'УКРАЇНСЬКА'}, {c:'pl', f:'pl', n:'POLSKI'},
@@ -8,10 +8,11 @@ const GY_LANGS = [
     {c:'ae', f:'ae', n:'العربية'}, {c:'br', f:'br', n:'PORTUGUÊS'}
 ];
 
-// Функция для звука с принудительным запуском
 function playZoneSound(volume, delay = 0) {
     const safeVolume = Math.min(Math.max(volume, 0), 1);
-    setTimeout(() => {
+    
+    // Функция запуска
+    const startAudio = () => {
         let bgAudio = document.getElementById('gy-bg-audio');
         if (!bgAudio) {
             bgAudio = document.createElement('audio');
@@ -22,11 +23,13 @@ function playZoneSound(volume, delay = 0) {
         }
         bgAudio.volume = safeVolume;
         bgAudio.play().catch(() => {
-            console.log("Audio waiting for user interaction");
-            // Если заблокировано, звук включится при первом же клике по документу
+            // Если браузер всё еще ворчит, ждем клика
             document.addEventListener('click', () => bgAudio.play(), { once: true });
         });
-    }, delay * 1000);
+    };
+
+    if (delay === 0) startAudio();
+    else setTimeout(startAudio, delay * 1000);
 }
 
 function injectPermanentAttributes() {
@@ -35,15 +38,15 @@ function injectPermanentAttributes() {
     const path = window.location.pathname;
     const isIndex = path.endsWith('index.html') || path === '/' || path.split('/').pop() === "";
     
-    // ПРИНУДИТЕЛЬНО берем язык из памяти или ставим EN
-    const currentLang = localStorage.getItem('gy_lang') || 'en';
-    const current = GY_LANGS.find(l => l.c === currentLang) || GY_LANGS[0];
+    // ГАРАНТИЯ ЯЗЫКА: Берем строго из памяти
+    const saved = localStorage.getItem('gy_lang') || 'en';
+    const current = GY_LANGS.find(l => l.c === saved) || GY_LANGS[0];
 
     const header = document.createElement('div');
     header.id = 'gy-header';
     header.style = "position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; box-sizing: border-box; z-index: 2000; pointer-events: none;";
     
-    const boxWidth = "150px"; // Выровненная ширина
+    const boxWidth = "150px";
 
     header.innerHTML = `
         <div class="gy-left-side" style="pointer-events: auto; display: flex; align-items: center; gap: 20px;">
@@ -54,7 +57,7 @@ function injectPermanentAttributes() {
                         <img src="https://flagcdn.com/w40/${current.f}.png" width="25">
                         <span style="font-weight:900; font-size: 0.9rem;">${current.c.toUpperCase()}</span>
                     </div>
-                    <span style="font-size: 0.7rem;">▼</span>
+                    <span>▼</span>
                 </div>
                 <div id="gy-lang-list" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:250px; overflow-y:auto; background:rgba(0,0,0,0.95); border: 1px solid gold; border-top: none; box-sizing: border-box;"></div>
             </div>
@@ -78,14 +81,18 @@ function injectPermanentAttributes() {
         list.appendChild(item);
     });
 
+    // АВТОЗАПУСК ЗВУКА НА ВТОРОЙ СТРАНИЦЕ
     if (!isIndex) {
-        if (path.includes('welcome.html')) playZoneSound(0.5, 0.5);
+        // Если мы на welcome.html, включаем звук сразу
+        if (path.includes('welcome.html')) playZoneSound(0.5, 0.1);
+        if (path.includes('hall.html')) playZoneSound(0.8, 0.1);
     }
 }
 
 function toggleGyLang() {
     const list = document.getElementById('gy-lang-list');
-    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
 }
 
+// Запуск при загрузке
 window.addEventListener('DOMContentLoaded', injectPermanentAttributes);
