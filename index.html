@@ -21,14 +21,12 @@
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
-            // 1. Звук замка
             const doorAudio = document.getElementById('door-audio');
             if (doorAudio) doorAudio.play();
 
-            // 2. Активируем фоновый звук ПРЯМО ТУТ
-            // Это "прогревает" аудио-движок для следующей страницы
+            // Активация аудио-контекста
             if (typeof playZoneSound === 'function') {
-                playZoneSound(0.1, 0); // Включаем на фоне очень тихо
+                playZoneSound(0.4); 
             }
 
             document.getElementById('main-door').classList.add('door-open');
