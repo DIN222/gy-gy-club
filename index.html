@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | 8 TOTAL MONOLITH</title>
+    <title>GY-GY Club | 9 TOTAL MONOLITH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -165,29 +165,38 @@
         new QRCode(document.getElementById("h-qr"), { text: id, width: 85, height: 85 });
     }
 
-    function portalTransition(nextId) {
-        const cur = document.querySelector('.block.active');
-        if(cur) { 
-            cur.style.opacity = "0"; 
-            setTimeout(() => { cur.classList.remove('active'); cur.style.display="none"; }, 600); 
-        }
-        
-        // Предотвращаем дублирование в истории при возврате
-        if (navigationHistory[navigationHistory.length - 1] !== nextId) {
-            navigationHistory.push(nextId);
-        }
-
-        setTimeout(() => {
-            const n = document.getElementById(nextId);
-            n.style.display = "flex";
-            setTimeout(() => { 
-                n.classList.add('active'); 
-                n.style.opacity = "1"; 
-                // Показываем стрелку везде, кроме самого первого экрана (дверей)
-                document.getElementById('global-back').style.display = (nextId === 'block-entrance') ? 'none' : 'block';
-            }, 50);
-        }, 650);
+  function portalTransition(nextId) {
+    const cur = document.querySelector('.block.active');
+    if(cur) { 
+        cur.style.opacity = "0"; 
+        setTimeout(() => { cur.classList.remove('active'); cur.style.display="none"; }, 600); 
     }
+    
+    if (navigationHistory[navigationHistory.length - 1] !== nextId) {
+        navigationHistory.push(nextId);
+    }
+
+    setTimeout(() => {
+        const n = document.getElementById(nextId);
+        
+        // --- СПЕЦИАЛЬНАЯ ЛОГИКА ДЛЯ ДВЕРЕЙ ---
+        if (nextId === 'block-entrance') {
+            const door = document.getElementById('main-door');
+            door.style.transform = "scale(1)"; // Сбрасываем зум
+            door.style.opacity = "1";          // Проявляем двери
+            document.getElementById('snd-ambient').pause(); // Стоп звуки бара
+            document.getElementById('snd-ambient').currentTime = 0;
+        }
+        // -------------------------------------
+
+        n.style.display = "flex";
+        setTimeout(() => { 
+            n.classList.add('active'); 
+            n.style.opacity = "1"; 
+            document.getElementById('global-back').style.display = (nextId === 'block-entrance') ? 'none' : 'block';
+        }, 50);
+    }, 650);
+}
 
     function goBack() {
         if (navigationHistory.length > 1) {
