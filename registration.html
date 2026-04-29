@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Регистрация</title>
+    <title>GY-GY | Регистрация</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
     <style>
-        :root { --gold: #d4af37; --black: #000; --paper: #F5F5DC; }
+        :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
-        
         body { 
             width: 100%; height: 100vh; background: #000; color: var(--gold); 
             font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; 
             overflow: hidden; display: flex; flex-direction: column; 
             align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.8s ease; /* Для эффекта появления */
+            opacity: 0; transition: opacity 0.8s ease; 
         }
 
         /* Постоянные атрибуты */
@@ -27,27 +23,22 @@
 
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 35px; }
 
-        /* Сетка регистрации */
+        /* Квадраты регистрации */
         .reg-grid { display: flex; gap: 10px; margin-bottom: 35px; }
-
-        /* Квадраты: тонкая золотая рамка и белый фон */
         .box-final { 
             width: 85px; height: 85px; 
-            border: 1px solid var(--gold); 
-            background: #FFF; 
+            border: 1px solid var(--gold); /* Тонкая золотая рамка */
+            background: #FFF;             /* Белый фон */
             display: flex; align-items: center; justify-content: center; 
             overflow: hidden; position: relative; cursor: pointer;
             color: rgba(0, 0, 0, 0.4); font-size: 10px; font-weight: 900; text-align: center;
         }
-
         .box-final img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
-        .box-final span { position: relative; z-index: 1; pointer-events: none; }
-        #id-label { color: #000; font-size: 11px; font-weight: 900; }
+        #id-label { color: #000; font-size: 11px; z-index: 1; }
 
         /* Кнопки */
         .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
-
         .rtl { direction: rtl; }
     </style>
 </head>
@@ -60,15 +51,12 @@
 
     <div class="reg-grid">
         <div class="box-final" id="id-label">#ID</div>
-        
         <div class="box-final" id="qr-box-reg"></div>
-        
         <div class="box-final" onclick="document.getElementById('file-input').click()">
             <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
             <img id="pp">
             <span data-t="label_photo">ФОТО</span>
         </div>
-        
         <div class="box-final" onclick="generateAvatar()">
             <img id="avatar-img">
             <span data-t="label_avatar">АВАТАР</span>
@@ -76,37 +64,28 @@
     </div>
 
     <button id="btn-save" class="btn-gy" onclick="handleSave()" data-t="btn_save">СОХРАНИТЬ</button>
-    
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="fadeOutAndLink('hall.html')" data-t="btn_to_hall">ПРОЙТИ В ХОЛЛ</button>
 
     <script src="shared-logic.js"></script>
     <script>
         let currentID = localStorage.getItem('gy_trace');
 
-        // Эффект появления страницы
         window.addEventListener('DOMContentLoaded', () => {
             document.body.style.opacity = "1";
             if (!currentID) {
                 currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
                 localStorage.setItem('gy_trace', currentID);
             }
-            updateIDUI();
-        });
-
-        function updateIDUI() {
             document.getElementById('id-label').innerText = currentID;
-            const qrEl = document.getElementById("qr-box-reg");
-            qrEl.innerHTML = "";
-            new QRCode(qrEl, { text: currentID, width: 85, height: 85 });
-        }
+            new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+        });
 
         function preview(i) {
             if(i.files && i.files[0]) {
                 const r = new FileReader();
                 r.onload = (e) => { 
                     const img = document.getElementById('pp');
-                    img.src = e.target.result; 
-                    img.style.display = "block";
+                    img.src = e.target.result; img.style.display = "block";
                     localStorage.setItem('gy_user_img', e.target.result);
                 };
                 r.readAsDataURL(i.files[0]);
@@ -116,20 +95,15 @@
         function generateAvatar() {
             const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
             const img = document.getElementById('avatar-img');
-            img.src = url; 
-            img.style.display = "block";
+            img.src = url; img.style.display = "block";
             localStorage.setItem('gy_user_img', url);
         }
 
         function handleSave() {
-            // "Сохраняем" и разблокируем следующую кнопку
             document.getElementById('btn-save').classList.add('btn-sleep');
             document.getElementById('btn-pass').classList.remove('btn-sleep');
-            // Здесь можно добавить виброотклик для TG
-            if(window.Telegram?.WebApp) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
         }
 
-        // Общая функция для затухания перед переходом на другой файл
         function fadeOutAndLink(url) {
             document.body.style.opacity = "0";
             setTimeout(() => { window.location.href = url; }, 800);
