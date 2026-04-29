@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club |016 TOTAL MONOLITH</title>
+    <title>GY-GY Club | 016 TOTAL MONOLITH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -13,20 +13,17 @@
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin: 0; padding: 0; }
         
-        /* СТРЕЛКА ВОЗВРАТА */
-        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; display: none; }
+        /* Добавлено для плавного перехода */
+        body { opacity: 1; transition: opacity 0.8s ease; }
 
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; display: none; }
         .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
         .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
         .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 50vh; overflow-y: auto; z-index: 10001; }
         .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
         .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
-
-        /* ЛОГОТИП */
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; }
 
-        /* БЛОКИ */
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
 
@@ -34,11 +31,9 @@
         .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
-        /* ЭЛЕМЕНТЫ КАРТОЧКИ */
         .id-card-hall { width: 230px; padding: 20px; border: 2px solid var(--gold); background: var(--paper); border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         
-        /* АНИМАЦИИ */
         .horse-light { max-height: 40vh; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); animation: horse-pulse 3s infinite alternate ease-in-out; }
         @keyframes horse-pulse { 0% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4)); transform: scale(1); } 100% { filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.8)); transform: scale(1.02); } }
         #main-door { width: 280px; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; }
@@ -71,12 +66,8 @@
         <img src="horse_welcome.png" class="horse-light">
         <div style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 900; letter-spacing: 8px; margin-bottom: 15px; font-style: italic;">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-t="btn_to_hall">...</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')" data-t="btn_get_id">...</button>
+        <button class="btn-gy" onclick="fadeOutAndLink('registration.html')" data-t="btn_get_id">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
     </div>
-
-   <button class="btn-gy" onclick="fadeOutAndLink('registration.html')" data-t="btn_get_id">
-    ПРОЙДИТЕ НА РЕГИСТРАЦИЮ
-</button>
 
     <div id="block-hall" class="block">
         <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; opacity:0.6; z-index:15;"></div>
@@ -95,6 +86,12 @@
     let currentID = localStorage.getItem('gy_trace') || "";
     let navigationHistory = ['block-entrance'];
 
+    // НОВАЯ ФУНКЦИЯ ДЛЯ ПЕРЕХОДА МЕЖДУ ФАЙЛАМИ
+    function fadeOutAndLink(url) {
+        document.body.style.opacity = "0";
+        setTimeout(() => { window.location.href = url; }, 800);
+    }
+
     function handleDoor() {
         document.getElementById('snd-door').play();
         document.getElementById('main-door').style.transform = "scale(5)"; 
@@ -109,13 +106,9 @@
     }
 
     function updateIDUI(id) {
-        if(document.getElementById('id-label')) document.getElementById('id-label').innerText = id;
         if(document.getElementById('h-id')) document.getElementById('h-id').innerText = id;
-        const qrs = ['qr-box-reg', 'h-qr'];
-        qrs.forEach(idName => {
-            const el = document.getElementById(idName);
-            if(el) { el.innerHTML = ""; new QRCode(el, { text: id, width: 85, height: 85 }); }
-        });
+        const qrEl = document.getElementById('h-qr');
+        if(qrEl) { qrEl.innerHTML = ""; new QRCode(qrEl, { text: id, width: 85, height: 85 }); }
     }
 
     function portalTransition(nextId) {
@@ -147,27 +140,9 @@
         }
     }
 
-    function preview(i) {
-        if(i.files && i.files[0]) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
-            };
-            r.readAsDataURL(i.files[0]);
-        }
-    }
-
-    function generateAvatar() {
-        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-        document.getElementById('avatar-img').src = url; document.getElementById('avatar-img').style.display = "block";
-        document.getElementById('h-photo').src = url; document.getElementById('txt-avatar').style.display = "none";
-    }
-
     function swapButtons(a, s) { 
         document.getElementById(a).classList.add('btn-sleep'); 
         document.getElementById(s).classList.remove('btn-sleep'); 
-        if(a === 'btn-save') document.getElementById('btn-w-hall').classList.remove('btn-sleep');
     }
 
     function toggleMenu() {
