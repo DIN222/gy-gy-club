@@ -1,172 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Registration 001</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club | Регистрация</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
-        :root { --gold: #d4af37; --black: #000; --white: #fff; }
+        :root { --gold: #d4af37; --black: #000; --paper: #F5F5DC; }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
-        html, body { width: 100%; height: 100%; background: var(--black); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin: 0; }
-
-        /* UI FIXED */
-        .logo-right { position: fixed; top: 25px; right: 25px; font-size: 24px; letter-spacing: 5px; font-weight: bold; z-index: 100; }
-        .nav-back-top { position: fixed; top: 25px; left: 25px; z-index: 101; }
-        .lang-gateway { position: fixed; top: 80px; left: 25px; width: 170px; z-index: 100; }
         
-        .btn-main-lang { width: 100%; padding: 8px; background: var(--black); border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-dropdown { display: none; flex-direction: column; background: var(--black); border: 1.5px solid var(--gold); position: absolute; width: 170px; max-height: 40vh; overflow-y: auto; }
-        .lang-dropdown.open { display: flex; }
-        .btn-sub-lang { background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; width: 100%; text-align: left; }
-        .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
-
-        /* CONTENT */
-        .reg-container { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .content-stack { display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 5; }
-
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; max-width: 320px; text-align: center; line-height: 1.2; margin-bottom: 30px; }
-
-        .grid-identity { display: flex; gap: 10px; justify-content: center; margin-top: 15vh; margin-bottom: 30px; }
-        .box-frame { width: 80px; height: 80px; border: 1.5px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: var(--black); }
-        .box-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .label-mini { font-size: 9px; font-weight: 900; text-align: center; color: var(--black); line-height: 1.1; text-transform: uppercase; }
-
-        .nickname-input { 
-            background: transparent; border: none; color: var(--gold); text-align: center; 
-            font-size: 26px; width: 300px; font-family: inherit; letter-spacing: 2px; 
-            margin-bottom: 30px; position: relative; z-index: 10; -webkit-user-select: text; user-select: text;
+        body { 
+            width: 100%; height: 100vh; background: #000; color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; 
+            overflow: hidden; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.8s ease; /* Для эффекта появления */
         }
 
-        .action-row { display: flex; gap: 10px; width: 350px; position: relative; z-index: 10; }
-        .btn-gy { background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: inherit; flex: 1; padding: 15px 0; font-size: 11px; }
-        .btn-back { padding: 10px 20px; font-size: 13px; flex: none; }
-        .btn-sleep { opacity: 0.1 !important; pointer-events: none !important; }
-        
+        /* Постоянные атрибуты */
+        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
+        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; }
+
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 35px; }
+
+        /* Сетка регистрации */
+        .reg-grid { display: flex; gap: 10px; margin-bottom: 35px; }
+
+        /* Квадраты: тонкая золотая рамка и белый фон */
+        .box-final { 
+            width: 85px; height: 85px; 
+            border: 1px solid var(--gold); 
+            background: #FFF; 
+            display: flex; align-items: center; justify-content: center; 
+            overflow: hidden; position: relative; cursor: pointer;
+            color: rgba(0, 0, 0, 0.4); font-size: 10px; font-weight: 900; text-align: center;
+        }
+
+        .box-final img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
+        .box-final span { position: relative; z-index: 1; pointer-events: none; }
+        #id-label { color: #000; font-size: 11px; font-weight: 900; }
+
+        /* Кнопки */
+        .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
+        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
+
         .rtl { direction: rtl; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div class="nav-back-top">
-        <button class="btn-gy btn-back" onclick="location.href='welcome.html'" data-key="btn_back">← НАЗАД</button>
-    </div>
+    <div class="back-nav" onclick="fadeOutAndLink('index.html')">«</div>
+    <div class="ui-header-right">GY-GY</div>
 
-    <div class="lang-gateway">
-        <button class="btn-main-lang" onclick="document.getElementById('lang-list').classList.toggle('open')">
-            <img id="cur-flag" src="https://flagcdn.com/w20/ru.png" class="flag-icon">
-            <span id="cur-name">РУССКИЙ</span>
-        </button>
-        <div id="lang-list" class="lang-dropdown"></div>
-    </div>
+    <div class="quote-text" data-t="q_champ">«Шампанского много не бывает»</div>
 
-    <div class="logo-right">GY-GY</div>
-
-    <div class="reg-container">
-        <div class="content-stack">
-            <div class="quote-text" data-key="q_champ">«Шампанского много не бывает»</div>
-
-            <div class="grid-identity">
-                <div class="box-frame" id="id-label" style="font-size: 10px;">#ID</div>
-                <div class="box-frame" id="qr-box" style="padding: 5px;"></div>
-                <div class="box-frame" style="background: var(--white); cursor:pointer;" onclick="document.getElementById('f-in').click()">
-                    <input type="file" id="f-in" hidden onchange="upImg(this)" accept="image/*">
-                    <img id="p-img" style="display:none;"><span id="p-txt" class="label-mini" data-key="label_photo">ИЛИ<br>ФОТО</span>
-                </div>
-                <div class="box-frame" style="background: var(--white); cursor:pointer;" onclick="upAv()">
-                    <img id="a-img" style="display:none;"><span id="a-txt" class="label-mini" data-key="label_avatar">ИЛИ<br>АВАТАР</span>
-                </div>
-            </div>
-
-            <input type="text" id="nick-in" class="nickname-input" autocomplete="off">
-
-            <div class="action-row">
-                <button id="btn-s" class="btn-gy" onclick="saveP()" data-key="btn_save">СОХРАНИТЬ</button>
-                <button id="btn-h" class="btn-gy btn-sleep" onclick="location.href='hall.html'" data-key="btn_enter">В ХОЛЛ</button>
-            </div>
+    <div class="reg-grid">
+        <div class="box-final" id="id-label">#ID</div>
+        
+        <div class="box-final" id="qr-box-reg"></div>
+        
+        <div class="box-final" onclick="document.getElementById('file-input').click()">
+            <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
+            <img id="pp">
+            <span data-t="label_photo">ФОТО</span>
+        </div>
+        
+        <div class="box-final" onclick="generateAvatar()">
+            <img id="avatar-img">
+            <span data-t="label_avatar">АВАТАР</span>
         </div>
     </div>
 
-<script>
-    const langData = {
-        ru:{q_champ:"«Шампанского много не бывает»",btn_save:"СОХРАНИТЬ",btn_enter:"В ХОЛЛ",label_photo:"ИЛИ<br>ФОТО",label_avatar:"ИЛИ<br>АВАТАР",btn_back:"← НАЗАД"},
-        en:{q_champ:"«No such thing as too much champagne»",btn_save:"SAVE",btn_enter:"HALL",label_photo:"OR<br>PHOTO",label_avatar:"OR<br>AVATAR",btn_back:"← BACK"},
-        uk:{q_champ:"«Шампанського багато не буває»",btn_save:"ЗБЕРЕГТИ",btn_enter:"ДО ХОЛУ",label_photo:"АБО<br>ФОТО",label_avatar:"АБО<br>АВАТАР",btn_back:"← НАЗАД"},
-        pl:{q_champ:"«Szampana nigdy za wiele»",btn_save:"ZAPISZ",btn_enter:"DO HOLU",label_photo:"ALBO<br>FOTO",label_avatar:"ALBO<br>AWATAR",btn_back:"← WSTECZ"},
-        de:{q_champ:"«Champagner geht immer»",btn_save:"SPEICHERN",btn_enter:"ZUR HALLE",label_photo:"ODER<br>FOTO",label_avatar:"ODER<br>AVATAR",btn_back:"← ZURÜCK"},
-        fr:{q_champ:"«Jamais trop de champagne»",btn_save:"SAUVER",btn_enter:"VERS LE HALL",label_photo:"OU<br>PHOTO",label_avatar:"OU<br>AVATAR",btn_back:"← RETOUR"},
-        it:{q_champ:"«Mai troppo champagne»",btn_save:"SALVA",btn_enter:"AL SALONE",label_photo:"O<br>FOTO",label_avatar:"O<br>AVATAR",btn_back:"← INDIETRO"},
-        es:{q_champ:"«Nunca es suficiente champán»",btn_save:"GUARDAR",btn_enter:"AL VESTÍBULO",label_photo:"O<br>FOTO",label_avatar:"O<br>AVATAR",btn_back:"← ATRÁS"},
-        cn:{q_champ:"«香槟永远不嫌多»",btn_save:"保存",btn_enter:"大厅",label_photo:"或<br>照片",label_avatar:"或<br>头像",btn_back:"← 返回"},
-        ja:{q_champ:"«シャンパンはいくらあっても足りない»",btn_save:"保存",btn_enter:"ホールへ",label_photo:"または<br>写真",label_avatar:"または<br>アバター",btn_back:"← 戻る"},
-        ar:{q_champ:"«الشمبانيا لا تكفي أبدا»",btn_save:"حفظ",btn_enter:"القاعة",label_photo:"أو<br>صورة",label_avatar:"أو<br>رمز",btn_back:"← عودة"},
-        pt:{q_champ:"«Champanhe nunca é demais»",btn_save:"SALVAR",btn_enter:"SALÃO",label_photo:"OU<br>FOTO",label_avatar:"OU<br>AVATAR",btn_back:"← VOLTAR"}
-    };
+    <button id="btn-save" class="btn-gy" onclick="handleSave()" data-t="btn_save">СОХРАНИТЬ</button>
+    
+    <button id="btn-pass" class="btn-gy btn-sleep" onclick="fadeOutAndLink('hall.html')" data-t="btn_to_hall">ПРОЙТИ В ХОЛЛ</button>
 
-    const langs = [
-        {c:'ru',n:'РУССКИЙ',f:'ru'},{c:'en',n:'ENGLISH',f:'gb'},{c:'uk',n:'УКРАЇНСЬКА',f:'ua'},
-        {c:'pl',n:'POLSKI',f:'pl'},{c:'de',n:'DEUTSCH',f:'de'},{c:'fr',n:'FRANÇAIS',f:'fr'},
-        {c:'it',n:'ITALIANO',f:'it'},{c:'es',n:'ESPAÑOL',f:'es'},{c:'cn',n:'中文',f:'cn'},
-        {c:'ja',n:'日本語',f:'jp'},{c:'ar',n:'العربية',f:'ae'},{c:'pt',n:'PORTUGUÊS',f:'br'}
-    ];
+    <script src="shared-logic.js"></script>
+    <script>
+        let currentID = localStorage.getItem('gy_trace');
 
-    function pickL(l,f,n){
-        document.getElementById('cur-flag').src=`https://flagcdn.com/w20/${f}.png`;
-        document.getElementById('cur-name').innerText=n;
-        document.body.classList.toggle('rtl', l==='ar');
-        document.querySelectorAll('[data-key]').forEach(el=>{
-            const k=el.getAttribute('data-key');
-            el.innerHTML = langData[l][k];
+        // Эффект появления страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.opacity = "1";
+            if (!currentID) {
+                currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+                localStorage.setItem('gy_trace', currentID);
+            }
+            updateIDUI();
         });
-        document.getElementById('lang-list').classList.remove('open');
-        localStorage.setItem('gy_lang',l);
-    }
 
-    function upImg(i){
-        if(i.files && i.files[0]){
-            const r=new FileReader();
-            r.onload=(e)=>{
-                document.getElementById('p-img').src=e.target.result;
-                document.getElementById('p-img').style.display="block";
-                document.getElementById('p-txt').style.display="none";
-                document.getElementById('a-img').style.display="none";
-                document.getElementById('a-txt').style.display="block";
-                localStorage.setItem('gy_img',e.target.result);
-            };
-            r.readAsDataURL(i.files[0]);
+        function updateIDUI() {
+            document.getElementById('id-label').innerText = currentID;
+            const qrEl = document.getElementById("qr-box-reg");
+            qrEl.innerHTML = "";
+            new QRCode(qrEl, { text: currentID, width: 85, height: 85 });
         }
-    }
 
-    function upAv(){
-        const u=`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-        document.getElementById('a-img').src=u;
-        document.getElementById('a-img').style.display="block";
-        document.getElementById('a-txt').style.display="none";
-        document.getElementById('p-img').style.display="none";
-        document.getElementById('p-txt').style.display="block";
-        localStorage.setItem('gy_img',u);
-    }
+        function preview(i) {
+            if(i.files && i.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => { 
+                    const img = document.getElementById('pp');
+                    img.src = e.target.result; 
+                    img.style.display = "block";
+                    localStorage.setItem('gy_user_img', e.target.result);
+                };
+                r.readAsDataURL(i.files[0]);
+            }
+        }
 
-    function saveP(){
-        const n = document.getElementById('nick-in').value.trim();
-        localStorage.setItem('gy_nick', n || 'Guest');
-        document.getElementById('btn-s').classList.add('btn-sleep');
-        document.getElementById('btn-h').classList.remove('btn-sleep');
-    }
+        function generateAvatar() {
+            const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+            const img = document.getElementById('avatar-img');
+            img.src = url; 
+            img.style.display = "block";
+            localStorage.setItem('gy_user_img', url);
+        }
 
-    window.onload=()=>{
-        let id=localStorage.getItem('gy_trace') || `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        localStorage.setItem('gy_trace',id);
-        document.getElementById('id-label').innerText=id;
-        new QRCode(document.getElementById("qr-box"),{text:id,width:70,height:70,colorDark:"#ffffff",colorLight:"#000000",correctLevel:QRCode.CorrectLevel.H});
-        
-        document.getElementById('lang-list').innerHTML=langs.map(l=>`<button class="btn-sub-lang" onclick="pickL('${l.c}','${l.f}','${l.n}')"><img src="https://flagcdn.com/w20/${l.f}.png" class="flag-icon"> ${l.n}</button>`).join('');
-        
-        const savedL = localStorage.getItem('gy_lang') || 'ru';
-        const L = langs.find(x=>x.c===savedL) || langs[0];
-        pickL(L.c, L.f, L.n);
-    };
-</script>
+        function handleSave() {
+            // "Сохраняем" и разблокируем следующую кнопку
+            document.getElementById('btn-save').classList.add('btn-sleep');
+            document.getElementById('btn-pass').classList.remove('btn-sleep');
+            // Здесь можно добавить виброотклик для TG
+            if(window.Telegram?.WebApp) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        }
+
+        // Общая функция для затухания перед переходом на другой файл
+        function fadeOutAndLink(url) {
+            document.body.style.opacity = "0";
+            setTimeout(() => { window.location.href = url; }, 800);
+        }
+    </script>
 </body>
 </html>
