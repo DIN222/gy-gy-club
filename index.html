@@ -1,34 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>GY-GY | Entrance</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared-core.css">
     <style>
-        body, html { width:100%; height:100%; background:#000; margin:0; padding:0; overflow:hidden; font-family:'Share Tech Mono', monospace; }
-        .fixed-header { position:fixed; top:20px; right:30px; z-index:10000; }
-        .logo-text { font-size:35px; font-weight:900; color:#D4AF37; letter-spacing:4px; }
-        .lang-container { position:fixed; top:20px; left:25px; z-index:10000; }
-        .lang-trigger { border:1px solid #D4AF37; background:rgba(0,0,0,0.8); padding:5px 10px; cursor:pointer; display:flex; align-items:center; gap:10px; width:110px; justify-content:space-between; }
-        .lang-panel { position:absolute; top:100%; left:0; width:132px; background:#000; border:1px solid #D4AF37; border-top:none; display:none; max-height:400px; overflow-y:auto; }
-        .door-zone { height:100vh; display:flex; align-items:center; justify-content:center; }
+        /* ТВОИ ОРИГИНАЛЬНЫЕ СТИЛИ ПЕРВОЙ СТРАНИЦЫ */
+        * { -webkit-tap-highlight-color: transparent; }
+        body, html { width: 100%; height: 100%; background: #000; margin: 0; padding: 0; overflow: hidden; font-family: 'Share Tech Mono', monospace; }
+        
+        /* СТИЛИ АТРИБУТОВ (ЛОГО И ЯЗЫК) */
+        .fixed-header { position: fixed; top: 20px; right: 30px; z-index: 10000; }
+        .logo-text { font-size: 35px; font-weight: 900; color: #D4AF37; letter-spacing: 4px; text-transform: uppercase; }
+        
+        .lang-container { position: fixed; top: 20px; left: 25px; z-index: 10000; user-select: none; }
+        .lang-trigger { border: 1px solid #D4AF37; background: rgba(0,0,0,0.8); padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 110px; justify-content: space-between; }
+        .lang-label { font-weight: 900; color: #D4AF37; font-size: 14px; }
+        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 132px; background: #000; border: 1px solid #D4AF37; border-top: none; max-height: 400px; overflow-y: auto; }
+
+        /* ТВОЯ ЗОНА ДВЕРЕЙ (Убедись, что стили для door-left/right в shared-core.css или добавь сюда) */
+        .door-zone { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
     </style>
 </head>
-<body>
-    <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
-    <div class="lang-container">
+<body oncontextmenu="return false;">
+
+    <header class="fixed-header">
+        <div class="logo-text">GY-GY</div>
+    </header>
+
+    <div class="lang-container" id="gy-lang-root">
         <div class="lang-trigger" onclick="toggleMenu()">
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
                 <img src="" id="current-lang-flag" width="25"> 
-                <span id="current-lang-label" style="font-weight:900; color:#D4AF37;">RU</span>
+                <span id="current-lang-label" class="lang-label">RU</span>
             </div>
-            <span style="font-size:10px; color:#D4AF37;">▼</span>
+            <span style="font-size: 10px; color: #D4AF37;">▼</span>
         </div>
         <div id="lang-list-12" class="lang-panel"></div>
     </div>
+
     <main class="door-zone">
-        <button onclick="location.href='welcome.html'" style="background:none; border:2px solid #D4AF37; color:#D4AF37; padding:20px 40px; cursor:pointer; font-family:inherit; font-weight:900;">ENTER</button>
+        <div id="door-left" style="position: absolute; left: 0; width: 50%; height: 100%; background: #111; border-right: 1px solid #D4AF37;"></div>
+        <div id="door-right" style="position: absolute; right: 0; width: 50%; height: 100%; background: #111; border-left: 1px solid #D4AF37;"></div>
+        
+        <div onclick="location.href='welcome.html'" style="cursor:pointer; color:#D4AF37; border:2px solid #D4AF37; padding:15px 30px; z-index:10; background: #000; font-weight: 900;">
+            ENTER
+        </div>
     </main>
+
+    <script>
+        // Логика выпадающего списка
+        function toggleMenu() {
+            const list = document.getElementById('lang-list-12');
+            list.style.display = list.style.display === 'block' ? 'none' : 'block';
+        }
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('gy-lang-root').contains(e.target)) {
+                document.getElementById('lang-list-12').style.display = 'none';
+            }
+        });
+    </script>
+
     <script src="shared-logic.js"></script>
 </body>
 </html>
