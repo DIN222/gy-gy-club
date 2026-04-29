@@ -2,97 +2,52 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Welcome 5,9</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="shared-core.css">
-    
-  <style>
-    /* Убираем все лишнее и фиксируем стиль как на первой странице */
-    .fixed-header { 
-        position: fixed; top: 20px; right: 30px; z-index: 10000; 
-    }
-    .logo-text { 
-        font-size: 35px; font-weight: 900; color: #D4AF37; letter-spacing: 4px; 
-    }
-    
-    .back-nav { position: fixed; top: 25px; left: 25px; z-index: 10001; }
-    
-    /* Язык опускаем чуть ниже стрелки */
-    .lang-container { position: fixed; top: 80px; left: 25px; z-index: 10000; }
-    .lang-trigger { 
-        border: 1px solid #D4AF37; background: rgba(0,0,0,0.8); padding: 5px 10px; 
-        cursor: pointer; display: flex; align-items: center; gap: 10px;
-    }
-    .lang-panel { 
-        position: absolute; top: 100%; left: 0; width: 150px; background: #000; border: 1px solid #D4AF37; display: none; 
-    }
-    .lang-container:hover .lang-panel { display: block; }
-</style>
+    <title>GY-GY | Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body, html { width:100%; height:100%; background:#000; color:#D4AF37; font-family:'Share Tech Mono', monospace; margin:0; padding:0; overflow:hidden; }
+        .fixed-header { position:fixed; top:20px; right:30px; z-index:10000; }
+        .logo-text { font-size:35px; font-weight:900; color:#D4AF37; letter-spacing:4px; }
+        .back-nav { position:fixed; top:25px; left:25px; z-index:10001; cursor:pointer; color:#D4AF37; font-size:50px; font-weight:900; line-height:0.5; }
+        .lang-container { position:fixed; top:80px; left:25px; z-index:10000; }
+        .lang-trigger { border:1px solid #D4AF37; background:rgba(0,0,0,0.8); padding:5px 10px; cursor:pointer; display:flex; align-items:center; gap:10px; width:110px; justify-content:space-between; }
+        .lang-panel { position:absolute; top:100%; left:0; width:132px; background:#000; border:1px solid #D4AF37; border-top:none; display:none; max-height:400px; overflow-y:auto; }
+        .welcome-zone { height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:8vh; text-align:center; }
+        .quote-text { font-family:'Playfair Display', serif; font-style:italic; font-size:28px; margin-bottom:10px; }
+        #welcome-horse { max-height:45vh; filter:drop-shadow(0 0 20px rgba(212,175,55,0.4)); }
+        .btn-gy { min-width:220px; padding:15px; background:#000; border:2px solid #D4AF37; color:#D4AF37; font-family:inherit; font-weight:900; cursor:pointer; margin:10px; }
+    </style>
 </head>
-<body oncontextmenu="return false;">
-
-    <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
-
+<body>
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
     <header class="fixed-header"><div class="logo-text">GY-GY</div></header>
-
-    <nav class="back-nav">
-        <div style="cursor:pointer; color:#D4AF37; font-size: 50px; font-weight: 900; line-height: 0.5; user-select: none;" onclick="window.history.back()">«</div>
-    </nav>
-
+    <div class="back-nav" onclick="location.href='index.html'">«</div>
     <div class="lang-container">
-        <div class="lang-trigger">
-            <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="lang-trigger" onclick="toggleMenu()">
+            <div style="display:flex; align-items:center; gap:8px;">
                 <img src="" id="current-lang-flag" width="25"> 
-                <span id="current-lang-label" style="font-weight: 900; font-size: 14px;"></span>
+                <span id="current-lang-label" style="font-weight:900; color:#D4AF37;">RU</span>
             </div>
-            <span style="font-size: 10px;">▼</span>
+            <span style="font-size:10px;">▼</span>
         </div>
         <div id="lang-list-12" class="lang-panel"></div>
     </div>
-
     <main class="welcome-zone">
         <div class="quote-text" data-t="quote">«В каждой шутке есть доля виски»</div>
-        <div class="horse-container"><img src="horse_welcome.png" alt="Horse" id="welcome-horse"></div>
-        <h1 class="welcome-title">WELCOME</h1>
-        <div class="btn-group">
-            <button id="btn-w-hall" class="btn-gy" style="opacity:0.15; pointer-events:none;" onclick="location.href='hall.html'" data-t="btn_hall">В ХОЛЛ</button>
+        <img src="horse_welcome.png" id="welcome-horse">
+        <h1 style="font-family:'Playfair Display', serif; font-size:38px; letter-spacing:10px;">WELCOME</h1>
+        <div>
             <button class="btn-gy" onclick="location.href='registration.html'" data-t="btn_reg">РЕГИСТРАЦИЯ</button>
         </div>
     </main>
-
     <script>
-        // Словарь переводов
         const dictionary = {
-            ru: { quote: "«В каждой шутке есть доля виски»", btn_hall: "В ХОЛЛ", btn_reg: "РЕГИСТРАЦИЯ" },
-            en: { quote: "«Every joke has a drop of whiskey»", btn_hall: "TO HALL", btn_reg: "REGISTRATION" },
-            uk: { quote: "«У кожному жарті є частка віскі»", btn_hall: "В ХОЛ", btn_reg: "РЕЄСТРАЦІЯ" },
-            pl: { quote: "«В каждом żarcie jest kropla whisky»", btn_hall: "DO HOLU", btn_reg: "REJESTRACJA" },
-            de: { quote: "«In jedem Witz steckt ein Tropfen Whisky»", btn_hall: "ZUR HALLE", btn_reg: "REGISTRIERUNG" },
-            fr: { quote: "«Chaque blague contient une goutte de whisky»", btn_hall: "AU HALL", btn_reg: "INSCRIPTION" },
-            it: { quote: "«In ogni scherzo c'è una goccia di whisky»", btn_hall: "AL PADIGLIONE", btn_reg: "REGISTRAZIONE" },
-            es: { quote: "«Cada broma tiene una gota de whisky»", btn_hall: "AL VESTÍBULO", btn_reg: "REGISTRO" },
-            cn: { quote: "“每个笑话里都有一点威士忌”", btn_hall: "前往大厅", btn_reg: "注册" },
-            ja: { quote: "「すべてのジョークには一滴のウイスキーが入っています」", btn_hall: "ホールへ", btn_reg: "登録" },
-            ar: { quote: "«كل نكتة تحتوي على قطرة من الويسكي»", btn_hall: "إلى القاعة", btn_reg: "تسجيل" },
-            pt: { quote: "«Cada piada tem uma gota de uísque»", btn_hall: "AO SALÃO", btn_reg: "REGISTRO" }
+            ru: { quote: "«В каждой шутке есть доля виски»", btn_reg: "РЕГИСТРАЦИЯ" },
+            en: { quote: "«Every joke has a drop of whiskey»", btn_reg: "REGISTRATION" }
         };
-
-        // Логика звука (активация по клику)
         const audio = document.getElementById('snd-ambient');
-        document.addEventListener('click', () => {
-            audio.volume = 0.4;
-            audio.play().catch(e => console.log("Audio play error"));
-        }, { once: true });
-
-        // Проверка авторизации пользователя
-        if(localStorage.getItem('gy_user_id')) {
-            const hallBtn = document.getElementById('btn-w-hall');
-            hallBtn.style.opacity = "1";
-            hallBtn.style.pointerEvents = "auto";
-        }
+        document.addEventListener('click', () => { audio.volume = 0.4; audio.play(); }, { once: true });
     </script>
-
     <script src="shared-logic.js"></script>
 </body>
 </html>
