@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v7.0_DYNAMIC] */
+/* . [BLOCK: SHARED_LOGIC_v7.1_STABLE] */
 const langs = [
     {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
     {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
@@ -11,6 +11,7 @@ const langs = [
 let dictionary = null;
 
 async function initShared() {
+    // 1. Сначала отрисовываем меню (чтобы оно не исчезало)
     const listContainer = document.getElementById('lang-list-12');
     if (listContainer) {
         listContainer.innerHTML = langs.map(l => `
@@ -19,16 +20,21 @@ async function initShared() {
             </button>
         `).join('');
     }
-    
-    // Загружаем внешние переводы
+
+    // 2. Пытаемся загрузить слова из JSON
     try {
         const response = await fetch('langs.json');
+        if (!response.ok) throw new Error('File not found');
         dictionary = await response.json();
     } catch (e) {
-        console.error("Critical: Could not load translations.");
+        console.warn("JSON не загружен (возможно, локальный запуск или файла нет). Используем тексты из HTML.");
     }
 
-    const savedLang = localStorage.getItem('gy_lang') || 'ru';
+    // 3. Устанавливаем текущий язык
+    const tg = window.Telegram?.WebApp;
+    const browserLang = navigator.language.split('-')[0];
+    const savedLang = localStorage.getItem('gy_lang') || tg?.initDataUnsafe?.user?.language_code || browserLang || 'ru';
+    
     const initial = langs.find(l => l.c === savedLang) || langs[0];
     applyTranslation(initial.c, initial.f, initial.n);
 }
@@ -42,9 +48,9 @@ function applyTranslation(code, flag, name) {
 
     document.body.classList.toggle('rtl', code === 'ae');
 
-    // Если словарь загружен — переводим
-    if (dictionary) {
-        const texts = dictionary[code] || dictionary['en'];
+    // Если словарь успешно скачан — обновляем тексты
+    if (dictionary && dictionary[code]) {
+        const texts = dictionary[code];
         document.querySelectorAll('[data-t]').forEach(el => {
             const key = el.getAttribute('data-t');
             if(texts[key]) el.innerHTML = texts[key];
@@ -56,6 +62,7 @@ function applyTranslation(code, flag, name) {
     if(list) list.style.display = 'none';
 }
 
+// Закрытие меню при клике мимо
 document.addEventListener('click', (e) => {
     const root = document.getElementById('gy-lang-root');
     const list = document.getElementById('lang-list-12');
