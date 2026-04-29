@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v6.2_FINAL] */
+/* . [BLOCK: SHARED_LOGIC_v7.0_DYNAMIC] */
 const langs = [
     {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
     {c:'ua', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
@@ -8,7 +8,9 @@ const langs = [
     {c:'ae', n:'العربية', f:'ae'}, {c:'br', n:'PORTUGUÊS', f:'br'}
 ];
 
-function initShared() {
+let dictionary = null;
+
+async function initShared() {
     const listContainer = document.getElementById('lang-list-12');
     if (listContainer) {
         listContainer.innerHTML = langs.map(l => `
@@ -17,6 +19,15 @@ function initShared() {
             </button>
         `).join('');
     }
+    
+    // Загружаем внешние переводы
+    try {
+        const response = await fetch('langs.json');
+        dictionary = await response.json();
+    } catch (e) {
+        console.error("Critical: Could not load translations.");
+    }
+
     const savedLang = localStorage.getItem('gy_lang') || 'ru';
     const initial = langs.find(l => l.c === savedLang) || langs[0];
     applyTranslation(initial.c, initial.f, initial.n);
@@ -31,15 +42,16 @@ function applyTranslation(code, flag, name) {
 
     document.body.classList.toggle('rtl', code === 'ae');
 
-    if (typeof dictionary !== 'undefined') {
+    // Если словарь загружен — переводим
+    if (dictionary) {
         const texts = dictionary[code] || dictionary['en'];
         document.querySelectorAll('[data-t]').forEach(el => {
             const key = el.getAttribute('data-t');
-            if(texts[key]) el.innerText = texts[key];
+            if(texts[key]) el.innerHTML = texts[key];
         });
     }
-    localStorage.setItem('gy_lang', code);
     
+    localStorage.setItem('gy_lang', code);
     const list = document.getElementById('lang-list-12');
     if(list) list.style.display = 'none';
 }
