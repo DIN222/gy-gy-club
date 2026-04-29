@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club |18,0 TOTAL MONOLITH</title>
+    <title>GY-GY Club | 8 TOTAL MONOLITH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -12,18 +12,56 @@
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin: 0; padding: 0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
-        .lang-gateway { position: fixed; top: 15px; left: 15px; z-index: 10000; width: 170px; }
-        .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 60vh; overflow-y: auto; z-index: 10001; }
-        .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
+        /* СТРЕЛКА ВОЗВРАТА (Теперь сверху) */
+        .back-nav { 
+            position: fixed; 
+            top: 15px; 
+            left: 15px; 
+            z-index: 10002; 
+            cursor: pointer; 
+            color: var(--gold); 
+            font-size: 45px; 
+            font-weight: 900; 
+            line-height: 0.6; 
+            display: none; /* Скрыта на первом экране */
+        }
+
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Теперь под стрелкой) */
+        .lang-gateway { 
+            position: fixed; 
+            top: 65px; /* Сдвинута вниз, чтобы освободить место стрелке */
+            left: 15px; 
+            z-index: 10000; 
+            width: 170px; 
+        }
+        
+        .btn-main-lang { 
+            width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); 
+            color: var(--gold); font-weight: 900; cursor: pointer; display: flex; 
+            align-items: center; gap: 8px; font-family: inherit; 
+        }
+
+        .lang-panel { 
+            display: none; position: absolute; top: 100%; left: 0; width: 100%; 
+            background: #000; border: 1.5px solid var(--gold); border-top: none; 
+            max-height: 50vh; overflow-y: auto; z-index: 10001; 
+        }
+
+        .lang-btn { 
+            width: 100%; padding: 12px; background: none; border: none; 
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); 
+            cursor: pointer; display: flex; align-items: center; gap: 10px; 
+            font-size: 11px; font-family: inherit; text-align: left; 
+        }
+
         .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
 
         /* ЛОГОТИП */
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; }
-
-        /* СТРЕЛКА ВОЗВРАТА */
-        .back-nav { position: fixed; top: 70px; left: 15px; z-index: 10001; cursor: pointer; color: var(--gold); font-size: 40px; font-weight: 900; line-height: 0.5; display: none; }
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000; 
+            font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; 
+            letter-spacing: 5px; color: var(--gold); text-transform: uppercase; 
+        }
 
         /* БЛОКИ */
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
@@ -36,6 +74,7 @@
         .id-card-hall { width: 230px; padding: 20px; border: 2px solid var(--gold); background: var(--paper); border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         #main-door { width: 280px; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; }
+        
         .rtl { direction: rtl; }
     </style>
 </head>
@@ -43,6 +82,8 @@
 
     <audio id="snd-door"><source src="door_open.mp3" type="audio/mpeg"></audio>
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
+
+    <div id="global-back" class="back-nav" onclick="goBack()">«</div>
 
     <div class="lang-gateway" id="gy-lang-root">
         <button class="btn-main-lang" onclick="toggleMenu()">
@@ -53,7 +94,6 @@
     </div>
     
     <div class="ui-header-right">GY-GY</div>
-    <div id="global-back" class="back-nav" onclick="goBack()">«</div>
 
     <div id="block-entrance" class="block active">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
@@ -131,13 +171,19 @@
             cur.style.opacity = "0"; 
             setTimeout(() => { cur.classList.remove('active'); cur.style.display="none"; }, 600); 
         }
-        navigationHistory.push(nextId);
+        
+        // Предотвращаем дублирование в истории при возврате
+        if (navigationHistory[navigationHistory.length - 1] !== nextId) {
+            navigationHistory.push(nextId);
+        }
+
         setTimeout(() => {
             const n = document.getElementById(nextId);
             n.style.display = "flex";
             setTimeout(() => { 
                 n.classList.add('active'); 
                 n.style.opacity = "1"; 
+                // Показываем стрелку везде, кроме самого первого экрана (дверей)
                 document.getElementById('global-back').style.display = (nextId === 'block-entrance') ? 'none' : 'block';
             }, 50);
         }, 650);
@@ -145,8 +191,8 @@
 
     function goBack() {
         if (navigationHistory.length > 1) {
-            navigationHistory.pop(); // убираем текущий
-            const prev = navigationHistory.pop(); // достаем предыдущий
+            navigationHistory.pop(); // убираем текущий блок
+            const prev = navigationHistory.pop(); // берем предыдущий
             portalTransition(prev);
         }
     }
@@ -184,18 +230,18 @@
     };
 
     const dictionary = {
-        en: { q_whiskey: "«Every joke has a grain of whiskey»", q_champ: "«No such thing as too much champagne»", btn_to_hall: "PROCEED TO HALL", btn_get_id: "GET ID TOKEN", btn_save: "SAVE PROFILE", btn_confirm: "CONFIRM", btn_enter: "ENTER BAR", label_photo: "PHOTO", label_avatar: "AVATAR", btn_back_welcome: "← BACK" },
-        ru: { q_whiskey: "«В каждой шутке есть доля виски»", q_champ: "«Шампанского много не бывает»", btn_to_hall: "ПРОЙТИ В ХОЛЛ", btn_get_id: "ПОЛУЧИТЬ ID", btn_save: "СОХРАНИТЬ", btn_confirm: "ПОДТВЕРДИТЬ", btn_enter: "ВХОД В БАР", label_photo: "ФОТО", label_avatar: "АВАТАР", btn_back_welcome: "← НАЗАД" },
-        ua: { q_whiskey: "«У кожному жарті є частка віскі»", q_champ: "«Шампанського багато не буває»", btn_to_hall: "ПРОЙТИ ДО ХОЛУ", btn_get_id: "ОТРИМАТИ ID", btn_save: "ЗБЕРЕГТИ", btn_confirm: "ПІДТВЕРДИТЬ", btn_enter: "ВХІД ДО БАРУ", label_photo: "ФОТО", label_avatar: "АВАТАР", btn_back_welcome: "← НАЗАД" },
-        pl: { q_whiskey: "«W każdym żarcie jest ziarno whisky»", q_champ: "«Szampana nigdy za wiele»", btn_to_hall: "DO HOLU", btn_get_id: "POBIERZ ID", btn_save: "ZAPISZ", btn_confirm: "POTWIERDŹ", btn_enter: "WEJDŹ DO BARU", label_photo: "FOTO", label_avatar: "AWATAR", btn_back_welcome: "← POWRÓT" },
-        de: { q_whiskey: "«Jeder Witz hat einen Kern Whiskey»", q_champ: "«Champagner geht immer»", btn_to_hall: "ZUR HALLE", btn_get_id: "ID ERHALTEN", btn_save: "SPEICHERN", btn_confirm: "BESTÄTIGEN", btn_enter: "ZUR BAR", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← ZURÜCK" },
-        fr: { q_whiskey: "«Chaque blague a un fond de whiskey»", q_champ: "«Jamais trop de champagne»", btn_to_hall: "VERS LE HALL", btn_get_id: "OBTENIR ID", btn_save: "ENREGISTRER", btn_confirm: "CONFIRMER", btn_enter: "ENTRER AU BAR", label_photo: "PHOTO", label_avatar: "AVATAR", btn_back_welcome: "← RETOUR" },
-        it: { q_whiskey: "«Ogni scherzo ha un fondo di whiskey»", q_champ: "«Mai troppo champagne»", btn_to_hall: "AL SALONE", btn_get_id: "OTTIENI ID", btn_save: "SALVA", btn_confirm: "CONFERMA", btn_enter: "ENTRA AL BAR", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← INDIETRO" },
-        es: { q_whiskey: "«Cada broma tiene un poco de whiskey»", q_champ: "«Nunca es suficiente champán»", btn_to_hall: "AL VESTÍBULO", btn_get_id: "OBTENER ID", btn_save: "GUARDAR", btn_confirm: "CONFIRM", btn_enter: "ENTRAR AL BAR", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← VOLVER" },
-        cn: { q_whiskey: "«每个笑话都有一点威士忌»", q_champ: "«香槟永远不嫌多»", btn_to_hall: "前往大厅", btn_get_id: "获取ID", btn_save: "保存", btn_confirm: "确认", btn_enter: "进入酒吧", label_photo: "照片", label_avatar: "头像", btn_back_welcome: "← 返回" },
-        jp: { q_whiskey: "«すべてのジョークにはウィスキーが含まれている»", q_champ: "«シャンパンはいくらあっても足りない»", btn_to_hall: "ホールへ", btn_get_id: "IDを取得", btn_save: "保存", btn_confirm: "確認", btn_enter: "バーに入る", label_photo: "写真", label_avatar: "アバター", btn_back_welcome: "← 戻る" },
-        ae: { q_whiskey: "«كل نكتة فيها ذرة من الويسكي»", q_champ: "«الشمبانيا لا تكفي أبدا»", btn_to_hall: "المضي قدما إلى القاعة", btn_get_id: "احصل на معرف", btn_save: "حفظ", btn_confirm: "تأكيد", btn_enter: "ادخل إلى البار", label_photo: "صورة", label_avatar: "الصورة الرمزية", btn_back_welcome: "← العودة" },
-        br: { q_whiskey: "«Toda piada tem um fundo de uísque»", q_champ: "«Champanhe nunca é demais»", btn_to_hall: "IR PARA O HALL", btn_get_id: "OBTER ID", btn_save: "SALVAR", btn_confirm: "CONFIRMAR", btn_enter: "ENTRAR NO BAR", label_photo: "FOTO", label_avatar: "AVATAR", btn_back_welcome: "← VOLTAR" }
+        en: { q_whiskey: "«Every joke has a grain of whiskey»", q_champ: "«No such thing as too much champagne»", btn_to_hall: "PROCEED TO HALL", btn_get_id: "GET ID TOKEN", btn_save: "SAVE PROFILE", btn_confirm: "CONFIRM", btn_enter: "ENTER BAR", label_photo: "PHOTO", label_avatar: "AVATAR" },
+        ru: { q_whiskey: "«В каждой шутке есть доля виски»", q_champ: "«Шампанского много не бывает»", btn_to_hall: "ПРОЙТИ В ХОЛЛ", btn_get_id: "ПОЛУЧИТЬ ID", btn_save: "СОХРАНИТЬ", btn_confirm: "ПОДТВЕРДИТЬ", btn_enter: "ВХОД В БАР", label_photo: "ФОТО", label_avatar: "АВАТАР" },
+        ua: { q_whiskey: "«У кожному жарті є частка віскі»", q_champ: "«Шампанського багато не буває»", btn_to_hall: "ПРОЙТИ ДО ХОЛУ", btn_get_id: "ОТРИМАТИ ID", btn_save: "ЗБЕРЕГТИ", btn_confirm: "ПІДТВЕРДИТЬ", btn_enter: "ВХІД ДО БАРУ", label_photo: "ФОТО", label_avatar: "АВАТАР" },
+        pl: { q_whiskey: "«W każdym żarcie jest ziarno whisky»", q_champ: "«Szampana nigdy za wiele»", btn_to_hall: "DO HOLU", btn_get_id: "POBIERZ ID", btn_save: "ZAPISZ", btn_confirm: "POTWIERDŹ", btn_enter: "WEJDŹ DO BARU", label_photo: "FOTO", label_avatar: "AWATAR" },
+        de: { q_whiskey: "«Jeder Witz hat einen Kern Whiskey»", q_champ: "«Champagner geht immer»", btn_to_hall: "ZUR HALLE", btn_get_id: "ID ERHALTEN", btn_save: "SPEICHERN", btn_confirm: "BESTÄTIGEN", btn_enter: "ZUR BAR", label_photo: "FOTO", label_avatar: "AVATAR" },
+        fr: { q_whiskey: "«Chaque blague a un fond de whiskey»", q_champ: "«Jamais trop de champagne»", btn_to_hall: "VERS LE HALL", btn_get_id: "OBTENIR ID", btn_save: "ENREGISTRER", btn_confirm: "CONFIRMER", btn_enter: "ENTRER AU BAR", label_photo: "PHOTO", label_avatar: "AVATAR" },
+        it: { q_whiskey: "«Ogni scherzo ha un fondo di whiskey»", q_champ: "«Mai troppo champagne»", btn_to_hall: "AL SALONE", btn_get_id: "OTTIENI ID", btn_save: "SALVA", btn_confirm: "CONFERMA", btn_enter: "ENTRA AL BAR", label_photo: "FOTO", label_avatar: "AVATAR" },
+        es: { q_whiskey: "«Cada broma tiene un poco de whiskey»", q_champ: "«Nunca es suficiente champán»", btn_to_hall: "AL VESTÍBULO", btn_get_id: "OBTENER ID", btn_save: "GUARDAR", btn_confirm: "CONFIRM", btn_enter: "ENTRAR AL BAR", label_photo: "FOTO", label_avatar: "AVATAR" },
+        cn: { q_whiskey: "«每个笑话都有一点威士忌»", q_champ: "«香槟永远不嫌多»", btn_to_hall: "前往大厅", btn_get_id: "获取ID", btn_save: "保存", btn_confirm: "确认", btn_enter: "进入酒吧", label_photo: "照片", label_avatar: "头像" },
+        jp: { q_whiskey: "«すべてのジョークにはウィスキーが含まれている»", q_champ: "«シャンパンはいくらあっても足りない»", btn_to_hall: "ホールへ", btn_get_id: "IDを取得", btn_save: "保存", btn_confirm: "確認", btn_enter: "バーに入る", label_photo: "写真", label_avatar: "アバター" },
+        ae: { q_whiskey: "«كل نكتة فيها ذرة من الويسكي»", q_champ: "«الشمبانيا لا تكفي أبدا»", btn_to_hall: "المضي قدما إلى القاعة", btn_get_id: "احصل على معرف", btn_save: "حفظ", btn_confirm: "تأكيد", btn_enter: "ادخل إلى البار", label_photo: "صورة", label_avatar: "الصورة الرمزية" },
+        br: { q_whiskey: "«Toda piada tem um fondo de uísque»", q_champ: "«Champanhe nunca é demais»", btn_to_hall: "IR PARA O HALL", btn_get_id: "OBTER ID", btn_save: "SALVAR", btn_confirm: "CONFIRMAR", btn_enter: "ENTRAR NO BAR", label_photo: "FOTO", label_avatar: "AVATAR" }
     };
 </script>
 <script src="shared-logic.js"></script>
