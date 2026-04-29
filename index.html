@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club 18 | TOTAL MONOLITH</title>
+    <title>GY-GY Club |015 TOTAL MONOLITH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -13,20 +13,32 @@
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin: 0; padding: 0; }
         
+        /* СТРЕЛКА ВОЗВРАТА */
         .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; display: none; }
+
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
         .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
         .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 50vh; overflow-y: auto; z-index: 10001; }
         .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
         .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
+
+        /* ЛОГОТИП */
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; }
 
+        /* БЛОКИ */
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
         .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
+
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 25px; }
         .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
+        /* ЭЛЕМЕНТЫ КАРТОЧКИ */
+        .id-card-hall { width: 230px; padding: 20px; border: 2px solid var(--gold); background: var(--paper); border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        
+        /* АНИМАЦИИ */
         .horse-light { max-height: 40vh; margin-bottom: 10px; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); animation: horse-pulse 3s infinite alternate ease-in-out; }
         @keyframes horse-pulse { 0% { filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4)); transform: scale(1); } 100% { filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.8)); transform: scale(1.02); } }
         #main-door { width: 280px; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; }
@@ -42,7 +54,7 @@
 
     <div class="lang-gateway" id="gy-lang-root">
         <button class="btn-main-lang" onclick="toggleMenu()">
-            <img id="current-lang-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
+            <img id="current-lang-flag" src="https://flagcdn.com/w20/ru.png" class="flag-icon">
             <span id="current-lang-label">RU</span>
         </button>
         <div id="lang-list-12" class="lang-panel"></div>
@@ -63,22 +75,62 @@
     </div>
 
     <div id="block-identity" class="block">
-        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK</button>
+        <div class="quote-text" data-t="q_champ">...</div>
+        <div style="display:flex; gap:10px; margin-bottom:25px;">
+            <div class="box-final" id="id-label">#ID</div>
+            <div class="box-final" id="qr-box-reg"></div>
+            <div class="box-final" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
+                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="txt-photo" data-t="label_photo">ФОТО</span>
+            </div>
+            <div class="box-final" onclick="generateAvatar()">
+                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="txt-avatar" data-t="label_avatar">GEN<br>AVATAR</span>
+            </div>
+        </div>
+        <button id="btn-save" class="btn-gy" onclick="swapButtons('btn-save', 'btn-pass')" data-t="btn_save">...</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-t="btn_to_hall">...</button>
+    </div>
+
+    <div id="block-hall" class="block">
+        <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; opacity:0.6; z-index:15;"></div>
+        <div class="id-card-hall">
+            <div id="h-id" style="font-weight:900; margin-bottom:10px;">#ID</div>
+            <div style="display:flex; gap:10px; margin-bottom:12px;">
+                <div class="box-final"><img id="h-photo" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div class="box-final" id="h-qr"></div>
+            </div>
+            <button id="btn-confirm" class="btn-gy" style="color:#000; border-color:#000;" onclick="swapButtons('btn-confirm', 'btn-enter-bar')" data-t="btn_confirm">...</button>
+            <button id="btn-enter-bar" class="btn-gy btn-sleep" style="color:#000; border-color:#000;" onclick="window.location.href='bar.html'" data-t="btn_enter">...</button>
+        </div>
     </div>
 
 <script>
-    /* ПЕРЕМЕННЫЕ УПРАВЛЕНИЯ */
+    let currentID = localStorage.getItem('gy_trace') || "";
     let navigationHistory = ['block-entrance'];
-    const tg = window.Telegram?.WebApp;
 
     function handleDoor() {
         document.getElementById('snd-door').play();
         document.getElementById('main-door').style.transform = "scale(5)"; 
         document.getElementById('main-door').style.opacity = "0";
+        if (!currentID) currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+        localStorage.setItem('gy_trace', currentID);
+        updateIDUI(currentID);
         setTimeout(() => { 
             portalTransition('block-welcome'); 
             document.getElementById('snd-ambient').play();
         }, 1800);
+    }
+
+    function updateIDUI(id) {
+        if(document.getElementById('id-label')) document.getElementById('id-label').innerText = id;
+        if(document.getElementById('h-id')) document.getElementById('h-id').innerText = id;
+        const qrs = ['qr-box-reg', 'h-qr'];
+        qrs.forEach(idName => {
+            const el = document.getElementById(idName);
+            if(el) { el.innerHTML = ""; new QRCode(el, { text: id, width: 85, height: 85 }); }
+        });
     }
 
     function portalTransition(nextId) {
@@ -91,12 +143,13 @@
         setTimeout(() => {
             const n = document.getElementById(nextId);
             if (nextId === 'block-entrance') {
-                const d = document.getElementById('main-door');
-                d.style.transform = "scale(1)"; d.style.opacity = "1";
+                const door = document.getElementById('main-door');
+                door.style.transform = "scale(1)"; door.style.opacity = "1";
                 document.getElementById('snd-ambient').pause();
             }
             n.style.display = "flex";
-            setTimeout(() => { n.classList.add('active'); n.style.opacity = "1"; 
+            setTimeout(() => { 
+                n.classList.add('active'); n.style.opacity = "1"; 
                 document.getElementById('global-back').style.display = (nextId === 'block-entrance') ? 'none' : 'block';
             }, 50);
         }, 650);
@@ -109,10 +162,35 @@
         }
     }
 
+    function preview(i) {
+        if(i.files && i.files[0]) {
+            const r = new FileReader();
+            r.onload = (e) => { 
+                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
+                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
+            };
+            r.readAsDataURL(i.files[0]);
+        }
+    }
+
+    function generateAvatar() {
+        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+        document.getElementById('avatar-img').src = url; document.getElementById('avatar-img').style.display = "block";
+        document.getElementById('h-photo').src = url; document.getElementById('txt-avatar').style.display = "none";
+    }
+
+    function swapButtons(a, s) { 
+        document.getElementById(a).classList.add('btn-sleep'); 
+        document.getElementById(s).classList.remove('btn-sleep'); 
+        if(a === 'btn-save') document.getElementById('btn-w-hall').classList.remove('btn-sleep');
+    }
+
     function toggleMenu() {
         const list = document.getElementById('lang-list-12');
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
+
+    window.onload = () => { if(currentID) updateIDUI(currentID); };
 </script>
 <script src="shared-logic.js"></script>
 </body>
