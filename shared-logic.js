@@ -1,4 +1,4 @@
-/* . [BLOCK: SHARED_LOGIC_v5.3_STRICT_STYLE] */
+/* . [BLOCK: SHARED_LOGIC_v5.4_STABLE] */
 const langs = [
     {c:'ru', n:'РУССКИЙ', f:'ru'}, {c:'en', n:'ENGLISH', f:'gb'},
     {c:'uk', n:'УКРАЇНСЬКА', f:'ua'}, {c:'pl', n:'POLSKI', f:'pl'},
@@ -9,13 +9,9 @@ const langs = [
 ];
 
 function initShared() {
-    // Находим контейнеры, которые УЖЕ есть в твоем HTML
     const listContainer = document.getElementById('lang-list-12');
-    const flagImg = document.getElementById('current-lang-flag');
-    const label = document.getElementById('current-lang-label');
-
+    
     if (listContainer) {
-        // Наполняем список, используя ШРИФТЫ ИЗ ТВОЕГО CSS (inherit)
         listContainer.innerHTML = langs.map(l => `
             <button class="lang-btn" onclick="applyTranslation('${l.c}', '${l.f}', '${l.n}')" style="width: 100%; padding: 10px; background: #000; color: #D4AF37; border: none; border-bottom: 1px solid rgba(212,175,55,0.1); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; font-size: 13px;">
                 <img src="https://flagcdn.com/w20/${l.f}.png" width="20"> ${l.n}
@@ -33,7 +29,6 @@ function applyTranslation(code, flag, name) {
     const label = document.getElementById('current-lang-label');
     
     if (flagImg) flagImg.src = `https://flagcdn.com/w40/${flag}.png`;
-    // Показываем только короткий код (RU, EN) в кнопке, чтобы не ломать верстку
     if (label) label.innerText = code.toUpperCase(); 
 
     if (typeof dictionary !== 'undefined') {
