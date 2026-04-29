@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Регистрация 231</title>
+    <title>GY-GY | Регистрация</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
+        
         body { 
             width: 100%; height: 100vh; background: #000; color: var(--gold); 
             font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; 
             overflow: hidden; display: flex; flex-direction: column; 
             align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.8s ease; 
+            opacity: 0; transition: opacity 0.4s ease; /* Ускорили переход, чтобы меньше «прыгало» */
         }
 
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        /* ЖЕСТКАЯ ФИКСАЦИЯ АТРИБУТОВ (чтобы не прыгали) */
+        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; width: 50px; height: 50px; }
+        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; line-height: 1; }
         .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
-        .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 50vh; overflow-y: auto; z-index: 10001; }
-        .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
-        .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
 
-        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 35px; }
 
         .reg-grid { display: flex; gap: 10px; margin-bottom: 35px; }
@@ -35,11 +32,19 @@
             overflow: hidden; position: relative; cursor: pointer;
             color: rgba(0, 0, 0, 0.4); font-size: 10px; font-weight: 900; text-align: center;
         }
-        .box-final img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
+        
+        /* Стили для изображений внутри квадратов */
+        .box-final img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none; background: #FFF; }
+        .box-final span { position: relative; z-index: 1; pointer-events: none; }
         #id-label { color: #000; font-size: 11px; z-index: 1; }
 
-        .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
+        .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.2s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
+
+        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 50vh; overflow-y: auto; z-index: 10001; }
+        .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
+        .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
     </style>
 </head>
 <body>
@@ -47,6 +52,7 @@
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
 
     <div class="back-nav" onclick="fadeOutAndLink('index.html')">«</div>
+    <div class="ui-header-right">GY-GY</div>
 
     <div class="lang-gateway" id="gy-lang-root">
         <button class="btn-main-lang" onclick="toggleMenu()">
@@ -56,20 +62,20 @@
         <div id="lang-list-12" class="lang-panel"></div>
     </div>
 
-    <div class="ui-header-right">GY-GY</div>
-
     <div class="quote-text" data-t="q_champ">«Шампанского много не бывает»</div>
 
     <div class="reg-grid">
         <div class="box-final" id="id-label">#ID</div>
         <div class="box-final" id="qr-box-reg"></div>
+        
         <div class="box-final" onclick="document.getElementById('file-input').click()">
             <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-            <img id="pp">
+            <img id="img-photo">
             <span data-t="label_photo">ФОТО</span>
         </div>
+        
         <div class="box-final" onclick="generateAvatar()">
-            <img id="avatar-img">
+            <img id="img-avatar">
             <span data-t="label_avatar">АВАТАР</span>
         </div>
     </div>
@@ -84,10 +90,10 @@
         window.addEventListener('DOMContentLoaded', () => {
             document.body.style.opacity = "1";
             
-            // Пытаемся запустить звук (браузеры могут блокировать до клика)
+            // Звук: пытаемся играть сразу
             const ambient = document.getElementById('snd-ambient');
+            ambient.volume = 0.5; // Начни с половинной громкости, чтобы не «прыгало» по ушам
             ambient.play().catch(() => {
-                // Если заблокировано, включаем по первому клику на странице
                 window.addEventListener('click', () => ambient.play(), { once: true });
             });
 
@@ -99,12 +105,16 @@
             new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
         });
 
+        // Работают в паре: если одно выбираем, другое прячем
         function preview(i) {
             if(i.files && i.files[0]) {
                 const r = new FileReader();
                 r.onload = (e) => { 
-                    const img = document.getElementById('pp');
-                    img.src = e.target.result; img.style.display = "block";
+                    // Показываем ФОТО, прячем АВАТАР
+                    const p = document.getElementById('img-photo');
+                    const a = document.getElementById('img-avatar');
+                    p.src = e.target.result; p.style.display = "block";
+                    a.style.display = "none";
                     localStorage.setItem('gy_user_img', e.target.result);
                 };
                 r.readAsDataURL(i.files[0]);
@@ -113,8 +123,11 @@
 
         function generateAvatar() {
             const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-            const img = document.getElementById('avatar-img');
-            img.src = url; img.style.display = "block";
+            // Показываем АВАТАР, прячем ФОТО
+            const p = document.getElementById('img-photo');
+            const a = document.getElementById('img-avatar');
+            a.src = url; a.style.display = "block";
+            p.style.display = "none";
             localStorage.setItem('gy_user_img', url);
         }
 
@@ -125,7 +138,13 @@
 
         function fadeOutAndLink(url) {
             document.body.style.opacity = "0";
-            setTimeout(() => { window.location.href = url; }, 800);
+            // Плавное затихание звука перед уходом
+            const ambient = document.getElementById('snd-ambient');
+            const fadeSnd = setInterval(() => {
+                if (ambient.volume > 0.1) ambient.volume -= 0.1;
+                else { ambient.pause(); clearInterval(fadeSnd); }
+            }, 50);
+            setTimeout(() => { window.location.href = url; }, 500);
         }
 
         function toggleMenu() {
