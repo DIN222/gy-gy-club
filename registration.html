@@ -9,41 +9,26 @@
     <style>
         :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; -webkit-user-select: none; user-select: none; }
-        
-        body { 
-            width: 100%; height: 100vh; background: #000; color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; 
-            overflow: hidden; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.4s ease; /* Ускорили переход, чтобы меньше «прыгало» */
-        }
+        body { width: 100%; height: 100vh; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; }
 
-        /* ЖЕСТКАЯ ФИКСАЦИЯ АТРИБУТОВ (чтобы не прыгали) */
-        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; width: 50px; height: 50px; }
+        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; width: 50px; }
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; line-height: 1; }
         .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
 
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 35px; }
-
         .reg-grid { display: flex; gap: 10px; margin-bottom: 35px; }
-        .box-final { 
-            width: 85px; height: 85px; border: 1px solid var(--gold); background: #FFF; 
-            display: flex; align-items: center; justify-content: center; 
-            overflow: hidden; position: relative; cursor: pointer;
-            color: rgba(0, 0, 0, 0.4); font-size: 10px; font-weight: 900; text-align: center;
-        }
+        .box-final { width: 85px; height: 85px; border: 1px solid var(--gold); background: #FFF; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; }
         
-        /* Стили для изображений внутри квадратов */
         .box-final img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none; background: #FFF; }
-        .box-final span { position: relative; z-index: 1; pointer-events: none; }
-        #id-label { color: #000; font-size: 11px; z-index: 1; }
+        .box-final span { position: relative; z-index: 1; color: rgba(0, 0, 0, 0.4); font-size: 10px; font-weight: 900; text-align: center; }
+        #id-label { color: #000; font-size: 11px; z-index: 1; font-weight: 900; }
 
         .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.2s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
-        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 50vh; overflow-y: auto; z-index: 10001; }
+        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; z-index: 10001; }
         .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
-        .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
+        .lang-btn { width: 100%; padding: 12px; background: none; border: none; color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; width: 100%; text-align: left; }
         .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
     </style>
 </head>
@@ -54,7 +39,7 @@
     <div class="back-nav" onclick="fadeOutAndLink('index.html')">«</div>
     <div class="ui-header-right">GY-GY</div>
 
-    <div class="lang-gateway" id="gy-lang-root">
+    <div class="lang-gateway">
         <button class="btn-main-lang" onclick="toggleMenu()">
             <img id="current-lang-flag" src="https://flagcdn.com/w20/ru.png" class="flag-icon">
             <span id="current-lang-label">RU</span>
@@ -67,13 +52,11 @@
     <div class="reg-grid">
         <div class="box-final" id="id-label">#ID</div>
         <div class="box-final" id="qr-box-reg"></div>
-        
         <div class="box-final" onclick="document.getElementById('file-input').click()">
             <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
             <img id="img-photo">
             <span data-t="label_photo">ФОТО</span>
         </div>
-        
         <div class="box-final" onclick="generateAvatar()">
             <img id="img-avatar">
             <span data-t="label_avatar">АВАТАР</span>
@@ -85,17 +68,21 @@
 
     <script src="shared-logic.js"></script>
     <script>
+        const ambient = document.getElementById('snd-ambient');
         let currentID = localStorage.getItem('gy_trace');
 
         window.addEventListener('DOMContentLoaded', () => {
             document.body.style.opacity = "1";
             
-            // Звук: пытаемся играть сразу
-            const ambient = document.getElementById('snd-ambient');
-            ambient.volume = 0.5; // Начни с половинной громкости, чтобы не «прыгало» по ушам
+            // Подхватываем время звука
+            const savedTime = localStorage.getItem('gy_music_time');
+            if (savedTime) ambient.currentTime = parseFloat(savedTime);
+            
+            ambient.volume = 0;
             ambient.play().catch(() => {
-                window.addEventListener('click', () => ambient.play(), { once: true });
+                window.addEventListener('click', () => { ambient.play(); fadeIn(ambient); }, { once: true });
             });
+            fadeIn(ambient);
 
             if (!currentID) {
                 currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
@@ -105,16 +92,17 @@
             new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
         });
 
-        // Работают в паре: если одно выбираем, другое прячем
+        setInterval(() => {
+            if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime);
+        }, 1000);
+
         function preview(i) {
             if(i.files && i.files[0]) {
                 const r = new FileReader();
                 r.onload = (e) => { 
-                    // Показываем ФОТО, прячем АВАТАР
-                    const p = document.getElementById('img-photo');
-                    const a = document.getElementById('img-avatar');
-                    p.src = e.target.result; p.style.display = "block";
-                    a.style.display = "none";
+                    document.getElementById('img-photo').src = e.target.result;
+                    document.getElementById('img-photo').style.display = "block";
+                    document.getElementById('img-avatar').style.display = "none";
                     localStorage.setItem('gy_user_img', e.target.result);
                 };
                 r.readAsDataURL(i.files[0]);
@@ -123,11 +111,9 @@
 
         function generateAvatar() {
             const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-            // Показываем АВАТАР, прячем ФОТО
-            const p = document.getElementById('img-photo');
-            const a = document.getElementById('img-avatar');
-            a.src = url; a.style.display = "block";
-            p.style.display = "none";
+            document.getElementById('img-avatar').src = url;
+            document.getElementById('img-avatar').style.display = "block";
+            document.getElementById('img-photo').style.display = "none";
             localStorage.setItem('gy_user_img', url);
         }
 
@@ -138,13 +124,20 @@
 
         function fadeOutAndLink(url) {
             document.body.style.opacity = "0";
-            // Плавное затихание звука перед уходом
-            const ambient = document.getElementById('snd-ambient');
-            const fadeSnd = setInterval(() => {
-                if (ambient.volume > 0.1) ambient.volume -= 0.1;
-                else { ambient.pause(); clearInterval(fadeSnd); }
+            localStorage.setItem('gy_music_time', ambient.currentTime);
+            let vol = ambient.volume;
+            const fade = setInterval(() => {
+                if (vol > 0.05) { vol -= 0.05; ambient.volume = vol; }
+                else { clearInterval(fade); window.location.href = url; }
+            }, 40);
+        }
+
+        function fadeIn(audio) {
+            let vol = 0;
+            const fade = setInterval(() => {
+                if (vol < 0.5) { vol += 0.05; audio.volume = vol; }
+                else { clearInterval(fade); }
             }, 50);
-            setTimeout(() => { window.location.href = url; }, 500);
         }
 
         function toggleMenu() {
