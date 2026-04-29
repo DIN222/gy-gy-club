@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Регистрация</title>
+    <title>GY-GY | Регистрация 231</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -17,18 +17,20 @@
             opacity: 0; transition: opacity 0.8s ease; 
         }
 
-        /* Постоянные атрибуты */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
+        .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); border-top: none; max-height: 50vh; overflow-y: auto; z-index: 10001; }
+        .lang-btn { width: 100%; padding: 12px; background: none; border: none; border-bottom: 1px solid rgba(212, 175, 55, 0.1); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 11px; font-family: inherit; text-align: left; }
+        .flag-icon { width: 20px; border: 0.5px solid var(--gold); }
+
         .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; }
-
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 35px; }
 
-        /* Квадраты регистрации */
         .reg-grid { display: flex; gap: 10px; margin-bottom: 35px; }
         .box-final { 
-            width: 85px; height: 85px; 
-            border: 1px solid var(--gold); /* Тонкая золотая рамка */
-            background: #FFF;             /* Белый фон */
+            width: 85px; height: 85px; border: 1px solid var(--gold); background: #FFF; 
             display: flex; align-items: center; justify-content: center; 
             overflow: hidden; position: relative; cursor: pointer;
             color: rgba(0, 0, 0, 0.4); font-size: 10px; font-weight: 900; text-align: center;
@@ -36,15 +38,24 @@
         .box-final img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; display: none; }
         #id-label { color: #000; font-size: 11px; z-index: 1; }
 
-        /* Кнопки */
         .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: inherit; transition: 0.3s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
-        .rtl { direction: rtl; }
     </style>
 </head>
 <body>
 
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
+
     <div class="back-nav" onclick="fadeOutAndLink('index.html')">«</div>
+
+    <div class="lang-gateway" id="gy-lang-root">
+        <button class="btn-main-lang" onclick="toggleMenu()">
+            <img id="current-lang-flag" src="https://flagcdn.com/w20/ru.png" class="flag-icon">
+            <span id="current-lang-label">RU</span>
+        </button>
+        <div id="lang-list-12" class="lang-panel"></div>
+    </div>
+
     <div class="ui-header-right">GY-GY</div>
 
     <div class="quote-text" data-t="q_champ">«Шампанского много не бывает»</div>
@@ -72,6 +83,14 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             document.body.style.opacity = "1";
+            
+            // Пытаемся запустить звук (браузеры могут блокировать до клика)
+            const ambient = document.getElementById('snd-ambient');
+            ambient.play().catch(() => {
+                // Если заблокировано, включаем по первому клику на странице
+                window.addEventListener('click', () => ambient.play(), { once: true });
+            });
+
             if (!currentID) {
                 currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
                 localStorage.setItem('gy_trace', currentID);
@@ -107,6 +126,11 @@
         function fadeOutAndLink(url) {
             document.body.style.opacity = "0";
             setTimeout(() => { window.location.href = url; }, 800);
+        }
+
+        function toggleMenu() {
+            const list = document.getElementById('lang-list-12');
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
         }
     </script>
 </body>
