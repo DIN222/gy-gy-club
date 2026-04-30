@@ -1,71 +1,77 @@
 /**
- * GY-GY CLUB CORE AGENT
- * @version 2.8.0
- * @property {string} mode - Deep Research & Digital City
- * @property {string} humor_level - Permanent Attribute
+ * GY-GY CLUB CORE AGENT v.2.8.0
+ * Интеллектуальный вход, звук и динамика.
  */
 
 const Agent = {
     version: "2.8.0",
-    
-    init() {
-        console.log(`Гы-гы! Агент v.${this.version} заступил на смену.`);
-        const trace = this.getCookie('gy_trace');
+    slogans: [], // Загрузится из langs.json
+
+    async init() {
+        console.log(`Гы-гы! Агент v.${this.version} активен.`);
         
-        // Автоматическое назначение аватара и ника
-        if (trace) {
-            this.setupResident(trace);
+        // 1. Распознавание (куки / цифровой след)
+        const userTrace = this.getCookie('gy_trace');
+        if (userTrace) {
+            this.setupResident(userTrace);
         } else {
             this.setupGuest();
         }
-        this.startHeartbeat();
+
+        // 2. Запуск сердца (слоганы)
+        this.startSlogans();
     },
 
     async enterClub() {
+        // Звуки из твоего репозитория
         try {
             document.getElementById('snd-click').play();
             
-            // Запуск анимации открытия дверей из репозитория
-            const doors = document.querySelectorAll('.door');
-            doors.forEach(d => d.classList.add('open'));
+            // Открываем двери
+            document.querySelector('.door-left').classList.add('open');
+            document.querySelector('.door-right').classList.add('open');
             
-            document.getElementById('snd-door').play();
-            document.getElementById('main-stage').classList.remove('content-blur');
-            
-            // Логирование входа для статистики города
-            this.logEntry();
+            setTimeout(() => {
+                document.getElementById('snd-door').play();
+                document.getElementById('main-stage').classList.remove('content-blur');
+                document.getElementById('main-stage').style.pointerEvents = 'auto';
+            }, 300);
+
         } catch (e) {
-            console.error("Произошло разрушение конструкции в v.2.8.0: ", e);
+            console.warn("Звук заблокирован браузером до первого клика.");
         }
     },
 
-    // Интеллектуальный ротатор слоганов (без пошлости)
-    startHeartbeat() {
-        const slogans = [
+    startSlogans() {
+        // Пример интеллектуальных слоганов (в идеале тянем из langs.json)
+        const list = [
             "Интеллект — это когда гы-гы уместно.",
-            "Твой цифровой след пахнет успехом.",
+            "Твой цифровой след ведет к нам.",
             "Синхронный перевод душ запущен.",
             "Вход только для тех, кто понимает иронию кода."
         ];
         
-        const updateSlogan = () => {
-            const box = document.getElementById('slogan-text');
-            if(box) {
-                box.style.opacity = 0;
+        const update = () => {
+            const el = document.getElementById('slogan-text');
+            if (el) {
+                el.style.opacity = 0;
                 setTimeout(() => {
-                    box.innerText = slogans[Math.floor(Math.random() * slogans.length)];
-                    box.style.opacity = 1;
+                    el.innerText = list[Math.floor(Math.random() * list.length)];
+                    el.style.opacity = 1;
                 }, 500);
             }
         };
-
-        updateSlogan();
-        setInterval(updateSlogan, 12000); 
+        update();
+        setInterval(update, 10000);
     },
 
     getCookie(name) {
         let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
         return matches ? decodeURIComponent(matches[1]) : undefined;
+    },
+
+    toggleFlags() {
+        document.getElementById('flag-dropdown').classList.toggle('hidden');
     }
 };
 
