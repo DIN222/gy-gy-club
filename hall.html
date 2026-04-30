@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Холл</title>
+    <title>GY-GY |001 Холл</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --black: #000; }
@@ -13,25 +13,24 @@
             width: 100%; height: 100vh; margin: 0; padding: 0; overflow: hidden;
             background: var(--black); 
             font-family: 'Share Tech Mono', monospace;
-            opacity: 0; transition: opacity 1.5s ease; /* Очень плавный вход */
+            opacity: 0; transition: opacity 1.2s ease; 
         }
 
-        /* КАРТИНКА ХОЛЛА */
+        /* ТВОЯ КАРТИНКА ХОЛЛА */
         .hall-bg {
             position: fixed; inset: 0;
-            /* Ссылка на качественный интерьер бара */
-            background: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2000') no-repeat center center;
+            background: url('hall_bg_jpg.jpg') no-repeat center center; 
             background-size: cover;
-            filter: brightness(0.35) contrast(1.1) saturate(0.8);
+            filter: brightness(0.4) contrast(1.1); /* Затемнение, чтобы золото «горело» */
             z-index: -1;
         }
 
-        /* ПОСТОЯННЫЕ АТРИБУТЫ */
+        /* ПОСТОЯННЫЕ АТРИБУТЫ: ЛОГО И НАВИГАЦИЯ */
         .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; line-height: 1; }
         .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
 
-        /* СКВОЗНОЙ АВАТАР (Новый постоянный атрибут) */
+        /* ПОСТОЯННЫЙ АВАТАР (ЦИФРОВОЙ СЛЕД) */
         .user-identity-hub {
             position: fixed; top: 15px; right: 130px; z-index: 10003;
             cursor: pointer; transition: transform 0.3s;
@@ -42,19 +41,20 @@
             background: #fff; object-fit: cover; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
+        /* ГЛАВНЫЙ ЭКРАН */
         .hall-main {
             height: 100%; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; text-align: center;
         }
         
         .btn-action {
-            padding: 18px 45px; background: rgba(0,0,0,0.5); border: 1px solid var(--gold);
+            padding: 18px 45px; background: rgba(0,0,0,0.5); border: 2px solid var(--gold);
             color: var(--gold); font-weight: 900; font-family: inherit; cursor: pointer;
             backdrop-filter: blur(8px); transition: 0.5s; text-transform: uppercase;
         }
         .btn-action:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px var(--gold); }
 
-        /* Языки */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); z-index: 10001; }
         .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
     </style>
@@ -64,10 +64,11 @@
     <div class="hall-bg"></div>
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
 
-    <!-- ТРИАДА АТРИБУТОВ + АВАТАР -->
+    <!-- ТРИАДА АТРИБУТОВ: ЛОГО, ЯЗЫК, ВОЗВРАТ -->
     <div class="back-nav" onclick="fadeOutAndLink('registration.html')">«</div>
     <div class="ui-header-right">GY-GY</div>
 
+    <!-- АВАТАР КАК ПОСТОЯННЫЙ АТРИБУТ -->
     <div class="user-identity-hub" onclick="showDigitalTrace()">
         <img id="global-avatar" src="" class="avatar-circle">
     </div>
@@ -81,7 +82,7 @@
     </div>
 
     <div class="hall-main">
-        <button class="btn-action" onclick="alert('Гы-гы! Бармен занят, подождите.')">ПОДОЙТИ К СТОЙКЕ</button>
+        <button class="btn-action" onclick="alert('Гы-гы! Бармен отошел за льдом.')">ПОДОЙТИ К СТОЙКЕ</button>
     </div>
 
 <script src="shared-logic.js"></script>
@@ -91,11 +92,11 @@
     window.addEventListener('DOMContentLoaded', () => {
         document.body.style.opacity = "1";
         
-        // Подтягиваем аватар/фото
+        // 1. Идентификация (Avatar/ID)
         const userImg = localStorage.getItem('gy_user_img');
         if (userImg) document.getElementById('global-avatar').src = userImg;
 
-        // Звуковая магия
+        // 2. Ультра-плавный звук (подхват времени)
         const savedTime = localStorage.getItem('gy_music_time');
         if (savedTime) ambient.currentTime = parseFloat(savedTime);
         
@@ -115,8 +116,8 @@
     }
 
     function showDigitalTrace() {
-        const id = localStorage.getItem('gy_trace') || 'NONE';
-        alert(`ВАШ ЦИФРОВОЙ СЛЕД:\n${id}\n\nСтатус: В КЛУБЕ`);
+        const id = localStorage.getItem('gy_trace') || 'EMPTY';
+        alert(`ЦИФРОВОЙ СЛЕД:\n${id}\n\nСтатус: В КЛУБЕ`);
     }
 
     function fadeOutAndLink(url) {
@@ -135,6 +136,7 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
+    // Сохранение прогресса музыки
     setInterval(() => {
         if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime);
     }, 1000);
