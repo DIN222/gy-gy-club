@@ -1,8 +1,8 @@
 <!-- 
   PROJECT: GY-GY Club
   FILE: index.html
-  VERSION: 2.2.3
-  STATUS: 11 языков с полными именами и флагами. Рамки унифицированы.
+  VERSION: 2.3.3
+  STATUS: 12 ЯЗЫКОВ. English - стартовый. Рамки унифицированы.
   MARKER: .
 -->
 <!DOCTYPE html>
@@ -15,12 +15,12 @@
     <style>
         :root { --gold: #d4af37; --black: #000; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { width: 100%; height: 100vh; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; overflow: hidden; }
+        body { width: 100%; height: 100vh; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; overflow: hidden; opacity: 0; transition: opacity 0.6s ease; }
 
-        /* БЛОК ЯЗЫКА (11 ЯЗЫКОВ) */
+        /* ПОСТОЯННЫЙ АТРИБУТ: ЯЗЫКОВОЙ БЛОК (12 ЯЗЫКОВ) */
         .lang-gateway { 
             position: fixed; top: 20px; left: 20px; z-index: 20000; 
-            width: 200px; /* Фиксированная ширина для совпадения рамок */
+            width: 210px; /* Унифицированная ширина под длинные названия */
         }
         
         .btn-main-lang, .lang-item { 
@@ -34,36 +34,44 @@
         .lang-list { 
             display: none; position: absolute; top: 0; left: 0; 
             list-style: none; padding: 0; margin: 0; width: 100%;
-            background: #000; z-index: 20001;
+            background: #000; z-index: 20001; max-height: 540px; /* 12 элементов */
+            overflow-y: auto; border: 1.5px solid var(--gold);
         }
         .lang-list.show { display: block; }
         
-        .lang-item { border-top: none; transition: 0.3s; font-size: 13px; }
+        .lang-item { border: none; border-bottom: 0.5px solid rgba(212, 175, 55, 0.3); transition: 0.3s; font-size: 13px; }
+        .lang-item:last-child { border-bottom: none; }
         .lang-item:hover { background: var(--gold); color: #000; }
         
         .flag-icon { width: 22px; height: 15px; object-fit: cover; border: 0.5px solid rgba(212, 175, 55, 0.5); }
 
-        /* ПОСТОЯННЫЕ АТРИБУТЫ */
+        /* ПОСТОЯННЫЕ АТРИБУТЫ: ЛОГО И НАВИГАЦИЯ */
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 10001; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; cursor: pointer; color: var(--gold); }
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .block.active { display: flex; }
+        .back-nav { position: fixed; top: 15px; left: 240px; z-index: 10002; cursor: pointer; font-size: 45px; font-weight: 900; line-height: 0.6; color: var(--gold); }
+
+        /* КОНТЕНТ */
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: 0.6s; }
+        .block.active { display: flex; opacity: 1; }
         #main-door { width: 280px; cursor: pointer; transition: 2s; z-index: 10; }
+        .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: inherit; margin-top: 20px; }
     </style>
 </head>
-<body onload="document.body.style.opacity=1">
+<body onload="initPage()">
 
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
     <audio id="snd-door"><source src="door_open.mp3" type="audio/mpeg"></audio>
 
-    <!-- ЯЗЫКОВОЙ БЛОК (АТРИБУТ: ЛЕВЫЙ ВЕРХНИЙ УГОЛ) -->
+    <div class="back-nav" onclick="goBack()">«</div>
+
+    <!-- ТОТ САМЫЙ БЛОК: 12 ЯЗЫКОВ -->
     <div class="lang-gateway">
         <button class="btn-main-lang" onclick="toggleLangs()">
             <img id="current-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
             <span id="current-lang-name">ENGLISH</span>
         </button>
         <ul class="lang-list" id="lang-list">
-            <li class="lang-item" onclick="setLang('РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png" class="flag-icon"> РУССКИЙ</li>
             <li class="lang-item" onclick="setLang('ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png" class="flag-icon"> ENGLISH</li>
+            <li class="lang-item" onclick="setLang('РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png" class="flag-icon"> РУССКИЙ</li>
             <li class="lang-item" onclick="setLang('DEUTSCH', 'de')"><img src="https://flagcdn.com/w20/de.png" class="flag-icon"> DEUTSCH</li>
             <li class="lang-item" onclick="setLang('FRANÇAIS', 'fr')"><img src="https://flagcdn.com/w20/fr.png" class="flag-icon"> FRANÇAIS</li>
             <li class="lang-item" onclick="setLang('ESPAÑOL', 'es')"><img src="https://flagcdn.com/w20/es.png" class="flag-icon"> ESPAÑOL</li>
@@ -73,10 +81,10 @@
             <li class="lang-item" onclick="setLang('한국어', 'kr')"><img src="https://flagcdn.com/w20/kr.png" class="flag-icon"> 한국어</li>
             <li class="lang-item" onclick="setLang('العربية', 'sa')"><img src="https://flagcdn.com/w20/sa.png" class="flag-icon"> العربية</li>
             <li class="lang-item" onclick="setLang('БЕЛАРУСКАЯ', 'by')"><img src="https://flagcdn.com/w20/by.png" class="flag-icon"> БЕЛАРУСКАЯ</li>
+            <li class="lang-item" onclick="setLang('ҚАЗАҚША', 'kz')"><img src="https://flagcdn.com/w20/kz.png" class="flag-icon"> ҚАЗАҚША</li>
         </ul>
     </div>
 
-    <!-- ЛОГОТИП (АТРИБУТ: ПРАВЫЙ ВЕРХНИЙ УГОЛ) -->
     <div class="ui-header-right" onclick="portalTransition('block-welcome')">GY-GY</div>
 
     <div id="block-entrance" class="block active">
@@ -88,16 +96,13 @@
     </div>
 
 <script>
-    function toggleLangs() {
-        document.getElementById('lang-list').classList.toggle('show');
-    }
+    function initPage() { document.body.style.opacity = 1; }
+    function toggleLangs() { document.getElementById('lang-list').classList.toggle('show'); }
 
     function setLang(name, flag) {
         document.getElementById('current-lang-name').innerText = name;
         document.getElementById('current-flag').src = `https://flagcdn.com/w20/${flag}.png`;
         toggleLangs();
-        // Юмор — обязательный атрибут
-        console.log(`Гы-гы! Мы теперь понимаем ${name}.`);
     }
 
     function handleDoor() {
@@ -106,20 +111,26 @@
         door.style.transform = "scale(4)";
         door.style.opacity = "0";
         setTimeout(() => {
-            const ambient = document.getElementById('snd-ambient');
-            ambient.play();
+            document.getElementById('snd-ambient').play();
             portalTransition('block-welcome');
         }, 1200);
     }
 
-    function portalTransition(nextId) {
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
-        });
-        const target = document.getElementById(nextId);
-        target.style.display = 'flex';
-        setTimeout(() => target.classList.add('active'), 50);
+    function portalTransition(id) {
+        document.querySelectorAll('.block').forEach(b => { b.classList.remove('active'); b.style.display = 'none'; });
+        const next = document.getElementById(id);
+        next.style.display = 'flex';
+        setTimeout(() => next.classList.add('active'), 50);
+    }
+
+    function goBack() {
+        const isWelcome = document.getElementById('block-welcome').classList.contains('active');
+        if (isWelcome) {
+            portalTransition('block-entrance');
+            const door = document.getElementById('main-door');
+            door.style.transform = "scale(1)";
+            door.style.opacity = "1";
+        }
     }
 </script>
 </body>
