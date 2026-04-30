@@ -1,15 +1,14 @@
-/* Базовые настройки */
+/* PROJECT: GY-GY Club | v.2.8.1 */
 body.gate-keeper {
     margin: 0;
     padding: 0;
-    background: #0a0a0a;
+    background: #050505; /* Очень темный, но не мертвый черный */
     color: #fff;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: sans-serif;
     overflow: hidden;
-    height: 100vh;
 }
 
-/* ДВЕРИ ПОРТАЛА */
+/* ДВЕРИ — теперь они гарантированно видны */
 #portal-doors {
     position: fixed;
     top: 0;
@@ -17,72 +16,58 @@ body.gate-keeper {
     width: 100vw;
     height: 100vh;
     display: flex;
-    z-index: 1000;
+    z-index: 9999; /* Максимальный приоритет */
+    pointer-events: none; 
 }
 
 .door {
     width: 50%;
     height: 100%;
-    background: #151515;
+    background: #111;
     border: 1px solid #222;
-    transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+    transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
 }
+
+/* Состояния дверей */
+.door-left { transform: translateX(0); border-right: 1px solid #00ff00; }
+.door-right { transform: translateX(0); border-left: 1px solid #00ff00; }
 
 .door-left.open { transform: translateX(-100%); }
 .door-right.open { transform: translateX(100%); }
 
-/* ШАПКА (ПОСТОЯННЫЕ АТРИБУТЫ) */
+/* ШАПКА — должна быть ПОВЕРХ всего после открытия */
 .permanent-header {
     position: fixed;
     top: 0;
-    left: 0;
     width: 100%;
-    padding: 15px 30px;
+    z-index: 5000;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    padding: 10px 20px;
     box-sizing: border-box;
-    z-index: 500;
-    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
 }
 
-#main-logo { height: 60px; filter: drop-shadow(0 0 10px rgba(0,255,0,0.3)); }
-
-#dynamic-slogan-box {
-    font-size: 0.9rem;
-    color: #00ff00;
-    opacity: 0.8;
-    transition: opacity 0.5s;
-    font-style: italic;
-}
-
-/* АВАТАР И ФЛАГ */
-.avatar-wrapper {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-}
-
-#user-avatar { width: 100%; border-radius: 50%; border: 2px solid #333; }
-#user-flag { position: absolute; bottom: -2px; right: -2px; width: 20px; border: 1px solid #000; }
+#main-logo { height: 50px; }
 
 /* КОНТЕНТ */
-.content-blur { filter: blur(10px); pointer-events: none; }
-#welcome-zone {
+#main-stage {
+    position: relative;
+    z-index: 100;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
 }
 
 .gy-btn {
-    padding: 15px 40px;
+    padding: 20px 40px;
     background: #00ff00;
     color: #000;
     border: none;
     font-weight: bold;
     cursor: pointer;
-    text-transform: uppercase;
+    z-index: 101;
 }
+
+.hidden { display: none !important; }
