@@ -1,7 +1,18 @@
+/**
+ * GY-GY CLUB CORE AGENT
+ * @version 2.8.0
+ * @property {string} mode - Deep Research & Digital City
+ * @property {string} humor_level - Permanent Attribute
+ */
+
 const Agent = {
-    // 1. Идентификация по "цифровому следу"
+    version: "2.8.0",
+    
     init() {
+        console.log(`Гы-гы! Агент v.${this.version} заступил на смену.`);
         const trace = this.getCookie('gy_trace');
+        
+        // Автоматическое назначение аватара и ника
         if (trace) {
             this.setupResident(trace);
         } else {
@@ -10,32 +21,46 @@ const Agent = {
         this.startHeartbeat();
     },
 
-    // 2. Логика входа
     async enterClub() {
-        document.getElementById('snd-click').play();
-        
-        // Анимация дверей
-        document.querySelector('.door-left').classList.add('open');
-        document.querySelector('.door-right').classList.add('open');
-        document.getElementById('snd-door').play();
-
-        // Снимаем блюр с контента
-        document.getElementById('main-stage').classList.remove('content-blur');
-        
-        console.log("Гы-гы! Мы внутри.");
+        try {
+            document.getElementById('snd-click').play();
+            
+            // Запуск анимации открытия дверей из репозитория
+            const doors = document.querySelectorAll('.door');
+            doors.forEach(d => d.classList.add('open'));
+            
+            document.getElementById('snd-door').play();
+            document.getElementById('main-stage').classList.remove('content-blur');
+            
+            // Логирование входа для статистики города
+            this.logEntry();
+        } catch (e) {
+            console.error("Произошло разрушение конструкции в v.2.8.0: ", e);
+        }
     },
 
-    // 3. Динамические слоганы (Твой интеллектуальный ценз)
+    // Интеллектуальный ротатор слоганов (без пошлости)
     startHeartbeat() {
-        const slogans = ["Интеллект — это модно.", "Твой след ведет к нам.", "Гы-гы — это серьезно."]; // Будет из langs.json
-        setInterval(() => {
+        const slogans = [
+            "Интеллект — это когда гы-гы уместно.",
+            "Твой цифровой след пахнет успехом.",
+            "Синхронный перевод душ запущен.",
+            "Вход только для тех, кто понимает иронию кода."
+        ];
+        
+        const updateSlogan = () => {
             const box = document.getElementById('slogan-text');
-            box.style.opacity = 0;
-            setTimeout(() => {
-                box.innerText = slogans[Math.floor(Math.random() * slogans.length)];
-                box.style.opacity = 1;
-            }, 500);
-        }, 10000); // Пульс города — раз в 10 сек
+            if(box) {
+                box.style.opacity = 0;
+                setTimeout(() => {
+                    box.innerText = slogans[Math.floor(Math.random() * slogans.length)];
+                    box.style.opacity = 1;
+                }, 500);
+            }
+        };
+
+        updateSlogan();
+        setInterval(updateSlogan, 12000); 
     },
 
     getCookie(name) {
