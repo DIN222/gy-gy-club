@@ -3,138 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY |001 Холл</title>
+    <title>GY-GY | Холл</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; }
+        :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; -webkit-user-select: none; user-select: none; }
         
         body { 
             width: 100%; height: 100vh; margin: 0; padding: 0; overflow: hidden;
-            background: #000 url('hall_bg.jpg') no-repeat center center; /* Твоя картинка холла */
-            background-size: cover;
+            background: var(--black); 
             font-family: 'Share Tech Mono', monospace;
-            opacity: 0; transition: opacity 0.8s ease;
+            opacity: 0; transition: opacity 1.5s ease; /* Очень плавный вход */
         }
 
-        /* ПОСТОЯННЫЕ АТРИБУТЫ: ЖЕСТКАЯ ФИКСАЦИЯ */
-        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; width: 50px; }
+        /* КАРТИНКА ХОЛЛА */
+        .hall-bg {
+            position: fixed; inset: 0;
+            /* Ссылка на качественный интерьер бара */
+            background: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2000') no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.35) contrast(1.1) saturate(0.8);
+            z-index: -1;
+        }
+
+        /* ПОСТОЯННЫЕ АТРИБУТЫ */
+        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; line-height: 1; }
         .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
 
-        /* ИНТЕРФЕЙС ХОЛЛА */
-        .hall-content {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            padding-bottom: 50px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+        /* СКВОЗНОЙ АВАТАР (Новый постоянный атрибут) */
+        .user-identity-hub {
+            position: fixed; top: 15px; right: 130px; z-index: 10003;
+            cursor: pointer; transition: transform 0.3s;
+        }
+        .user-identity-hub:active { transform: scale(0.9); }
+        .avatar-circle {
+            width: 45px; height: 45px; border-radius: 50%; border: 2.5px solid var(--gold);
+            background: #fff; object-fit: cover; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
-        /* ПАНЕЛЬ ПОЛЬЗОВАТЕЛЯ (ID + AVATAR) */
-        .user-status {
-            display: flex; align-items: center; gap: 15px;
-            background: rgba(0,0,0,0.6); border: 1px solid var(--gold);
-            padding: 10px 20px; border-radius: 50px; margin-bottom: 20px;
+        .hall-main {
+            height: 100%; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; text-align: center;
         }
-        .user-avatar-mini { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; background: #fff; }
-        .user-id-text { color: var(--gold); font-weight: 900; font-size: 14px; }
-
+        
         .btn-action {
-            min-width: 280px; padding: 15px; background: rgba(212, 175, 55, 0.1);
-            border: 2px solid var(--gold); color: var(--gold); cursor: pointer;
-            text-transform: uppercase; font-weight: 900; font-family: inherit;
-            backdrop-filter: blur(5px); transition: 0.3s;
+            padding: 18px 45px; background: rgba(0,0,0,0.5); border: 1px solid var(--gold);
+            color: var(--gold); font-weight: 900; font-family: inherit; cursor: pointer;
+            backdrop-filter: blur(8px); transition: 0.5s; text-transform: uppercase;
         }
-        .btn-action:hover { background: var(--gold); color: #000; }
+        .btn-action:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px var(--gold); }
 
-        /* Языковая панель */
-        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1px solid var(--gold); z-index: 10001; }
-        .btn-main-lang { width: 100%; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        /* Языки */
+        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); z-index: 10001; }
+        .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
     </style>
 </head>
 <body>
 
+    <div class="hall-bg"></div>
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
 
-    <!-- Постоянные атрибуты -->
+    <!-- ТРИАДА АТРИБУТОВ + АВАТАР -->
     <div class="back-nav" onclick="fadeOutAndLink('registration.html')">«</div>
     <div class="ui-header-right">GY-GY</div>
+
+    <div class="user-identity-hub" onclick="showDigitalTrace()">
+        <img id="global-avatar" src="" class="avatar-circle">
+    </div>
 
     <div class="lang-gateway">
         <button class="btn-main-lang" onclick="toggleMenu()">
             <img id="current-lang-flag" src="https://flagcdn.com/w20/ru.png" style="width:20px;">
             <span id="current-lang-label">RU</span>
         </button>
-        <div id="lang-list-12" class="lang-panel">
-            <!-- Список языков из shared-logic.js -->
-        </div>
+        <div id="lang-list-12" class="lang-panel"></div>
     </div>
 
-    <div class="hall-content">
-        <!-- Мини-профиль пользователя -->
-        <div class="user-status">
-            <img id="hall-avatar" src="" class="user-avatar-mini">
-            <span id="hall-id" class="user-id-text">#ID-LOADING</span>
-        </div>
-
-        <button class="btn-action" onclick="alert('Гы-гы! Бар закрыт на спецобслуживание.')">ПОДОЙТИ К БАРУ</button>
+    <div class="hall-main">
+        <button class="btn-action" onclick="alert('Гы-гы! Бармен занят, подождите.')">ПОДОЙТИ К СТОЙКЕ</button>
     </div>
 
-    <script src="shared-logic.js"></script>
-    <script>
-        const ambient = document.getElementById('snd-ambient');
+<script src="shared-logic.js"></script>
+<script>
+    const ambient = document.getElementById('snd-ambient');
 
-        window.addEventListener('DOMContentLoaded', () => {
-            document.body.style.opacity = "1";
-            
-            // 1. Восстанавливаем звук
-            const savedTime = localStorage.getItem('gy_music_time');
-            if (savedTime) ambient.currentTime = parseFloat(savedTime);
-            
-            ambient.volume = 0;
-            ambient.play().catch(() => {
-                window.addEventListener('click', () => { ambient.play(); fadeIn(ambient); }, { once: true });
-            });
-            fadeIn(ambient);
+    window.addEventListener('DOMContentLoaded', () => {
+        document.body.style.opacity = "1";
+        
+        // Подтягиваем аватар/фото
+        const userImg = localStorage.getItem('gy_user_img');
+        if (userImg) document.getElementById('global-avatar').src = userImg;
 
-            // 2. Выводим данные пользователя
-            const userImg = localStorage.getItem('gy_user_img');
-            const userID = localStorage.getItem('gy_trace');
-            
-            if (userImg) {
-                const av = document.getElementById('hall-avatar');
-                av.src = userImg;
-                // Если это SVG от DiceBear, убедимся что оно отображается
-                av.onerror = () => { av.src = 'default_avatar.png'; };
-            }
-            if (userID) {
-                document.getElementById('hall-id').innerText = userID;
-            }
+        // Звуковая магия
+        const savedTime = localStorage.getItem('gy_music_time');
+        if (savedTime) ambient.currentTime = parseFloat(savedTime);
+        
+        ambient.volume = 0;
+        ambient.play().catch(() => {
+            window.addEventListener('click', () => { ambient.play(); smoothFadeIn(ambient); }, { once: true });
         });
+        smoothFadeIn(ambient);
+    });
 
-        // Сохраняем время звука каждую секунду
-        setInterval(() => {
-            if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime);
-        }, 1000);
+    function smoothFadeIn(audio) {
+        let v = 0;
+        const intr = setInterval(() => {
+            if (v < 0.4) { v += 0.02; audio.volume = v; }
+            else { clearInterval(intr); }
+        }, 120);
+    }
 
-        function fadeIn(audio) {
-            let vol = 0;
-            const fade = setInterval(() => {
-                if (vol < 0.5) { vol += 0.05; audio.volume = vol; }
-                else { clearInterval(fade); }
-            }, 50);
-        }
+    function showDigitalTrace() {
+        const id = localStorage.getItem('gy_trace') || 'NONE';
+        alert(`ВАШ ЦИФРОВОЙ СЛЕД:\n${id}\n\nСтатус: В КЛУБЕ`);
+    }
 
-        function fadeOutAndLink(url) {
-            document.body.style.opacity = "0";
-            localStorage.setItem('gy_music_time', ambient.currentTime);
-            setTimeout(() => { window.location.href = url; }, 800);
-        }
+    function fadeOutAndLink(url) {
+        document.body.style.opacity = "0";
+        localStorage.setItem('gy_music_time', ambient.currentTime);
+        
+        let v = ambient.volume;
+        const intr = setInterval(() => {
+            if (v > 0.02) { v -= 0.02; ambient.volume = v; }
+            else { clearInterval(intr); window.location.href = url; }
+        }, 50);
+    }
 
-        function toggleMenu() {
-            const list = document.getElementById('lang-list-12');
-            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-        }
-    </script>
+    function toggleMenu() {
+        const list = document.getElementById('lang-list-12');
+        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+    }
+
+    setInterval(() => {
+        if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime);
+    }, 1000);
+</script>
 </body>
 </html>
