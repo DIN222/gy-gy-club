@@ -9,10 +9,8 @@
         :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { width: 100%; height: 100vh; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; }
-        
         .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; font-size: 45px; font-weight: 900; line-height: 0.6; }
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; }
-        
         .reg-grid { display: flex; gap: 15px; margin-bottom: 30px; }
         .box-final { width: 85px; height: 85px; border: 1px solid var(--gold); background: #FFF; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         .box-final img { width: 100%; height: 100%; object-fit: cover; display: none; }
@@ -21,40 +19,26 @@
     </style>
 </head>
 <body onload="document.body.style.opacity='1'">
-
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
-
-    <!-- ИСПРАВЛЕННАЯ КНОПКА ВОЗВРАТА -->
     <div class="back-nav" onclick="fadeOutAndLink('index.html?back=true')">«</div>
     <div class="ui-header-right">GY-GY</div>
-
     <div class="reg-grid">
-        <div class="box-final" onclick="generateAvatar()">
-            <img id="img-avatar">
-            <span>АВАТАР</span>
-        </div>
+        <div class="box-final" onclick="generateAvatar()"><img id="img-avatar"><span>АВАТАР</span></div>
     </div>
-
     <button class="btn-gy" onclick="fadeOutAndLink('hall.html')">СОХРАНИТЬ И ВОЙТИ</button>
-
 <script>
     const ambient = document.getElementById('snd-ambient');
-
     window.addEventListener('DOMContentLoaded', () => {
         const savedTime = localStorage.getItem('gy_music_time');
         if (savedTime) ambient.currentTime = parseFloat(savedTime);
-        ambient.volume = 0.4;
-        ambient.play();
+        ambient.volume = 0.4; ambient.play();
     });
-
     function generateAvatar() {
         const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
         const img = document.getElementById('img-avatar');
-        img.src = url;
-        img.style.display = 'block';
+        img.src = url; img.style.display = 'block';
         localStorage.setItem('gy_user_img', url);
     }
-
     function fadeOutAndLink(url) {
         document.body.style.opacity = "0";
         localStorage.setItem('gy_music_time', ambient.currentTime);
