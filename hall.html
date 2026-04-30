@@ -3,143 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY |001 Холл</title>
+    <title>GY-GY | Холл</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; -webkit-user-select: none; user-select: none; }
-        
-        body { 
-            width: 100%; height: 100vh; margin: 0; padding: 0; overflow: hidden;
-            background: var(--black); 
-            font-family: 'Share Tech Mono', monospace;
-            opacity: 0; transition: opacity 1.2s ease; 
-        }
-
-        /* ТВОЯ КАРТИНКА ХОЛЛА */
-        .hall-bg {
-            position: fixed; inset: 0;
-            background: url('hall_bg_jpg.jpg') no-repeat center center; 
-            background-size: cover;
-            filter: brightness(0.4) contrast(1.1); /* Затемнение, чтобы золото «горело» */
-            z-index: -1;
-        }
-
-        /* ПОСТОЯННЫЕ АТРИБУТЫ: ЛОГО И НАВИГАЦИЯ */
+        body { width: 100%; height: 100vh; margin: 0; padding: 0; overflow: hidden; background: var(--black); font-family: 'Share Tech Mono', monospace; opacity: 0; transition: opacity 1.2s ease; }
+        .hall-bg { position: fixed; inset: 0; background: url('hall_bg_jpg.jpg') no-repeat center center; background-size: cover; filter: brightness(0.4) contrast(1.1); z-index: -1; }
         .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; line-height: 1; }
-        .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
-
-        /* ПОСТОЯННЫЙ АВАТАР (ЦИФРОВОЙ СЛЕД) */
-        .user-identity-hub {
-            position: fixed; top: 15px; right: 130px; z-index: 10003;
-            cursor: pointer; transition: transform 0.3s;
-        }
-        .user-identity-hub:active { transform: scale(0.9); }
-        .avatar-circle {
-            width: 45px; height: 45px; border-radius: 50%; border: 2.5px solid var(--gold);
-            background: #fff; object-fit: cover; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-
-        /* ГЛАВНЫЙ ЭКРАН */
-        .hall-main {
-            height: 100%; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; text-align: center;
-        }
-        
-        .btn-action {
-            padding: 18px 45px; background: rgba(0,0,0,0.5); border: 2px solid var(--gold);
-            color: var(--gold); font-weight: 900; font-family: inherit; cursor: pointer;
-            backdrop-filter: blur(8px); transition: 0.5s; text-transform: uppercase;
-        }
-        .btn-action:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px var(--gold); }
-
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
-        .lang-panel { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #000; border: 1.5px solid var(--gold); z-index: 10001; }
-        .btn-main-lang { width: 100%; padding: 10px; background: #000; border: 1.5px solid var(--gold); color: var(--gold); font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; line-height: 1; }
+        .user-identity-hub { position: fixed; top: 15px; right: 130px; z-index: 10003; cursor: pointer; transition: transform 0.3s; }
+        .avatar-circle { width: 45px; height: 45px; border-radius: 50%; border: 2.5px solid var(--gold); background: #fff; object-fit: cover; }
+        .hall-main { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .btn-action { padding: 18px 45px; background: rgba(0,0,0,0.5); border: 2px solid var(--gold); color: var(--gold); font-weight: 900; font-family: inherit; cursor: pointer; backdrop-filter: blur(8px); transition: 0.5s; text-transform: uppercase; }
     </style>
 </head>
 <body>
-
     <div class="hall-bg"></div>
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
-
-    <!-- ТРИАДА АТРИБУТОВ: ЛОГО, ЯЗЫК, ВОЗВРАТ -->
     <div class="back-nav" onclick="fadeOutAndLink('registration.html')">«</div>
     <div class="ui-header-right">GY-GY</div>
-
-    <!-- АВАТАР КАК ПОСТОЯННЫЙ АТРИБУТ -->
-    <div class="user-identity-hub" onclick="showDigitalTrace()">
+    <div class="user-identity-hub" onclick="alert('ID: ' + localStorage.getItem('gy_trace'))">
         <img id="global-avatar" src="" class="avatar-circle">
     </div>
-
-    <div class="lang-gateway">
-        <button class="btn-main-lang" onclick="toggleMenu()">
-            <img id="current-lang-flag" src="https://flagcdn.com/w20/ru.png" style="width:20px;">
-            <span id="current-lang-label">RU</span>
-        </button>
-        <div id="lang-list-12" class="lang-panel"></div>
-    </div>
-
-    <div class="hall-main">
-        <button class="btn-action" onclick="alert('Гы-гы! Бармен отошел за льдом.')">ПОДОЙТИ К СТОЙКЕ</button>
-    </div>
-
-<script src="shared-logic.js"></script>
+    <div class="hall-main"><button class="btn-action" onclick="alert('Гы-гы! Бармен отошел.')">ПОДОЙТИ К СТОЙКЕ</button></div>
 <script>
     const ambient = document.getElementById('snd-ambient');
-
     window.addEventListener('DOMContentLoaded', () => {
         document.body.style.opacity = "1";
-        
-        // 1. Идентификация (Avatar/ID)
         const userImg = localStorage.getItem('gy_user_img');
         if (userImg) document.getElementById('global-avatar').src = userImg;
-
-        // 2. Ультра-плавный звук (подхват времени)
         const savedTime = localStorage.getItem('gy_music_time');
         if (savedTime) ambient.currentTime = parseFloat(savedTime);
-        
-        ambient.volume = 0;
-        ambient.play().catch(() => {
-            window.addEventListener('click', () => { ambient.play(); smoothFadeIn(ambient); }, { once: true });
-        });
-        smoothFadeIn(ambient);
+        ambient.volume = 0; ambient.play(); smoothFadeIn(ambient);
     });
-
     function smoothFadeIn(audio) {
         let v = 0;
-        const intr = setInterval(() => {
-            if (v < 0.4) { v += 0.02; audio.volume = v; }
-            else { clearInterval(intr); }
-        }, 120);
+        const intr = setInterval(() => { if (v < 0.4) { v += 0.02; audio.volume = v; } else { clearInterval(intr); } }, 120);
     }
-
-    function showDigitalTrace() {
-        const id = localStorage.getItem('gy_trace') || 'EMPTY';
-        alert(`ЦИФРОВОЙ СЛЕД:\n${id}\n\nСтатус: В КЛУБЕ`);
-    }
-
     function fadeOutAndLink(url) {
         document.body.style.opacity = "0";
         localStorage.setItem('gy_music_time', ambient.currentTime);
-        
         let v = ambient.volume;
-        const intr = setInterval(() => {
-            if (v > 0.02) { v -= 0.02; ambient.volume = v; }
-            else { clearInterval(intr); window.location.href = url; }
-        }, 50);
+        const intr = setInterval(() => { if (v > 0.02) { v -= 0.02; ambient.volume = v; } else { clearInterval(intr); window.location.href = url; } }, 50);
     }
-
-    function toggleMenu() {
-        const list = document.getElementById('lang-list-12');
-        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-    }
-
-    // Сохранение прогресса музыки
-    setInterval(() => {
-        if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime);
-    }, 1000);
+    setInterval(() => { if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime); }, 1000);
 </script>
 </body>
 </html>
