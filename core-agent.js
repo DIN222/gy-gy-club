@@ -1,43 +1,23 @@
-/** 
- * GY-GY CORE AGENT v.2.8.1 
- * Фикс "Черного экрана"
- */
 const Agent = {
     init() {
-        console.log("Гы-гы! Пробуждение системы...");
-        
-        // Если через 2 секунды двери всё еще закрыты — пробуем открыть принудительно
-        setTimeout(() => {
-            const slogan = document.getElementById('slogan-text');
-            if (slogan && slogan.innerText === "...") {
-                slogan.innerText = "Система готова к гы-гыканью";
-            }
-        }, 1000);
-
-        // Наполняем кнопку текстом, если langs.json не ответил
-        const btn = document.getElementById('enter-btn');
-        if (btn) btn.innerText = "ENTER CLUB";
+        console.log("GY-GY Agent v.2.8.2 ready.");
+        document.getElementById('slogan-text').innerText = "Click ENTER to proceed";
     },
 
     enterClub() {
-        console.log("Открываем двери...");
-        try {
-            document.getElementById('snd-click').play();
-        } catch(e) {}
-
-        const dLeft = document.querySelector('.door-left');
-        const dRight = document.querySelector('.door-right');
+        console.log("Opening Doors...");
+        // Звук
+        try { document.getElementById('snd-click').play(); } catch(e) {}
         
-        if (dLeft && dRight) {
-            dLeft.classList.add('open');
-            dRight.classList.add('open');
-            
-            try {
-                setTimeout(() => document.getElementById('snd-door').play(), 200);
-            } catch(e) {}
-        }
+        // Анимация
+        document.querySelector('.door-left').classList.add('open');
+        document.querySelector('.door-right').classList.add('open');
         
-        document.getElementById('main-stage').style.filter = "none";
+        // Звук дверей
+        setTimeout(() => {
+            try { document.getElementById('snd-door').play(); } catch(e) {}
+            document.getElementById('gate-control').style.display = 'none'; // Убираем кнопку
+        }, 300);
     }
 };
 
