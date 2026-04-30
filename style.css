@@ -1,73 +1,30 @@
-/* PROJECT: GY-GY Club | v.2.8.1 */
-body.gate-keeper {
-    margin: 0;
-    padding: 0;
-    background: #050505; /* Очень темный, но не мертвый черный */
-    color: #fff;
-    font-family: sans-serif;
-    overflow: hidden;
-}
+body.gate-keeper { margin: 0; background: #000; overflow: hidden; color: #fff; font-family: sans-serif; }
 
-/* ДВЕРИ — теперь они гарантированно видны */
 #portal-doors {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    z-index: 9999; /* Максимальный приоритет */
-    pointer-events: none; 
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    display: flex; z-index: 9000; pointer-events: none;
 }
 
-.door {
-    width: 50%;
-    height: 100%;
-    background: #111;
-    border: 1px solid #222;
-    transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
-}
-
-/* Состояния дверей */
-.door-left { transform: translateX(0); border-right: 1px solid #00ff00; }
-.door-right { transform: translateX(0); border-left: 1px solid #00ff00; }
+.door { width: 50%; height: 100%; background: #111; transition: transform 1.2s ease-in-out; }
+.door-left { border-right: 1px solid #00ff00; } /* Твоя зеленая полоса */
+.door-right { border-left: 1px solid #00ff00; }
 
 .door-left.open { transform: translateX(-100%); }
 .door-right.open { transform: translateX(100%); }
 
-/* ШАПКА — должна быть ПОВЕРХ всего после открытия */
-.permanent-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 5000;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 20px;
-    box-sizing: border-box;
+/* КНОПКА ПОВЕРХ ВСЕГО */
+#gate-control {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000; /* Выше дверей! */
 }
 
+#enter-btn {
+    padding: 20px 50px; background: #00ff00; color: #000;
+    font-weight: bold; border: none; cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,255,0,0.5);
+}
+
+.permanent-header { position: fixed; top: 0; width: 100%; z-index: 5000; padding: 20px; }
 #main-logo { height: 50px; }
-
-/* КОНТЕНТ */
-#main-stage {
-    position: relative;
-    z-index: 100;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.gy-btn {
-    padding: 20px 40px;
-    background: #00ff00;
-    color: #000;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 101;
-}
-
-.hidden { display: none !important; }
+#slogan-text { color: #00ff00; font-size: 14px; margin-left: 10px; }
