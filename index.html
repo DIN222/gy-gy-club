@@ -1,8 +1,8 @@
 <!-- 
   PROJECT: GY-GY Club
   FILE: index.html
-  VERSION: 2.2.2
-  STATUS: Реализован блок из 11 языков. Фиксация атрибутов.
+  VERSION: 2.2.3
+  STATUS: 11 языков с полными именами и флагами. Рамки унифицированы.
   MARKER: .
 -->
 <!DOCTYPE html>
@@ -20,28 +20,31 @@
         /* БЛОК ЯЗЫКА (11 ЯЗЫКОВ) */
         .lang-gateway { 
             position: fixed; top: 20px; left: 20px; z-index: 20000; 
-            font-family: inherit;
+            width: 200px; /* Фиксированная ширина для совпадения рамок */
         }
-        .lang-list { 
-            display: none; position: absolute; top: 100%; left: 0; 
-            background: rgba(0,0,0,0.95); border: 1.5px solid var(--gold);
-            list-style: none; padding: 5px 0; margin: 5px 0 0 0; min-width: 120px;
-        }
-        .lang-list.show { display: block; }
-        .lang-item { 
-            padding: 8px 15px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            transition: 0.3s; font-size: 14px;
-        }
-        .lang-item:hover { background: var(--gold); color: #000; }
         
-        .btn-main-lang { 
-            padding: 8px 12px; background: #000; border: 1.5px solid var(--gold); 
-            color: var(--gold); font-weight: 900; cursor: pointer; 
-            display: flex; align-items: center; gap: 8px; font-family: inherit;
+        .btn-main-lang, .lang-item { 
+            width: 100%; height: 45px; background: #000; 
+            border: 1.5px solid var(--gold); color: var(--gold); 
+            font-weight: 900; cursor: pointer; display: flex; 
+            align-items: center; gap: 12px; font-family: inherit;
+            padding: 0 15px; text-transform: uppercase;
         }
 
-        /* ОСТАЛЬНЫЕ АТРИБУТЫ */
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 10001; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; cursor: pointer; }
+        .lang-list { 
+            display: none; position: absolute; top: 0; left: 0; 
+            list-style: none; padding: 0; margin: 0; width: 100%;
+            background: #000; z-index: 20001;
+        }
+        .lang-list.show { display: block; }
+        
+        .lang-item { border-top: none; transition: 0.3s; font-size: 13px; }
+        .lang-item:hover { background: var(--gold); color: #000; }
+        
+        .flag-icon { width: 22px; height: 15px; object-fit: cover; border: 0.5px solid rgba(212, 175, 55, 0.5); }
+
+        /* ПОСТОЯННЫЕ АТРИБУТЫ */
+        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 10001; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; cursor: pointer; color: var(--gold); }
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .block.active { display: flex; }
         #main-door { width: 280px; cursor: pointer; transition: 2s; z-index: 10; }
@@ -52,27 +55,28 @@
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
     <audio id="snd-door"><source src="door_open.mp3" type="audio/mpeg"></audio>
 
-    <!-- ЯЗЫКОВОЙ БЛОК (ВЕРХНИЙ ЛЕВЫЙ УГОЛ) -->
+    <!-- ЯЗЫКОВОЙ БЛОК (АТРИБУТ: ЛЕВЫЙ ВЕРХНИЙ УГОЛ) -->
     <div class="lang-gateway">
         <button class="btn-main-lang" onclick="toggleLangs()">
-            <img id="current-flag" src="https://flagcdn.com/w20/gb.png" style="width:20px;">
-            <span id="current-lang">EN</span>
+            <img id="current-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
+            <span id="current-lang-name">ENGLISH</span>
         </button>
         <ul class="lang-list" id="lang-list">
-            <li class="lang-item" onclick="setLang('RU', 'ru')"><img src="https://flagcdn.com/w20/ru.png" width="20"> RU</li>
-            <li class="lang-item" onclick="setLang('EN', 'gb')"><img src="https://flagcdn.com/w20/gb.png" width="20"> EN</li>
-            <li class="lang-item" onclick="setLang('DE', 'de')"><img src="https://flagcdn.com/w20/de.png" width="20"> DE</li>
-            <li class="lang-item" onclick="setLang('FR', 'fr')"><img src="https://flagcdn.com/w20/fr.png" width="20"> FR</li>
-            <li class="lang-item" onclick="setLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png" width="20"> ES</li>
-            <li class="lang-item" onclick="setLang('IT', 'it')"><img src="https://flagcdn.com/w20/it.png" width="20"> IT</li>
-            <li class="lang-item" onclick="setLang('CN', 'cn')"><img src="https://flagcdn.com/w20/cn.png" width="20"> CN</li>
-            <li class="lang-item" onclick="setLang('JP', 'jp')"><img src="https://flagcdn.com/w20/jp.png" width="20"> JP</li>
-            <li class="lang-item" onclick="setLang('KR', 'kr')"><img src="https://flagcdn.com/w20/kr.png" width="20"> KR</li>
-            <li class="lang-item" onclick="setLang('AR', 'sa')"><img src="https://flagcdn.com/w20/sa.png" width="20"> AR</li>
-            <li class="lang-item" onclick="setLang('BY', 'by')"><img src="https://flagcdn.com/w20/by.png" width="20"> BY</li>
+            <li class="lang-item" onclick="setLang('РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png" class="flag-icon"> РУССКИЙ</li>
+            <li class="lang-item" onclick="setLang('ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png" class="flag-icon"> ENGLISH</li>
+            <li class="lang-item" onclick="setLang('DEUTSCH', 'de')"><img src="https://flagcdn.com/w20/de.png" class="flag-icon"> DEUTSCH</li>
+            <li class="lang-item" onclick="setLang('FRANÇAIS', 'fr')"><img src="https://flagcdn.com/w20/fr.png" class="flag-icon"> FRANÇAIS</li>
+            <li class="lang-item" onclick="setLang('ESPAÑOL', 'es')"><img src="https://flagcdn.com/w20/es.png" class="flag-icon"> ESPAÑOL</li>
+            <li class="lang-item" onclick="setLang('ITALIANO', 'it')"><img src="https://flagcdn.com/w20/it.png" class="flag-icon"> ITALIANO</li>
+            <li class="lang-item" onclick="setLang('中文', 'cn')"><img src="https://flagcdn.com/w20/cn.png" class="flag-icon"> 中文</li>
+            <li class="lang-item" onclick="setLang('日本語', 'jp')"><img src="https://flagcdn.com/w20/jp.png" class="flag-icon"> 日本語</li>
+            <li class="lang-item" onclick="setLang('한국어', 'kr')"><img src="https://flagcdn.com/w20/kr.png" class="flag-icon"> 한국어</li>
+            <li class="lang-item" onclick="setLang('العربية', 'sa')"><img src="https://flagcdn.com/w20/sa.png" class="flag-icon"> العربية</li>
+            <li class="lang-item" onclick="setLang('БЕЛАРУСКАЯ', 'by')"><img src="https://flagcdn.com/w20/by.png" class="flag-icon"> БЕЛАРУСКАЯ</li>
         </ul>
     </div>
 
+    <!-- ЛОГОТИП (АТРИБУТ: ПРАВЫЙ ВЕРХНИЙ УГОЛ) -->
     <div class="ui-header-right" onclick="portalTransition('block-welcome')">GY-GY</div>
 
     <div id="block-entrance" class="block active">
@@ -88,11 +92,12 @@
         document.getElementById('lang-list').classList.toggle('show');
     }
 
-    function setLang(code, flag) {
-        document.getElementById('current-lang').innerText = code;
+    function setLang(name, flag) {
+        document.getElementById('current-lang-name').innerText = name;
         document.getElementById('current-flag').src = `https://flagcdn.com/w20/${flag}.png`;
         toggleLangs();
-        alert(`Гы-гы! Теперь мы говорим на ${code}. Но юмор остался прежним.`);
+        // Юмор — обязательный атрибут
+        console.log(`Гы-гы! Мы теперь понимаем ${name}.`);
     }
 
     function handleDoor() {
@@ -112,8 +117,9 @@
             b.classList.remove('active');
             b.style.display = 'none';
         });
-        document.getElementById(nextId).style.display = 'flex';
-        setTimeout(() => document.getElementById(nextId).classList.add('active'), 50);
+        const target = document.getElementById(nextId);
+        target.style.display = 'flex';
+        setTimeout(() => target.classList.add('active'), 50);
     }
 </script>
 </body>
