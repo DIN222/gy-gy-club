@@ -1,1 +1,88 @@
+/* Базовые настройки */
+body.gate-keeper {
+    margin: 0;
+    padding: 0;
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+}
 
+/* ДВЕРИ ПОРТАЛА */
+#portal-doors {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    z-index: 1000;
+}
+
+.door {
+    width: 50%;
+    height: 100%;
+    background: #151515;
+    border: 1px solid #222;
+    transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.door-left.open { transform: translateX(-100%); }
+.door-right.open { transform: translateX(100%); }
+
+/* ШАПКА (ПОСТОЯННЫЕ АТРИБУТЫ) */
+.permanent-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    z-index: 500;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+}
+
+#main-logo { height: 60px; filter: drop-shadow(0 0 10px rgba(0,255,0,0.3)); }
+
+#dynamic-slogan-box {
+    font-size: 0.9rem;
+    color: #00ff00;
+    opacity: 0.8;
+    transition: opacity 0.5s;
+    font-style: italic;
+}
+
+/* АВАТАР И ФЛАГ */
+.avatar-wrapper {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+#user-avatar { width: 100%; border-radius: 50%; border: 2px solid #333; }
+#user-flag { position: absolute; bottom: -2px; right: -2px; width: 20px; border: 1px solid #000; }
+
+/* КОНТЕНТ */
+.content-blur { filter: blur(10px); pointer-events: none; }
+#welcome-zone {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.gy-btn {
+    padding: 15px 40px;
+    background: #00ff00;
+    color: #000;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
