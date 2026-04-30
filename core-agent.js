@@ -1,77 +1,43 @@
-/**
- * GY-GY CLUB CORE AGENT v.2.8.0
- * Интеллектуальный вход, звук и динамика.
+/** 
+ * GY-GY CORE AGENT v.2.8.1 
+ * Фикс "Черного экрана"
  */
-
 const Agent = {
-    version: "2.8.0",
-    slogans: [], // Загрузится из langs.json
-
-    async init() {
-        console.log(`Гы-гы! Агент v.${this.version} активен.`);
+    init() {
+        console.log("Гы-гы! Пробуждение системы...");
         
-        // 1. Распознавание (куки / цифровой след)
-        const userTrace = this.getCookie('gy_trace');
-        if (userTrace) {
-            this.setupResident(userTrace);
-        } else {
-            this.setupGuest();
-        }
+        // Если через 2 секунды двери всё еще закрыты — пробуем открыть принудительно
+        setTimeout(() => {
+            const slogan = document.getElementById('slogan-text');
+            if (slogan && slogan.innerText === "...") {
+                slogan.innerText = "Система готова к гы-гыканью";
+            }
+        }, 1000);
 
-        // 2. Запуск сердца (слоганы)
-        this.startSlogans();
+        // Наполняем кнопку текстом, если langs.json не ответил
+        const btn = document.getElementById('enter-btn');
+        if (btn) btn.innerText = "ENTER CLUB";
     },
 
-    async enterClub() {
-        // Звуки из твоего репозитория
+    enterClub() {
+        console.log("Открываем двери...");
         try {
             document.getElementById('snd-click').play();
-            
-            // Открываем двери
-            document.querySelector('.door-left').classList.add('open');
-            document.querySelector('.door-right').classList.add('open');
-            
-            setTimeout(() => {
-                document.getElementById('snd-door').play();
-                document.getElementById('main-stage').classList.remove('content-blur');
-                document.getElementById('main-stage').style.pointerEvents = 'auto';
-            }, 300);
+        } catch(e) {}
 
-        } catch (e) {
-            console.warn("Звук заблокирован браузером до первого клика.");
-        }
-    },
-
-    startSlogans() {
-        // Пример интеллектуальных слоганов (в идеале тянем из langs.json)
-        const list = [
-            "Интеллект — это когда гы-гы уместно.",
-            "Твой цифровой след ведет к нам.",
-            "Синхронный перевод душ запущен.",
-            "Вход только для тех, кто понимает иронию кода."
-        ];
+        const dLeft = document.querySelector('.door-left');
+        const dRight = document.querySelector('.door-right');
         
-        const update = () => {
-            const el = document.getElementById('slogan-text');
-            if (el) {
-                el.style.opacity = 0;
-                setTimeout(() => {
-                    el.innerText = list[Math.floor(Math.random() * list.length)];
-                    el.style.opacity = 1;
-                }, 500);
-            }
-        };
-        update();
-        setInterval(update, 10000);
-    },
-
-    getCookie(name) {
-        let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-        return matches ? decodeURIComponent(matches[1]) : undefined;
-    },
-
-    toggleFlags() {
-        document.getElementById('flag-dropdown').classList.toggle('hidden');
+        if (dLeft && dRight) {
+            dLeft.classList.add('open');
+            dRight.classList.add('open');
+            
+            try {
+                setTimeout(() => document.getElementById('snd-door').play(), 200);
+            } catch(e) {}
+        }
+        
+        document.getElementById('main-stage').style.filter = "none";
     }
 };
 
