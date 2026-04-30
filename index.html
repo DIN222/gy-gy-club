@@ -8,39 +8,45 @@
     <link rel="stylesheet" href="style.css?v=2.8.0">
 </head>
 <body class="gate-keeper">
-    <!-- MARKER: PERMANENT_ATTRIBUTES_START -->
+
+    <!-- ПОСТОЯННЫЕ АТРИБУТЫ: ЗВУК -->
     <audio id="snd-door" src="assets/sounds/doors_open.mp3" preload="auto"></audio>
     <audio id="snd-click" src="assets/sounds/click.mp3" preload="auto"></audio>
 
+    <!-- ПОРТАЛ: ДВЕРИ -->
     <div id="portal-doors">
         <div class="door door-left"></div>
         <div class="door door-right"></div>
     </div>
 
+    <!-- . МАРКЕР ЗАПРЕТА РЕДАКТИРОВАНИЯ БЛОКА ШАПКИ -->
     <header class="permanent-header">
         <div id="logo-block">
             <!-- Постоянный атрибут: Логотип GY-GY -->
             <img src="logo_gygy.png" alt="GY-GY" id="main-logo">
             <div id="dynamic-slogan-box">
-                <span id="slogan-text"></span>
+                <span id="slogan-text">...</span>
             </div>
         </div>
 
-        <div id="identity-node" class="hidden">
-            <div class="avatar-wrapper" onclick="toggleFlagMenu()">
+        <!-- Языковая панель и Аватар -->
+        <div id="identity-node">
+            <div class="avatar-wrapper" onclick="Agent.toggleFlags()">
                 <img id="user-avatar" src="default_avatar.png">
                 <img id="user-flag" src="flags/en.png">
             </div>
+            <div id="flag-dropdown" class="flag-grid hidden"></div>
         </div>
-        <!-- Кнопка возврата на предыдущий уровень -->
+
+        <!-- Постоянный атрибут: Кнопка возврата -->
         <button id="back-btn" class="gy-back-btn" onclick="history.back()">←</button>
     </header>
-    <!-- MARKER: PERMANENT_ATTRIBUTES_END -->
 
     <main id="main-stage" class="content-blur">
         <div id="welcome-zone">
             <h1 id="ui-title" data-key="welcome_title"></h1>
-            <button id="enter-btn" class="gy-btn" data-key="btn_enter" onclick="Agent.enterClub()"></button>
+            <!-- Интеллектуальная кнопка входа -->
+            <button id="enter-btn" class="gy-btn" onclick="Agent.enterClub()"></button>
         </div>
     </main>
 
