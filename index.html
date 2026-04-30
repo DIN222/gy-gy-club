@@ -3,100 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club  253</title>
+    <title>GY-GY Club</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --black: #000; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; -webkit-user-select: none; user-select: none; }
         body { width: 100%; height: 100vh; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; overflow: hidden; opacity: 0; transition: opacity 0.6s ease; }
-
-        /* ПОСТОЯННЫЕ АТРИБУТЫ */
         .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; font-size: 45px; font-weight: 900; line-height: 0.6; display: none; }
         .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; }
-        .lang-gateway { position: fixed; top: 65px; left: 15px; z-index: 10000; width: 170px; }
-        
-        /* СКВОЗНОЙ АВАТАР */
         .user-identity-hub { position: fixed; top: 15px; right: 130px; z-index: 10003; cursor: pointer; display: none; }
         .avatar-circle { width: 45px; height: 45px; border-radius: 50%; border: 2.5px solid var(--gold); background: #fff; object-fit: cover; }
-
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.6s ease; }
         .block.active { display: flex; opacity: 1; }
-
         .btn-gy { min-width: 275px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: inherit; margin-top: 20px; }
         #main-door { width: 280px; cursor: pointer; transition: transform 2s, opacity 1.5s; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; margin-bottom: 25px; }
     </style>
 </head>
 <body onload="initPage()">
-
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
     <audio id="snd-door"><source src="door_open.mp3" type="audio/mpeg"></audio>
-
     <div id="global-back" class="back-nav" onclick="goBack()">«</div>
     <div class="ui-header-right">GY-GY</div>
-    
     <div class="user-identity-hub" id="hub-avatar" onclick="alert('ID: ' + localStorage.getItem('gy_trace'))">
         <img id="global-avatar" src="" class="avatar-circle">
     </div>
-
-    <div id="block-entrance" class="block active">
-        <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
-    </div>
-
+    <div id="block-entrance" class="block active"><img src="door_1.jpg" id="main-door" onclick="handleDoor()"></div>
     <div id="block-welcome" class="block">
         <div class="quote-text">«Шампанского много не бывает»</div>
         <button class="btn-gy" onclick="fadeOutAndLink('registration.html')">ПРОЙДИТЕ НА РЕГИСТРАЦИЮ</button>
     </div>
-
 <script>
     const ambient = document.getElementById('snd-ambient');
-
     function initPage() {
         document.body.style.opacity = "1";
-        
-        // Восстановление аватара
         const savedImg = localStorage.getItem('gy_user_img');
         if(savedImg) {
             document.getElementById('global-avatar').src = savedImg;
             document.getElementById('hub-avatar').style.display = 'block';
         }
-
-        // Проверка возврата
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('back') === 'true') {
-            portalTransition('block-welcome');
-        }
-
-        // Подхват звука
+        if (urlParams.get('back') === 'true') portalTransition('block-welcome');
         const savedTime = localStorage.getItem('gy_music_time');
         if (savedTime) ambient.currentTime = parseFloat(savedTime);
     }
-
     function handleDoor() {
         document.getElementById('snd-door').play();
         document.getElementById('main-door').style.transform = "scale(4)";
         document.getElementById('main-door').style.opacity = "0";
-        ambient.volume = 0;
-        ambient.play();
-        smoothFade(ambient, 0.5);
+        ambient.volume = 0; ambient.play(); smoothFade(ambient, 0.5);
         setTimeout(() => portalTransition('block-welcome'), 1500);
     }
-
     function portalTransition(nextId) {
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
-        });
+        document.querySelectorAll('.block').forEach(b => { b.classList.remove('active'); b.style.display = 'none'; });
         const next = document.getElementById(nextId);
         next.style.display = 'flex';
         setTimeout(() => next.classList.add('active'), 50);
         document.getElementById('global-back').style.display = (nextId === 'block-welcome') ? 'block' : 'none';
     }
-
-    function goBack() {
-        portalTransition('block-entrance');
-    }
-
+    function goBack() { portalTransition('block-entrance'); }
     function fadeOutAndLink(url) {
         document.body.style.opacity = "0";
         localStorage.setItem('gy_music_time', ambient.currentTime);
@@ -106,7 +71,6 @@
             else { clearInterval(fade); window.location.href = url; }
         }, 30);
     }
-
     function smoothFade(audio, target) {
         let v = 0;
         const intr = setInterval(() => {
@@ -114,10 +78,7 @@
             else { clearInterval(intr); }
         }, 50);
     }
-
-    setInterval(() => {
-        if(!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime);
-    }, 1000);
+    setInterval(() => { if(!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime); }, 1000);
 </script>
 </body>
 </html>
