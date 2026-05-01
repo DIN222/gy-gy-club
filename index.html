@@ -1,38 +1,55 @@
 <!DOCTYPE html>
-<!-- PROJECT: GY-GY Club | v.2.8.2 -->
+<!-- PROJECT: GY-GY Club | VERSION: 2.8.3 | STATUS: Full Interface -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY Club | v.2.8.2</title>
-    <link rel="stylesheet" href="style.css?v=2.8.2">
+    <title>GY-GY Club | v.2.8.3</title>
+    <link rel="stylesheet" href="style.css?v=2.8.3">
 </head>
 <body class="gate-keeper">
 
-    <!-- СЛОЙ ДВЕРЕЙ -->
+    <!-- ФОНОВЫЙ ПОРТАЛ: ДВЕРИ -->
     <div id="portal-doors">
         <div class="door door-left"></div>
         <div class="door door-right"></div>
     </div>
 
-    <!-- СЛОЙ КНОПКИ (Поверх дверей) -->
-    <div id="gate-control">
-        <button id="enter-btn" onclick="Agent.enterClub()">ENTER GY-GY</button>
-    </div>
-
+    <!-- ПОСТОЯННЫЕ АТРИБУТЫ (ПОВЕРХ ДВЕРЕЙ) -->
     <header class="permanent-header">
         <div id="logo-block">
+            <!-- Постоянный атрибут: Логотип GY-GY -->
             <img src="logo_gygy.png" id="main-logo" alt="GY-GY">
-            <div id="dynamic-slogan-box"><span id="slogan-text">...</span></div>
+            <div id="dynamic-slogan-box">
+                <span id="slogan-text">...</span>
+            </div>
         </div>
+
+        <!-- Языковая панель: Аватар-идентификатор -->
+        <div id="identity-node">
+            <div class="avatar-wrapper" onclick="Agent.toggleFlags()">
+                <img id="user-avatar" src="default_avatar.png">
+                <img id="user-flag" src="flags/en.png"> 
+            </div>
+            <div id="flag-dropdown" class="flag-grid hidden">
+                <!-- Контейнер для 11 флагов -->
+            </div>
+        </div>
+
+        <!-- Постоянный атрибут: Кнопка возврата -->
+        <button id="back-btn" class="gy-back-btn" onclick="history.back()">←</button>
     </header>
 
     <main id="main-stage">
-        <h1 id="ui-title">Welcome to the Digital City</h1>
+        <div id="welcome-content">
+            <h1 id="ui-title">WELCOME TO GY-GY</h1>
+            <p>Select your language via avatar or press Open</p>
+            <button class="start-trigger" onclick="Agent.enterClub()">OPEN GATES</button>
+        </div>
     </main>
 
     <audio id="snd-door" src="assets/sounds/doors_open.mp3" preload="auto"></audio>
     <audio id="snd-click" src="assets/sounds/click.mp3" preload="auto"></audio>
 
-    <script src="core-agent.js?v=2.8.2"></script>
+    <script src="core-agent.js?v=2.8.3"></script>
 </body>
 </html>
