@@ -1,21 +1,18 @@
 :root { --gold: #d4af37; --dark: #000; }
 body { background: var(--dark); color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; overflow: hidden; }
 
-/* . ПОСТОЯННЫЕ ЭЛЕМЕНТЫ */
-.ui-fixed { position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-.gy-logo { font-size: 24px; font-weight: 900; letter-spacing: 5px; }
-.btn-gy { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; cursor: pointer; text-transform: uppercase; font-family: inherit; }
+/* . PERMANENT ELEMENTS */
+.ui-fixed { position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-sizing: border-box; }
+.gy-logo { font-size: 26px; font-weight: 900; letter-spacing: 5px; text-shadow: 0 0 8px var(--gold); }
+.btn-gy { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 8px 15px; cursor: pointer; text-transform: uppercase; font-family: inherit; font-weight: 900; transition: 0.3s; }
 
-/* ПРОЯВЛЕНИЕ СЦЕН */
-#app-stage { height: 100vh; transition: opacity 0.8s ease; display: flex; align-items: center; justify-content: center; }
+/* . FADING SYSTEM */
+#app-stage { height: 100vh; display: flex; align-items: center; justify-content: center; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
-/* ГРАФИКА */
-.img-horse { max-height: 35vh; margin: 15px 0; } /* */
-.slogan { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; text-align: center; margin-bottom: 10px; }
+/* . VISUAL SIZE CONSTRAINTS */
+.door-img { max-height: 40vh; cursor: pointer; }
+.horse-img { max-height: 35vh; margin: 20px 0; }
 
-/* КАРТА СТОЛИКОВ */
-.tables-map { position: relative; max-width: 90vw; }
-.mic-icon { position: absolute; top: 20%; left: 50%; cursor: pointer; font-size: 24px; }
-
-.dropdown-content { display: none; position: absolute; top: 60px; background: #111; border: 1px solid var(--gold); }
-.dropdown-content.active { display: block; }
+.drop-list { position: absolute; top: 60px; left: 20px; background: #000; border: 2px solid var(--gold); display: none; flex-direction: column; }
+.drop-list.open { display: flex; }
+.drop-item { padding: 10px 20px; border-bottom: 1px solid #222; cursor: pointer; min-width: 150px; text-align: left; }
