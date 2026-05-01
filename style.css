@@ -1,22 +1,75 @@
-/* [v.3.8.0] */
-body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
-.permanent-header {
-    position: fixed; top: 0; width: 100%; z-index: 1000;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 20px; background: rgba(0,0,0,0.85); border-bottom: 1px solid #00ff00;
+:root {
+    --gold: #d4af37;
+    --dark: #0a0a0a;
 }
-#main-logo { height: 45px; }
 
-/* Двери с текстурой door_1.jpg */
-#portal-doors { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; z-index: 500; pointer-events: none; }
-.door { 
-    width: 50%; height: 100%; background-image: url('door_1.jpg'); 
-    background-size: cover; transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1); 
+body {
+    background: var(--dark);
+    color: var(--gold);
+    font-family: 'Share+Tech+Mono', monospace;
+    margin: 0;
+    overflow: hidden;
 }
-.door-left { border-right: 2px solid #00ff00; background-position: left; }
-.door-right { border-left: 2px solid #00ff00; background-position: right; }
-.door-left.open { transform: translateX(-100%); }
-.door-right.open { transform: translateX(100%); }
 
-#app-stage { height: 100vh; display: flex; justify-content: center; align-items: center; }
-.gy-btn { padding: 12px 24px; background: #00ff00; color: #000; border: none; font-weight: bold; cursor: pointer; margin: 8px; }
+/* . ВИЗУАЛ: УМЕНЬШЕННЫЕ РАЗМЕРЫ */
+.visual-small-door {
+    max-height: 40vh; /* Уменьшено по требованию */
+    cursor: pointer;
+    transition: transform 1.2s ease-in, opacity 1s;
+}
+
+.visual-small-horse {
+    max-height: 30vh; /* Уменьшено по требованию */
+    margin: 15px auto;
+    display: block;
+}
+
+/* ИНТЕРФЕЙС */
+.ui-persistent-layer {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.gy-logo-top {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+/* СЕТКА РЕГИСТРАЦИИ (4 КВАДРАТА) */
+.identity-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.box-slot {
+    width: 100px;
+    height: 100px;
+    border: 1px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    text-align: center;
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.btn-gy {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn-sleep { opacity: 0.4; pointer-events: none; }
