@@ -1,90 +1,109 @@
 /** 
- * . CORE AGENT v.4.8.0 
- * Применение блочной структуры по последней пояснительной записке.
+ * . CORE AGENT v.4.8.8
+ * Использование маркеров блокировки для отлаженных конструкций.
+ * Реализация Cookie-recognition и Magic Key.
  */
+
 const Agent = {
-    current: 'entrance',
+    loc: 'entrance',
     user: {
         id: localStorage.getItem('gy_trace') || null,
         avatar: localStorage.getItem('gy_avatar') || null
     },
 
-    // . ОПРЕДЕЛЕНИЕ БЛОКОВ
+    // . СОЗИДАТЕЛЬНЫЕ БЛОКИ
     blocks: {
         entrance: `
-            <div id="b-entrance">
-                <img src="door_1.jpg" class="visual-door" onclick="Agent.openDoors()">
+            <div id="block-entrance">
+                <img src="door_1.jpg" id="main-door" class="img-door" onclick="Agent.handleEntry()">
             </div>`,
 
         welcome: `
-            <div id="b-welcome" style="text-align:center;">
-                <div style="font-size:1.2rem; margin-bottom:20px;">«В каждой шутке есть доля виски»</div>
-                <img src="horse_welcome.png" class="visual-horse">
-                <div>
-                    <button class="btn-gy" onclick="Agent.render('identity')">ID & STABILITY</button>
-                    <button id="hall-link" class="btn-gy">HALL</button>
+            <div id="block-welcome" style="display:flex; flex-direction:column; align-items:center;">
+                <div class="quote">«В каждой шутке есть доля виски»</div>
+                <img src="horse_welcome.png" class="img-horse">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-gy" onclick="Agent.render('identity')">ПОЛУЧИТЬ ID</button>
+                    <button id="hall-btn" class="btn-gy" onclick="Agent.enterHall()">В ХОЛЛ</button>
                 </div>
             </div>`,
 
         identity: `
-            <div id="b-identity" style="text-align:center;">
-                <div class="identity-grid">
-                    <div class="slot" id="s-id">ID<br>TRACED</div>
-                    <div class="slot" id="s-qr">MAGIC<br>KEY</div>
-                    <div class="slot" id="s-av" onclick="Agent.assignAvatar()">GEN<br>AVATAR</div>
-                    <div class="slot" id="s-tg">TG<br>STABLE</div>
+            <div id="block-identity" style="display:flex; flex-direction:column; align-items:center;">
+                <div class="quote" style="font-size:18px;">ИДЕНТИФИКАЦИЯ</div>
+                <div class="id-grid">
+                    <div class="box-slot" id="s-trace"><b>ID</b><br><span id="val-id">WAIT</span></div>
+                    <div class="box-slot" id="s-qr"><b>MAGIC</b><br>QR</div>
+                    <div class="box-slot" id="s-av" onclick="Agent.genAvatar()" style="cursor:pointer;"><b>AVATAR</b><br>GEN</div>
+                    <div class="box-slot" id="s-tg" onclick="Agent.linkTG()" style="cursor:pointer;"><b>STABLE</b><br>TELEGRAM</div>
                 </div>
-                <button class="btn-gy" onclick="Agent.saveAndProceed()">SAVE & LOCK</button>
+                <button class="btn-gy" style="margin-top:20px; width:100%;" onclick="Agent.saveProfile()">СОХРАНИТЬ И ЗАПЕРЕТЬ</button>
             </div>`
     },
 
-    render(loc) {
-        this.current = loc;
+    render(target) {
+        this.loc = target;
         const stage = document.getElementById('app-stage');
         stage.style.opacity = 0;
         
         setTimeout(() => {
-            stage.innerHTML = this.blocks[loc];
+            stage.innerHTML = this.blocks[target];
             stage.style.opacity = 1;
             this.syncUI();
-        }, 400);
+            if(target === 'identity') this.initIdentity();
+        }, 350);
     },
 
-    openDoors() {
-        // . Cookie-recognition & ID Assignment
+    // . COOKIE-RECOGNITION И АВТО-ВХОД
+    handleEntry() {
+        const door = document.getElementById('main-door');
+        door.style.transform = "scale(4)";
+        door.style.opacity = "0";
+
         if (!this.user.id) {
-            this.user.id = 'GY-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            this.user.id = 'GY-' + Math.floor(100 + Math.random() * 899) + '-' + Date.now().toString().slice(-4);
             localStorage.setItem('gy_trace', this.user.id);
         }
-        this.render('welcome');
+        
+        setTimeout(() => this.render('welcome'), 1200);
     },
 
-    assignAvatar() {
-        const avs = ['🥃', '🐎', '🎭', '🗝️'];
-        this.user.avatar = avs[Math.floor(Math.random() * avs.length)];
-        document.getElementById('s-av').innerHTML = `AVATAR<br>${this.user.avatar}`;
+    initIdentity() {
+        document.getElementById('val-id').innerText = this.user.id;
+        if(this.user.avatar) {
+            document.getElementById('s-av').innerHTML = `<img src="${this.user.avatar}">`;
+        }
+        // Генерация QR-кода как Magic Key
+        new QRCode(document.getElementById("s-qr"), { text: this.user.id, width: 95, height: 95 });
     },
 
-    saveAndProceed() {
+    genAvatar() {
+        const seed = Math.random();
+        this.user.avatar = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
+        document.getElementById('s-av').innerHTML = `<img src="${this.user.avatar}">`;
+    },
+
+    saveProfile() {
         localStorage.setItem('gy_avatar', this.user.avatar);
         this.render('welcome');
     },
 
     syncUI() {
-        const backBtn = document.getElementById('global-back');
-        backBtn.style.visibility = (this.current === 'entrance') ? 'hidden' : 'visible';
+        // Управление кнопкой возврата
+        const back = document.getElementById('nav-back');
+        back.style.visibility = (this.loc === 'entrance') ? 'hidden' : 'visible';
         
-        const hallBtn = document.getElementById('hall-link');
-        if (hallBtn) {
-            if (!this.user.avatar) hallBtn.classList.add('btn-sleep');
-            else hallBtn.onclick = () => alert('Welcome to the Hall, ' + this.user.id);
-        }
+        // Управление доступом в Холл
+        const hBtn = document.getElementById('hall-btn');
+        if(hBtn && !this.user.avatar) hBtn.classList.add('btn-sleep');
     },
 
-    toggleLang() { document.getElementById('lang-list').classList.toggle('open'); },
-    setLang(l) { alert('Lang set to: ' + l); this.toggleLang(); },
-    goBack() { if(this.current === 'welcome') this.render('entrance'); else this.render('welcome'); }
+    toggleLang() { document.getElementById('lang-list').classList.toggle('active'); },
+    setLang(l) { this.toggleLang(); alert('Language: ' + l); },
+    goBack() { this.render('welcome'); },
+    enterHall() { if(this.user.avatar) alert('ID: ' + this.user.id + ' \nВход разрешен!'); },
+    linkTG() { alert('Stability Mode: Telegram Linking...'); }
 };
 
-// . СТАРТ
+// . СТАРТ МОНОЛИТА
 window.onload = () => Agent.render('entrance');
