@@ -1,79 +1,79 @@
 /** 
- * GY-GY CORE AGENT v.3.4.0+
- * Реализация навигации по Пояснительной записке.
+ * GY-GY CORE AGENT v.3.10.0
+ * Фикс: Убраны дублирующие двери. 
  */
 const Agent = {
-    version: "3.9.0",
+    version: "3.10.0",
 
     init() {
-        // Идентификация через Cookie-recognition
+        // Cookie-recognition (v.3.4.0)
         let trace = this.getCookie('gy_trace');
         if (!trace) {
-            this.render('welcome_horse'); // Если новый — к коню
+            this.render('welcome_horse'); // Сначала Приветствие с конем
         } else {
-            this.render('entrance'); // Если свой — к дверям
+            this.render('hall'); // Если узнали — сразу в Холл
         }
     },
 
-    // . МЕХАНИКА ПРОДВИЖЕНИЯ ПО ЛОКАЦИЯМ
+    // . СОЗИДАТЕЛЬНЫЕ БЛОКИ
     blocks: {
-        // БЛОК: ПРИВЕТСТВИЕ С КОНЕМ (Юмор и первый контакт)
+        // 1. ПРИВЕТСТВИЕ С КОНЕМ (Юморной страж)
         welcome_horse: `
             <div class="loc-block">
-                <img src="horse_welcome.png" alt="Welcome Horse">
+                <img src="horse_welcome.png" style="width:200px;">
                 <h1>Halt! Who goes there?</h1>
-                <p>Welcome to GY-GY. The horse deems you worthy.</p>
+                <p>The GY-GY horse is watching you.</p>
                 <button class="gy-btn" onclick="Agent.render('registration')">PROCEED</button>
             </div>`,
 
-        // БЛОК: РЕГИСТРАЦИЯ С 4 КВАДРАТАМИ
-        // Выбор пути: Cookie, Telegram, Magic Key или Guest ID
+        // 2. РЕГИСТРАЦИЯ С 4 КВАДРАТАМИ (4 пути входа)
         registration: `
             <div class="loc-block">
-                <h2>Choose Your Path</h2>
+                <h2>Identify Yourself</h2>
                 <div class="reg-grid-4">
-                    <div class="reg-square" onclick="Agent.setup('cookie')">COOKIE TRACE</div>
-                    <div class="reg-square" onclick="Agent.setup('tg')">TELEGRAM</div>
-                    <div class="reg-square" onclick="Agent.setup('key')">MAGIC KEY</div>
-                    <div class="reg-square" onclick="Agent.setup('guest')">GUEST ID</div>
+                    <div class="square" onclick="Agent.setup('cookie')">COOKIE ID</div>
+                    <div class="square" onclick="Agent.setup('tg')">TELEGRAM</div>
+                    <div class="square" onclick="Agent.setup('key')">MAGIC KEY</div>
+                    <div class="square" onclick="Agent.setup('guest')">GUEST</div>
                 </div>
             </div>`,
 
-        // БЛОК: ВХОД С ДВЕРЯМИ (Кнопка открытия)
-        entrance: `
-            <div class="loc-block">
-                <h1>The Gates of GY-GY</h1>
-                <button class="gy-btn" onclick="Agent.enterClub()">OPEN DOORS</button>
-            </div>`,
-
-        // БЛОК: ХОЛЛ С АВАТАРОМ И КНОПКАМИ
-        // Центральный хаб с переходом в Бар, Серверную и AI Room
+        // 3. ХОЛЛ С АВАТАРОМ И КНОПКАМИ (Сердце Клуба)
         hall: `
             <div class="loc-block">
-                <h2>Main Hall</h2>
-                <div class="user-status">Logged in as: <span id="nick">...</span></div>
-                <div class="nav-buttons">
-                    <button class="gy-btn" onclick="Agent.render('bar')">SINGULARITY BAR</button>
+                <h2>MAIN HALL</h2>
+                <div class="nav-cluster">
+                    <button class="gy-btn" onclick="Agent.render('bar')">BAR</button>
                     <button class="gy-btn" onclick="Agent.render('server')">SERVER ROOM</button>
                     <button class="gy-btn" onclick="Agent.render('ai_room')">AI ROOM</button>
                 </div>
-                <button class="magic-key-btn" onclick="Agent.getMagicKey()">GET QR KEY</button>
+                <button class="qr-btn" onclick="Agent.getMagicKey()">DOWNLOAD QR KEY</button>
             </div>`
     },
 
-    enterClub() {
-        // Синхронизация звука и анимации дверей
+    render(loc) {
+        // Если переходим в Холл, сначала проигрываем анимацию дверей
+        if (loc === 'hall' && document.querySelector('.door-left.open') === null) {
+            this.enterAnimate();
+        }
+        document.getElementById('app-stage').innerHTML = this.blocks[loc] || 'Room under construction';
+    },
+
+    enterAnimate() {
+        // ВХОД С ДВЕРЯМИ (Звук + Текстура door_1.jpg)
         new Audio('assets/sounds/door_open.mp3').play().catch(() => {});
         document.querySelectorAll('.door').forEach(d => d.classList.add('open'));
-        setTimeout(() => this.render('hall'), 1200);
     },
 
-    render(loc) {
-        document.getElementById('app-stage').innerHTML = this.blocks[loc];
+    setup(type) {
+        // Имитация регистрации и переход к дверям
+        alert(`Path selected: ${type}`);
+        this.render('hall');
     },
 
-    getCookie(n) { /* Логика куки */ },
-    getMagicKey() { alert("Magic Key (QR) generated"); }
+    getCookie(n) { let m = document.cookie.match(new RegExp("(?:^|; )" + n.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)")); return m ? decodeURIComponent(m[1]) : undefined; },
+    getMagicKey() { alert("QR Key Downloaded."); },
+    goBack() { this.render('hall'); }
 };
 
 window.onload = () => Agent.init();
