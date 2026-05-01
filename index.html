@@ -1,45 +1,143 @@
 <!DOCTYPE html>
-<!-- PROJECT: GY-GY Club | VERSION: 2.8.4 -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY Club | v.2.8.4</title>
-    <link rel="stylesheet" href="style.css?v=2.8.4">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY CLUB | v.3.2.0</title>
+    <style>
+        body { margin: 0; background: #000; color: #fff; font-family: 'Courier New', monospace; overflow: hidden; }
+        
+        /* ПОСТОЯННЫЕ АТРИБУТЫ */
+        .permanent-header {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; box-sizing: border-box; background: rgba(0,0,0,0.8);
+        }
+        #main-logo { height: 50px; } /* */
+        .identity-node { display: flex; align-items: center; gap: 15px; }
+        .avatar-wrapper { position: relative; width: 50px; height: 50px; cursor: pointer; }
+        #user-avatar { width: 100%; border-radius: 50%; border: 2px solid #00ff00; }
+        #user-flag { position: absolute; bottom: 0; right: 0; width: 18px; border: 1px solid #000; }
+        .back-btn { background: none; border: 1px solid #00ff00; color: #00ff00; cursor: pointer; padding: 5px 10px; }
+
+        /* ДВЕРИ КЛУБА */
+        #portal-doors { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; z-index: 500; pointer-events: none; }
+        .door { width: 50%; height: 100%; background: #1a1a1a; transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1); border: 1px solid #333; }
+        .door-left { border-right: 2px solid #00ff00; }
+        .door-right { border-left: 2px solid #00ff00; }
+        .door-left.open { transform: translateX(-100%); }
+        .door-right.open { transform: translateX(100%); }
+
+        /* СЦЕНА */
+        #main-stage { height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; position: relative; z-index: 100; }
+        .location-box { animation: fadeIn 0.8s forwards; max-width: 800px; }
+        
+        .gy-btn { 
+            padding: 15px 30px; background: #00ff00; color: #000; border: none; 
+            font-weight: bold; cursor: pointer; margin: 10px; transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .gy-btn:hover { box-shadow: 0 0 20px #00ff00; transform: scale(1.05); }
+
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body class="gate-keeper">
+
+    <header class="permanent-header">
+        <div id="logo-block">
+            <img src="logo_gygy.png" id="main-logo" alt="GY-GY">
+            <div style="font-size: 10px; color: #00ff00;">HUMOR INTERFACE v.3.2.0</div>
+        </div>
+        <div class="identity-node">
+            <div class="avatar-wrapper">
+                <img id="user-avatar" src="default_avatar.png">
+                <img id="user-flag" src="flags/en.png"> <!-- Default Language: English -->
+            </div>
+            <div id="user-nick" style="font-size: 12px;">Recognizing...</div>
+        </div>
+        <button class="back-btn" onclick="Agent.goBack()">← BACK</button>
+    </header>
 
     <div id="portal-doors">
         <div class="door door-left"></div>
         <div class="door door-right"></div>
     </div>
 
-    <header class="permanent-header">
-        <div id="logo-block">
-            <img src="logo_gygy.png" id="main-logo" alt="GY-GY"> <!-- Постоянный атрибут: Логотип GY-GY -->
-            <div id="dynamic-slogan-box"><span id="slogan-text">Загрузка атмосферы...</span></div>
-        </div>
-
-        <div id="identity-node">
-            <div class="avatar-wrapper" onclick="Agent.toggleFlags()">
-                <img id="user-avatar" src="default_avatar.png">
-                <img id="user-flag" src="flags/en.png"> <!-- Языковая панель -->
-            </div>
-            <div id="flag-dropdown" class="flag-grid hidden"></div>
-        </div>
-
-        <button id="back-btn" class="gy-back-btn" onclick="history.back()">←</button> <!-- Кнопка возврата -->
-    </header>
-
     <main id="main-stage">
-        <div id="welcome-content">
-            <h1 id="ui-title">WELCOME TO THE CITY</h1>
-            <button class="start-trigger" onclick="Agent.enterClub()">OPEN GATES</button>
+        <!-- ЗОНА ВХОДА -->
+        <div id="loc-entrance" class="location-box">
+            <h1 style="font-size: 3rem;">GY-GY CLUB</h1>
+            <p>Digital trace detection in progress...</p>
+            <button class="gy-btn" onclick="Agent.enterClub()">OPEN GATES</button>
+            <div style="margin-top: 20px;">
+                <button class="gy-btn" style="background: #0088cc;" onclick="alert('STABILITY MODE: ON')">TELEGRAM ENTRY</button>
+            </div>
         </div>
+
+        <!-- ГЛАВНЫЙ ХОЛЛ -->
+        <div id="loc-hall" class="location-box hidden">
+            <h1>MAIN HALL</h1>
+            <p>Welcome back, <span id="player-name">User</span>!</p>
+            <div class="nav-grid">
+                <button class="gy-btn" onclick="Agent.goTo('bar')">BAR (TABLES)</button>
+                <button class="gy-btn" onclick="Agent.goTo('server')">SERVER ROOM</button>
+                <button class="gy-btn" onclick="Agent.goTo('ai_room')">AI ROOM</button>
+            </div>
+            <div style="margin-top: 40px; padding: 15px; border: 1px dashed #00ff00;">
+                <p style="font-size: 12px;">Continuity tool:</p>
+                <button class="gy-btn" style="font-size: 10px;" onclick="Agent.downloadKey()">DOWNLOAD MAGIC KEY (QR)</button>
+            </div>
+        </div>
+
+        <!-- БАР / СЕРВЕРНАЯ (ЗАГОТОВКИ ПОД ТВОИ ЛОКАЦИИ) -->
+        <div id="loc-bar" class="location-box hidden"><h1>SINGULARITY BAR</h1><p>The tables are set.</p></div>
+        <div id="loc-server" class="location-box hidden"><h1>SERVER ROOM</h1><p>Nodes are humming.</p></div>
+        <div id="loc-ai_room" class="location-box hidden"><h1>AI ROOM</h1><p>Deep Research Active.</p></div>
     </main>
 
-    <audio id="snd-door" src="assets/sounds/doors_open.mp3" preload="auto"></audio>
-    <audio id="snd-click" src="assets/sounds/click.mp3" preload="auto"></audio>
+    <script>
+        const Agent = {
+            init() {
+                // 1. Cookie-recognition
+                let id = document.cookie.replace(/(?:(?:^|.*;\s*)gy_trace\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+                if (!id) {
+                    id = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                    document.cookie = `gy_trace=${id}; max-age=31536000; path=/`;
+                    localStorage.setItem('gy_nick', "Clubber_" + id.substr(3, 4)); // Auto-nick
+                }
+                document.getElementById('user-nick').innerText = localStorage.getItem('gy_nick');
+                document.getElementById('player-name').innerText = localStorage.getItem('gy_nick');
+            },
 
-    <script src="core-agent.js?v=2.8.4"></script>
+            enterClub() {
+                // Анимация раздвижных дверей
+                document.querySelector('.door-left').classList.add('open');
+                document.querySelector('.door-right').classList.add('open');
+                
+                setTimeout(() => {
+                    this.goTo('hall');
+                }, 600);
+            },
+
+            goTo(locId) {
+                // Прячем все локации
+                document.querySelectorAll('.location-box').forEach(el => el.classList.add('hidden'));
+                // Показываем нужную
+                document.getElementById('loc-' + locId).classList.remove('hidden');
+            },
+
+            downloadKey() {
+                alert("Magic Key (QR Avatar) is downloading. Stability guaranteed!");
+            },
+
+            goBack() {
+                this.goTo('hall'); // По умолчанию возврат в Холл
+            }
+        };
+
+        window.onload = () => Agent.init();
+    </script>
 </body>
 </html>
