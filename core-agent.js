@@ -1,59 +1,99 @@
 /** 
- * . CORE AGENT v.4.7.1 - ТВОЯ ЛОГИКА
+ * . CORE AGENT v.4.7.2 
+ * Реализация: Блочная структура + Автоматический ID + Magic Key
  */
 const Agent = {
-    // . БЛОКИ ИЗ ТВОЕЙ ПОЯСНИТЕЛЬНОЙ ЗАПИСКИ
+    state: {
+        loc: 'entrance',
+        id: localStorage.getItem('gy_trace') || null,
+        avatar: localStorage.getItem('gy_avatar') || null
+    },
+
+    // . ОПРЕДЕЛЕНИЕ БЛОКОВ
     blocks: {
-        // Приветствие с конем
+        entrance: `
+            <div class="block-wrap">
+                <img src="door_1.jpg" id="main-door" class="visual-small-door" onclick="Agent.openDoors()">
+            </div>`,
+
         welcome: `
-            <div id="block-welcome" class="block active">
-                <div class="quote-text" data-key="q_whiskey">«В каждой шутке есть доля виски»</div>
-                <img src="horse_welcome.png" class="horse-main">
-                <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="Agent.portalTransition('hall')">ПРОХОДИТЕ В ХОЛЛ</button>
-                <button class="btn-gy" onclick="Agent.portalTransition('identity')">ПОЛУЧИТЬ ID</button>
+            <div class="block-wrap">
+                <div class="humor-quote">«В каждой шутке есть доля виски»</div>
+                <img src="horse_welcome.png" class="visual-small-horse">
+                <div class="btn-group">
+                    <button class="btn-gy" onclick="Agent.render('identity')">ID & STABILITY</button>
+                    <button id="btn-hall-access" class="btn-gy" onclick="Agent.render('hall')">HALL</button>
+                </div>
             </div>`,
 
-        // Регистрация с 4 квадратами
         identity: `
-            <div id="block-identity" class="block active">
-                <div class="quote-text">«Шампанского много не бывает»</div>
-                <div class="reg-grid-4">
-                    <div class="box-final" id="id-label">#ID</div>
-                    <div class="box-final" id="qr-box-reg"></div>
-                    <div class="box-final" onclick="Agent.triggerPhoto()">ФОТО</div>
-                    <div class="box-final" onclick="Agent.genAvatar()">AVATAR</div>
+            <div class="block-wrap">
+                <div class="identity-grid">
+                    <div class="box-slot" id="slot-id"><b>ID</b><br><span id="val-id">...</span></div>
+                    <div class="box-slot" id="slot-qr"><b>QR</b><br>KEY</div>
+                    <div class="box-slot" id="slot-avatar" onclick="Agent.genAvatar()"><b>AVATAR</b><br>GEN</div>
+                    <div class="box-slot" id="slot-tg" onclick="Agent.linkTG()"><b>STABLE</b><br>TELEGRAM</div>
                 </div>
-                <button id="btn-save" class="btn-gy" onclick="Agent.save()">СОХРАНИТЬ</button>
-                <button id="btn-pass" class="btn-gy btn-sleep" onclick="Agent.portalTransition('hall')">ПРОЙТИ В ХОЛЛ</button>
+                <button class="btn-gy" onclick="Agent.saveProfile()">SAVE & LOCK</button>
             </div>`,
 
-        // Холл с аватаром
         hall: `
-            <div id="block-hall" class="block active">
-                <div class="id-card-hall">
-                    <div id="h-id">#ID</div>
-                    <div class="box-final"><img id="h-photo"></div>
-                    <button class="btn-gy" onclick="Agent.portalTransition('bar')">ВХОД В БАР</button>
+            <div class="block-wrap">
+                <div class="id-card-final">
+                    <div id="display-avatar"></div>
+                    <div id="display-id"></div>
+                    <button class="btn-gy" onclick="alert('Entering Bar...')">ENTER BAR</button>
                 </div>
-                <button class="gy-back-btn" onclick="Agent.portalTransition('welcome')">← НАЗАД</button>
             </div>`
     },
 
-    handleDoor() {
-        document.getElementById('snd-door').play();
-        document.getElementById('main-door').style.transform = "scale(5)"; 
-        document.getElementById('main-door').style.opacity = "0";
-        
-        // Автоматический ID через скрытый след
-        if(!localStorage.getItem('gy_trace')) {
-            const id = `#GY-${Math.floor(Math.random()*999)}`;
-            localStorage.setItem('gy_trace', id);
-        }
-        
-        setTimeout(() => this.portalTransition('welcome'), 1800);
+    init() {
+        this.render('entrance');
+        this.checkIdentity();
     },
 
-    portalTransition(next) {
-        document.getElementById('app-stage').innerHTML = this.blocks[next];
+    render(loc) {
+        this.state.loc = loc;
+        const stage = document.getElementById('app-stage');
+        stage.innerHTML = this.blocks[loc];
+        
+        // Управление кнопкой возврата
+        document.getElementById('global-back').style.display = (loc === 'entrance') ? 'none' : 'block';
+        
+        if(loc === 'identity') this.updateIdentityUI();
+        if(loc === 'welcome' && !this.state.id) document.getElementById('btn-hall-access').classList.add('btn-sleep');
+    },
+
+    openDoors() {
+        const door = document.getElementById('main-door');
+        door.style.transform = "scale(3)";
+        door.style.opacity = "0";
+        
+        // Автоматическое присвоение ID при первом входе
+        if(!this.state.id) {
+            this.state.id = `GY-${Math.floor(1000 + Math.random() * 9000)}`;
+            localStorage.setItem('gy_trace', this.state.id);
+        }
+        
+        setTimeout(() => this.render('welcome'), 1200);
+    },
+
+    genAvatar() {
+        const icons = ['🥃', '🐎', '🎭', '🗝️'];
+        this.state.avatar = icons[Math.floor(Math.random() * icons.length)];
+        document.getElementById('slot-avatar').innerHTML = `<b>AVATAR</b><br>${this.state.avatar}`;
+    },
+
+    saveProfile() {
+        localStorage.setItem('gy_avatar', this.state.avatar);
+        this.render('welcome');
+    },
+
+    goBack() {
+        if(this.state.loc === 'welcome') this.render('entrance');
+        else if(this.state.loc === 'identity') this.render('welcome');
+        else if(this.state.loc === 'hall') this.render('welcome');
     }
 };
+
+window.onload = () => Agent.init();
