@@ -1,44 +1,35 @@
 <!DOCTYPE html>
-<html lang="en"> <!-- По умолчанию English -->
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.7.1 | PARTNER EDITION</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
+    <title>GY-GY Club | v.4.7.2 Full</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=4.7.1">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- . ПОСТОЯННЫЙ АТРИБУТ: ЯЗЫКОВАЯ ПАНЕЛЬ -->
-    <div class="lang-gateway">
-        <button class="btn-main-lang" id="main-lang-trigger" onclick="document.getElementById('lang-list').classList.toggle('open')">
-            <img id="cur-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
-            <span id="cur-name">ENGLISH</span>
-        </button>
-        <div class="lang-hint"><span data-key="lang_hint">SELECT LANGUAGE</span> <b class="anime-arrow">↓</b></div>
-        <div id="lang-list" class="lang-dropdown">
-            <!-- Список языков из твоего оригинала -->
-            <button class="btn-sub-lang" onclick="pickL('ru','ru','РУССКИЙ')"><img src="https://flagcdn.com/w20/ru.png" class="flag-icon"> РУССКИЙ</button>
-            <button class="btn-sub-lang" onclick="pickL('en','gb','ENGLISH')"><img src="https://flagcdn.com/w20/gb.png" class="flag-icon"> ENGLISH</button>
+    <!-- . ПОСТОЯННЫЕ АТРИБУТЫ (Согласно Пояснительной записке) -->
+    <header class="ui-persistent-layer">
+        <div class="lang-gateway">
+            <button class="btn-main-lang" onclick="Agent.toggleLangList()">
+                <img id="cur-flag" src="https://flagcdn.com/w20/gb.png" class="flag-icon">
+                <span id="cur-name">EN</span>
+            </button>
+            <div id="lang-list" class="lang-dropdown">
+                <!-- Языки подтянутся из скрипта -->
+            </div>
         </div>
-    </div>
-    
-    <!-- . ПОСТОЯННЫЙ АТРИБУТ: ЛОГОТИП GY-GY -->
-    <div class="ui-header-right">GY-GY</div>
+        
+        <div class="gy-logo-top">GY-GY</div> <!-- -->
+        
+        <button id="global-back" class="gy-back-btn" onclick="Agent.goBack()" style="display:none;">← BACK</button> <!-- -->
+    </header>
 
-    <!-- АУДИО-АКТИВЫ -->
-    <audio id="snd-door"><source src="door_open.mp3" type="audio/mpeg"></audio>
-    <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
+    <!-- СЦЕНА СБОРКИ -->
+    <main id="app-stage"></main>
 
-    <!-- СЦЕНА СОЗИДАНИЯ (Сюда Агент подгружает блоки) -->
-    <main id="app-stage">
-        <!-- . БЛОК: ВХОД С ДВЕРЯМИ -->
-        <div id="block-entrance" class="block active" style="opacity: 1; display: flex;">
-            <img src="door_1.jpg" id="main-door" onclick="Agent.handleDoor()">
-        </div>
-    </main>
-
-    <script src="core-agent.js?v=4.7.1"></script>
+    <script src="core-agent.js"></script>
 </body>
 </html>
