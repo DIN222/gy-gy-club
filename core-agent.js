@@ -1,68 +1,60 @@
+/** 
+ * GY-GY CORE AGENT
+ * Профессиональная блочная логика
+ */
 const Agent = {
-    version: "2.8.4",
-    // Список флагов для выбора
-    languages: ['en', 'ru', 'fr', 'de', 'es', 'it', 'cn', 'jp', 'kr', 'pt', 'tr', 'ua'],
-    
     init() {
-        console.log(`GY-GY Agent v.${this.version} заступил на смену.`);
-        this.renderFlags();
-        this.startSlogans();
+        // 1. Цифровой след (Cookie-recognition)
+        let traceId = this.getCookie('gy_trace');
+        if (!traceId) {
+            traceId = this.generateIdentity(); // Авто-назначение ника и аватара
+        }
+        this.render('entrance'); // Стартуем от двери
     },
 
-    renderFlags() {
-        const grid = document.getElementById('flag-dropdown');
-        this.languages.forEach(lang => {
-            const img = document.createElement('img');
-            img.src = `flags/${lang}.png`;
-            img.className = 'flag-item';
-            img.onclick = () => this.selectLanguage(lang);
-            grid.appendChild(img);
-        });
+    generateIdentity() {
+        const id = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        document.cookie = `gy_trace=${id}; max-age=31536000; path=/`;
+        localStorage.setItem('gy_nick', "Clubber-" + id.substr(3, 3));
+        return id;
     },
 
-    selectLanguage(lang) {
-        document.getElementById('user-flag').src = `flags/${lang}.png`;
-        this.toggleFlags();
-        console.log(`Язык изменен на: ${lang}`);
-    },
-
-    toggleFlags() {
-        document.getElementById('flag-dropdown').classList.toggle('hidden');
+    // Продвижение по территории клуба
+    render(loc) {
+        const stage = document.getElementById('app-stage');
+        stage.innerHTML = this.locationBlocks[loc] || 'Location Error';
     },
 
     enterClub() {
-        try { document.getElementById('snd-click').play(); } catch(e){}
-        
-        document.querySelector('.door-left').classList.add('open');
-        document.querySelector('.door-right').classList.add('open');
-        
-        setTimeout(() => {
-            try { document.getElementById('snd-door').play(); } catch(e){}
-            document.getElementById('welcome-content').classList.add('hidden');
-        }, 300);
+        document.querySelectorAll('.door').forEach(d => d.classList.add('open'));
+        setTimeout(() => this.render('hall'), 600);
     },
 
-    startSlogans() {
-        // Остроумные и креативные слоганы (без пошлости)
-        const list = [
-            "Интеллект — это когда гы-гы уместно.",
-            "Твой цифровой след ведет к успеху.",
-            "Синхронный перевод душ запущен.",
-            "Вход только для тех, кто понимает иронию кода.",
-            "Здесь реальность исправляется юмором."
-        ];
-        
-        const update = () => {
-            const el = document.getElementById('slogan-text');
-            el.style.opacity = 0;
-            setTimeout(() => {
-                el.innerText = list[Math.floor(Math.random() * list.length)];
-                el.style.opacity = 1;
-            }, 500);
-        };
-        update();
-        setInterval(update, 8000); // Динамика каждые 8 секунд
-    }
+    // БЛОЧНАЯ СТРУКТУРА ЛОКАЦИЙ (Проработано в записке)
+    locationBlocks: {
+        entrance: `
+            <div class="block">
+                <h1>GY-GY CLUB</h1>
+                <button class="gy-btn" onclick="Agent.enterClub()">OPEN GATES</button>
+                <button class="gy-btn" onclick="Agent.tgAuth()">TELEGRAM STABILITY</button>
+            </div>`,
+        hall: `
+            <div class="block">
+                <h2>MAIN HALL</h2>
+                <div class="nav-grid">
+                    <button class="gy-btn" onclick="Agent.render('bar')">BAR</button>
+                    <button class="gy-btn" onclick="Agent.render('server')">SERVER ROOM</button>
+                    <button class="gy-btn" onclick="Agent.render('ai_room')">AI ROOM</button>
+                </div>
+                <button class="key-btn" onclick="Agent.downloadKey()">MAGIC KEY (QR)</button>
+            </div>`,
+        bar: `<div><h1>BAR</h1><p>Tables and humor</p></div>`,
+        server: `<div><h1>SERVER ROOM</h1></div>`,
+        ai_room: `<div><h1>AI ROOM</h1></div>`
+    },
+
+    downloadKey() { alert("Magic Key downloaded"); },
+    getCookie(name) { /* логика получения куки */ }
 };
 
 window.onload = () => Agent.init();
