@@ -1,10 +1,10 @@
 /** 
- * . CORE AGENT v.4.7.2 
- * Реализация: Блочная структура + Автоматический ID + Magic Key
+ * . CORE AGENT v.4.8.0 
+ * Применение блочной структуры по последней пояснительной записке.
  */
 const Agent = {
-    state: {
-        loc: 'entrance',
+    current: 'entrance',
+    user: {
         id: localStorage.getItem('gy_trace') || null,
         avatar: localStorage.getItem('gy_avatar') || null
     },
@@ -12,88 +12,79 @@ const Agent = {
     // . ОПРЕДЕЛЕНИЕ БЛОКОВ
     blocks: {
         entrance: `
-            <div class="block-wrap">
-                <img src="door_1.jpg" id="main-door" class="visual-small-door" onclick="Agent.openDoors()">
+            <div id="b-entrance">
+                <img src="door_1.jpg" class="visual-door" onclick="Agent.openDoors()">
             </div>`,
 
         welcome: `
-            <div class="block-wrap">
-                <div class="humor-quote">«В каждой шутке есть доля виски»</div>
-                <img src="horse_welcome.png" class="visual-small-horse">
-                <div class="btn-group">
+            <div id="b-welcome" style="text-align:center;">
+                <div style="font-size:1.2rem; margin-bottom:20px;">«В каждой шутке есть доля виски»</div>
+                <img src="horse_welcome.png" class="visual-horse">
+                <div>
                     <button class="btn-gy" onclick="Agent.render('identity')">ID & STABILITY</button>
-                    <button id="btn-hall-access" class="btn-gy" onclick="Agent.render('hall')">HALL</button>
+                    <button id="hall-link" class="btn-gy">HALL</button>
                 </div>
             </div>`,
 
         identity: `
-            <div class="block-wrap">
+            <div id="b-identity" style="text-align:center;">
                 <div class="identity-grid">
-                    <div class="box-slot" id="slot-id"><b>ID</b><br><span id="val-id">...</span></div>
-                    <div class="box-slot" id="slot-qr"><b>QR</b><br>KEY</div>
-                    <div class="box-slot" id="slot-avatar" onclick="Agent.genAvatar()"><b>AVATAR</b><br>GEN</div>
-                    <div class="box-slot" id="slot-tg" onclick="Agent.linkTG()"><b>STABLE</b><br>TELEGRAM</div>
+                    <div class="slot" id="s-id">ID<br>TRACED</div>
+                    <div class="slot" id="s-qr">MAGIC<br>KEY</div>
+                    <div class="slot" id="s-av" onclick="Agent.assignAvatar()">GEN<br>AVATAR</div>
+                    <div class="slot" id="s-tg">TG<br>STABLE</div>
                 </div>
-                <button class="btn-gy" onclick="Agent.saveProfile()">SAVE & LOCK</button>
-            </div>`,
-
-        hall: `
-            <div class="block-wrap">
-                <div class="id-card-final">
-                    <div id="display-avatar"></div>
-                    <div id="display-id"></div>
-                    <button class="btn-gy" onclick="alert('Entering Bar...')">ENTER BAR</button>
-                </div>
+                <button class="btn-gy" onclick="Agent.saveAndProceed()">SAVE & LOCK</button>
             </div>`
     },
 
-    init() {
-        this.render('entrance');
-        this.checkIdentity();
-    },
-
     render(loc) {
-        this.state.loc = loc;
+        this.current = loc;
         const stage = document.getElementById('app-stage');
-        stage.innerHTML = this.blocks[loc];
+        stage.style.opacity = 0;
         
-        // Управление кнопкой возврата
-        document.getElementById('global-back').style.display = (loc === 'entrance') ? 'none' : 'block';
-        
-        if(loc === 'identity') this.updateIdentityUI();
-        if(loc === 'welcome' && !this.state.id) document.getElementById('btn-hall-access').classList.add('btn-sleep');
+        setTimeout(() => {
+            stage.innerHTML = this.blocks[loc];
+            stage.style.opacity = 1;
+            this.syncUI();
+        }, 400);
     },
 
     openDoors() {
-        const door = document.getElementById('main-door');
-        door.style.transform = "scale(3)";
-        door.style.opacity = "0";
-        
-        // Автоматическое присвоение ID при первом входе
-        if(!this.state.id) {
-            this.state.id = `GY-${Math.floor(1000 + Math.random() * 9000)}`;
-            localStorage.setItem('gy_trace', this.state.id);
+        // . Cookie-recognition & ID Assignment
+        if (!this.user.id) {
+            this.user.id = 'GY-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            localStorage.setItem('gy_trace', this.user.id);
         }
-        
-        setTimeout(() => this.render('welcome'), 1200);
-    },
-
-    genAvatar() {
-        const icons = ['🥃', '🐎', '🎭', '🗝️'];
-        this.state.avatar = icons[Math.floor(Math.random() * icons.length)];
-        document.getElementById('slot-avatar').innerHTML = `<b>AVATAR</b><br>${this.state.avatar}`;
-    },
-
-    saveProfile() {
-        localStorage.setItem('gy_avatar', this.state.avatar);
         this.render('welcome');
     },
 
-    goBack() {
-        if(this.state.loc === 'welcome') this.render('entrance');
-        else if(this.state.loc === 'identity') this.render('welcome');
-        else if(this.state.loc === 'hall') this.render('welcome');
-    }
+    assignAvatar() {
+        const avs = ['🥃', '🐎', '🎭', '🗝️'];
+        this.user.avatar = avs[Math.floor(Math.random() * avs.length)];
+        document.getElementById('s-av').innerHTML = `AVATAR<br>${this.user.avatar}`;
+    },
+
+    saveAndProceed() {
+        localStorage.setItem('gy_avatar', this.user.avatar);
+        this.render('welcome');
+    },
+
+    syncUI() {
+        const backBtn = document.getElementById('global-back');
+        backBtn.style.visibility = (this.current === 'entrance') ? 'hidden' : 'visible';
+        
+        const hallBtn = document.getElementById('hall-link');
+        if (hallBtn) {
+            if (!this.user.avatar) hallBtn.classList.add('btn-sleep');
+            else hallBtn.onclick = () => alert('Welcome to the Hall, ' + this.user.id);
+        }
+    },
+
+    toggleLang() { document.getElementById('lang-list').classList.toggle('open'); },
+    setLang(l) { alert('Lang set to: ' + l); this.toggleLang(); },
+    goBack() { if(this.current === 'welcome') this.render('entrance'); else this.render('welcome'); }
 };
 
-window.onload = () => Agent.init();
+// . СТАРТ
+window.onload = () => Agent.render('entrance');
