@@ -1,33 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- . DEFAULT LANGUAGE: ENGLISH (MANDATORY) -->
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | v.5.1.5</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GY-GY Club | v.5.2.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --dark: #000; }
+        body { background: var(--dark); color: var(--gold); font-family: 'Share Tech Mono', monospace; margin: 0; overflow: hidden; }
+
+        /* . PERMANENT ATTRIBUTES: LOGO, LANG, BACK */
+        .ui-header { position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; }
+        .gy-logo { font-size: 26px; font-weight: 900; letter-spacing: 5px; }
+        .btn-gy { background: transparent; border: 2px solid var(--gold); color: var(--gold); padding: 10px 20px; cursor: pointer; text-transform: uppercase; font-family: inherit; font-weight: 900; transition: 0.3s; }
+        .btn-gy:hover { background: var(--gold); color: #000; }
+        
+        #app-stage { height: 100vh; display: flex; align-items: center; justify-content: center; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .scene { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        
+        /* GRAPHICS: REDUCED SIZE AS REQUESTED */
+        .img-main { max-height: 35vh; transition: 1.2s; cursor: pointer; }
+        .slogan { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; margin: 20px 0; color: var(--gold); }
+
+        /* NAVIGATION DROPDOWN */
+        .drop-nav { position: absolute; top: 60px; left: 20px; background: #000; border: 2px solid var(--gold); display: none; flex-direction: column; }
+        .drop-nav.open { display: flex; }
+        .btn-menu { border: none; border-bottom: 1px solid #222; padding: 15px; text-align: left; }
+    </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- . ПОСТОЯННЫЕ АТРИБУТЫ -->
-    <header class="ui-fixed">
-        <div class="lang-gate">
-            <button class="btn-gy" onclick="Agent.toggleLang()">LANG</button>
-            <div id="lang-list" class="dropdown-content">
-                <button onclick="Agent.setLang('RU')">RU</button>
-                <button onclick="Agent.setLang('EN')">EN</button>
+    <!-- . HEADER: MANDATORY MONOLITH -->
+    <header class="ui-header">
+        <div class="nav-left">
+            <button id="lang-btn" class="btn-gy" onclick="UI.toggle('lang-list')">LANG</button>
+            <div id="lang-list" class="drop-nav">
+                <button class="btn-gy btn-menu" onclick="UI.setLang('EN')">ENGLISH (DEFAULT)</button>
+                <button class="btn-gy btn-menu" onclick="UI.setLang('RU')">RUSSIAN</button>
             </div>
         </div>
-        <div class="gy-logo">GY-GY</div> <!-- -->
-        <button id="nav-back" class="btn-gy" style="visibility:hidden;" onclick="Agent.goBack()">←</button>
+        <div class="gy-logo">GY-GY</div>
+        <button id="btn-back" class="btn-gy" style="visibility:hidden;" onclick="Agent.goBack()">← BACK</button>
     </header>
 
     <main id="app-stage"></main>
 
-    <!-- АУДИО-СИСТЕМА -->
-    <audio id="snd-bar-ambient" loop src="bar_2_0.mp3"></audio>
-    <audio id="snd-server" loop src="server_noise.mp3"></audio>
-    <audio id="snd-fx" src="horse_fx.mp3"></audio>
+    <!-- 2.0 AUDIO MAP -->
+    <audio id="snd-bar" loop src="bar_ambient.mp3"></audio>
+    <audio id="snd-server" loop src="server_hum.mp3"></audio>
+    <audio id="snd-fx" src="pouring_fx.mp3"></audio>
 
     <script src="core-agent.js"></script>
 </body>
