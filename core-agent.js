@@ -1,96 +1,104 @@
 /** 
- * . CORE AGENT v.5.1.5 | MONOLITH BUILD
- * - Маркер запрета деструктивного редактирования.
+ * . CORE AGENT v.5.2.2
+ * MARKER: STRICT ADHERENCE TO ENGLISH BY DEFAULT.
  */
 const Agent = {
-    state: { loc: 'entrance', user: localStorage.getItem('gy_trace') || null },
+    loc: 'entrance',
+    user: {
+        id: localStorage.getItem('gy_trace') || null,
+        avatar: localStorage.getItem('gy_avatar') || null
+    },
 
     blocks: {
         entrance: `
-            <div id="b-entrance">
-                <img src="door_1.jpg" style="max-height:40vh; cursor:pointer;" onclick="Agent.handleDoor()">
+            <div class="scene">
+                <img src="door_1.jpg" class="img-main" onclick="Agent.doorProtocol()">
             </div>`,
 
         hall: `
             <div class="scene">
-                <div class="slogan">ВЫ В ХОЛЛЕ</div>
-                <div class="dropdown">
-                    <button class="btn-gy" onclick="Agent.toggleLang('lang-list')">ПРОЙТИ ↓</button>
-                    <div id="nav-drop" class="dropdown-content active" style="position:static; display:flex; flex-direction:column;">
-                        <button class="btn-gy" onclick="Agent.transit('bar')">В БАР 🥃</button>
-                        <button class="btn-gy btn-sleep" style="opacity:0.3">В АТЕЛЬЕ (В ПРОЕКТЕ)</button>
+                <div class="slogan">THE HALL</div>
+                <div style="position:relative;">
+                    <button class="btn-gy" onclick="UI.toggle('menu-go')">PROCEED ↓</button>
+                    <div id="menu-go" class="drop-nav">
+                        <button class="btn-gy btn-menu" onclick="Agent.transit('bar')">TO THE BAR 🥃</button>
+                        <button class="btn-gy btn-menu" style="opacity:0.2">TO THE ATELIER (PLANNING)</button>
                     </div>
                 </div>
             </div>`,
 
         bar: `
             <div class="scene">
-                <div class="slogan">«КОНЬ — ТОЖЕ БАРМЕН, ЕСЛИ ВЫПИТЬ ДОСТАТОЧНО»</div>
-                <img src="horse_bartender.png" class="img-horse">
-                <div style="display:flex; gap:20px;">
-                    <button class="btn-gy" onclick="Agent.transit('tables')">← ЗА СТОЛИКИ</button>
-                    <button class="btn-gy" onclick="Agent.transit('server')">В AI ROOM →</button>
+                <div class="slogan">"THE HORSE IS A BARTENDER TOO, IF YOU DRINK ENOUGH"</div>
+                <img src="horse_bartender.png" class="img-main">
+                <div style="display:flex; gap:15px;">
+                    <button class="btn-gy" onclick="Agent.transit('tables')">← TO TABLES</button>
+                    <button class="btn-gy" onclick="Agent.transit('server')">TO AI ROOM →</button>
                 </div>
             </div>`,
 
         tables: `
             <div class="scene">
-                <img src="tables_layout.jpg" style="max-width:80vw; border:1px solid var(--gold);">
-                <div class="mic-icon">🎤</div>
-                <button class="btn-gy" style="margin-top:20px;" onclick="Agent.transit('bar')">К СТОЙКЕ</button>
+                <img src="tables_map.jpg" style="max-width:85vw; border:1px solid var(--gold);">
+                <div style="margin-top:10px;">[HEARING THE HORSE POURING A DRINK]</div>
+                <button class="btn-gy" style="margin-top:20px;" onclick="Agent.transit('bar')">BACK TO BAR</button>
             </div>`,
 
         server: `
             <div class="scene">
-                <div class="slogan">СЕРВЕРНАЯ... [ШУМ ОХЛАЖДЕНИЯ]</div>
-                <button class="btn-gy" onclick="Agent.transit('ai_room')">В AI ROOM</button>
+                <div class="slogan">SERVER ROOM... FANS WHIRRING</div>
+                <button class="btn-gy" onclick="Agent.transit('ai_room')">ENTER AI ROOM</button>
             </div>`
     },
 
-    transit(target) {
-        const stage = document.getElementById('app-stage');
-        stage.style.opacity = "0"; // Холл тает
-
-        setTimeout(() => {
-            this.state.loc = target;
-            stage.innerHTML = this.blocks[target];
-            stage.style.opacity = "1"; // Бар проявляется
-            this.handleAudio(target);
-            this.syncUI();
-        }, 800);
-    },
-
-    handleDoor() {
-        // - Cookie-recognition для авто-входа
-        if(!this.state.user) {
-            this.state.user = 'ID-' + Math.random().toString(36).substr(2, 5).toUpperCase();
-            localStorage.setItem('gy_trace', this.state.user);
+    doorProtocol() {
+        // . IDENTITY TRACE (COOKIE RECOGNITION)
+        if (!this.user.id) {
+            this.user.id = 'GY-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            localStorage.setItem('gy_trace', this.user.id);
+            this.user.avatar = 'AV-' + Math.floor(Math.random() * 99);
+            localStorage.setItem('gy_avatar', this.user.avatar);
         }
         this.transit('hall');
     },
 
-    handleAudio(loc) {
-        const barSnd = document.getElementById('snd-bar-ambient');
-        const srvSnd = document.getElementById('snd-server');
-        
-        barSnd.pause(); srvSnd.pause();
+    transit(target) {
+        const stage = document.getElementById('app-stage');
+        stage.style.opacity = "0"; // Scene fades
 
-        if(loc === 'bar' || loc === 'tables') barSnd.play();
-        if(loc === 'server') srvSnd.play();
-        
-        if(loc === 'tables') {
-            console.log("FX: Покашливание коня, звук наливания...");
-            // Тут вызываем Agent.playFX('pour_whiskey');
-        }
+        setTimeout(() => {
+            this.loc = target;
+            stage.innerHTML = this.blocks[target];
+            stage.style.opacity = "1"; // Scene manifests
+            this.audioEngine(target);
+            UI.sync();
+        }, 1200);
     },
 
-    syncUI() {
-        document.getElementById('nav-back').style.visibility = 
-            (this.state.loc === 'entrance') ? 'hidden' : 'visible';
+    audioEngine(loc) {
+        const bar = document.getElementById('snd-bar');
+        const srv = document.getElementById('snd-server');
+        const fx = document.getElementById('snd-fx');
+        
+        [bar, srv].forEach(s => { s.pause(); s.currentTime = 0; });
+
+        if (loc === 'bar' || loc === 'tables') bar.play();
+        if (loc === 'server') srv.play();
+        if (loc === 'tables') setTimeout(() => fx.play(), 1500);
     },
 
-    toggleLang(id) { document.getElementById(id || 'nav-drop').classList.toggle('active'); },
     goBack() { this.transit('hall'); }
+};
+
+const UI = {
+    toggle(id) { document.getElementById(id).classList.toggle('open'); },
+    sync() {
+        document.getElementById('btn-back').style.visibility = (Agent.loc === 'entrance') ? 'hidden' : 'visible';
+    },
+    setLang(l) { 
+        this.toggle('lang-list'); 
+        alert('Language switched to ' + l + '. But we stay GY-GY.'); 
+    }
 };
 
 window.onload = () => Agent.transit('entrance');
