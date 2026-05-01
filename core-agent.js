@@ -1,109 +1,96 @@
 /** 
- * . CORE AGENT v.4.8.8
- * Использование маркеров блокировки для отлаженных конструкций.
- * Реализация Cookie-recognition и Magic Key.
+ * . CORE AGENT v.5.1.5 | MONOLITH BUILD
+ * - Маркер запрета деструктивного редактирования.
  */
-
 const Agent = {
-    loc: 'entrance',
-    user: {
-        id: localStorage.getItem('gy_trace') || null,
-        avatar: localStorage.getItem('gy_avatar') || null
-    },
+    state: { loc: 'entrance', user: localStorage.getItem('gy_trace') || null },
 
-    // . СОЗИДАТЕЛЬНЫЕ БЛОКИ
     blocks: {
         entrance: `
-            <div id="block-entrance">
-                <img src="door_1.jpg" id="main-door" class="img-door" onclick="Agent.handleEntry()">
+            <div id="b-entrance">
+                <img src="door_1.jpg" style="max-height:40vh; cursor:pointer;" onclick="Agent.handleDoor()">
             </div>`,
 
-        welcome: `
-            <div id="block-welcome" style="display:flex; flex-direction:column; align-items:center;">
-                <div class="quote">«В каждой шутке есть доля виски»</div>
-                <img src="horse_welcome.png" class="img-horse">
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-gy" onclick="Agent.render('identity')">ПОЛУЧИТЬ ID</button>
-                    <button id="hall-btn" class="btn-gy" onclick="Agent.enterHall()">В ХОЛЛ</button>
+        hall: `
+            <div class="scene">
+                <div class="slogan">ВЫ В ХОЛЛЕ</div>
+                <div class="dropdown">
+                    <button class="btn-gy" onclick="Agent.toggleLang('lang-list')">ПРОЙТИ ↓</button>
+                    <div id="nav-drop" class="dropdown-content active" style="position:static; display:flex; flex-direction:column;">
+                        <button class="btn-gy" onclick="Agent.transit('bar')">В БАР 🥃</button>
+                        <button class="btn-gy btn-sleep" style="opacity:0.3">В АТЕЛЬЕ (В ПРОЕКТЕ)</button>
+                    </div>
                 </div>
             </div>`,
 
-        identity: `
-            <div id="block-identity" style="display:flex; flex-direction:column; align-items:center;">
-                <div class="quote" style="font-size:18px;">ИДЕНТИФИКАЦИЯ</div>
-                <div class="id-grid">
-                    <div class="box-slot" id="s-trace"><b>ID</b><br><span id="val-id">WAIT</span></div>
-                    <div class="box-slot" id="s-qr"><b>MAGIC</b><br>QR</div>
-                    <div class="box-slot" id="s-av" onclick="Agent.genAvatar()" style="cursor:pointer;"><b>AVATAR</b><br>GEN</div>
-                    <div class="box-slot" id="s-tg" onclick="Agent.linkTG()" style="cursor:pointer;"><b>STABLE</b><br>TELEGRAM</div>
+        bar: `
+            <div class="scene">
+                <div class="slogan">«КОНЬ — ТОЖЕ БАРМЕН, ЕСЛИ ВЫПИТЬ ДОСТАТОЧНО»</div>
+                <img src="horse_bartender.png" class="img-horse">
+                <div style="display:flex; gap:20px;">
+                    <button class="btn-gy" onclick="Agent.transit('tables')">← ЗА СТОЛИКИ</button>
+                    <button class="btn-gy" onclick="Agent.transit('server')">В AI ROOM →</button>
                 </div>
-                <button class="btn-gy" style="margin-top:20px; width:100%;" onclick="Agent.saveProfile()">СОХРАНИТЬ И ЗАПЕРЕТЬ</button>
+            </div>`,
+
+        tables: `
+            <div class="scene">
+                <img src="tables_layout.jpg" style="max-width:80vw; border:1px solid var(--gold);">
+                <div class="mic-icon">🎤</div>
+                <button class="btn-gy" style="margin-top:20px;" onclick="Agent.transit('bar')">К СТОЙКЕ</button>
+            </div>`,
+
+        server: `
+            <div class="scene">
+                <div class="slogan">СЕРВЕРНАЯ... [ШУМ ОХЛАЖДЕНИЯ]</div>
+                <button class="btn-gy" onclick="Agent.transit('ai_room')">В AI ROOM</button>
             </div>`
     },
 
-    render(target) {
-        this.loc = target;
+    transit(target) {
         const stage = document.getElementById('app-stage');
-        stage.style.opacity = 0;
-        
+        stage.style.opacity = "0"; // Холл тает
+
         setTimeout(() => {
+            this.state.loc = target;
             stage.innerHTML = this.blocks[target];
-            stage.style.opacity = 1;
+            stage.style.opacity = "1"; // Бар проявляется
+            this.handleAudio(target);
             this.syncUI();
-            if(target === 'identity') this.initIdentity();
-        }, 350);
+        }, 800);
     },
 
-    // . COOKIE-RECOGNITION И АВТО-ВХОД
-    handleEntry() {
-        const door = document.getElementById('main-door');
-        door.style.transform = "scale(4)";
-        door.style.opacity = "0";
-
-        if (!this.user.id) {
-            this.user.id = 'GY-' + Math.floor(100 + Math.random() * 899) + '-' + Date.now().toString().slice(-4);
-            localStorage.setItem('gy_trace', this.user.id);
+    handleDoor() {
+        // - Cookie-recognition для авто-входа
+        if(!this.state.user) {
+            this.state.user = 'ID-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+            localStorage.setItem('gy_trace', this.state.user);
         }
+        this.transit('hall');
+    },
+
+    handleAudio(loc) {
+        const barSnd = document.getElementById('snd-bar-ambient');
+        const srvSnd = document.getElementById('snd-server');
         
-        setTimeout(() => this.render('welcome'), 1200);
-    },
+        barSnd.pause(); srvSnd.pause();
 
-    initIdentity() {
-        document.getElementById('val-id').innerText = this.user.id;
-        if(this.user.avatar) {
-            document.getElementById('s-av').innerHTML = `<img src="${this.user.avatar}">`;
+        if(loc === 'bar' || loc === 'tables') barSnd.play();
+        if(loc === 'server') srvSnd.play();
+        
+        if(loc === 'tables') {
+            console.log("FX: Покашливание коня, звук наливания...");
+            // Тут вызываем Agent.playFX('pour_whiskey');
         }
-        // Генерация QR-кода как Magic Key
-        new QRCode(document.getElementById("s-qr"), { text: this.user.id, width: 95, height: 95 });
-    },
-
-    genAvatar() {
-        const seed = Math.random();
-        this.user.avatar = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
-        document.getElementById('s-av').innerHTML = `<img src="${this.user.avatar}">`;
-    },
-
-    saveProfile() {
-        localStorage.setItem('gy_avatar', this.user.avatar);
-        this.render('welcome');
     },
 
     syncUI() {
-        // Управление кнопкой возврата
-        const back = document.getElementById('nav-back');
-        back.style.visibility = (this.loc === 'entrance') ? 'hidden' : 'visible';
-        
-        // Управление доступом в Холл
-        const hBtn = document.getElementById('hall-btn');
-        if(hBtn && !this.user.avatar) hBtn.classList.add('btn-sleep');
+        document.getElementById('nav-back').style.visibility = 
+            (this.state.loc === 'entrance') ? 'hidden' : 'visible';
     },
 
-    toggleLang() { document.getElementById('lang-list').classList.toggle('active'); },
-    setLang(l) { this.toggleLang(); alert('Language: ' + l); },
-    goBack() { this.render('welcome'); },
-    enterHall() { if(this.user.avatar) alert('ID: ' + this.user.id + ' \nВход разрешен!'); },
-    linkTG() { alert('Stability Mode: Telegram Linking...'); }
+    toggleLang(id) { document.getElementById(id || 'nav-drop').classList.toggle('active'); },
+    goBack() { this.transit('hall'); }
 };
 
-// . СТАРТ МОНОЛИТА
-window.onload = () => Agent.render('entrance');
+window.onload = () => Agent.transit('entrance');
