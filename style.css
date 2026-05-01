@@ -1,42 +1,24 @@
 body { margin: 0; background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
-/* Двери на заднем плане (z-index: 10) */
-#portal-doors {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    display: flex; z-index: 10; pointer-events: none;
-}
+#portal-doors { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; z-index: 10; pointer-events: none; }
 .door { width: 50%; height: 100%; background: #1a1a1a; transition: transform 1.5s ease; border: 1px solid #333; }
 .door-left { border-right: 1px solid #00ff00; }
 .door-right { border-left: 1px solid #00ff00; }
 .door-left.open { transform: translateX(-100%); }
 .door-right.open { transform: translateX(100%); }
 
-/* Шапка на переднем плане (z-index: 100) */
-.permanent-header {
-    position: fixed; top: 0; width: 100%; z-index: 100;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 40px; box-sizing: border-box;
-}
+.permanent-header { position: fixed; top: 0; width: 100%; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; box-sizing: border-box; }
 #main-logo { height: 60px; }
-#slogan-text { color: #00ff00; font-size: 14px; display: block; margin-top: 5px; }
+#slogan-text { color: #00ff00; font-size: 14px; font-weight: bold; text-shadow: 0 0 5px #00ff00; }
 
-/* Аватар и Флаги */
 .avatar-wrapper { position: relative; width: 60px; height: 60px; cursor: pointer; }
 #user-avatar { width: 100%; border-radius: 50%; border: 2px solid #555; }
 #user-flag { position: absolute; bottom: 0; right: 0; width: 22px; border: 1px solid #000; }
 
-.flag-grid {
-    position: absolute; top: 70px; right: 0; background: #222;
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px;
-}
+.flag-grid { position: absolute; top: 80px; right: 40px; background: rgba(34, 34, 34, 0.9); display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; border: 1px solid #444; z-index: 200; }
+.flag-item { width: 30px; cursor: pointer; transition: transform 0.2s; }
+.flag-item:hover { transform: scale(1.2); }
 
-/* Контент центра */
-#main-stage {
-    position: relative; z-index: 50; height: 100vh;
-    display: flex; justify-content: center; align-items: center; text-align: center;
-}
-.start-trigger {
-    padding: 15px 30px; background: #00ff00; color: #000; border: none;
-    font-weight: bold; cursor: pointer; margin-top: 20px;
-}
-.hidden { display: none; }
+#main-stage { position: relative; z-index: 50; height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle, #111 0%, #000 100%); }
+.start-trigger { padding: 20px 40px; background: #00ff00; color: #000; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; box-shadow: 0 0 15px #00ff00; }
+.hidden { display: none !important; }
