@@ -1,6 +1,6 @@
 /** 
- * GY-GY CLUB MONOLITH SCRIPT v.5.2.5 (.)
- * FIX: Robust Identity Loading
+ * GY-GY CLUB MONOLITH SCRIPT v.5.2.6 (.)
+ * FIX: Robust Identity Loading & Syntax Error Shield
  */
 const Agent = {
     user: null,
@@ -13,8 +13,12 @@ const Agent = {
                 this.user = JSON.parse(data);
             } catch (e) {
                 // Если там просто строка (как твоя ошибка), подхватываем её как ID
-                console.log("Old trace detected, converting...");
-                this.user = { numCode: data.replace('#', ''), avatar: 'STALLION', flag: '🏴‍☠️' };
+                console.log("GY-GY Alert: Old trace detected, converting...");
+                this.user = { 
+                    numCode: data.replace('#', ''), 
+                    avatar: 'STALLION', 
+                    flag: '🏴‍☠️' 
+                };
             }
         }
     },
@@ -23,6 +27,7 @@ const Agent = {
         this.transit('generating');
         setTimeout(() => {
             if (!this.user) {
+                // Стандарт: Порядковый номер + 4 цифры
                 const serial = 255; 
                 const rand = Math.floor(1000 + Math.random() * 8999);
                 this.user = {
@@ -40,11 +45,11 @@ const Agent = {
         const stage = document.getElementById('app-stage');
         if (!stage) return;
 
-        stage.style.opacity = '0';
+        stage.style.opacity = '0'; // Плавный переход 1.2 сек
         
         setTimeout(() => {
             if (typeof Scenes === 'undefined') {
-                stage.innerHTML = "<h1 style='color:red'>BLOCKS.JS MISSING</h1>";
+                stage.innerHTML = "<h1 style='color:red'>CRITICAL: blocks.js NOT FOUND</h1>";
                 stage.style.opacity = '1';
                 return;
             }
