@@ -1,53 +1,33 @@
-/** 
- * GY-GY CLUB SCRIPT v.5.2.5 (.)
- */
 const Agent = {
-    user: JSON.parse(localStorage.getItem('gy_trace')) || null,
-
+    user: null,
+    load() {
+        try { this.user = JSON.parse(localStorage.getItem('gy_trace')); } 
+        catch(e) { localStorage.clear(); }
+    },
     initIdentity() {
         this.transit('generating');
         setTimeout(() => {
-            if (!this.user) {
-                // . Serial + 4 random digits
-                const serial = 1; 
-                const rand = Math.floor(1000 + Math.random() * 8999);
-                this.user = {
-                    numCode: `${serial}-${rand}`,
-                    avatar: 'STALLION_PIC.png',
-                    flag: '🏴‍☠️'
-                };
-                localStorage.setItem('gy_trace', JSON.stringify(this.user));
-            }
+            this.user = { numCode: "1-"+Math.floor(1000+Math.random()*9000), avatar: "⭐", flag: "🏴‍☠️" };
+            localStorage.setItem('gy_trace', JSON.stringify(this.user));
             this.transit('hall');
         }, 2000);
     },
-
-    transit(target) {
-        const stage = document.getElementById('app-stage');
-        stage.style.opacity = '0';
+    transit(t) {
+        const s = document.getElementById('app-stage');
+        s.style.opacity = '0';
         setTimeout(() => {
-            const content = typeof Scenes[target] === 'function' ? Scenes[target](this.user) : Scenes[target];
-            stage.innerHTML = content;
-            stage.style.opacity = '1';
-            this.syncUI(target);
-        }, 1200); // . 1.2s Плавный переход
+            s.innerHTML = (typeof Scenes[t] === 'function') ? Scenes[t](this.user) : Scenes[t];
+            s.style.opacity = '1';
+            document.getElementById('btn-back').style.display = (t==='entrance')?'none':'block';
+        }, 1200);
     },
-
-    syncUI(loc) {
-        const backBtn = document.getElementById('btn-back');
-        const hideOn = ['entrance', 'welcome', 'generating'];
-        backBtn.style.display = hideOn.includes(loc) ? 'none' : 'block';
-    },
-
     goBack() { this.transit('hall'); }
 };
-
 const UI = {
-    toggle(id) {
-        const el = document.getElementById(id);
-        el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+    toggle(id) { 
+        const e = document.getElementById(id); 
+        e.style.display = (e.style.display==='flex')?'none':'flex'; 
     },
-    setLang(l) { this.toggle('lang-list'); console.log('Lang set to:', l); }
+    setLang(l) { this.toggle('lang-list'); }
 };
-
-window.onload = () => Agent.transit('entrance');
+window.onload = () => { Agent.load(); Agent.transit('entrance'); };
