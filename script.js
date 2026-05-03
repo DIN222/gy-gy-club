@@ -1,44 +1,53 @@
 /** 
- * GY-GY CLUB MONOLITH BLOCKS v.5.2.5 (.)
+ * GY-GY CLUB SCRIPT v.5.2.5 (.)
  */
-const Scenes = {
-    // . ENTRANCE - Клик сюда запускает цепочку
-    entrance: `
-        <div class="scene">
-            <img src="https://via.placeholder.com/400x600?text=DOOR" class="door-img" onclick="Agent.transit('welcome')">
-            <p style="cursor:pointer" onclick="Agent.transit('welcome')">CLICK THE DOOR... ГЫ-ГЫ!</p>
-        </div>`,
-    
-    welcome: `
-        <div class="scene">
-            <h1>WELCOME TO THE GY-GY VOID</h1>
-            <p>Ready to get your digital soul?</p>
-            <button class="btn-gy" onclick="Agent.initIdentity()">IDENTIFY DIGITAL TRACE</button>
-        </div>`,
+const Agent = {
+    user: JSON.parse(localStorage.getItem('gy_trace')) || null,
 
-    generating: `
-        <div class="scene">
-            <h1>DIGITIZING...</h1>
-            <div style="font-size:40px;">[#######....]</div>
-        </div>`,
+    initIdentity() {
+        this.transit('generating');
+        setTimeout(() => {
+            if (!this.user) {
+                // . Serial + 4 random digits
+                const serial = 1; 
+                const rand = Math.floor(1000 + Math.random() * 8999);
+                this.user = {
+                    numCode: `${serial}-${rand}`,
+                    avatar: 'STALLION_PIC.png',
+                    flag: '🏴‍☠️'
+                };
+                localStorage.setItem('gy_trace', JSON.stringify(this.user));
+            }
+            this.transit('hall');
+        }, 2000);
+    },
 
-    hall: (user) => `
-        <div class="scene">
-            <div class="profile">${user.flag} ${user.avatar} <span>#${user.numCode}</span></div>
-            <h2>YOU ARE IN THE HALL</h2>
-            <button class="btn-gy" onclick="Agent.transit('bar')">PROCEED TO BAR 🥃</button>
-        </div>`,
+    transit(target) {
+        const stage = document.getElementById('app-stage');
+        stage.style.opacity = '0';
+        setTimeout(() => {
+            const content = typeof Scenes[target] === 'function' ? Scenes[target](this.user) : Scenes[target];
+            stage.innerHTML = content;
+            stage.style.opacity = '1';
+            this.syncUI(target);
+        }, 1200); // . 1.2s Плавный переход
+    },
 
-    bar: `
-        <div class="scene">
-            <h2>"THE HORSE IS A BARTENDER TOO..."</h2>
-            <img src="https://via.placeholder.com/600x400?text=HORSE" class="horse-img">
-            <button class="btn-gy" onclick="Agent.transit('tables')">TO THE TABLES</button>
-        </div>`,
+    syncUI(loc) {
+        const backBtn = document.getElementById('btn-back');
+        const hideOn = ['entrance', 'welcome', 'generating'];
+        backBtn.style.display = hideOn.includes(loc) ? 'none' : 'block';
+    },
 
-    tables: `
-        <div class="scene">
-            <h3>6 TABLES & MIC 🎤</h3>
-            <button class="btn-gy" onclick="Agent.transit('bar')">BACK TO BAR</button>
-        </div>`
+    goBack() { this.transit('hall'); }
 };
+
+const UI = {
+    toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+    },
+    setLang(l) { this.toggle('lang-list'); console.log('Lang set to:', l); }
+};
+
+window.onload = () => Agent.transit('entrance');
