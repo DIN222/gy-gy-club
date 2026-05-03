@@ -1,89 +1,44 @@
 /** 
- * GY-GY CLUB MONOLITH SCRIPT v.5.2.6 (.)
- * FIX: Robust Identity Loading & Syntax Error Shield
+ * GY-GY CLUB MONOLITH BLOCKS v.5.2.5 (.)
  */
-const Agent = {
-    user: null,
+const Scenes = {
+    // . ENTRANCE - Клик сюда запускает цепочку
+    entrance: `
+        <div class="scene">
+            <img src="https://via.placeholder.com/400x600?text=DOOR" class="door-img" onclick="Agent.transit('welcome')">
+            <p style="cursor:pointer" onclick="Agent.transit('welcome')">CLICK THE DOOR... ГЫ-ГЫ!</p>
+        </div>`,
+    
+    welcome: `
+        <div class="scene">
+            <h1>WELCOME TO THE GY-GY VOID</h1>
+            <p>Ready to get your digital soul?</p>
+            <button class="btn-gy" onclick="Agent.initIdentity()">IDENTIFY DIGITAL TRACE</button>
+        </div>`,
 
-    loadUser() {
-        const data = localStorage.getItem('gy_trace');
-        if (data) {
-            try {
-                // Пытаемся распарсить, если там объект
-                this.user = JSON.parse(data);
-            } catch (e) {
-                // Если там просто строка (как твоя ошибка), подхватываем её как ID
-                console.log("GY-GY Alert: Old trace detected, converting...");
-                this.user = { 
-                    numCode: data.replace('#', ''), 
-                    avatar: 'STALLION', 
-                    flag: '🏴‍☠️' 
-                };
-            }
-        }
-    },
+    generating: `
+        <div class="scene">
+            <h1>DIGITIZING...</h1>
+            <div style="font-size:40px;">[#######....]</div>
+        </div>`,
 
-    initIdentity() {
-        this.transit('generating');
-        setTimeout(() => {
-            if (!this.user) {
-                // Стандарт: Порядковый номер + 4 цифры
-                const serial = 255; 
-                const rand = Math.floor(1000 + Math.random() * 8999);
-                this.user = {
-                    numCode: `${serial}-${rand}`,
-                    avatar: 'STALLION',
-                    flag: '🏴‍☠️'
-                };
-                localStorage.setItem('gy_trace', JSON.stringify(this.user));
-            }
-            this.transit('hall');
-        }, 2000);
-    },
+    hall: (user) => `
+        <div class="scene">
+            <div class="profile">${user.flag} ${user.avatar} <span>#${user.numCode}</span></div>
+            <h2>YOU ARE IN THE HALL</h2>
+            <button class="btn-gy" onclick="Agent.transit('bar')">PROCEED TO BAR 🥃</button>
+        </div>`,
 
-    transit(target) {
-        const stage = document.getElementById('app-stage');
-        if (!stage) return;
+    bar: `
+        <div class="scene">
+            <h2>"THE HORSE IS A BARTENDER TOO..."</h2>
+            <img src="https://via.placeholder.com/600x400?text=HORSE" class="horse-img">
+            <button class="btn-gy" onclick="Agent.transit('tables')">TO THE TABLES</button>
+        </div>`,
 
-        stage.style.opacity = '0'; // Плавный переход 1.2 сек
-        
-        setTimeout(() => {
-            if (typeof Scenes === 'undefined') {
-                stage.innerHTML = "<h1 style='color:red'>CRITICAL: blocks.js NOT FOUND</h1>";
-                stage.style.opacity = '1';
-                return;
-            }
-
-            const content = typeof Scenes[target] === 'function' 
-                ? Scenes[target](this.user) 
-                : Scenes[target];
-            
-            stage.innerHTML = content || '<h1>Scene Empty</h1>';
-            stage.style.opacity = '1';
-            this.syncUI(target);
-        }, 600);
-    },
-
-    syncUI(loc) {
-        const backBtn = document.getElementById('btn-back');
-        const hideOn = ['entrance', 'welcome', 'generating'];
-        if (backBtn) backBtn.style.display = hideOn.includes(loc) ? 'none' : 'block';
-    },
-
-    goBack() { this.transit('hall'); }
+    tables: `
+        <div class="scene">
+            <h3>6 TABLES & MIC 🎤</h3>
+            <button class="btn-gy" onclick="Agent.transit('bar')">BACK TO BAR</button>
+        </div>`
 };
-
-const UI = {
-    toggle(id) {
-        const el = document.getElementById(id);
-        if (el) el.style.display = (el.style.display === 'flex' || el.style.display === 'block') ? 'none' : 'flex';
-    },
-    setLang(l) { this.toggle('lang-list'); }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    Agent.loadUser();
-    setTimeout(() => {
-        Agent.transit('entrance');
-    }, 100);
-});
