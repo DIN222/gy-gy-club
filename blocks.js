@@ -1,54 +1,45 @@
-/** 
- * GY-GY CLUB MONOLITH BLOCKS v.5.2.5 (.)
- */
 const Scenes = {
-    // . ENTRANCE
     entrance: `
-        <div class="scene">
-            <img src="https://via.placeholder.com/400x600?text=DOOR" class="door-img" onclick="Agent.transit('welcome')">
-            <p>CLICK THE DOOR... ГЫ-ГЫ!</p>
+        <div class="scene" style="background-image: url('bg_door.jpg')">
+            <div class="overlay">
+                <img src="door.png" class="door-img" onclick="Agent.transit('welcome')">
+                <p>CLICK TO ENTER... ГЫ-ГЫ!</p>
+            </div>
         </div>`,
-    
-    // . WELCOME ZONE
     welcome: `
-        <div class="scene">
-            <h1>WELCOME TO THE GY-GY VOID</h1>
-            <button class="btn-gy" onclick="Agent.initIdentity()">IDENTIFY DIGITAL TRACE</button>
+        <div class="scene" style="background-image: url('bg_welcome.jpg')">
+            <div class="overlay">
+                <h1>WELCOME ZONE</h1>
+                <button class="btn-gy" onclick="Agent.initIdentity()">IDENTIFY ME</button>
+            </div>
         </div>`,
-
-    // . ID GENERATION
     generating: `
-        <div class="scene">
-            <h1>DIGITIZING...</h1>
-            <div style="font-size:40px; animation: pulse 1s infinite;">[#######....]</div>
+        <div class="scene" style="background-image: url('bg_id.jpg')">
+            <div class="overlay"><h1>GENERATING ID...</h1></div>
         </div>`,
-
-    // . THE HALL
-    hall: (user) => `
-        <div class="scene">
-            <div class="profile">${user.flag} ${user.avatar} <span>#${user.numCode}</span></div>
-            <h2>YOU ARE IN THE HALL</h2>
-            <div style="position:relative;">
-                <button class="btn-gy" onclick="UI.toggle('proceed-menu')">PROCEED ↓</button>
-                <div id="proceed-menu" class="drop-list" style="position:static;">
-                    <div class="drop-item" onclick="Agent.transit('bar')">To the Bar 🥃</div>
+    hall: (u) => `
+        <div class="scene" style="background-image: url('bg_hall.jpg')">
+            <div class="overlay">
+                <div>${u.flag} ${u.avatar} #${u.numCode}</div>
+                <button class="btn-gy" onclick="UI.toggle('m')">PROCEED ↓</button>
+                <div id="m" class="drop-list" style="position:static">
+                    <div onclick="Agent.transit('bar')">To the Bar 🥃</div>
                 </div>
             </div>
         </div>`,
-
-    // . THE BAR
     bar: `
-        <div class="scene">
-            <h2>"THE HORSE IS A BARTENDER TOO..."</h2>
-            <img src="https://via.placeholder.com/600x400?text=HORSE" class="horse-img">
-            <button class="btn-gy" onclick="Agent.transit('tables')">TO THE TABLES</button>
+        <div class="scene" style="background-image: url('bg_bar.jpg')">
+            <div class="overlay">
+                <h2>"THE HORSE IS A BARTENDER TOO..."</h2>
+                <img src="horse.png" class="horse-img">
+                <button class="btn-gy" onclick="Agent.transit('tables')">TABLES</button>
+            </div>
         </div>`,
-
-    // . TABLES
     tables: `
-        <div class="scene">
-            <h3>TABLES MAP & MIC 🎤</h3>
-            <p>[Pouring Sounds 2.0 active]</p>
-            <button class="btn-gy" onclick="Agent.transit('bar')">BACK TO BAR</button>
+        <div class="scene" style="background-image: url('bg_tables.jpg')">
+            <div class="overlay">
+                <h3>6 TABLES & MIC 🎤</h3>
+                <button class="btn-gy" onclick="Agent.transit('bar')">BACK</button>
+            </div>
         </div>`
 };
