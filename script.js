@@ -1,52 +1,47 @@
+/** 
+ * GY-GY CLUB MONOLITH SCRIPT v.5.2.5 (.)
+ */
 const Agent = {
     user: JSON.parse(localStorage.getItem('gy_trace')) || null,
 
-    // Переход в Зону приветствия после клика на дверь
-    initEntry() {
-        this.transit('welcome');
-    },
-
-    // Логика генерации ID (отдельный этап)
+    // . LOGISTICS: Welcome -> ID Generation -> Hall
     initIdentity() {
         this.transit('generating');
-        
         setTimeout(() => {
             if (!this.user) {
-                // Стандарт: Порядковый номер + 4 цифры
+                // . ID: Serial + 4 random digits
                 const serial = 1; 
                 const rand = Math.floor(1000 + Math.random() * 9000);
                 this.user = {
                     numCode: `${serial}-${rand}`,
                     avatar: 'STALLION',
-                    flag: '🏴‍☠️',
-                    magicKey: 'QR_AVATAR_DATA'
+                    flag: '🏴‍☠️'
                 };
-                localStorage.setItem('gy_trace', JSON.stringify(this.user));
+                localStorage.setItem('gy_trace', JSON.stringify(this.user)); // Cookie-recognition
             }
             this.transit('hall');
-        }, 2000); // Имитация процесса сканирования
+        }, 2000);
     },
 
     transit(target) {
         const stage = document.getElementById('app-stage');
-        stage.style.opacity = '0'; // Затухание
+        stage.style.opacity = '0'; // . FADE OUT (1.2s Transition)
         
         setTimeout(() => {
             const content = typeof Scenes[target] === 'function' 
                 ? Scenes[target](this.user) 
                 : Scenes[target];
             
-            stage.innerHTML = content;
-            stage.style.opacity = '1'; // Проявление
+            stage.innerHTML = content || '<h1>Error</h1>';
+            stage.style.opacity = '1'; // . FADE IN
             this.syncUI(target);
-        }, 1200); // Плавный переход 1.2 сек
+        }, 1200); //
     },
 
     syncUI(loc) {
-        // Кнопка Назад обязательна везде, кроме Входа и Генерации
         const backBtn = document.getElementById('btn-back');
         const hideOn = ['entrance', 'welcome', 'generating'];
-        backBtn.style.display = hideOn.includes(loc) ? 'none' : 'block';
+        if (backBtn) backBtn.style.display = hideOn.includes(loc) ? 'none' : 'block';
     },
 
     goBack() { this.transit('hall'); }
@@ -55,12 +50,12 @@ const Agent = {
 const UI = {
     toggle(id) {
         const el = document.getElementById(id);
-        el.style.display = (el.style.display === 'flex') ? 'none' : 'flex';
+        if (el) el.style.display = (el.style.display === 'flex' || el.style.display === 'block') ? 'none' : 'flex';
     },
-    setLang(l) { 
-        console.log('Language changed to:', l); 
-        this.toggle('lang-list'); 
-    }
+    setLang(l) { console.log('v.5.2.5 Lang changed:', l); this.toggle('lang-list'); }
 };
 
-window.onload = () => Agent.transit('entrance');
+// . INITIAL STARTUP
+window.addEventListener('load', () => {
+    Agent.transit('entrance');
+});
