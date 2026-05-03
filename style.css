@@ -1,66 +1,13 @@
-/** 
- * GY-GY CLUB BLOCKS v.5.2.5 (.)
- */
-const Scenes = {
-    entrance: `
-        <div class="scene" style="background-image: url('bg-entrance.jpg')">
-            <div class="overlay">
-                <img src="door.png" class="door-img" onclick="Agent.transit('welcome')">
-                <p>KICK THE DOOR... ГЫ-ГЫ!</p>
-            </div>
-        </div>`,
-    
-    welcome: `
-        <div class="scene" style="background-image: url('bg-scan.jpg')">
-            <div class="overlay">
-                <h1>WELCOME TO THE VOID</h1>
-                <button class="btn-gy" onclick="Agent.initIdentity()">IDENTIFY DIGITAL TRACE</button>
-            </div>
-        </div>`,
-
-    generating: `
-        <div class="scene" style="background-image: url('bg-matrix.jpg')">
-            <div class="overlay">
-                <h1>DIGITIZING YOUR SOUL...</h1>
-                <div id="loader">#######....</div>
-            </div>
-        </div>`,
-
-    hall: (user) => `
-        <div class="scene" style="background-image: url('bg-hall.jpg')">
-            <div class="overlay">
-                <div class="profile">${user.flag} ${user.avatar} #${user.numCode}</div>
-                <button class="btn-gy" onclick="UI.toggle('proceed-menu')">PROCEED (GO DEEPER) ↓</button>
-                <div id="proceed-menu" class="drop-list" style="position:static;">
-                    <div class="drop-item" onclick="Agent.transit('bar')">To the Bar 🥃</div>
-                </div>
-            </div>
-        </div>`,
-
-    bar: `
-        <div class="scene" style="background-image: url('bg-bar.jpg')">
-            <div class="overlay">
-                <h2>"THE HORSE IS A BARTENDER TOO..."</h2>
-                <img src="horse.png" class="horse-img">
-                <button class="btn-gy" onclick="Agent.transit('tables')">STOLIKI (6 TABLES)</button>
-                <button class="btn-gy" onclick="Agent.transit('server')">SERVER ROOM</button>
-            </div>
-        </div>`,
-
-    tables: `
-        <div class="scene" style="background-image: url('bg-tables.jpg')">
-            <div class="overlay">
-                <h3>6 TABLES & MIC 🎤</h3>
-                <p>Sound 2.0: Pouring & Horse Coughing</p>
-                <button class="btn-gy" onclick="Agent.transit('bar')">BACK TO THE HORSE</button>
-            </div>
-        </div>`,
-
-    server: `
-        <div class="scene" style="background-image: url('bg-server.jpg')">
-            <div class="overlay">
-                <h3>SERVER ROOM [FANS WHIRRING]</h3>
-                <button class="btn-gy" onclick="Agent.transit('ai_room')">ENTER AI CORE</button>
-            </div>
-        </div>`
-};
+:root { --gold: #d4af37; --dark: rgba(0,0,0,0.85); }
+body { background: #000; color: var(--gold); font-family: monospace; margin: 0; overflow: hidden; }
+.ui-fixed { position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; z-index: 1000; box-sizing: border-box; }
+#app-stage { height: 100vh; transition: opacity 1.2s ease-in-out; } /* 1.2s Transition */
+.scene { 
+    height: 100vh; background-size: cover; background-position: center; 
+    display: flex; align-items: center; justify-content: center; 
+}
+.overlay { background: var(--dark); padding: 2rem; border: 2px solid var(--gold); text-align: center; }
+.door-img { max-height: 40vh; cursor: pointer; } /* Max 40vh Door */
+.horse-img { max-height: 35vh; } /* Max 35vh Horse */
+.btn-gy { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; cursor: pointer; font-weight: bold; margin: 5px; }
+.drop-list { display: none; position: absolute; top: 60px; background: #000; border: 1px solid var(--gold); flex-direction: column; }
