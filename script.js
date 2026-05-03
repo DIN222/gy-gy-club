@@ -1,23 +1,36 @@
 /** 
  * GY-GY CLUB MONOLITH SCRIPT v.5.2.5 (.)
+ * FIX: Robust Identity Loading
  */
 const Agent = {
-    user: JSON.parse(localStorage.getItem('gy_trace')) || null,
+    user: null,
 
-    // . LOGISTICS: Welcome -> ID Generation -> Hall
+    loadUser() {
+        const data = localStorage.getItem('gy_trace');
+        if (data) {
+            try {
+                // Пытаемся распарсить, если там объект
+                this.user = JSON.parse(data);
+            } catch (e) {
+                // Если там просто строка (как твоя ошибка), подхватываем её как ID
+                console.log("Old trace detected, converting...");
+                this.user = { numCode: data.replace('#', ''), avatar: 'STALLION', flag: '🏴‍☠️' };
+            }
+        }
+    },
+
     initIdentity() {
         this.transit('generating');
         setTimeout(() => {
             if (!this.user) {
-                // . ID: Serial + 4 random digits
-                const serial = 1; 
-                const rand = Math.floor(1000 + Math.random() * 9000);
+                const serial = 255; 
+                const rand = Math.floor(1000 + Math.random() * 8999);
                 this.user = {
                     numCode: `${serial}-${rand}`,
                     avatar: 'STALLION',
                     flag: '🏴‍☠️'
                 };
-                localStorage.setItem('gy_trace', JSON.stringify(this.user)); // Cookie-recognition
+                localStorage.setItem('gy_trace', JSON.stringify(this.user));
             }
             this.transit('hall');
         }, 2000);
@@ -25,17 +38,25 @@ const Agent = {
 
     transit(target) {
         const stage = document.getElementById('app-stage');
-        stage.style.opacity = '0'; // . FADE OUT (1.2s Transition)
+        if (!stage) return;
+
+        stage.style.opacity = '0';
         
         setTimeout(() => {
+            if (typeof Scenes === 'undefined') {
+                stage.innerHTML = "<h1 style='color:red'>BLOCKS.JS MISSING</h1>";
+                stage.style.opacity = '1';
+                return;
+            }
+
             const content = typeof Scenes[target] === 'function' 
                 ? Scenes[target](this.user) 
                 : Scenes[target];
             
-            stage.innerHTML = content || '<h1>Error</h1>';
-            stage.style.opacity = '1'; // . FADE IN
+            stage.innerHTML = content || '<h1>Scene Empty</h1>';
+            stage.style.opacity = '1';
             this.syncUI(target);
-        }, 1200); //
+        }, 600);
     },
 
     syncUI(loc) {
@@ -52,10 +73,12 @@ const UI = {
         const el = document.getElementById(id);
         if (el) el.style.display = (el.style.display === 'flex' || el.style.display === 'block') ? 'none' : 'flex';
     },
-    setLang(l) { console.log('v.5.2.5 Lang changed:', l); this.toggle('lang-list'); }
+    setLang(l) { this.toggle('lang-list'); }
 };
 
-// . INITIAL STARTUP
-window.addEventListener('load', () => {
-    Agent.transit('entrance');
+document.addEventListener('DOMContentLoaded', () => {
+    Agent.loadUser();
+    setTimeout(() => {
+        Agent.transit('entrance');
+    }, 100);
 });
