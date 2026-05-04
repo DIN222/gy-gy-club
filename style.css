@@ -1,35 +1,33 @@
-/* GY-GY CORE STYLE v.5.3.1 (.) */
+/* GY-GY STYLE v.5.3.3 (.) */
 :root { --gold: #d4af37; }
 body { 
     background: #000; color: var(--gold); font-family: monospace; 
-    margin: 0; padding: 0; overflow: hidden;
-    opacity: 0; transition: opacity 1.2s ease-in-out; /* Плавность затухания */
+    margin: 0; opacity: 0; transition: opacity 1.2s ease-in-out; /* Fade 1.2s */
 }
 
-/* Логотип строго по центру сверху */
+/* Header with Logo on the Right */
 .fixed-header { 
-    position: fixed; top: 0; width: 100%; height: 80px;
-    display: flex; justify-content: center; align-items: center; z-index: 100; 
+    position: fixed; top: 0; width: 100%; padding: 20px 40px; 
+    display: flex; justify-content: flex-end; align-items: center; 
+    z-index: 100; box-sizing: border-box;
 }
-.gy-logo { font-size: 32px; font-weight: 900; letter-spacing: 10px; }
+.logo-text { font-size: 32px; font-weight: 900; letter-spacing: 5px; }
 
-/* Языковая панель слева */
-.lang-zone { position: fixed; top: 20px; left: 20px; z-index: 101; }
-.lang-list { display: none; background: #000; border: 1px solid var(--gold); position: absolute; top: 40px; }
-.lang-item { padding: 10px; cursor: pointer; white-space: nowrap; }
+/* Language Container (Left) */
+.lang-container { position: fixed; top: 20px; left: 20px; z-index: 101; cursor: pointer; }
+.lang-panel { display: none; background: #000; border: 1px solid var(--gold); margin-top: 10px; }
+.lang-btn { background: none; border: none; color: var(--gold); padding: 8px; cursor: pointer; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
+.lang-btn img { width: 20px; }
 
-/* Кнопка Назад справа */
-.back-zone { position: fixed; top: 20px; right: 20px; z-index: 101; }
-
-/* Основная сцена */
 .portal-zone { 
-    height: 100vh; width: 100vw; 
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background-size: cover; background-position: center;
+    height: 100vh; display: flex; align-items: center; justify-content: center; 
 }
 
-/* ОГРАНИЧЕНИЯ ВЫСОТЫ */
-.door-img { max-height: 40vh; cursor: pointer; } 
-.horse-img { max-height: 35vh; } 
+/* Door +15% (Standard 40vh * 1.15 = 46vh) */
+.door-img-v533 { 
+    max-height: 46vh; 
+    cursor: pointer; 
+    transition: transform 0.8s; 
+}
 
-.btn-gy { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; cursor: pointer; font-weight: bold; }
+.door-open-anim { transform: scale(2.5); opacity: 0; }
