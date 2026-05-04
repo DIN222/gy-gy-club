@@ -1,26 +1,18 @@
-/** 
- * GY-GY SHARED LOGIC v.5.2.9 (.)
- */
-const UI = {
-    toggle(id) {
-        const el = document.getElementById(id);
-        if (el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+/** GY-GY SHARED LOGIC v.5.3.0 (.) */
+const Agent = {
+    // Плавный переход между страницами (1.2 сек)
+    gate(url) {
+        document.body.style.opacity = '0';
+        setTimeout(() => { window.location.href = url; }, 1200);
     },
-    setLang(lang) {
-        localStorage.setItem('gy_lang', lang);
-        console.log("Language set to:", lang);
-        this.toggle('lang-panel');
-        // Здесь можно добавить смену флага и текста
-    }
-};
 
-const Identity = {
-    checkTrace() {
-        let trace = localStorage.getItem('gy_trace');
-        if (!trace) return null;
-        try { return JSON.parse(trace); } catch(e) { return null; }
+    // Работа с цифровым следом (ID)
+    getTrace() {
+        const data = localStorage.getItem('gy_trace');
+        try { return JSON.parse(data); } catch(e) { return null; }
     },
-    genTrace() {
+
+    setTrace() {
         const id = "255-" + Math.floor(1000 + Math.random() * 9000);
         const user = { numCode: id, avatar: "STALLION", flag: "🏴‍☠️" };
         localStorage.setItem('gy_trace', JSON.stringify(user));
@@ -28,7 +20,17 @@ const Identity = {
     }
 };
 
-// При загрузке каждой страницы — проявляем её
-window.onload = () => {
-    document.body.style.opacity = '1';
+const UI = {
+    toggle(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    },
+    setLang(l) {
+        localStorage.setItem('gy_lang', l);
+        this.toggle('lang-panel');
+        location.reload(); // Перезагрузка для смены словаря
+    }
 };
+
+// Проявление страницы при входе
+window.onload = () => { document.body.style.opacity = '1'; };
