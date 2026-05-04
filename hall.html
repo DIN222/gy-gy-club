@@ -1,53 +1,32 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY | Холл</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
-    <style>
-        :root { --gold: #d4af37; --black: #000; }
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; -webkit-user-select: none; user-select: none; }
-        body { width: 100%; height: 100vh; margin: 0; padding: 0; overflow: hidden; background: var(--black); font-family: 'Share Tech Mono', monospace; opacity: 0; transition: opacity 1.2s ease; }
-        .hall-bg { position: fixed; inset: 0; background: url('hall_bg_jpg.jpg') no-repeat center center; background-size: cover; filter: brightness(0.4) contrast(1.1); z-index: -1; }
-        .back-nav { position: fixed; top: 15px; left: 15px; z-index: 10002; cursor: pointer; color: var(--gold); font-size: 45px; font-weight: 900; line-height: 0.6; }
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; line-height: 1; }
-        .user-identity-hub { position: fixed; top: 15px; right: 130px; z-index: 10003; cursor: pointer; transition: transform 0.3s; }
-        .avatar-circle { width: 45px; height: 45px; border-radius: 50%; border: 2.5px solid var(--gold); background: #fff; object-fit: cover; }
-        .hall-main { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .btn-action { padding: 18px 45px; background: rgba(0,0,0,0.5); border: 2px solid var(--gold); color: var(--gold); font-weight: 900; font-family: inherit; cursor: pointer; backdrop-filter: blur(8px); transition: 0.5s; text-transform: uppercase; }
-    </style>
+    <meta charset="UTF-8"><title>GY-GY CLUB | HALL</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="hall-bg"></div>
-    <audio id="snd-ambient" loop><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
-    <div class="back-nav" onclick="fadeOutAndLink('registration.html')">«</div>
-    <div class="ui-header-right">GY-GY</div>
-    <div class="user-identity-hub" onclick="alert('ID: ' + localStorage.getItem('gy_trace'))">
-        <img id="global-avatar" src="" class="avatar-circle">
-    </div>
-    <div class="hall-main"><button class="btn-action" onclick="alert('Гы-гы! Бармен отошел.')">ПОДОЙТИ К СТОЙКЕ</button></div>
-<script>
-    const ambient = document.getElementById('snd-ambient');
-    window.addEventListener('DOMContentLoaded', () => {
-        document.body.style.opacity = "1";
-        const userImg = localStorage.getItem('gy_user_img');
-        if (userImg) document.getElementById('global-avatar').src = userImg;
-        const savedTime = localStorage.getItem('gy_music_time');
-        if (savedTime) ambient.currentTime = parseFloat(savedTime);
-        ambient.volume = 0; ambient.play(); smoothFadeIn(ambient);
-    });
-    function smoothFadeIn(audio) {
-        let v = 0;
-        const intr = setInterval(() => { if (v < 0.4) { v += 0.02; audio.volume = v; } else { clearInterval(intr); } }, 120);
-    }
-    function fadeOutAndLink(url) {
-        document.body.style.opacity = "0";
-        localStorage.setItem('gy_music_time', ambient.currentTime);
-        let v = ambient.volume;
-        const intr = setInterval(() => { if (v > 0.02) { v -= 0.02; ambient.volume = v; } else { clearInterval(intr); window.location.href = url; } }, 50);
-    }
-    setInterval(() => { if (!ambient.paused) localStorage.setItem('gy_music_time', ambient.currentTime); }, 1000);
-</script>
+    <header class="fixed-header">
+        <div class="logo-text">GY-GY</div>
+        <button class="btn-gy" onclick="Agent.gate('welcome.html')">← BACK</button>
+    </header>
+
+    <main class="portal-zone" style="background-image: url('hall_bg.jpg');">
+        <div class="overlay">
+            <div id="user-profile" style="font-size: 24px; margin-bottom: 20px;"></div>
+            <h2>YOU ARE IN THE HALL</h2>
+            <button class="btn-gy" onclick="UI.toggle('proceed-menu')">PROCEED ↓</button>
+            <div id="proceed-menu" class="lang-panel" style="position:static; margin-top:10px;">
+                <button class="lang-btn" onclick="Agent.gate('bar.html')">TO THE BAR 🥃</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="shared-logic.js"></script>
+    <script>
+        const u = Agent.getTrace();
+        if (u) {
+            document.getElementById('user-profile').innerHTML = `${u.flag} ${u.avatar} #${u.numCode}`;
+        }
+    </script>
 </body>
 </html>
