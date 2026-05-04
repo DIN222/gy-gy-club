@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>GY-GY CLUB | HALL</title>
+    <meta charset="UTF-8"><title>GY-GY | HALL</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="page-bg" style="background-image: url('hall_bg.jpg');">
     <header class="fixed-header">
         <div class="logo-text">GY-GY</div>
-        <button class="btn-gy" onclick="Agent.gate('welcome.html')">← BACK</button>
     </header>
 
-    <main class="portal-zone" style="background-image: url('hall_bg.jpg');">
+    <main class="portal-zone">
         <div class="overlay">
-            <div id="user-profile" style="font-size: 24px; margin-bottom: 20px;"></div>
-            <h2>YOU ARE IN THE HALL</h2>
-            <button class="btn-gy" onclick="UI.toggle('proceed-menu')">PROCEED ↓</button>
-            <div id="proceed-menu" class="lang-panel" style="position:static; margin-top:10px;">
-                <button class="lang-btn" onclick="Agent.gate('bar.html')">TO THE BAR 🥃</button>
+            <!-- Отображение Аватара с флагом -->
+            <div id="user-display"></div>
+            
+            <!-- Выпадающее меню «Proceed» (Пройти) -->
+            <div class="proceed-container">
+                <button class="btn-gy" onclick="UI.toggle('proceed-menu')">PROCEED (ПРОЙТИ) ↓</button>
+                <div id="proceed-menu" class="lang-panel" style="position:static;">
+                    <button class="lang-btn" onclick="Agent.transit('bar.html')">TO THE BAR 🥃</button>
+                </div>
             </div>
         </div>
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
-        const u = Agent.getTrace();
+        const u = JSON.parse(localStorage.getItem('gy_trace'));
         if (u) {
-            document.getElementById('user-profile').innerHTML = `${u.flag} ${u.avatar} #${u.numCode}`;
+            document.getElementById('user-display').innerHTML = `
+                <div class="profile">${u.flag} <img src="${u.avatar}" width="60"> #${u.numCode}</div>
+            `;
         }
     </script>
 </body>
