@@ -1,26 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8"><title>GY-GY 5.3.1</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>GY-GY CLUB 001</title>
+    <link rel="stylesheet" href="shared-core.css">
+    <link rel="preload" href="door_open.mp3" as="audio">
 </head>
 <body>
-    <div class="lang-zone">
-        <button class="btn-gy" onclick="UI.toggle('lang-list')">LANG</button>
-        <div id="lang-list" class="lang-list">
-            <div class="lang-item">EN</div><div class="lang-item">RU</div><div class="lang-item">FR</div>
-            <div class="lang-item">DE</div><div class="lang-item">ES</div><div class="lang-item">IT</div>
-            <div class="lang-item">CN</div><div class="lang-item">JP</div><div class="lang-item">AR</div>
-            <div class="lang-item">TR</div><div class="lang-item">BR</div>
+
+    <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
+
+    <div class="lang-container">
+        <div class="lang-trigger">
+            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
+            <span id="current-lang-label">РУССКИЙ</span>
+        </div>
+        <div class="lang-panel">
+            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
+            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
+            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
+            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
+            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
+            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
+            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
+            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
+            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
+            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> العربية</button>
+            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
         </div>
     </div>
-    
-    <header class="fixed-header"><div class="gy-logo">GY-GY</div></header>
 
-    <main class="portal-zone" style="background-image: url('door_bg.jpg');">
-        <img src="door_1.jpg" class="door-img" onclick="Agent.transit('welcome.html')">
+    <header class="fixed-header">
+        <div class="logo-link">
+            <div class="logo-text">GY-GY</div>
+        </div>
+    </header>
+
+    <main class="portal-zone">
+        <img src="door_1.jpg" id="main-door" onclick="enterClub()">
     </main>
 
     <script src="shared-logic.js"></script>
+    <script>
+        function enterClub() {
+            const doorSound = document.getElementById('door-audio');
+            
+            if (doorSound) {
+                doorSound.currentTime = 0;
+                doorSound.play().catch(err => {
+                    console.log("Автозапуск звука блокирован. Обычное дело.");
+                });
+            }
+
+            // Анимация: дверь только увеличивается
+            const door = document.getElementById('main-door');
+            door.classList.add('door-open');
+
+            // Задержка 800мс, чтобы звук успел начаться
+            setTimeout(() => { 
+                window.location.href = 'welcome.html'; 
+            }, 800);
+        }
+    </script>
 </body>
 </html>
