@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.3.3 (.) -->
+<!-- GY-GY PROTOCOL v.5.3.5 (.) -->
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB | v.5.3.3</title>
+    <title>GY-GY CLUB | ENTRANCE</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preload" href="door_open.mp3" as="audio">
 </head>
-<body class="bg-entrance">
+<body class="page-bg" style="background-image: url('entrance_bg.jpg');">
 
     <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
 
-    <!-- Language Block from your Sample -->
+    <!-- Language block strictly from your sample -->
     <div class="lang-container">
         <div class="lang-trigger" onclick="UI.toggle('lang-panel')">
             <img src="https://flagcdn.com/w40/gb.png" id="current-lang-flag"> 
@@ -34,38 +34,27 @@
     </div>
 
     <header class="fixed-header">
-        <!-- Logo strictly in the right corner -->
-        <div class="logo-text">GY-GY</div>
+        <div class="logo-text">GY-GY</div> <!-- Logo strictly in the right corner -->
     </header>
 
     <main class="portal-zone">
-        <!-- Door +15% (46vh) -->
-        <img src="door_1.jpg" id="main-door" class="door-img-v533" onclick="enterClub()">
+        <!-- Door +15% height = 46vh -->
+        <img src="door_1.jpg" id="main-door" class="door-img-v5" onclick="enterClub()">
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
         function enterClub() {
             const doorSound = document.getElementById('door-audio');
-            if (doorSound) {
-                doorSound.currentTime = 0;
-                doorSound.play().catch(err => console.log("Sound block info"));
-            }
-
-            const door = document.getElementById('main-door');
-            door.classList.add('door-open-anim');
-
-            // 1.2s Fade-out Transition
+            if (doorSound) { doorSound.play().catch(() => {}); } // Sound from README
+            
+            document.getElementById('main-door').classList.add('door-open-anim');
+            
+            // 1.2s Fade-out transition
             document.body.style.opacity = '0';
-            setTimeout(() => { 
-                window.location.href = 'welcome.html'; 
-            }, 1200);
+            setTimeout(() => { window.location.href = 'welcome.html'; }, 1200);
         }
-
-        function setLanguage(lang) {
-            console.log("GY-GY Lang:", lang);
-            UI.toggle('lang-panel');
-        }
+        function setLanguage(l) { UI.toggle('lang-panel'); }
     </script>
 </body>
 </html>
