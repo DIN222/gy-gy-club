@@ -1,13 +1,27 @@
+/** GY-GY VISUAL CORE v.5.3.0 (.) */
 :root { --gold: #d4af37; --dark: rgba(0,0,0,0.85); }
-body { background: #000; color: var(--gold); font-family: monospace; margin: 0; overflow: hidden; }
-.ui-fixed { position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; z-index: 1000; box-sizing: border-box; }
-#app-stage { height: 100vh; transition: opacity 1.2s ease-in-out; } /* 1.2s Transition */
-.scene { 
-    height: 100vh; background-size: cover; background-position: center; 
-    display: flex; align-items: center; justify-content: center; 
+body { 
+    background: #000; color: var(--gold); font-family: monospace; 
+    margin: 0; overflow: hidden; opacity: 0; transition: opacity 1.2s ease-in-out; 
 }
-.overlay { background: var(--dark); padding: 2rem; border: 2px solid var(--gold); text-align: center; }
-.door-img { max-height: 40vh; cursor: pointer; } /* Max 40vh Door */
-.horse-img { max-height: 35vh; } /* Max 35vh Horse */
-.btn-gy { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; cursor: pointer; font-weight: bold; margin: 5px; }
-.drop-list { display: none; position: absolute; top: 60px; background: #000; border: 1px solid var(--gold); flex-direction: column; }
+
+/* Фиксированные элементы по Протоколу */
+.fixed-header { position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; box-sizing: border-box; }
+.logo-text { font-size: 28px; font-weight: 900; letter-spacing: 5px; }
+
+/* Языковая панель */
+.lang-container { position: relative; }
+.lang-panel { display: none; position: absolute; top: 40px; background: #000; border: 1px solid var(--gold); width: 180px; }
+.lang-btn { background: none; border: none; color: var(--gold); padding: 10px; cursor: pointer; width: 100%; text-align: left; }
+.lang-btn:hover { background: #222; }
+
+/* Зоны контента */
+.portal-zone { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-size: cover; background-position: center; }
+.overlay { background: var(--dark); padding: 30px; border: 2px solid var(--gold); text-align: center; }
+
+/* Ограничения по высоте */
+.door-img { max-height: 40vh; cursor: pointer; transition: transform 0.8s; }
+.door-open-anim { transform: scale(3); opacity: 0; }
+.horse-img { max-height: 35vh; }
+
+.btn-gy { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 10px 20px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
