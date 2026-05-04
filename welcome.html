@@ -1,42 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.3.5 (.) -->
 <head>
-    <meta charset="UTF-8">
-    <title>GY-GY CLUB | WELCOME</title>
+    <meta charset="UTF-8"><title>GY-GY | WELCOME</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="page-bg" style="background-image: url('welcome_bg.jpg'); opacity: 0;">
-
+<body class="page-bg" style="background-image: url('scan_bg.jpg');">
     <header class="fixed-header">
         <div class="logo-text">GY-GY</div>
-        <button class="btn-gy" onclick="goBack()">← BACK</button> <!-- Back button required -->
     </header>
 
     <main class="portal-zone">
         <div class="overlay">
-            <h1>WELCOME TO THE VOID</h1>
-            <p>Ready to get your digital soul? Гы-Гы!</p>
-            <!-- ID Generation step -->
-            <button class="btn-gy" onclick="startIdentify()">IDENTIFY DIGITAL TRACE</button>
+            <h1>WELCOME ZONE</h1>
+            <p>Гы-гы! Identifying your digital trace...</p>
+            <!-- Логистика: Генерация ID -> Плавный переход в Холл -->
+            <button class="btn-gy" onclick="generateID()">GENERATE ID</button>
         </div>
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
-        window.onload = () => { document.body.style.opacity = '1'; }; // Fade-in 1.2s
-        
-        function startIdentify() {
-            // Logic for automatic ID (Serial + 4 digits)
-            const id = "1-" + Math.floor(1000 + Math.random() * 9000);
-            localStorage.setItem('gy_trace', JSON.stringify({numCode: id, avatar: "STALLION.png", flag: "🏴‍☠️"}));
+        function generateID() {
+            // ID: Порядковый номер + случайное 4-значное число
+            const id = "255-" + Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('gy_trace', JSON.stringify({numCode: id, avatar: "AVATAR.png", flag: "🏴‍☠️"}));
             
             document.body.style.opacity = '0';
             setTimeout(() => { window.location.href = 'hall.html'; }, 1200);
-        }
-        function goBack() { 
-            document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'index.html'; }, 1200);
         }
     </script>
 </body>
