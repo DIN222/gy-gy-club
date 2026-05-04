@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- GY-GY PROTOCOL v.5.3.5 (.) -->
 <head>
-    <meta charset="UTF-8"><title>GY-GY CLUB | WELCOME</title>
+    <meta charset="UTF-8">
+    <title>GY-GY CLUB | WELCOME</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="page-bg" style="background-image: url('welcome_bg.jpg'); opacity: 0;">
+
     <header class="fixed-header">
         <div class="logo-text">GY-GY</div>
-        <button class="btn-gy" onclick="Agent.gate('index.html')">← BACK</button>
+        <button class="btn-gy" onclick="goBack()">← BACK</button> <!-- Back button required -->
     </header>
 
-    <main class="portal-zone" style="background-image: url('welcome_bg.jpg');">
+    <main class="portal-zone">
         <div class="overlay">
             <h1>WELCOME TO THE VOID</h1>
             <p>Ready to get your digital soul? Гы-Гы!</p>
-            <button class="btn-gy" onclick="identify()">IDENTIFY ME</button>
+            <!-- ID Generation step -->
+            <button class="btn-gy" onclick="startIdentify()">IDENTIFY DIGITAL TRACE</button>
         </div>
     </main>
 
     <script src="shared-logic.js"></script>
     <script>
-        function identify() {
-            Agent.setTrace(); // Создаем ID
-            Agent.gate('hall.html');
+        window.onload = () => { document.body.style.opacity = '1'; }; // Fade-in 1.2s
+        
+        function startIdentify() {
+            // Logic for automatic ID (Serial + 4 digits)
+            const id = "1-" + Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('gy_trace', JSON.stringify({numCode: id, avatar: "STALLION.png", flag: "🏴‍☠️"}));
+            
+            document.body.style.opacity = '0';
+            setTimeout(() => { window.location.href = 'hall.html'; }, 1200);
+        }
+        function goBack() { 
+            document.body.style.opacity = '0';
+            setTimeout(() => { window.location.href = 'index.html'; }, 1200);
         }
     </script>
 </body>
