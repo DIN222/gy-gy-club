@@ -1,4 +1,4 @@
-/* GY-GY STYLE v.5.4.4 (.) */
+/* GY-GY STYLE v.5.4.5 (.) */
 :root { --gold: #d4af37; }
 
 body { 
@@ -8,15 +8,16 @@ body {
     font-family: 'Courier New', monospace; 
 }
 
-/* Логотип: Шрифт как у языков */
+/* Логотип строго справа, шрифт monospace */
 .fixed-header { position: fixed; top: 20px; right: 40px; z-index: 100; }
 .logo-text { font-size: 32px; font-weight: 900; letter-spacing: 5px; }
 
-/* Языковая панель: Оптимизация ширины */
+/* Языковая панель: фиксированная ширина 180px (по "УКРАЇНСЬКА") */
 .lang-container { 
     position: fixed; top: 20px; left: 20px; z-index: 101; 
-    display: inline-flex; /* Ширина по контенту */
+    display: flex;
     flex-direction: column;
+    width: 180px; 
 }
 
 .lang-current {
@@ -24,9 +25,9 @@ body {
     padding: 8px 12px;
     display: flex; align-items: center; gap: 10px;
     cursor: pointer;
-    width: fit-content; /* ОПТИМАЛЬНАЯ ШИРИНА */
-    white-space: nowrap;
     background: #000;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .lang-dropdown { 
@@ -35,7 +36,7 @@ body {
     background: #000; 
     border: 1px solid var(--gold); 
     border-top: none; 
-    width: 100%; /* Растягивается точно по ширине верхней рамки */
+    width: 100%;
     box-sizing: border-box;
 }
 
@@ -43,13 +44,17 @@ body {
 
 .lang-btn { 
     background: none; border: none; color: var(--gold); 
-    padding: 8px 12px; cursor: pointer; text-align: left; 
+    padding: 10px 12px; cursor: pointer; text-align: left; 
     display: flex; align-items: center; gap: 10px;
     font-family: inherit; font-size: 14px;
-    white-space: nowrap;
+    width: 100%;
 }
 .lang-btn:hover { background: #1a1a1a; }
 
 /* Дверь: 44vh */
-.door-v544 { max-height: 44vh; cursor: pointer; transition: 1s; }
+.door-v5.4.5 { 
+    max-height: 44vh; 
+    cursor: pointer; 
+    transition: transform 1s; 
+}
 .portal-zone { height: 100vh; display: flex; align-items: center; justify-content: center; }
