@@ -1,23 +1,40 @@
-/* GY-GY STYLE v.5.3.9 (.) */
+/* GY-GY STYLE v.5.4.0 (.) */
 :root { --gold: #d4af37; }
-body { background: #000; color: var(--gold); margin: 0; transition: opacity 1.2s; }
+body { 
+    background: #000; color: var(--gold); 
+    font-family: 'Courier New', monospace; /* Твой шрифт Клуба */
+    margin: 0; transition: opacity 1.2s; 
+}
 
-/* Fixed Header: Logo right */
+/* Логотип строго справа */
 .fixed-header { 
     position: fixed; top: 0; width: 100%; padding: 20px 40px; 
     display: flex; justify-content: flex-end; z-index: 100; box-sizing: border-box;
 }
 .logo-text { font-size: 32px; font-weight: 900; letter-spacing: 5px; }
 
-/* Language panel: left */
+/* Языковая панель: вертикальное отображение */
 .lang-container { position: fixed; top: 20px; left: 20px; z-index: 101; }
-.lang-panel { display: none; background: #000; border: 1px solid var(--gold); }
-
-/* Door height: strictly 40vh */
-.door-v539 { 
-    max-height: 40vh; 
-    cursor: pointer; 
-    transition: transform 0.8s; 
+.lang-panel { 
+    display: none; 
+    flex-direction: column; /* Вертикально */
+    background: rgba(0,0,0,0.9); 
+    border: 1px solid var(--gold); 
+    padding: 5px;
 }
+.lang-btn { 
+    display: flex; align-items: center; gap: 10px;
+    background: none; border: none; color: var(--gold);
+    padding: 8px; cursor: pointer; text-align: left;
+    font-family: inherit;
+}
+
+/* Дверь: 40vh + 10% = 44vh */
+.door-v540 { 
+    max-height: 44vh; 
+    cursor: pointer; 
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+.door-open-anim { transform: scale(2) rotateY(45deg); opacity: 0; }
 
 .portal-zone { height: 100vh; display: flex; align-items: center; justify-content: center; }
