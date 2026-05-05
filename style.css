@@ -1,37 +1,59 @@
-/* GY-GY STYLE v.5.4.1 (.) */
+/* GY-GY STYLE v.5.4.2 (.) */
 :root { --gold: #d4af37; }
-.monospace { font-family: 'Courier New', monospace; }
 
 body { 
     background: #000; color: var(--gold); 
     margin: 0; transition: opacity 1.2s; 
     overflow: hidden;
+    font-family: 'Courier New', Courier, monospace; /* Единый шрифт */
 }
 
-/* Логотип: Строго справа */
+/* Логотип строго справа, шрифт как у языков */
 .fixed-header { 
     position: fixed; top: 20px; right: 40px; 
     z-index: 100;
 }
-.logo-text { font-size: 32px; font-weight: 900; letter-spacing: 5px; }
-
-/* Языковая панель: Вертикальная, слева */
-.lang-container { position: fixed; top: 20px; left: 20px; z-index: 101; }
-.lang-panel-vertical { 
-    display: none; flex-direction: column; 
-    background: rgba(0,0,0,0.9); border: 1px solid var(--gold); 
-    margin-top: 10px;
+.logo-text { 
+    font-size: 32px; font-weight: 900; letter-spacing: 5px;
+    text-transform: uppercase;
 }
+
+/* Языковая панель слева */
+.lang-container { 
+    position: fixed; top: 20px; left: 20px; 
+    z-index: 101; 
+}
+
+/* Рамка выбранного языка */
+.lang-current {
+    border: 1px solid var(--gold);
+    padding: 8px 15px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+    min-width: 140px;
+}
+
+/* Выпадающий список 11 языков */
+.lang-dropdown { 
+    display: none; /* Скрыт по умолчанию */
+    flex-direction: column; 
+    background: #000; 
+    border: 1px solid var(--gold); 
+    border-top: none; 
+    position: absolute; top: 100%; left: 0; width: 100%;
+}
+
+/* Открытие при наведении на контейнер */
+.lang-container:hover .lang-dropdown { display: flex; }
+
 .lang-btn { 
-    background: none; border: none; color: var(--gold); padding: 8px; 
-    cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
-    font-family: 'Courier New', monospace;
+    background: none; border: none; color: var(--gold); 
+    padding: 10px; cursor: pointer; text-align: left; 
+    display: flex; align-items: center; gap: 10px;
+    font-family: inherit; font-size: 14px;
 }
+.lang-btn:hover { background: #1a1a1a; }
 
-/* Дверь: 44vh (README 40vh + 10%) */
-.door-v541 { 
-    max-height: 44vh; cursor: pointer; 
-    transition: transform 1s ease-in-out, opacity 0.5s; 
-}
+/* Дверь: 44vh */
+.door-v542 { max-height: 44vh; cursor: pointer; transition: 1s; }
 .portal-zone { height: 100vh; display: flex; align-items: center; justify-content: center; }
-.door-open-anim { transform: scale(3); opacity: 0; }
