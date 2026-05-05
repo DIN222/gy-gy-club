@@ -1,61 +1,60 @@
-/* GY-GY STYLE v.5.4.6 (.) */
-:root { --gold: #d4af37; }
+<!DOCTYPE html>
+<html lang="en">
+<!-- GY-GY PROTOCOL v.5.4.7 (.) -->
+<head>
+    <meta charset="UTF-8">
+    <title>GY-GY CLUB | ENTRANCE v5.4.7</title>
+    <link rel="stylesheet" href="style_v547.css">
+</head>
+<body class="page-bg">
 
-body { 
-    background: #000; color: var(--gold); 
-    margin: 0; transition: opacity 1.2s; 
-    overflow: hidden;
-    font-family: 'Courier New', monospace; 
-}
+    <div class="lang-container">
+        <!-- Рамка выбранного языка -->
+        <div class="lang-current" id="active-lang">
+            <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
+            <span>ENGLISH</span>
+        </div>
+        
+        <!-- Выпадающий список СТРОГО ВЕРТИКАЛЬНО -->
+        <div class="lang-dropdown" id="drop-menu">
+            <button class="lang-btn" onclick="selectLang('ru', 'РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="selectLang('en', 'ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
+            <button class="lang-btn" onclick="selectLang('ua', 'УКРАЇНСЬКА', 'ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
+            <button class="lang-btn" onclick="selectLang('pl', 'POLSKI', 'pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
+            <button class="lang-btn" onclick="selectLang('de', 'DEUTSCH', 'de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
+            <button class="lang-btn" onclick="selectLang('fr', 'FRANÇAIS', 'fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
+            <button class="lang-btn" onclick="selectLang('it', 'ITALIANO', 'it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
+            <button class="lang-btn" onclick="selectLang('es', 'ESPAÑOL', 'es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
+            <button class="lang-btn" onclick="selectLang('cn', '中文', 'cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
+            <button class="lang-btn" onclick="selectLang('jp', '日本語', 'jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
+            <button class="lang-btn" onclick="selectLang('br', 'PORTUGUÊS', 'br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
+        </div>
+    </div>
 
-/* Логотип справа - шрифтmonospace */
-.fixed-header { position: fixed; top: 20px; right: 40px; z-index: 100; }
-.logo-text { font-size: 32px; font-weight: 900; letter-spacing: 5px; }
+    <header class="fixed-header">
+        <div class="logo-text">GY-GY</div>
+    </header>
 
-/* Языковая панель: Слева, ширина зафиксирована по "УКРАЇНСЬКА" */
-.lang-container { 
-    position: fixed; top: 20px; left: 20px; z-index: 101; 
-    display: flex;
-    flex-direction: column;
-    width: 180px; 
-}
+    <main class="portal-zone">
+        <img src="door_1.jpg" id="main-door" class="door-v547" onclick="enterClub()">
+    </main>
 
-.lang-current {
-    border: 1px solid var(--gold);
-    padding: 8px 12px;
-    display: flex; align-items: center; gap: 10px;
-    cursor: pointer;
-    background: #000;
-    box-sizing: border-box;
-    width: 100%;
-}
+    <script>
+        function selectLang(code, name, flag) {
+            document.querySelector('#active-lang span').innerText = name;
+            document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
+            const menu = document.getElementById('drop-menu');
+            menu.style.display = 'none';
+            setTimeout(() => { menu.style.removeProperty('display'); }, 200);
+        }
 
-.lang-dropdown { 
-    display: none; 
-    flex-direction: column; 
-    background: #000; 
-    border: 1px solid var(--gold); 
-    border-top: none; 
-    width: 100%;
-}
-
-/* Hover-эффект */
-.lang-container:hover .lang-dropdown { display: flex; }
-
-.lang-btn { 
-    background: none; border: none; color: var(--gold); 
-    padding: 10px 12px; cursor: pointer; text-align: left; 
-    display: flex; align-items: center; gap: 10px;
-    font-family: inherit; font-size: 14px;
-    width: 100%;
-}
-.lang-btn:hover { background: #1a1a1a; }
-
-/* Дверь: 44vh (40vh + 10%) */
-.door-v546 { 
-    max-height: 44vh; 
-    cursor: pointer; 
-    transition: 1s ease-in-out; 
-}
-
-.portal-zone { height: 100vh; display: flex; align-items: center; justify-content: center; }
+        function enterClub() {
+            const door = document.getElementById('main-door');
+            door.style.maxHeight = "100vh"; 
+            door.style.transform = "scale(5)";
+            document.body.style.opacity = '0';
+            setTimeout(() => { window.location.href = 'welcome_v547.html'; }, 1000);
+        }
+    </script>
+</body>
+</html>
