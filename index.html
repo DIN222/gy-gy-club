@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.4.6 (.) -->
+<!-- GY-GY PROTOCOL v.5.4.7 (.) -->
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB | ENTRANCE v5.4.6</title>
-    <link rel="stylesheet" href="style_v546.css">
+    <title>GY-GY CLUB | ENTRANCE v5.4.7</title>
+    <link rel="stylesheet" href="style_v547.css">
 </head>
 <body class="page-bg">
 
-    <div class="lang-container" id="lang-area">
-        <!-- Одиночная рамка выбранного языка -->
+    <div class="lang-container">
+        <!-- Рамка выбранного языка -->
         <div class="lang-current" id="active-lang">
             <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
             <span>ENGLISH</span>
         </div>
         
-        <!-- Выпадающий список 11 языков -->
+        <!-- Выпадающий список СТРОГО ВЕРТИКАЛЬНО -->
         <div class="lang-dropdown" id="drop-menu">
             <button class="lang-btn" onclick="selectLang('ru', 'РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
             <button class="lang-btn" onclick="selectLang('en', 'ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
@@ -36,25 +36,24 @@
     </header>
 
     <main class="portal-zone">
-        <!-- Дверь строго 44vh -->
-        <img src="door_1.jpg" id="main-door" class="door-v546" onclick="enterClub()">
+        <img src="door_1.jpg" id="main-door" class="door-v547" onclick="enterClub()">
     </main>
 
     <script>
         function selectLang(code, name, flag) {
             document.querySelector('#active-lang span').innerText = name;
             document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
-            
-            // Мгновенное закрытие
             const menu = document.getElementById('drop-menu');
             menu.style.display = 'none';
             setTimeout(() => { menu.style.removeProperty('display'); }, 200);
         }
 
         function enterClub() {
-            document.getElementById('main-door').style.transform = 'scale(4)';
+            const door = document.getElementById('main-door');
+            door.style.maxHeight = "100vh"; 
+            door.style.transform = "scale(5)";
             document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'welcome_v546.html'; }, 1000);
+            setTimeout(() => { window.location.href = 'welcome_v547.html'; }, 1000);
         }
     </script>
 </body>
