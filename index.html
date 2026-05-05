@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.4.3 (.) -->
+<!-- GY-GY PROTOCOL v.5.4.4 (.) -->
 <head>
     <meta charset="UTF-8">
     <title>GY-GY CLUB | ENTRANCE</title>
@@ -8,15 +8,15 @@
 </head>
 <body class="page-bg">
 
-    <div class="lang-container">
-        <!-- Одиночная рамка выбранного языка (Английский по умолчанию) -->
+    <div class="lang-container" id="lang-area">
+        <!-- Одиночная рамка выбранного языка -->
         <div class="lang-current" id="active-lang">
             <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
             <span>ENGLISH</span>
         </div>
         
         <!-- Выпадающий вертикальный список 11 языков -->
-        <div class="lang-dropdown">
+        <div class="lang-dropdown" id="drop-menu">
             <button class="lang-btn" onclick="selectLang('ru', 'РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
             <button class="lang-btn" onclick="selectLang('en', 'ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
             <button class="lang-btn" onclick="selectLang('ua', 'УКРАЇНСЬКА', 'ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
@@ -36,14 +36,21 @@
     </header>
 
     <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" class="door-v543" onclick="enterClub()">
+        <img src="door_1.jpg" id="main-door" class="door-v544" onclick="enterClub()">
     </main>
 
     <script>
         function selectLang(code, name, flag) {
-            // При выборе: язык попадает в рамку, список закроется автоматически (из-за потери hover)
+            // 1. Меняем контент
             document.querySelector('#active-lang span').innerText = name;
             document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
+            
+            // 2. МГНОВЕННОЕ ЗАКРЫТИЕ: временно отключаем видимость
+            const menu = document.getElementById('drop-menu');
+            menu.style.display = 'none';
+            
+            // Возвращаем возможность hover через мгновение, чтобы при следующем наведении меню работало
+            setTimeout(() => { menu.style.removeProperty('display'); }, 100);
         }
 
         function enterClub() {
