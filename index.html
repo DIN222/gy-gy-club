@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.4.2 (.) -->
+<!-- GY-GY PROTOCOL v.5.4.3 (.) -->
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB | ENTRANCE  5.4.2</title>
+    <title>GY-GY CLUB | ENTRANCE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-bg">
 
     <div class="lang-container">
-        <!-- Рамка выбора (Английский по умолчанию) -->
+        <!-- Одиночная рамка выбранного языка (Английский по умолчанию) -->
         <div class="lang-current" id="active-lang">
             <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
-            <span id="main-lang-text">ENGLISH</span>
+            <span>ENGLISH</span>
         </div>
         
-        <!-- Выпадающий список 11 языков -->
-        <div id="lang-panel" class="lang-dropdown">
+        <!-- Выпадающий вертикальный список 11 языков -->
+        <div class="lang-dropdown">
             <button class="lang-btn" onclick="selectLang('ru', 'РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
             <button class="lang-btn" onclick="selectLang('en', 'ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
             <button class="lang-btn" onclick="selectLang('ua', 'УКРАЇНСЬКА', 'ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
@@ -36,20 +36,18 @@
     </header>
 
     <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" class="door-v542" onclick="enterClub()">
+        <img src="door_1.jpg" id="main-door" class="door-v543" onclick="enterClub()">
     </main>
 
     <script>
         function selectLang(code, name, flag) {
-            // Меняем текст и флаг в основной рамке
-            document.getElementById('main-lang-text').innerText = name;
+            // При выборе: язык попадает в рамку, список закроется автоматически (из-за потери hover)
+            document.querySelector('#active-lang span').innerText = name;
             document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
-            // Здесь будет логика смены языка в приложении
-            console.log(`Language changed to: ${code}`);
         }
 
         function enterClub() {
-            document.getElementById('main-door').style.transform = 'scale(5)';
+            document.getElementById('main-door').style.transform = 'scale(4)';
             document.body.style.opacity = '0';
             setTimeout(() => { window.location.href = 'welcome.html'; }, 1000);
         }
