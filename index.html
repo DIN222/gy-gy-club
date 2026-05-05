@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.4.4 (.) -->
+<!-- GY-GY PROTOCOL v.5.4.5 (.) -->
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB | ENTRANCE</title>
-    <link rel="stylesheet" href="style.css">
+    <title>GY-GY CLUB | ENTRANCE v5.4.5</title>
+    <link rel="stylesheet" href="style_v5.4.5.css">
 </head>
 <body class="page-bg">
 
-    <div class="lang-container" id="lang-area">
-        <!-- Одиночная рамка выбранного языка -->
+    <div class="lang-container">
+        <!-- Одиночная рамка выбранного языка (Английский по умолчанию) -->
         <div class="lang-current" id="active-lang">
             <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
             <span>ENGLISH</span>
@@ -36,27 +36,24 @@
     </header>
 
     <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" class="door-v544" onclick="enterClub()">
+        <!-- Дверь 44vh -->
+        <img src="door_1.jpg" id="main-door" class="door-v5.4.5" onclick="enterClub()">
     </main>
 
     <script>
         function selectLang(code, name, flag) {
-            // 1. Меняем контент
             document.querySelector('#active-lang span').innerText = name;
             document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
             
-            // 2. МГНОВЕННОЕ ЗАКРЫТИЕ: временно отключаем видимость
             const menu = document.getElementById('drop-menu');
             menu.style.display = 'none';
-            
-            // Возвращаем возможность hover через мгновение, чтобы при следующем наведении меню работало
-            setTimeout(() => { menu.style.removeProperty('display'); }, 100);
+            setTimeout(() => { menu.style.removeProperty('display'); }, 150);
         }
 
         function enterClub() {
             document.getElementById('main-door').style.transform = 'scale(4)';
             document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'welcome.html'; }, 1000);
+            setTimeout(() => { window.location.href = 'welcome_v5.4.5.html'; }, 1000);
         }
     </script>
 </body>
