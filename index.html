@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- GY-GY PROTOCOL v.5.4.7 (.) -->
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB | ENTRANCE v5.4.7</title>
+    <title>GY-GY CLUB | ENTRANCE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="page-bg">
 
     <div class="lang-container">
-        <!-- Рамка выбранного языка -->
         <div class="lang-current" id="active-lang">
             <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
             <span>ENGLISH</span>
         </div>
         
-        <!-- Выпадающий список СТРОГО ВЕРТИКАЛЬНО (.) -->
         <div class="lang-dropdown" id="drop-menu">
             <button class="lang-btn" onclick="selectLang('ru', 'РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
             <button class="lang-btn" onclick="selectLang('en', 'ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
@@ -28,6 +25,7 @@
             <button class="lang-btn" onclick="selectLang('cn', '中文', 'cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
             <button class="lang-btn" onclick="selectLang('jp', '日本語', 'jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
             <button class="lang-btn" onclick="selectLang('br', 'PORTUGUÊS', 'br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
+            <button class="lang-btn" onclick="selectLang('tr', 'TÜRKÇE', 'tr')"><img src="https://flagcdn.com/w20/tr.png"> TÜRKÇE</button>
         </div>
     </div>
 
@@ -36,13 +34,16 @@
     </header>
 
     <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" class="door-v547" onclick="enterClub()">
+        <img src="door_1.jpg" id="main-door" class="door-v549" onclick="enterClub()">
     </main>
+
+    <audio id="lock-sound" src="click_sound.mp3" preload="auto"></audio>
 
     <script>
         function selectLang(code, name, flag) {
             document.querySelector('#active-lang span').innerText = name;
             document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
+            // Плавное закрытие меню
             const menu = document.getElementById('drop-menu');
             menu.style.display = 'none';
             setTimeout(() => { menu.style.removeProperty('display'); }, 200);
@@ -50,11 +51,22 @@
 
         function enterClub() {
             const door = document.getElementById('main-door');
-            /* Фиксация анимации (.) */
-            door.style.maxHeight = "44vh";      /* . */
-            door.style.transform = "scale(1.2)"; /* . */
+            const sound = document.getElementById('lock-sound');
+
+            // 1. Звук (активируется при наличии файла)
+            if(sound) {
+                sound.play().catch(() => console.log("Файл звука не найден, идем дальше."));
+            }
+
+            // 2. Анимация входа (.)
+            door.style.transform = "scale(1.2)"; 
+            document.body.style.transition = "opacity 1s";
             document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'welcome_v547.html'; }, 1000);
+
+            // 3. Переход на страницу приветствия
+            setTimeout(() => { 
+                window.location.href = 'welcome.html'; 
+            }, 1200);
         }
     </script>
 </body>
