@@ -1,59 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
-<!-- GY-GY PROTOCOL v.5.4.7 (.) -->
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>GY-GY CLUB | ENTRANCE v5.4.7</title>
-    <link rel="stylesheet" href="style_v547.css">
+    <title>GY-GY CLUB</title>
+    <link rel="stylesheet" href="shared-core.css">
+    <link rel="preload" href="door_open.mp3" as="audio">
 </head>
-<body class="page-bg">
+<body>
+
+    <audio id="door-audio" src="door_open.mp3" preload="auto"></audio>
 
     <div class="lang-container">
-        <!-- Рамка выбранного языка -->
-        <div class="lang-current" id="active-lang">
-            <img src="https://flagcdn.com/w20/gb.png" id="main-flag"> 
-            <span>ENGLISH</span>
+        <div class="lang-trigger">
+            <img src="https://flagcdn.com/w40/ru.png" id="current-lang-flag"> 
+            <span id="current-lang-label">РУССКИЙ</span>
         </div>
-        
-        <!-- Выпадающий список СТРОГО ВЕРТИКАЛЬНО -->
-        <div class="lang-dropdown" id="drop-menu">
-            <button class="lang-btn" onclick="selectLang('ru', 'РУССКИЙ', 'ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
-            <button class="lang-btn" onclick="selectLang('en', 'ENGLISH', 'gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
-            <button class="lang-btn" onclick="selectLang('ua', 'УКРАЇНСЬКА', 'ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
-            <button class="lang-btn" onclick="selectLang('pl', 'POLSKI', 'pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
-            <button class="lang-btn" onclick="selectLang('de', 'DEUTSCH', 'de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
-            <button class="lang-btn" onclick="selectLang('fr', 'FRANÇAIS', 'fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
-            <button class="lang-btn" onclick="selectLang('it', 'ITALIANO', 'it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
-            <button class="lang-btn" onclick="selectLang('es', 'ESPAÑOL', 'es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
-            <button class="lang-btn" onclick="selectLang('cn', '中文', 'cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
-            <button class="lang-btn" onclick="selectLang('jp', '日本語', 'jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
-            <button class="lang-btn" onclick="selectLang('br', 'PORTUGUÊS', 'br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
+        <div class="lang-panel">
+            <button class="lang-btn" onclick="setLanguage('ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="setLanguage('en')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
+            <button class="lang-btn" onclick="setLanguage('ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
+            <button class="lang-btn" onclick="setLanguage('pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
+            <button class="lang-btn" onclick="setLanguage('de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
+            <button class="lang-btn" onclick="setLanguage('fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
+            <button class="lang-btn" onclick="setLanguage('it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
+            <button class="lang-btn" onclick="setLanguage('es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
+            <button class="lang-btn" onclick="setLanguage('cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
+            <button class="lang-btn" onclick="setLanguage('jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
+            <button class="lang-btn" onclick="setLanguage('ae')"><img src="https://flagcdn.com/w20/ae.png"> العربية</button>
+            <button class="lang-btn" onclick="setLanguage('br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
         </div>
     </div>
 
     <header class="fixed-header">
-        <div class="logo-text">GY-GY</div>
+        <div class="logo-link">
+            <div class="logo-text">GY-GY</div>
+        </div>
     </header>
 
     <main class="portal-zone">
-        <img src="door_1.jpg" id="main-door" class="door-v547" onclick="enterClub()">
+        <img src="door_1.jpg" id="main-door" onclick="enterClub()">
     </main>
 
+    <script src="shared-logic.js"></script>
     <script>
-        function selectLang(code, name, flag) {
-            document.querySelector('#active-lang span').innerText = name;
-            document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
-            const menu = document.getElementById('drop-menu');
-            menu.style.display = 'none';
-            setTimeout(() => { menu.style.removeProperty('display'); }, 200);
-        }
-
         function enterClub() {
+            const doorSound = document.getElementById('door-audio');
+            
+            if (doorSound) {
+                doorSound.currentTime = 0;
+                doorSound.play().catch(err => {
+                    console.log("Автозапуск звука блокирован. Обычное дело.");
+                });
+            }
+
+            // Анимация: дверь только увеличивается
             const door = document.getElementById('main-door');
-            door.style.maxHeight = "100vh"; 
-            door.style.transform = "scale(5)";
-            document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'welcome_v547.html'; }, 1000);
+            door.classList.add('door-open');
+
+            // Задержка 800мс, чтобы звук успел начаться
+            setTimeout(() => { 
+                window.location.href = 'welcome.html'; 
+            }, 800);
         }
     </script>
 </body>
