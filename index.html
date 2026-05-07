@@ -1,9 +1,9 @@
-PE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.56 | AVATAR READY</title>
+    <title>GY-GY Club v4.4.57 | BASE MONOLITH (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -11,32 +11,37 @@ PE html>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
         * { -webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; outline: none !important; }
-        a, button, input { -webkit-appearance: none; outline: none !important; pointer-events: auto !important; }
-        img { -webkit-user-drag: none !important; pointer-events: none; border: none !important; }
-
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
-        
-      <div class="lang-container">
-    <div class="lang-current" id="active-lang">
-        <img src="https://flagcdn.com/w20/ru.png" id="main-flag"> 
-        <span>РУССКИЙ</span>
-    </div>
-    <div class="lang-dropdown" id="drop-menu">
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('ru','РУССКИЙ','ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('en','ENGLISH','gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('ua','УКРАЇНСЬКА','ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('pl','POLSKI','pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('de','DEUTSCH','de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('fr','FRANÇAIS','fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('it','ITALIANO','it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('es','ESPAÑOL','es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('cn','中文','cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('jp','日本語','jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('br','PORTUGUÊS','br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
-        <button class="lang-btn" style="background:none; border:none; color:var(--gold); padding:8px 12px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:10px; font-family:inherit; width:100%;" onclick="selectLang('tr','TÜRKÇE','tr')"><img src="https://flagcdn.com/w20/tr.png"> TÜRKÇE</button>
-    </div>
-</div>
-        
+
+        /* БЛОК: ВЕРХНЯЯ ПАНЕЛЬ (ЯЗЫКИ + ЛОГО) (.) */
+        .lang-container { 
+            position: fixed; top: 18px; left: 25px; z-index: 1000001; 
+            display: flex !important; flex-direction: column !important; width: 175px !important; 
+        }
+        .lang-current {
+            border: 1px solid var(--gold); padding: 5px 12px; height: 32px; box-sizing: border-box;
+            display: flex; align-items: center; gap: 10px; cursor: pointer; background: #000; font-size: 14px;
+        }
+        .lang-dropdown { 
+            display: none; flex-direction: column !important; background: #000; 
+            border: 1px solid var(--gold); border-top: none; width: 173px !important; 
+            overflow: visible !important; 
+        }
+        .lang-container:hover .lang-dropdown { display: flex !important; }
+        .lang-btn { 
+            background: none; border: none; color: var(--gold); padding: 8px 12px; 
+            cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
+            font-family: inherit; width: 100%; font-size: 12px;
+        }
+        .lang-btn:hover { background: #1a1a1a; }
+
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; color: var(--gold); 
+            pointer-events: none; height: 32px; display: flex; align-items: center; 
+        }
+
+        /* БЛОК: ОБЩИЕ ЭЛЕМЕНТЫ (.) */
         .ui-back-to-bar { 
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
             background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold);
@@ -55,22 +60,48 @@ PE html>
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: 0.3s; pointer-events: auto !important; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
+        /* БЛОК: ДВЕРЬ (44vh по README) (.) */
+        #main-door { 
+            max-height: 44vh !important; height: 44vh !important; width: auto !important;
+            cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; 
+            z-index: 9999; pointer-events: auto !important; 
+        }
+
+        /* ID-КАРТА И ХОЛЛ */
+        .id-card-hall { position: absolute; top: 72%; left: 50%; transform: translate(-50%,-50%); width: 220px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        
+        /* БАР И СТОЛИКИ */
         .bar-ui-container { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); width: 100%; max-width: 380px; z-index: 1000; pointer-events: none; display: flex; flex-direction: column; align-items: center; }
         .bar-side-buttons { width: 100%; display: flex; justify-content: space-between; margin-bottom: 12px; pointer-events: none; }
         .bar-side-buttons button, .bar-bottom-button button { pointer-events: auto; min-width: 145px; background: rgba(0,0,0,0.6); }
 
-        .id-card-hall { position: absolute; top: 72%; left: 50%; transform: translate(-50%,-50%); width: 220px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        
-        #main-door { width: 280px; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; z-index: 9999; pointer-events: auto !important; }
-        
         #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; z-index: 100; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); pointer-events: auto !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="google_translate_element"></div>
+    <div class="lang-container">
+        <div class="lang-current" id="active-lang">
+            <img src="https://flagcdn.com/w20/ru.png" id="main-flag"> <span>РУССКИЙ</span>
+        </div>
+        <div class="lang-dropdown" id="drop-menu">
+            <button class="lang-btn" onclick="selectLang('ru','РУССКИЙ','ru')"><img src="https://flagcdn.com/w20/ru.png"> РУССКИЙ</button>
+            <button class="lang-btn" onclick="selectLang('en','ENGLISH','gb')"><img src="https://flagcdn.com/w20/gb.png"> ENGLISH</button>
+            <button class="lang-btn" onclick="selectLang('ua','УКРАЇНСЬКА','ua')"><img src="https://flagcdn.com/w20/ua.png"> УКРАЇНСЬКА</button>
+            <button class="lang-btn" onclick="selectLang('pl','POLSKI','pl')"><img src="https://flagcdn.com/w20/pl.png"> POLSKI</button>
+            <button class="lang-btn" onclick="selectLang('de','DEUTSCH','de')"><img src="https://flagcdn.com/w20/de.png"> DEUTSCH</button>
+            <button class="lang-btn" onclick="selectLang('fr','FRANÇAIS','fr')"><img src="https://flagcdn.com/w20/fr.png"> FRANÇAIS</button>
+            <button class="lang-btn" onclick="selectLang('it','ITALIANO','it')"><img src="https://flagcdn.com/w20/it.png"> ITALIANO</button>
+            <button class="lang-btn" onclick="selectLang('es','ESPAÑOL','es')"><img src="https://flagcdn.com/w20/es.png"> ESPAÑOL</button>
+            <button class="lang-btn" onclick="selectLang('cn','中文','cn')"><img src="https://flagcdn.com/w20/cn.png"> 中文</button>
+            <button class="lang-btn" onclick="selectLang('jp','日本語','jp')"><img src="https://flagcdn.com/w20/jp.png"> 日本語</button>
+            <button class="lang-btn" onclick="selectLang('br','PORTUGUÊS','br')"><img src="https://flagcdn.com/w20/br.png"> PORTUGUÊS</button>
+            <button class="lang-btn" onclick="selectLang('tr','TÜRKÇE','tr')"><img src="https://flagcdn.com/w20/tr.png"> TÜRKÇE</button>
+        </div>
+    </div>
+
     <div class="ui-header-right">GY-GY</div>
     <button class="ui-back-to-bar" id="btn-global-back" onclick="portalTransition('block-bar')">Назад в бар</button>
 
@@ -94,15 +125,13 @@ PE html>
     <div id="block-identity" class="block">
         <div class="quote-text">«Шампанского много не бывает»</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px; font-family:'Share Tech Mono';" id="id-label">#ID</div>
+            <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold);"></div>
-            
-            <div class="box-final" style="border-color:var(--gold); position:relative; cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:var(--gold); font-size:10px; font-weight:900;">ФОТО</span>
             </div>
-
             <div class="box-final" style="border-color:var(--gold); cursor:pointer; background:rgba(212,175,55,0.1);" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:var(--gold); font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
@@ -119,7 +148,7 @@ PE html>
             <div id="h-id" style="font-weight:900; font-size:14px; margin-bottom:12px;">#ID</div>
             <div style="display:flex; gap:15px; margin-bottom:12px;">
                 <div class="box-final"><img id="h-photo" style="width:100%; height:100%; object-fit:cover;"></div>
-                <div class="box-final" id="h-qr"></div>
+                <div id="h-qr" class="box-final"></div>
             </div>
             <button id="btn-confirm" class="btn-gy" style="min-width:100%; border-color:#000; color:#000; padding:10px;" onclick="swapButtons('btn-confirm', 'btn-enter-bar')">ПОДТВЕРДИТЬ</button>
             <button id="btn-enter-bar" class="btn-gy btn-sleep" style="min-width:100%; border-color:#000; color:#000; padding:10px;" onclick="portalTransition('block-bar')">ВХОД В БАР</button>
@@ -127,7 +156,7 @@ PE html>
     </div>
 
     <div id="block-bar" class="block" style="padding:0; justify-content: flex-end;">
-        <div class="quote-text" style="position:absolute; top:8vh; z-index:100;">«Игого, сейчас начнем!</div>
+        <div class="quote-text" style="position:absolute; top:8vh; z-index:100;">«Игого, сейчас начнем!»</div>
         <div class="bar-ui-container">
             <div class="bar-side-buttons">
                 <button class="btn-gy" style="font-size:12px;" onclick="portalTransition('block-tables')">ЗА СТОЛИКИ</button>
@@ -147,6 +176,14 @@ PE html>
 
     <script>
         let currentID = "";
+
+        // ЛОГИКА ВЫБОРА ЯЗЫКА (.)
+        function selectLang(code, name, flag) {
+            document.querySelector('#active-lang span').innerText = name;
+            document.getElementById('main-flag').src = `https://flagcdn.com/w20/${flag}.png`;
+            document.getElementById('drop-menu').style.display = 'none';
+            setTimeout(() => { document.getElementById('drop-menu').style.removeProperty('display'); }, 200);
+        }
 
         function deepDive() {
             document.body.style.transition = "opacity 1.2s ease, filter 1.2s ease";
@@ -172,20 +209,12 @@ PE html>
                     next.classList.add('active'); 
                     next.style.opacity = "1";
                     next.style.pointerEvents = "auto";
-
-                    setTimeout(() => {
-                        if (nextId === 'block-bar') fadeAudio(amb, 1, 800);
-                        if (nextId === 'block-tables') {
-                            backBtn.style.display = 'block';
-                            setTimeout(() => { backBtn.style.opacity = "1"; }, 50);
-                            fadeAudio(amb, 0, 800);
-                        } else { backBtn.style.display = 'none'; }
-                    }, 800);
-
-                    if(nextId === 'block-bar' && (!current || current.id !== 'block-tables')) {
-                        setTimeout(() => { document.getElementById('snd-khe').play(); }, 800);
-                        setTimeout(() => { document.getElementById('snd-pour').play(); }, 2200);
-                    }
+                    if (nextId === 'block-bar') fadeAudio(amb, 1, 800);
+                    if (nextId === 'block-tables') {
+                        backBtn.style.display = 'block';
+                        setTimeout(() => { backBtn.style.opacity = "1"; }, 50);
+                        fadeAudio(amb, 0, 800);
+                    } else { backBtn.style.display = 'none'; }
                 }, 50);
             }, 800);
         }
@@ -193,7 +222,9 @@ PE html>
         function handleDoor() {
             const d = document.getElementById('main-door');
             document.getElementById('snd-door').play();
-            d.style.transform = "scale(5)"; d.style.opacity = "0";
+            /* АНИМАЦИЯ ВХОДА (scale 1.2) (.) */
+            d.style.transform = "scale(1.2)"; 
+            d.style.opacity = "0";
             d.style.pointerEvents = "none";
             
             currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
@@ -220,15 +251,12 @@ PE html>
             }, 50);
         }
 
-        // ЗАГРУЗКА ФОТО
         function preview(i) {
             if(i.files && i.files[0]) {
                 const r = new FileReader();
                 r.onload = (e) => { 
-                    // Сбрасываем аватар, если выбрали фото
                     document.getElementById('avatar-img').style.display = "none";
                     document.getElementById('txt-avatar').style.display = "block";
-                    
                     document.getElementById('pp').src = e.target.result; 
                     document.getElementById('pp').style.display = "block";
                     document.getElementById('h-photo').src = e.target.result; 
@@ -238,22 +266,15 @@ PE html>
             }
         }
 
-        // ГЕНЕРАЦИЯ АВАТАРА (НОВОЕ)
         function generateAvatar() {
-            // Сбрасываем фото, если выбрали аватар
             document.getElementById('pp').style.display = "none";
             document.getElementById('txt-photo').style.display = "block";
-            document.getElementById('file-input').value = "";
-
             const seed = Math.random().toString(36).substring(7);
             const avatarUrl = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
-            
             const avImg = document.getElementById('avatar-img');
             avImg.src = avatarUrl;
             avImg.style.display = "block";
             document.getElementById('txt-avatar').style.display = "none";
-            
-            // Передаем в финальное удостоверение
             document.getElementById('h-photo').src = avatarUrl;
         }
 
@@ -261,11 +282,6 @@ PE html>
             document.getElementById(a).classList.add('btn-sleep'); 
             document.getElementById(s).classList.remove('btn-sleep'); 
         }
-
-        function googleTranslateElementInit() { 
-            new google.translate.TranslateElement({pageLanguage: 'ru', autoDisplay: false}, 'google_translate_element'); 
-        }
     </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
