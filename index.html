@@ -3,62 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.67 | STABLE (.)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.4.68 | MONOLITH (.)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
+        :root { --gold: #d4af37; --door-wood: #1a110e; }
         
-        * { -webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; outline: none !important; }
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin:0; }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ: ГОРИЗОНТ И ШИРИНА (.) */
+        /* ВЕРХНЯЯ ПАНЕЛЬ: ИДЕАЛЬНЫЙ ГОРИЗОНТ (.) */
         .ui-top-bar { 
             position: fixed; top: 18px; left: 0; width: 100%; 
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 25px; z-index: 1000000; box-sizing: border-box; 
+            padding: 0 25px; z-index: 1000000; 
         }
         
-        /* Ширина 210px — эталон по уровню 'УКРАЇНСЬКА' (.) */
         .lang-container { position: relative; width: 210px; }
-        
         .lang-current { 
             border: 1px solid var(--gold); padding: 0 12px; height: 36px; 
             display: flex; align-items: center; gap: 10px; cursor: pointer; 
-            background: rgba(0,0,0,0.8); font-size: 13px; text-transform: uppercase;
+            background: #000; font-size: 13px; font-family: 'Share Tech Mono', monospace;
         }
         
+        /* СЕТКА ВМЕСТО СКРОЛЛА: ОПТИМИЗАЦИЯ (.) */
         .lang-dropdown { 
-            display: none; position: absolute; top: 100%; left: 0; width: 100%; 
+            display: none; position: absolute; top: 100%; left: 0; 
+            width: 440px; /* Расширяем, чтобы все влезло в 2 колонки без скролла */
             background: #000; border: 1px solid var(--gold); border-top: none; 
-            max-height: 60vh; overflow-y: auto; z-index: 1000002;
+            z-index: 1000002; grid-template-columns: 1fr 1fr;
         }
-        .lang-container:hover .lang-dropdown { display: block; }
+        .lang-container:hover .lang-dropdown { display: grid; }
         
         .lang-btn { 
-            background: none; border: none; color: var(--gold); padding: 12px; 
+            background: none; border: none; color: var(--gold); padding: 10px 15px; 
             cursor: pointer; text-align: left; display: flex; align-items: center; 
-            gap: 12px; font-family: 'Share Tech Mono'; width: 100%; font-size: 12px; 
-            transition: 0.2s;
+            gap: 10px; font-family: 'Share Tech Mono', monospace; font-size: 11px;
         }
-        .lang-btn:hover { background: rgba(214, 175, 55, 0.2); }
-        .lang-btn img { width: 20px; border-radius: 2px; }
+        .lang-btn:hover { background: #1a1a1a; }
+        .lang-btn img { width: 18px; filter: grayscale(0.3); }
 
-        .ui-header-right { 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            pointer-events: none; font-family: 'Share Tech Mono'; 
+        .ui-header-right { font-size: 24px; letter-spacing: 5px; font-weight: bold; font-family: 'Share Tech Mono', monospace; }
+
+        /* ТАЙНАЯ ДВЕРЬ: СЛИВАЕТСЯ С ФОНОМ (.) */
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s; }
+        .block.active { display: flex; opacity: 1; }
+        
+        #main-door { 
+            width: 295px; cursor: pointer; 
+            filter: brightness(0.2) contrast(1.1); /* Почти черная */
+            transition: transform 2.5s, filter 1s, opacity 2s; 
+            mix-blend-mode: screen; 
         }
+        #main-door:hover { filter: brightness(0.5) contrast(1.2); }
 
-        /* КОНТЕНТ (.) */
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s; pointer-events: none; }
-        .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
+        .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono', monospace; text-transform: uppercase; margin: 8px 0; }
+        .btn-sleep { opacity: 0.15; pointer-events: none; }
         
-        .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
-        
-        #main-door { width: 295px; cursor: pointer; transition: transform 2.5s, opacity 2s; z-index: 9999; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .box-final { width: 85px; height: 85px; border: 1px solid var(--gold); background: transparent; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--gold); font-size: 10px; }
     </style>
 </head>
 <body>
@@ -77,12 +80,12 @@
     <audio id="snd-door"><source src="door_open.mp3"></audio>
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
 
-    <div id="block-entrance" class="block active" style="opacity: 1;">
+    <div id="block-entrance" class="block active">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
-        <div style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; margin-bottom: 20px;" id="t-quote1">"In every joke there is a drop of whisky"</div>
+        <div style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; text-align: center; margin-bottom: 30px;" id="t-quote1">"In every joke there is a drop of whisky"</div>
         <img src="horse_welcome.png" style="max-height: 40vh; margin-bottom: 20px;">
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">Proceed to Hall</button>
         <button class="btn-gy" onclick="portalTransition('block-identity')">Get Club ID</button>
@@ -90,8 +93,8 @@
 
     <div id="block-identity" class="block">
         <div style="display:flex; gap:10px; margin-bottom:25px;">
-            <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold);" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg"></div>
+            <div class="box-final" id="id-label">#ID</div>
+            <div class="box-final" id="qr-box-reg" style="background:#fff;"></div>
             <div class="box-final" onclick="document.getElementById('file-input').click()" style="cursor:pointer;">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
@@ -118,18 +121,18 @@
         languages.forEach(l => {
             const b = document.createElement('button');
             b.className = 'lang-btn';
-            b.innerHTML = `<img src="https://flagcdn.com/w40/${l.f}.png"> ${l.n}`;
+            b.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}`;
             b.onclick = () => {
-                document.getElementById('active-lang').innerHTML = `<img src="https://flagcdn.com/w40/${l.f}.png"> <span>${l.n}</span>`;
-                // Здесь можно добавить смену текстов через словарь dict
+                document.getElementById('active-lang').innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> <span>${l.n}</span>`;
             };
             list.appendChild(b);
         });
 
         function handleDoor() {
             document.getElementById('snd-door').play();
-            document.getElementById('main-door').style.transform = "scale(5)";
-            document.getElementById('main-door').style.opacity = "0";
+            const d = document.getElementById('main-door');
+            d.style.transform = "scale(8) rotate(5deg)";
+            d.style.opacity = "0";
             let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
             document.getElementById('id-label').innerText = id;
             new QRCode(document.getElementById("qr-box-reg"), { text: id, width: 85, height: 85 });
@@ -143,7 +146,7 @@
                 cur.classList.remove('active'); cur.style.display = "none";
                 const nxt = document.getElementById(id);
                 nxt.style.display = "flex";
-                setTimeout(() => { nxt.classList.add('active'); nxt.style.opacity = "1"; }, 50);
+                setTimeout(() => { nxt.classList.add('active'); }, 50);
             }, 800);
         }
 
