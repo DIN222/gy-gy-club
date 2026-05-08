@@ -3,263 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.00 | ARCHITECT (.)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY v4.5.03 (.)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
     <style>
-        :root { --gold: #d4af37; --black: #000; }
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; outline: none !important; }
-        html, body { width: 100%; height: 100%; margin: 0; background: var(--black); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; }
-
-        /* FIXED UI HEADER (.) */
-        .ui-header { 
-            position: fixed; top: 20px; left: 0; width: 100%; 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            padding: 0 25px; z-index: 1000000; 
-        }
+        :root { --gold: #d4af37; --bl: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        html, body { width: 100%; height: 100%; margin: 0; background: var(--bl); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; }
         
-        #nav-section { display: flex; align-items: center; }
-
-        /* LANG: THE UKRAINIAN STANDARD (210px) - ONLY ON START (.) */
-        #lang-wrapper { width: 210px; min-width: 210px; position: relative; pointer-events: auto; }
-        .lang-current { 
-            border: 1px solid var(--gold); height: 42px; display: flex; 
-            align-items: center; padding: 0 15px; background: #000; 
-            font-size: 13px; text-transform: uppercase; cursor: pointer;
-        }
-        .lang-list { 
-            display: none; position: absolute; top: 100%; left: -1px; width: calc(100% + 2px); 
-            background: #000; border: 1px solid var(--gold); border-top: none;
-            flex-direction: column; z-index: 10001;
-        }
+        /* HEADER ALIGNMENT (.) */
+        .ui-header { position: fixed; top: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 0 25px; z-index: 99999; }
+        
+        /* LANG TEMPLATE (210px) (.) */
+        #lang-wrapper { width: 210px; position: relative; pointer-events: auto; }
+        .lang-curr { border: 1px solid var(--gold); height: 42px; display: flex; align-items: center; padding: 0 15px; background: var(--bl); cursor: pointer; font-size: 13px; text-transform: uppercase; }
+        .lang-list { display: none; position: absolute; top: 100%; left: -1px; width: calc(100% + 2px); background: var(--bl); border: 1px solid var(--gold); border-top: none; flex-direction: column; }
         #lang-wrapper:hover .lang-list { display: flex; }
-        .lang-item { 
-            height: 40px; display: flex; align-items: center; 
-            padding: 0 15px; cursor: pointer; font-size: 11px; 
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-        }
-        .lang-item:hover { background: rgba(212, 175, 55, 0.2); }
-        .lang-item img { width: 18px; margin-right: 12px; }
+        .l-item { height: 40px; display: flex; align-items: center; padding: 0 15px; cursor: pointer; font-size: 11px; border-bottom: 1px solid rgba(212,175,55,0.1); }
+        .l-item:hover { background: rgba(212,175,55,0.2); }
 
-        /* NAVIGATION (.) */
-        .nav-arrows { display: none; gap: 12px; }
-        .nav-btn { 
-            background: none; border: 1px solid var(--gold); color: var(--gold); 
-            height: 42px; padding: 0 20px; cursor: pointer; font-size: 20px; font-weight: 900; 
-        }
+        /* NAV & LOGO (.) */
+        .nav-ui { display: none; gap: 10px; margin-left: 15px; }
+        .nav-btn { background: none; border: 1px solid var(--gold); color: var(--gold); height: 42px; padding: 0 15px; cursor: pointer; font-size: 18px; }
+        .logo { font-size: 26px; letter-spacing: 5px; font-weight: bold; line-height: 1; margin-top: 5px; }
 
-        /* LOGO ALIGNMENT (.) */
-        .ui-header-right { 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            line-height: 42px; height: 42px; display: flex; align-items: center;
-        }
-
-        /* TOP SLOGAN: INTEGRATED IN HEADER AREA (.) */
-        #global-slogan { 
-            position: fixed; top: 85px; width: 100%; text-align: center; 
-            font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 18px; padding: 0 30px; 
-            text-shadow: 0 0 15px #000, 0 0 10px #000;
-            opacity: 0; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 9999; pointer-events: none;
-        }
+        /* SLOGAN (.) */
+        #slogan { position: fixed; top: 85px; width: 100%; text-align: center; font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; padding: 0 40px; text-shadow: 0 0 15px #000; opacity: 0; transition: 1s; z-index: 9999; pointer-events: none; }
 
         /* BLOCKS (.) */
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: 0.7s; }
-        .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
-
-        #main-door { width: 280px; cursor: pointer; transition: 2s; }
-        .btn-gy { 
-            min-width: 275px; padding: 15px; background: transparent; 
-            border: 2px solid var(--gold); color: var(--gold); cursor: pointer; 
-            text-transform: uppercase; font-weight: 900; margin: 10px 0; transition: 0.3s;
-        }
-        .btn-gy:hover { background: rgba(212, 175, 55, 0.1); box-shadow: 0 0 10px var(--gold); }
-        .btn-sleep { opacity: 0.1 !important; pointer-events: none !important; }
-
-        .box-final { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .id-card-hall { width: 240px; padding: 20px; border: 2px solid var(--gold); background: #F5F5DC; color: #000; text-align: center; border-radius: 2px; }
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--bl); z-index: 10; opacity: 0; transition: 0.6s; }
+        .active { display: flex !important; opacity: 1; pointer-events: auto; }
+        
+        #door { width: 280px; cursor: pointer; transition: 2s; }
+        .btn-gy { min-width: 275px; padding: 15px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; transition: 0.3s; }
+        .btn-gy:hover { background: rgba(212,175,55,0.1); }
+        .box { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
     <div class="ui-header">
-        <div id="nav-section">
+        <div style="display:flex;">
             <div id="lang-wrapper">
-                <div class="lang-current" id="cur-lang">
-                    <img src="https://flagcdn.com/w20/gb.png" style="margin-right:10px;"> <span>ENGLISH</span>
-                </div>
+                <div class="lang-curr" id="cur-l"><span>UKRAINIAN</span></div>
                 <div class="lang-list" id="l-list"></div>
             </div>
-            <div class="nav-arrows" id="nav-ui">
-                <button class="nav-btn" onclick="goBack()">«</button>
-                <button class="nav-btn" onclick="exitToStart()">‹</button>
+            <div class="nav-ui" id="nav-ui">
+                <button class="nav-btn" onclick="nav('back')">«</button>
+                <button class="nav-btn" onclick="nav('start')">‹</button>
             </div>
         </div>
-        <div class="ui-header-right">GY-GY</div>
+        <div class="logo">GY-GY</div>
     </div>
 
-    <div id="global-slogan"></div>
+    <div id="slogan"></div>
 
-    <audio id="snd-door"><source src="door_open.mp3"></audio>
-    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
-    <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
+    <div id="b-ent" class="block active" style="opacity:1;"><img src="door_1.jpg" id="door" onclick="openDoor()"></div>
 
-    <div id="block-entrance" class="block active" style="opacity: 1;">
-        <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
-    </div>
-
-    <div id="block-welcome" class="block">
+    <div id="b-wel" class="block">
         <img src="horse_welcome.png" style="max-height: 42vh; margin-bottom: 20px;">
-        <button class="btn-gy btn-sleep" id="btn-w-hall" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">GET CLUB ID</button>
+        <button class="btn-gy" id="btn-to-h" style="opacity:0.1;pointer-events:none;" onclick="go('b-hall')">PROCEED TO HALL</button>
+        <button class="btn-gy" onclick="go('b-id')">GET CLUB ID</button>
     </div>
 
-    <div id="block-identity" class="block">
+    <div id="b-id" class="block">
         <div style="display:flex; gap:10px; margin-bottom:30px;">
-            <div class="box-final" id="id-label" style="font-size:10px;">#ID</div>
-            <div class="box-final" id="qr-box"></div>
-            <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="font-size:10px; font-weight:900;">PHOTO</span>
-            </div>
-            <div class="box-final" style="cursor:pointer; background:rgba(212,175,55,0.05);" onclick="generateAvatar()">
-                <img id="av-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-av" style="font-size:9px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
-            </div>
+            <div id="id-txt" class="box" style="font-size:10px;">#ID</div>
+            <div id="qr" class="box"></div>
         </div>
-        <button id="btn-save" class="btn-gy" onclick="swapButtons('btn-save', 'btn-pass')">SAVE IDENTITY</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">CONFIRM ACCESS</button>
+        <button id="btn-s" class="btn-gy" onclick="saveID()">SAVE IDENTITY</button>
+        <button id="btn-p" class="btn-gy" style="opacity:0.1;pointer-events:none;" onclick="go('b-hall')">CONFIRM ACCESS</button>
     </div>
 
-    <div id="block-hall" class="block">
-        <div class="id-card-hall">
-            <div id="h-id" style="font-weight:900; margin-bottom:12px;">#ID</div>
-            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px;">
-                <div class="box-final" style="border-color:#000;"><img id="h-photo" style="width:100%; height:100%; object-fit:cover;"></div>
-                <div class="box-final" style="border-color:#000;" id="h-qr"></div>
-            </div>
-            <button id="btn-confirm" class="btn-gy" style="min-width:100%; color:#000; border-color:#000;" onclick="swapButtons('btn-confirm', 'btn-enter-bar')">VERIFY ID</button>
-            <button id="btn-enter-bar" class="btn-gy btn-sleep" style="min-width:100%; color:#000; border-color:#000;" onclick="portalTransition('block-bar')">ENTER BAR</button>
-        </div>
-    </div>
-
-    <div id="block-bar" class="block">
-        <img src="horse_bar.png" style="height: 75vh; object-fit: contain;">
-        <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-gy" style="min-width:130px;" onclick="portalTransition('block-tables')">TABLES</button>
-            <button class="btn-gy" style="min-width:130px;" onclick="window.location.href='bridge.html'">AI</button>
-        </div>
-    </div>
-
-    <div id="block-tables" class="block"></div>
+    <div id="b-hall" class="block"></div>
 
     <script>
-        let historyStack = ['block-entrance'];
-        const langData = [
-            {id:'ru', n:'РУССКИЙ', f:'ru'}, {id:'ua', n:'УКРАЇНСЬКА', f:'ua'},
-            {id:'pl', n:'POLSKI', f:'pl'}, {id:'de', n:'DEUTSCH', f:'de'},
-            {id:'fr', n:'FRANÇAIS', f:'fr'}, {id:'it', n:'ITALIANO', f:'it'},
-            {id:'es', n:'ESPAÑOL', f:'es'}, {id:'pt', n:'PORTUGUÊS', f:'pt'},
-            {id:'tr', n:'TÜRKЧЕ', f:'tr'}, {id:'cn', n:'中文', f:'cn'}, {id:'jp', n:'日本語', f:'jp'}
-        ];
-
-        const slogans = {
-            'block-welcome': "«В каждой шутке есть доля виски»",
-            'block-identity': "«Твой цифровой отпечаток — твоя новая реальность»",
-            'block-hall': "«Почти у цели. Чарли уже чует твой азарт»",
-            'block-bar': "«Конь зашел в бар... и остался навсегда. Гы-гы!»",
-            'block-tables': "«Глубина погружения: 100%. Только ты и AI»"
+        let hist = ['b-ent'];
+        const slogs = {
+            'b-ent': "«Заходите, здесь вам так рады, что вы даже не представляете, как быстро захотите уйти, чтобы вернуться снова»",
+            'b-wel': "«— Официант, в моем виски плавает муха! — И что вы от меня хотите? Это тоже наш сотрудник»",
+            'b-id': "«Ваш ID — это как девичья фамилия мамы: никто не помнит, но без этого в приличное общество не пускают»"
         };
 
-        const lList = document.getElementById('l-list');
-        langData.forEach(l => {
-            const d = document.createElement('div'); d.className = 'lang-item';
-            d.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}`;
-            d.onclick = () => { document.getElementById('cur-lang').innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png" style="margin-right:10px;"> <span>${l.n}</span>`; };
-            lList.appendChild(d);
+        // Lang list generator
+        const list = document.getElementById('l-list');
+        ['UKRAINIAN','РУССКИЙ','POLSKI','DEUTSCH','ENGLISH','FRANÇAIS','ITALIANO','ESPAÑOL','TÜRKÇE','中文','日本語'].forEach(l => {
+            const d = document.createElement('div'); d.className = 'l-item'; d.innerHTML = `<span>${l}</span>`;
+            d.onclick = () => { document.getElementById('cur-l').querySelector('span').innerText = l; };
+            list.appendChild(d);
         });
 
-        function fadeVolume(target, duration = 1200) {
-            const amb = document.getElementById('snd-ambient');
-            if (amb.paused && target > 0) { amb.volume = 0; amb.play(); }
-            const start = amb.volume;
-            const startTime = performance.now();
-            function step(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                amb.volume = start + (target - start) * progress;
-                if (progress < 1) requestAnimationFrame(step);
-            }
-            requestAnimationFrame(step);
-        }
-
-        function portalTransition(id, isBack = false) {
+        function go(id, isBack = false) {
             const cur = document.querySelector('.block.active');
             cur.style.opacity = "0";
             setTimeout(() => {
                 cur.classList.remove('active'); cur.style.display = "none";
                 const nxt = document.getElementById(id); nxt.style.display = "flex";
                 setTimeout(() => { nxt.classList.add('active'); nxt.style.opacity = "1"; }, 50);
-                if(!isBack) historyStack.push(id);
-
-                const isStart = (id === 'block-entrance');
-                // ЯЗЫКИ ТОЛЬКО НА ПЕРВОЙ (.)
-                document.getElementById('lang-wrapper').style.visibility = isStart ? 'visible' : 'hidden';
-                document.getElementById('nav-ui').style.display = isStart ? 'none' : 'flex';
-
-                // СЛОГАН ВЕРНУЛСЯ НАВЕРХ (.)
-                const sBar = document.getElementById('global-slogan');
-                if (slogans[id]) { sBar.innerText = slogans[id]; sBar.style.opacity = '1'; }
-                else { sBar.style.opacity = '0'; }
-
-                const charlie = document.getElementById('snd-khe');
-                if (isStart) fadeVolume(0, 800);
-                else {
-                    switch(id) {
-                        case 'block-welcome': fadeVolume(0.25); break; 
-                        case 'block-identity': fadeVolume(0.5); break; 
-                        case 'block-hall': fadeVolume(0.75); break;    
-                        case 'block-bar': fadeVolume(1.0); setTimeout(() => charlie.play(), 500); break;
-                        case 'block-tables': fadeVolume(0.4); break; 
-                    }
-                }
+                if(!isBack) hist.push(id);
+                
+                const start = (id === 'b-ent');
+                document.getElementById('lang-wrapper').style.visibility = start ? 'visible' : 'hidden';
+                document.getElementById('nav-ui').style.display = start ? 'none' : 'flex';
+                
+                const s = document.getElementById('slogan');
+                if (slogs[id]) { s.innerText = slogs[id]; s.style.opacity = '1'; } else s.style.opacity = '0';
             }, 600);
         }
 
-        function handleDoor() {
-            document.getElementById('snd-door').play();
-            const d = document.getElementById('main-door');
-            d.style.transform = "scale(5)"; d.style.opacity = "0";
+        function openDoor() {
+            const d = document.getElementById('door'); d.style.transform = "scale(5)"; d.style.opacity = "0";
             let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            document.getElementById('id-label').innerText = id; document.getElementById('h-id').innerText = id;
-            document.getElementById('qr-box').innerHTML = ""; new QRCode(document.getElementById("qr-box"), { text: id, width: 85, height: 85 });
-            document.getElementById('h-qr').innerHTML = ""; new QRCode(document.getElementById("h-qr"), { text: id, width: 85, height: 85 });
-            setTimeout(() => portalTransition('block-welcome'), 1600);
+            document.getElementById('id-txt').innerText = id;
+            document.getElementById('qr').innerHTML = ""; 
+            new QRCode(document.getElementById("qr"), { text: id, width: 81, height: 81 });
+            setTimeout(() => go('b-wel'), 1600);
         }
 
-        function generateAvatar() {
-            const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-            document.getElementById('av-img').src = url; document.getElementById('av-img').style.display = "block";
-            document.getElementById('h-photo').src = url; document.getElementById('txt-av').style.display = "none";
+        function saveID() {
+            document.getElementById('btn-s').style.opacity = '0.1';
+            const p = document.getElementById('btn-p'); p.style.opacity = '1'; p.style.pointerEvents = 'auto';
+            document.getElementById('btn-to-h').style.opacity = '1'; document.getElementById('btn-to-h').style.pointerEvents = 'auto';
         }
 
-        function preview(i) {
-            if(i.files && i.files[0]) {
-                const r = new FileReader();
-                r.onload = (e) => { 
-                    document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                    document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
-                };
-                r.readAsDataURL(i.files[0]);
-            }
+        function nav(m) {
+            if(m === 'start') { hist = ['b-ent']; go('b-ent', true); }
+            else if(hist.length > 1) { hist.pop(); go(hist[hist.length-1], true); }
         }
-
-        function goBack() { if(historyStack.length > 1) { historyStack.pop(); portalTransition(historyStack[historyStack.length-1], true); } }
-        function exitToStart() { historyStack = ['block-entrance']; portalTransition('block-entrance', true); }
-        function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
     </script>
 </body>
 </html>
