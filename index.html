@@ -3,143 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.68 | MONOLITH (.)</title>
+    <title>GY-GY CLUB v.4.4.80 | THE MONOLITH (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root { --gold: #d4af37; --door-wood: #1a110e; }
-        
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; margin:0; }
-
-        /* ВЕРХНЯЯ ПАНЕЛЬ: ИДЕАЛЬНЫЙ ГОРИЗОНТ (.) */
-        .ui-top-bar { 
-            position: fixed; top: 18px; left: 0; width: 100%; 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 25px; z-index: 1000000; 
+        :root { 
+            --gold: #d4af37; 
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --black: #000;
         }
         
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none; }
+        
+        body, html { 
+            width: 100%; height: 100%; margin: 0; padding: 0; 
+            background: var(--black); color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; position: fixed;
+        }
+
+        /* UI: HEADER & NAVIGATION (.) */
+        .ui-top-bar { 
+            position: fixed; top: 18px; left: 0; width: 100%; height: 40px;
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 25px; z-index: 10000; 
+        }
+
+        /* 12 LANG - 210px FIXED (.) */
         .lang-container { position: relative; width: 210px; }
         .lang-current { 
-            border: 1px solid var(--gold); padding: 0 12px; height: 36px; 
+            border: 1px solid var(--gold); padding: 0 12px; height: 38px; 
             display: flex; align-items: center; gap: 10px; cursor: pointer; 
-            background: #000; font-size: 13px; font-family: 'Share Tech Mono', monospace;
+            background: #000; font-size: 13px; text-transform: uppercase;
         }
-        
-        /* СЕТКА ВМЕСТО СКРОЛЛА: ОПТИМИЗАЦИЯ (.) */
         .lang-dropdown { 
-            display: none; position: absolute; top: 100%; left: 0; 
-            width: 440px; /* Расширяем, чтобы все влезло в 2 колонки без скролла */
+            display: none; position: absolute; top: 100%; left: 0; width: 100%; 
             background: #000; border: 1px solid var(--gold); border-top: none; 
-            z-index: 1000002; grid-template-columns: 1fr 1fr;
+            z-index: 10001; 
         }
-        .lang-container:hover .lang-dropdown { display: grid; }
-        
+        .lang-container:hover .lang-dropdown { display: block; }
         .lang-btn { 
-            background: none; border: none; color: var(--gold); padding: 10px 15px; 
-            cursor: pointer; text-align: left; display: flex; align-items: center; 
-            gap: 10px; font-family: 'Share Tech Mono', monospace; font-size: 11px;
+            background: none; border: none; color: var(--gold); padding: 12px; 
+            cursor: pointer; display: flex; align-items: center; gap: 12px; 
+            font-family: 'Share Tech Mono'; width: 100%; font-size: 11px; 
         }
-        .lang-btn:hover { background: #1a1a1a; }
-        .lang-btn img { width: 18px; filter: grayscale(0.3); }
+        .lang-btn:hover { background: var(--gold-glow); }
 
-        .ui-header-right { font-size: 24px; letter-spacing: 5px; font-weight: bold; font-family: 'Share Tech Mono', monospace; }
+        /* NAVIGATION ARROWS (.) */
+        .nav-control-center { 
+            position: absolute; left: 50%; transform: translateX(-50%); 
+            display: none; gap: 15px; 
+        }
+        .nav-btn { 
+            background: transparent; border: 1px solid var(--gold); color: var(--gold); 
+            height: 38px; min-width: 50px; cursor: pointer; font-family: 'Share Tech Mono'; 
+            font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn.double { letter-spacing: -4px; padding-right: 4px; }
 
-        /* ТАЙНАЯ ДВЕРЬ: СЛИВАЕТСЯ С ФОНОМ (.) */
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s; }
+        .ui-header-right { font-size: 26px; letter-spacing: 6px; font-weight: bold; }
+
+        /* BLOCKS (.) */
+        .block { 
+            position: fixed; inset: 0; display: none; flex-direction: column; 
+            align-items: center; justify-content: center; background: #000; 
+            z-index: 10; opacity: 0; transition: opacity 0.8s; 
+        }
         .block.active { display: flex; opacity: 1; }
-        
-        #main-door { 
-            width: 295px; cursor: pointer; 
-            filter: brightness(0.2) contrast(1.1); /* Почти черная */
-            transition: transform 2.5s, filter 1s, opacity 2s; 
-            mix-blend-mode: screen; 
-        }
-        #main-door:hover { filter: brightness(0.5) contrast(1.2); }
 
-        .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono', monospace; text-transform: uppercase; margin: 8px 0; }
-        .btn-sleep { opacity: 0.15; pointer-events: none; }
+        /* DOOR (.) */
+        #main-door { width: 300px; cursor: pointer; filter: brightness(0.4); transition: 2s; }
+        #main-door:hover { filter: brightness(0.7); }
+
+        /* RITUAL (.) */
+        .glass-svg { width: 70px; height: 90px; cursor: pointer; overflow: visible; }
+        .glass-liquid { fill: var(--gold); transform: translateY(80px); transition: transform 3s ease-in-out; }
+        .pour-active .glass-liquid { transform: translateY(20px); }
         
-        .box-final { width: 85px; height: 85px; border: 1px solid var(--gold); background: transparent; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--gold); font-size: 10px; }
+        .btn-gy { 
+            min-width: 280px; padding: 16px; background: transparent; 
+            border: 1px solid var(--gold); color: var(--gold); cursor: pointer; 
+            font-family: 'Share Tech Mono'; margin: 10px 0; text-transform: uppercase; 
+        }
+        .btn-sleep { opacity: 0.15; pointer-events: none; }
+
+        /* STUDIO (.) */
+        .studio-container { 
+            width: 90%; max-width: 900px; height: 60vh; border: 1px solid #222; 
+            background: #050505; display: flex; flex-direction: column; 
+        }
+        .research-log { flex: 1; overflow-y: auto; padding: 20px; font-size: 13px; color: #666; }
+        .log-entry { margin-bottom: 8px; }
+        .log-msg.active { color: #fff; }
     </style>
 </head>
 <body>
+
+    <audio id="snd-door"><source src="door_open.mp3"></audio>
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
+    <audio id="snd-bridge" loop><source src="bridge_ambient.mp3"></audio>
+    <audio id="snd-khekhe"><source src="charlie_bar_fx.mp3"></audio>
+    <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
+    <audio id="snd-clink"><source src="glass_clink.mp3"></audio>
 
     <div class="ui-top-bar">
         <div class="lang-container">
             <div class="lang-current" id="active-lang">
                 <img src="https://flagcdn.com/w20/gb.png"> <span>ENGLISH</span>
             </div>
-            <div class="lang-dropdown" id="lang-list">
-                </div>
+            <div class="lang-dropdown" id="lang-list"></div>
+        </div>
+        <div class="nav-control-center" id="nav-ui">
+            <button class="nav-btn" onclick="exitToDoors()">‹</button>
+            <button class="nav-btn double" onclick="goBack()">«</button>
         </div>
         <div class="ui-header-right">GY-GY</div>
     </div>
-
-    <audio id="snd-door"><source src="door_open.mp3"></audio>
-    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
 
     <div id="block-entrance" class="block active">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
-        <div style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; text-align: center; margin-bottom: 30px;" id="t-quote1">"In every joke there is a drop of whisky"</div>
-        <img src="horse_welcome.png" style="max-height: 40vh; margin-bottom: 20px;">
-        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">Proceed to Hall</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">Get Club ID</button>
+        <div style="font-family:'Playfair Display'; font-style:italic; font-size:24px; margin-bottom:20px;">"In every joke there is a drop of whisky"</div>
+        <img src="horse_welcome.png" style="max-height: 40vh;">
+        <div style="font-size:40px; letter-spacing:12px; margin:20px 0; font-family:'Playfair Display';">WELCOME</div>
+        <button class="btn-gy" onclick="portalTransition('block-hall')">Proceed to Hall</button>
     </div>
 
-    <div id="block-identity" class="block">
-        <div style="display:flex; gap:10px; margin-bottom:25px;">
-            <div class="box-final" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="background:#fff;"></div>
-            <div class="box-final" onclick="document.getElementById('file-input').click()" style="cursor:pointer;">
-                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="t-photo">PHOTO</span>
+    <div id="block-hall" class="block">
+        <div style="margin-bottom:30px; display:flex; flex-direction:column; align-items:center;">
+            <div id="glass-box" onclick="performRitual()">
+                <svg class="glass-svg" viewBox="0 0 100 120">
+                    <path d="M20,10 L80,10 L75,100 L25,100 Z" fill="none" stroke="var(--gold)" stroke-width="2"/>
+                    <rect id="liquid-svg" class="glass-liquid" x="25" y="10" width="50" height="90"/>
+                </svg>
             </div>
-            <div class="box-final" onclick="generateAvatar()" style="cursor:pointer;">
-                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="t-avatar">AVATAR</span>
+            <div id="ritual-status" style="margin-top:15px; font-size:12px; opacity:0.6;">TAP TO POUR "KHE-KHE"</div>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn-gy" onclick="location.href='tables.html'">To Tables</button>
+            <button class="btn-gy" onclick="enterStudio()">AI Server Room</button>
+        </div>
+    </div>
+
+    <div id="block-studio" class="block">
+        <div class="studio-container">
+            <div style="padding:15px; border-bottom:1px solid #222; font-size:12px;">DEEP RESEARCH CORE v.2026</div>
+            <div class="research-log" id="ai-log">
+                <div class="log-entry">> System ready. Waiting for Master's intent...</div>
+            </div>
+            <div style="padding:20px; border-top:1px solid #222; display:flex; gap:10px;">
+                <input type="text" id="ai-prompt" style="flex:1; background:#000; border:1px solid var(--gold); color:#fff; padding:10px;" placeholder="Research intent...">
+                <button class="nav-btn" onclick="startResearch()">OK</button>
             </div>
         </div>
-        <button id="btn-save" class="btn-gy" onclick="swapButtons('btn-save', 'btn-pass')">Save</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">Proceed</button>
     </div>
 
     <script>
-        const languages = [
+        let historyStack = ['block-entrance'];
+        const langs = [
             {id:'en', n:'ENGLISH', f:'gb'}, {id:'ru', n:'РУССКИЙ', f:'ru'}, {id:'ua', n:'УКРАЇНСЬКА', f:'ua'},
             {id:'pl', n:'POLSKI', f:'pl'}, {id:'de', n:'DEUTSCH', f:'de'}, {id:'fr', n:'FRANÇAIS', f:'fr'},
             {id:'it', n:'ITALIANO', f:'it'}, {id:'es', n:'ESPAÑOL', f:'es'}, {id:'cn', n:'中文', f:'cn'},
-            {id:'jp', n:'日本語', f:'jp'}, {id:'pt', n:'PORTUGUÊS', f:'pt'}, {id:'tr', n:'TÜRKÇE', f:'tr'}
+            {id:'jp', n:'日本語', f:'jp'}, {id:'pt', n:'PORTUGUÊS', f:'pt'}, {id:'tr', n:'TÜRKЧЕ', f:'tr'}
         ];
 
-        const list = document.getElementById('lang-list');
-        languages.forEach(l => {
+        // Init Langs
+        const lBox = document.getElementById('lang-list');
+        langs.forEach(l => {
             const b = document.createElement('button');
             b.className = 'lang-btn';
             b.innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> ${l.n}`;
-            b.onclick = () => {
-                document.getElementById('active-lang').innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> <span>${l.n}</span>`;
-            };
-            list.appendChild(b);
+            b.onclick = () => { document.getElementById('active-lang').innerHTML = `<img src="https://flagcdn.com/w20/${l.f}.png"> <span>${l.n}</span>`; };
+            lBox.appendChild(b);
         });
 
-        function handleDoor() {
-            document.getElementById('snd-door').play();
-            const d = document.getElementById('main-door');
-            d.style.transform = "scale(8) rotate(5deg)";
-            d.style.opacity = "0";
-            let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            document.getElementById('id-label').innerText = id;
-            new QRCode(document.getElementById("qr-box-reg"), { text: id, width: 85, height: 85 });
-            setTimeout(() => { portalTransition('block-welcome'); document.getElementById('snd-ambient').play(); }, 1800);
-        }
-
-        function portalTransition(id) {
+        function portalTransition(id, isBack = false) {
             const cur = document.querySelector('.block.active');
             cur.style.opacity = "0";
             setTimeout(() => {
@@ -147,28 +188,57 @@
                 const nxt = document.getElementById(id);
                 nxt.style.display = "flex";
                 setTimeout(() => { nxt.classList.add('active'); }, 50);
+                if(!isBack) historyStack.push(id);
+                document.getElementById('nav-ui').style.display = (id === 'block-entrance') ? 'none' : 'flex';
+                if(id === 'block-hall') playAmb('snd-ambient');
+                if(id === 'block-studio') playAmb('snd-bridge');
             }, 800);
         }
 
-        function preview(i) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display="block";
-                document.getElementById('t-photo').style.display="none";
-            };
-            r.readAsDataURL(i.files[0]);
+        function handleDoor() {
+            document.getElementById('snd-door').play();
+            const d = document.getElementById('main-door');
+            d.style.transform = "scale(8)"; d.style.opacity = "0";
+            setTimeout(() => { portalTransition('block-welcome'); }, 1800);
         }
 
-        function generateAvatar() {
-            const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-            document.getElementById('avatar-img').src = url; document.getElementById('avatar-img').style.display="block";
-            document.getElementById('t-avatar').style.display="none";
+        function performRitual() {
+            const khekhe = document.getElementById('snd-khekhe');
+            const pour = document.getElementById('snd-pour');
+            const clink = document.getElementById('snd-clink');
+            const box = document.getElementById('glass-box');
+            
+            khekhe.play();
+            document.getElementById('ritual-status').innerText = "UNCORKING...";
+            setTimeout(() => {
+                pour.play(); box.classList.add('pour-active');
+                document.getElementById('ritual-status').innerText = "POURING...";
+                setTimeout(() => {
+                    clink.play(); document.getElementById('ritual-status').innerText = "ENJOY, MASTER";
+                    setTimeout(() => { box.classList.remove('pour-active'); }, 5000);
+                }, 3000);
+            }, 1000);
         }
 
-        function swapButtons(a, s) { 
-            document.getElementById(a).classList.add('btn-sleep'); 
-            document.getElementById(s).classList.remove('btn-sleep'); 
+        function enterStudio() { portalTransition('block-studio'); }
+        
+        function startResearch() {
+            const val = document.getElementById('ai-prompt').value;
+            if(!val) return;
+            const log = document.getElementById('ai-log');
+            const e = document.createElement('div');
+            e.className = 'log-entry'; e.innerHTML = `<span class="log-msg active">> Researching: ${val}...</span>`;
+            log.insertBefore(e, log.firstChild);
+            document.getElementById('ai-prompt').value = "";
         }
+
+        function goBack() { if(historyStack.length > 1) { historyStack.pop(); portalTransition(historyStack[historyStack.length-1], true); } }
+        function exitToDoors() { historyStack = ['block-entrance']; portalTransition('block-entrance', true); stopAll(); }
+
+        function playAmb(id) { 
+            stopAll(); const a = document.getElementById(id); a.volume = 0.3; a.play(); 
+        }
+        function stopAll() { document.querySelectorAll('audio').forEach(a => { if(a.id.includes('ambient') || a.id.includes('bridge')) { a.pause(); a.currentTime = 0; } }); }
     </script>
 </body>
 </html>
