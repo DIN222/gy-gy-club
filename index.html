@@ -3,61 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY v4.6.9 (.)</title>
+    <title>GY-GY v4.7.1 (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --bg: #000; --w: 210px; }
+        /* ДЕКЛАРАТИВНЫЕ КОНСТАНТЫ (.) */
+        :root { 
+            --gold: #d4af37; 
+            --bg: #000; 
+            --frame-w: 210px; 
+            --frame-h: 46px; 
+        }
         
-        /* ZERO SCROLL ARCHITECTURE (.) */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
         html, body { 
-            width: 100%; height: 100dvh; background: var(--bg); color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
-            touch-action: none; -webkit-overflow-scrolling: none;
+            width: 100%; height: 100dvh; 
+            background: var(--bg); color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; /* Скролл запрещен только там, где он признак "перегруза" */
         }
 
-        /* SYMMETRIC HEADER (.) */
+        /* UI HEADER SYSTEM (.) */
         .ui-header { 
-            position: absolute; top: 20px; left: 0; width: 100%; 
+            position: fixed; top: 20px; left: 0; width: 100%; 
             display: flex; justify-content: space-between; padding: 0 25px; z-index: 9999; 
         }
-        .frame { border: 2px solid var(--gold); height: 46px; display: flex; align-items: center; background: var(--bg); }
+        .frame { border: 2px solid var(--gold); height: var(--frame-h); display: flex; align-items: center; background: var(--bg); }
         
-        .lang-wrapper { width: var(--w); position: relative; }
-        .lang-active { width: 100%; height: 100%; padding: 0 12px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .lang-wrapper { width: var(--frame-w); position: relative; }
+        .lang-active { width: 100%; height: 100%; padding: 0 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; }
         .lang-active img { width: 22px; height: 14px; margin-right: 10px; object-fit: cover; }
 
         .lang-dropdown { 
-            display: none; position: absolute; top: 44px; left: -2px; width: calc(100% + 4px); 
+            display: none; position: absolute; top: calc(var(--frame-h) - 2px); left: -2px; width: calc(var(--frame-w) + 4px); 
             background: var(--bg); border: 2px solid var(--gold); border-top: none; 
-            max-height: 70dvh; overflow-y: auto; z-index: 10000;
+            max-height: 50dvh; overflow-y: auto; z-index: 10000;
         }
         .lang-wrapper:hover .lang-dropdown { display: block; }
         .l-item { padding: 12px; display: flex; align-items: center; cursor: pointer; font-size: 13px; border-bottom: 1px solid rgba(212,175,55,0.1); }
         .l-item:hover { background: rgba(212, 175, 55, 0.2); }
         .l-item img { width: 18px; margin-right: 10px; }
 
-        .logo-frame { width: var(--w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
+        .logo-frame { width: var(--frame-w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
 
-        /* CONTENT LAYOUT (.) */
-        #top-slogan { 
-            position: absolute; top: 85px; width: 100%; text-align: center; 
-            font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 18px; padding: 0 40px; text-shadow: 2px 2px 4px #000; z-index: 900; 
+        /* CONTENT ARCHITECTURE (.) */
+        .block { 
+            position: absolute; inset: 0; 
+            display: none; flex-direction: column; align-items: center; 
+            padding: 100px 20px 40px 20px; /* Резерв под хедер и нижний отступ */
+            opacity: 0; transition: 0.6s ease-in-out; 
         }
-
-        .block { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: 0.6s; }
         .active { display: flex !important; opacity: 1; }
 
-        #main-door { width: 280px; cursor: pointer; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slogan-area { 
+            min-height: 60px; display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; text-align: center;
+        }
+        #top-slogan { 
+            font-family: 'Playfair Display', serif; font-style: italic; 
+            font-size: min(18px, 4vw); line-height: 1.3; text-shadow: 0 0 15px #000;
+        }
+
+        /* DOOR COMPONENT (.) */
+        .door-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
+        #main-door { 
+            height: min(350px, 45dvh); width: auto; 
+            cursor: pointer; transition: 1.8s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
         
-        .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
+        /* IDENTITY STAGE (.) */
+        .identity-row { display: flex; gap: 10px; margin-bottom: 30px; }
+        .box { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; background: rgba(212,175,55,0.05); }
+        
+        .btn-gy { width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono'; margin: 8px 0; }
+        .btn-gy:active { background: var(--gold); color: #000; }
         .sleep { opacity: 0.2; pointer-events: none; }
-        .box { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
     <div class="ui-header">
         <div class="lang-wrapper frame">
@@ -67,27 +91,32 @@
         <div class="logo-frame frame">GY-GY</div>
     </div>
 
-    <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
-
     <div id="b-ent" class="block active">
-        <img src="door_1.jpg" id="main-door" onclick="openDoor()">
+        <div class="slogan-area">
+            <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
+        </div>
+        <div class="door-container">
+            <img src="door_1.jpg" id="main-door" onclick="openDoor()">
+        </div>
     </div>
 
     <div id="b-id" class="block">
-        <div style="display:flex; gap:10px; margin-bottom:25px;">
-            <div class="box" id="id-txt" style="font-size:10px; text-align:center; padding:5px;">#ID</div>
+        <div class="slogan-area">
+            <div id="top-slogan">«Идентификация личности в процессе...»</div>
+        </div>
+        <div class="identity-row">
+            <div class="box" id="id-txt" style="font-size:10px; text-align:center;">#ID</div>
             <div class="box" id="qr-box"></div>
-            <div class="box" onclick="genAv()" style="cursor:pointer; background:rgba(212,175,55,0.1);">
+            <div class="box" onclick="genAv()" style="cursor:pointer;">
                 <img id="av-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="av-txt" style="font-size:10px; text-align:center; font-weight:900;">GEN<br>AVATAR</span>
+                <span id="av-txt" style="font-size:10px; text-align:center;">GEN<br>AVATAR</span>
             </div>
         </div>
-        <button class="btn-gy" id="btn-save" onclick="save()">SAVE IDENTITY</button>
-        <button class="btn-gy sleep" id="btn-go" onclick="location.reload()">RE-ENTER</button>
+        <button class="btn-gy" id="btn-save" onclick="saveID()">SAVE IDENTITY</button>
+        <button class="btn-gy sleep" id="btn-next" onclick="location.reload()">PROCEED</button>
     </div>
 
     <script>
-        // FULL 12 LANGUAGES LIST (.)
         const langs = [
             {n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, {n:'POLSKI', c:'pl'},
             {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, {n:'ITALIANO', c:'it'},
@@ -101,9 +130,9 @@
             d.innerHTML = `<img src="https://flagcdn.com/w40/${l.c}.png"> <span>${l.n}</span>`;
             d.onclick = () => {
                 const active = document.getElementById('cur-l');
-                const oldHtml = active.innerHTML;
+                const old = active.innerHTML;
                 active.innerHTML = d.innerHTML;
-                d.innerHTML = oldHtml;
+                d.innerHTML = old;
             };
             list.appendChild(d);
         });
@@ -111,10 +140,12 @@
         function openDoor() {
             const d = document.getElementById('main-door');
             d.style.transform = "scale(15)"; d.style.opacity = "0";
+            
             let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
             document.getElementById('id-txt').innerText = id;
             document.getElementById('qr-box').innerHTML = "";
             new QRCode(document.getElementById("qr-box"), { text: id, width: 85, height: 85 });
+
             setTimeout(() => {
                 document.getElementById('b-ent').classList.remove('active');
                 document.getElementById('b-id').classList.add('active');
@@ -129,13 +160,10 @@
             document.getElementById('av-txt').style.display = "none";
         }
 
-        function save() {
+        function saveID() {
             document.getElementById('btn-save').classList.add('sleep');
-            document.getElementById('btn-go').classList.remove('sleep');
+            document.getElementById('btn-next').classList.remove('sleep');
         }
-
-        // PHYSICAL SCROLL LOCK (.)
-        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
     </script>
 </body>
 </html>
