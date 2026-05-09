@@ -2,133 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY v4.5.03 (.)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>GY-GY Club v4.6.0 (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --bl: #000; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        html, body { width: 100%; height: 100%; margin: 0; background: var(--bl); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; }
-        
-        /* HEADER ALIGNMENT (.) */
-        .ui-header { position: fixed; top: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: flex-start; padding: 0 25px; z-index: 99999; }
-        
-        /* LANG TEMPLATE (210px) (.) */
-        #lang-wrapper { width: 210px; position: relative; pointer-events: auto; }
-        .lang-curr { border: 1px solid var(--gold); height: 42px; display: flex; align-items: center; padding: 0 15px; background: var(--bl); cursor: pointer; font-size: 13px; text-transform: uppercase; }
-        .lang-list { display: none; position: absolute; top: 100%; left: -1px; width: calc(100% + 2px); background: var(--bl); border: 1px solid var(--gold); border-top: none; flex-direction: column; }
-        #lang-wrapper:hover .lang-list { display: flex; }
-        .l-item { height: 40px; display: flex; align-items: center; padding: 0 15px; cursor: pointer; font-size: 11px; border-bottom: 1px solid rgba(212,175,55,0.1); }
-        .l-item:hover { background: rgba(212,175,55,0.2); }
+        :root { --gold: #d4af37; --bg: #000; --frame-w: 210px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; }
 
-        /* NAV & LOGO (.) */
-        .nav-ui { display: none; gap: 10px; margin-left: 15px; }
-        .nav-btn { background: none; border: 1px solid var(--gold); color: var(--gold); height: 42px; padding: 0 15px; cursor: pointer; font-size: 18px; }
-        .logo { font-size: 26px; letter-spacing: 5px; font-weight: bold; line-height: 1; margin-top: 5px; }
+        /* HEADER (.) */
+        .ui-header { 
+            position: fixed; top: 25px; left: 0; width: 100%; 
+            display: flex; justify-content: space-between; align-items: flex-start; 
+            padding: 0 30px; z-index: 1000; 
+        }
+
+        /* LANG BOX - FIXED & CLEAN (.) */
+        .lang-wrapper { width: var(--frame-w); position: relative; }
+        .lang-active { 
+            border: 2px solid var(--gold); height: 48px; display: flex; 
+            align-items: center; padding: 0 12px; background: var(--bg); 
+            cursor: pointer; font-size: 16px; font-weight: bold;
+        }
+        .lang-active img { width: 24px; margin-right: 12px; border: 1px solid rgba(212,175,55,0.3); }
+
+        .lang-dropdown { 
+            display: none; position: absolute; top: 100%; left: 0; width: 100%; 
+            background: var(--bg); border: 2px solid var(--gold); border-top: none; 
+            max-height: 400px; overflow-y: auto; 
+        }
+        .lang-wrapper:hover .lang-dropdown { display: block; }
+        .lang-item { 
+            padding: 12px; display: flex; align-items: center; cursor: pointer; 
+            transition: 0.2s; font-size: 14px; border-bottom: 1px solid rgba(212,175,55,0.1);
+        }
+        .lang-item:hover { background: rgba(212, 175, 55, 0.15); }
+        .lang-item img { width: 20px; margin-right: 10px; }
+
+        /* LOGO (.) */
+        .logo { 
+            font-size: 28px; font-weight: 900; letter-spacing: 6px; 
+            line-height: 48px; /* Совпадает с высотой lang-active */
+            height: 48px; display: flex; align-items: center;
+        }
 
         /* SLOGAN (.) */
-        #slogan { position: fixed; top: 85px; width: 100%; text-align: center; font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; padding: 0 40px; text-shadow: 0 0 15px #000; opacity: 0; transition: 1s; z-index: 9999; pointer-events: none; }
+        #top-slogan { 
+            position: fixed; top: 100px; width: 100%; text-align: center; 
+            font-family: 'Playfair Display', serif; font-style: italic; 
+            font-size: 20px; padding: 0 40px; opacity: 1; color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
 
-        /* BLOCKS (.) */
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--bl); z-index: 10; opacity: 0; transition: 0.6s; }
-        .active { display: flex !important; opacity: 1; pointer-events: auto; }
-        
-        #door { width: 280px; cursor: pointer; transition: 2s; }
-        .btn-gy { min-width: 275px; padding: 15px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; transition: 0.3s; }
-        .btn-gy:hover { background: rgba(212,175,55,0.1); }
-        .box { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        /* ENTRANCE BLOCK (.) */
+        .stage { 
+            height: 100vh; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+        }
+        .door-img { 
+            width: 300px; max-width: 80vw; cursor: pointer; 
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 20px rgba(212,175,55,0.2));
+        }
+        .door-img:hover { transform: scale(1.05); }
+
     </style>
 </head>
 <body>
 
     <div class="ui-header">
-        <div style="display:flex;">
-            <div id="lang-wrapper">
-                <div class="lang-curr" id="cur-l"><span>UKRAINIAN</span></div>
-                <div class="lang-list" id="l-list"></div>
+        <div class="lang-wrapper">
+            <div class="lang-active" id="current-lang">
+                <img src="https://flagcdn.com/w40/ua.png"> <span>UKRAINIAN</span>
             </div>
-            <div class="nav-ui" id="nav-ui">
-                <button class="nav-btn" onclick="nav('back')">«</button>
-                <button class="nav-btn" onclick="nav('start')">‹</button>
-            </div>
+            <div class="lang-dropdown" id="lang-list">
+                </div>
         </div>
         <div class="logo">GY-GY</div>
     </div>
 
-    <div id="slogan"></div>
+    <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
 
-    <div id="b-ent" class="block active" style="opacity:1;"><img src="door_1.jpg" id="door" onclick="openDoor()"></div>
-
-    <div id="b-wel" class="block">
-        <img src="horse_welcome.png" style="max-height: 42vh; margin-bottom: 20px;">
-        <button class="btn-gy" id="btn-to-h" style="opacity:0.1;pointer-events:none;" onclick="go('b-hall')">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="go('b-id')">GET CLUB ID</button>
+    <div class="stage" id="entrance">
+        <img src="door_1.jpg" class="door-img" id="main-door" onclick="enterClub()">
     </div>
-
-    <div id="b-id" class="block">
-        <div style="display:flex; gap:10px; margin-bottom:30px;">
-            <div id="id-txt" class="box" style="font-size:10px;">#ID</div>
-            <div id="qr" class="box"></div>
-        </div>
-        <button id="btn-s" class="btn-gy" onclick="saveID()">SAVE IDENTITY</button>
-        <button id="btn-p" class="btn-gy" style="opacity:0.1;pointer-events:none;" onclick="go('b-hall')">CONFIRM ACCESS</button>
-    </div>
-
-    <div id="b-hall" class="block"></div>
 
     <script>
-        let hist = ['b-ent'];
-        const slogs = {
-            'b-ent': "«Заходите, здесь вам так рады, что вы даже не представляете, как быстро захотите уйти, чтобы вернуться снова»",
-            'b-wel': "«— Официант, в моем виски плавает муха! — И что вы от меня хотите? Это тоже наш сотрудник»",
-            'b-id': "«Ваш ID — это как девичья фамилия мамы: никто не помнит, но без этого в приличное общество не пускают»"
-        };
+        const languages = [
+            { n: 'UKRAINIAN', c: 'ua' },
+            { n: 'РУССКИЙ', c: 'ru' },
+            { n: 'ENGLISH', c: 'gb' },
+            { n: 'DEUTSCH', c: 'de' },
+            { n: 'POLSKI', c: 'pl' },
+            { n: 'FRANÇAIS', c: 'fr' },
+            { n: 'ESPAÑOL', c: 'es' },
+            { n: 'ITALIANO', c: 'it' },
+            { n: 'TÜRKÇE', c: 'tr' },
+            { n: '中文', c: 'cn' },
+            { n: '日本語', c: 'jp' }
+        ];
 
-        // Lang list generator
-        const list = document.getElementById('l-list');
-        ['UKRAINIAN','РУССКИЙ','POLSKI','DEUTSCH','ENGLISH','FRANÇAIS','ITALIANO','ESPAÑOL','TÜRKÇE','中文','日本語'].forEach(l => {
-            const d = document.createElement('div'); d.className = 'l-item'; d.innerHTML = `<span>${l}</span>`;
-            d.onclick = () => { document.getElementById('cur-l').querySelector('span').innerText = l; };
-            list.appendChild(d);
+        const listDiv = document.getElementById('lang-list');
+        languages.forEach(lang => {
+            const div = document.createElement('div');
+            div.className = 'lang-item';
+            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
+            div.onclick = () => {
+                document.getElementById('current-lang').innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
+            };
+            listDiv.appendChild(div);
         });
 
-        function go(id, isBack = false) {
-            const cur = document.querySelector('.block.active');
-            cur.style.opacity = "0";
-            setTimeout(() => {
-                cur.classList.remove('active'); cur.style.display = "none";
-                const nxt = document.getElementById(id); nxt.style.display = "flex";
-                setTimeout(() => { nxt.classList.add('active'); nxt.style.opacity = "1"; }, 50);
-                if(!isBack) hist.push(id);
-                
-                const start = (id === 'b-ent');
-                document.getElementById('lang-wrapper').style.visibility = start ? 'visible' : 'hidden';
-                document.getElementById('nav-ui').style.display = start ? 'none' : 'flex';
-                
-                const s = document.getElementById('slogan');
-                if (slogs[id]) { s.innerText = slogs[id]; s.style.opacity = '1'; } else s.style.opacity = '0';
-            }, 600);
-        }
-
-        function openDoor() {
-            const d = document.getElementById('door'); d.style.transform = "scale(5)"; d.style.opacity = "0";
-            let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            document.getElementById('id-txt').innerText = id;
-            document.getElementById('qr').innerHTML = ""; 
-            new QRCode(document.getElementById("qr"), { text: id, width: 81, height: 81 });
-            setTimeout(() => go('b-wel'), 1600);
-        }
-
-        function saveID() {
-            document.getElementById('btn-s').style.opacity = '0.1';
-            const p = document.getElementById('btn-p'); p.style.opacity = '1'; p.style.pointerEvents = 'auto';
-            document.getElementById('btn-to-h').style.opacity = '1'; document.getElementById('btn-to-h').style.pointerEvents = 'auto';
-        }
-
-        function nav(m) {
-            if(m === 'start') { hist = ['b-ent']; go('b-ent', true); }
-            else if(hist.length > 1) { hist.pop(); go(hist[hist.length-1], true); }
+        function enterClub() {
+            const door = document.getElementById('main-door');
+            door.style.transform = "scale(8) translateZ(0)";
+            door.style.opacity = "0";
+            // Дальнейшая логика перехода...
         }
     </script>
 </body>
