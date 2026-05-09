@@ -3,132 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY v4.7.2 (.)</title>
+    <title>GY-GY v4.7.3 (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { 
             --gold: #d4af37; 
             --bg: #000; 
-            --frame-w: 210px; 
-            --frame-h: 46px; 
+            --w: 210px; 
+            --h: 46px; 
         }
         
-        /* ГЛОБАЛЬНЫЙ ЗАМОК (.) */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         html, body { 
-            width: 100%; 
-            height: 100%; 
-            height: 100dvh; /* Динамическая высота */
-            background: var(--bg); 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden !important; /* Жесткий запрет */
-            position: fixed; /* Фиксация порта */
+            width: 100%; height: 100dvh; background: var(--bg); color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
         }
 
-        /* HEADER С ФИКСИРОВАННЫМИ КООРДИНАТАМИ (.) */
+        /* HEADER СИММЕТРИЯ (.) */
         .ui-header { 
             position: absolute; top: 20px; left: 0; width: 100%; 
             display: flex; justify-content: space-between; padding: 0 25px; z-index: 9999; 
         }
-        .frame { border: 2px solid var(--gold); height: var(--frame-h); display: flex; align-items: center; background: var(--bg); }
-        .lang-wrapper { width: var(--frame-w); position: relative; }
-        .lang-active { width: 100%; height: 100%; padding: 0 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; }
-        .lang-active img { width: 22px; height: 14px; margin-right: 10px; object-fit: cover; }
-        .logo-frame { width: var(--frame-w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
-
-        /* ОСНОВНОЙ КОНТЕЙНЕР (БЕЗ СКРОЛЛА) (.) */
-        .viewport-fix {
-            position: relative;
-            width: 100%;
-            height: 100dvh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .block { 
-            position: absolute; 
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: none; flex-direction: column; align-items: center; 
-            padding-top: 100px; /* Место под хедер */
-            padding-bottom: 20px;
-            opacity: 0; transition: 0.6s ease-in-out; 
-        }
-        .active { display: flex !important; opacity: 1; }
-
-        .slogan-area { 
-            flex: 0 0 auto;
-            height: 80px; 
-            display: flex; align-items: center; justify-content: center;
-            text-align: center; padding: 0 20px;
-        }
-        #top-slogan { font-family: 'Playfair Display', serif; font-style: italic; font-size: min(18px, 4.5vw); line-height: 1.2; }
-
-        /* ГЕОМЕТРИЯ ДВЕРИ (МАТЕМАТИЧЕСКИЙ РАСЧЕТ) (.) */
-        .door-container { 
-            flex: 1 1 auto; /* Занимает всё свободное место, но не более того */
-            display: flex; align-items: center; justify-content: center; 
-            width: 100%;
-            overflow: hidden; 
-        }
-        #main-door { 
-            max-height: 100%; /* Никогда не выше контейнера */
-            width: auto;
-            max-width: 80vw;
-            object-fit: contain;
-            cursor: pointer; transition: 1.8s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
         
-        /* BUTTONS (.) */
-        .btn-gy { width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; }
-        .sleep { opacity: 0.2; pointer-events: none; }
+        .frame { 
+            border: 2px solid var(--gold); 
+            height: var(--h); 
+            display: flex; 
+            align-items: center; 
+            background: var(--bg);
+            position: relative;
+        }
+
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ (ИСПРАВЛЕНО) (.) */
+        .lang-wrapper { width: var(--w); }
+        
+        .lang-active { 
+            width: 100%; height: 100%; 
+            padding: 0 15px; cursor: pointer; 
+            display: flex; align-items: center; 
+            font-size: 14px; font-weight: bold;
+            z-index: 10001;
+        }
+        .lang-active img { width: 22px; margin-right: 12px; border: 1px solid rgba(212,175,55,0.3); }
+
+        /* ВЫПАДАЮЩИЙ СПИСОК (СТРОГО ПОД РАМКОЙ) (.) */
+        .lang-dropdown { 
+            display: none; 
+            position: absolute; 
+            top: calc(var(--h) - 2px); /* Стык в стык с нижней границей рамки */
+            left: -2px; /* Компенсация границы основной рамки */
+            width: calc(var(--w) + 4px); 
+            background: var(--bg); 
+            border: 2px solid var(--gold); 
+            border-top: 1px solid rgba(212,175,55,0.2); /* Тонкий разделитель */
+            max-height: 300px; 
+            overflow-y: auto; 
+            z-index: 10000;
+        }
+        .lang-wrapper:hover .lang-dropdown { display: block; }
+
+        .l-item { 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            cursor: pointer; 
+            font-size: 13px; 
+            transition: 0.2s;
+        }
+        .l-item:hover { background: rgba(212, 175, 55, 0.15); }
+        .l-item img { width: 18px; margin-right: 12px; opacity: 0.8; }
+
+        .logo-frame { width: var(--w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
+
+        /* КОНТЕНТ (.) */
+        .content { 
+            position: absolute; inset: 0; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding-top: 80px;
+        }
+        #top-slogan { 
+            font-family: 'Playfair Display', serif; font-style: italic; 
+            font-size: 18px; text-align: center; margin-bottom: 30px; padding: 0 30px;
+        }
+        #main-door { width: 280px; cursor: pointer; transition: 1.5s; }
+
     </style>
 </head>
 <body>
 
-    <div class="viewport-fix">
-        <div class="ui-header">
-            <div class="lang-wrapper frame">
-                <div class="lang-active" id="cur-l"><img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span></div>
-                <div class="lang-dropdown" id="l-list"></div>
+    <div class="ui-header">
+        <div class="lang-wrapper frame">
+            <div class="lang-active" id="cur-l">
+                <img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span>
             </div>
-            <div class="logo-frame frame">GY-GY</div>
+            <div class="lang-dropdown" id="l-list">
+                </div>
         </div>
 
-        <div id="b-ent" class="block active">
-            <div class="slogan-area">
-                <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
-            </div>
-            <div class="door-container">
-                <img src="door_1.jpg" id="main-door" onclick="openDoor()">
-            </div>
-        </div>
+        <div class="logo-frame frame">GY-GY</div>
+    </div>
+
+    <div class="content">
+        <div id="top-slogan">«В каждой шутке есть доля виски...»</div>
+        <img src="door_1.jpg" id="main-door" onclick="this.style.transform='scale(10)'; this.style.opacity='0';">
     </div>
 
     <script>
-        // 12 ЯЗЫКОВ (ФИКСИРОВАННЫЙ СПИСОК) (.)
-        const langs = [{n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, {n:'POLSKI', c:'pl'}, {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, {n:'ITALIANO', c:'it'}, {n:'ESPAÑOL', c:'es'}, {n:'TÜRKÇE', c:'tr'}, {n:'PORTUGUÊS', c:'pt'}, {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}, {n:'עברית', c:'il'}];
+        const langs = [
+            {n:'ENGLISH', c:'gb'}, {n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, 
+            {n:'POLSKI', c:'pl'}, {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, 
+            {n:'ITALIANO', c:'it'}, {n:'ESPAÑOL', c:'es'}, {n:'TÜRKÇE', c:'tr'}, 
+            {n:'PORTUGUÊS', c:'pt'}, {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}
+        ];
+
         const list = document.getElementById('l-list');
+        const active = document.getElementById('cur-l');
+
         langs.forEach(l => {
-            const d = document.createElement('div'); d.className = 'l-item';
+            const d = document.createElement('div');
+            d.className = 'l-item';
             d.innerHTML = `<img src="https://flagcdn.com/w40/${l.c}.png"> <span>${l.n}</span>`;
-            d.onclick = () => { document.getElementById('cur-l').innerHTML = d.innerHTML; };
+            d.onclick = () => {
+                active.innerHTML = d.innerHTML;
+                // Тут можно добавить логику смены языка
+            };
             list.appendChild(d);
         });
-
-        function openDoor() {
-            const d = document.getElementById('main-door');
-            d.style.transform = "scale(15)"; d.style.opacity = "0";
-            // Логика перехода
-        }
-
-        // КРАЙНЯЯ МЕРА: БЛОКИРОВКА СКРОЛЛА СКРИПТОМ (.)
-        window.addEventListener('scroll', () => window.scrollTo(0, 0), { passive: false });
-        document.addEventListener('touchmove', e => { if(e.touches.length > 1 || !e.target.closest('.lang-dropdown')) e.preventDefault(); }, { passive: false });
     </script>
 </body>
 </html>
