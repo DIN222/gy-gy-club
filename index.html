@@ -3,132 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.3 (.)</title>
+    <title>GY-GY v4.6.9 (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { --gold: #d4af37; --bg: #000; --frame-w: 210px; }
+        :root { --gold: #d4af37; --bg: #000; --w: 210px; }
         
-        /* ZERO SCROLL FOUNDATION (.) */
+        /* ZERO SCROLL ARCHITECTURE (.) */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         html, body { 
-            width: 100%; height: 100%; 
-            background: var(--bg); color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; /* Глобальный запрет скролла */
-            position: fixed; /* Блокировка резинового скролла на iOS */
+            width: 100%; height: 100dvh; background: var(--bg); color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
+            touch-action: none; -webkit-overflow-scrolling: none;
         }
 
-        /* HEADER ALIGNMENT (.) */
+        /* SYMMETRIC HEADER (.) */
         .ui-header { 
             position: absolute; top: 20px; left: 0; width: 100%; 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            padding: 0 25px; z-index: 1000; 
+            display: flex; justify-content: space-between; padding: 0 25px; z-index: 9999; 
         }
+        .frame { border: 2px solid var(--gold); height: 46px; display: flex; align-items: center; background: var(--bg); }
+        
+        .lang-wrapper { width: var(--w); position: relative; }
+        .lang-active { width: 100%; height: 100%; padding: 0 12px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .lang-active img { width: 22px; height: 14px; margin-right: 10px; object-fit: cover; }
 
-        /* LANG BOX (FIXED 210px) (.) */
-        .lang-wrapper { width: var(--frame-w); position: relative; }
-        .lang-active { 
-            border: 2px solid var(--gold); height: 44px; display: flex; 
-            align-items: center; padding: 0 10px; background: var(--bg); 
-            cursor: pointer; font-size: 14px; font-weight: bold;
-        }
-        .lang-active img { width: 20px; height: 14px; margin-right: 10px; object-fit: cover; }
-
-        /* DROPDOWN WITHOUT SCROLLING BODY (.) */
         .lang-dropdown { 
-            display: none; position: absolute; top: 42px; left: 0; width: 100%; 
+            display: none; position: absolute; top: 44px; left: -2px; width: calc(100% + 4px); 
             background: var(--bg); border: 2px solid var(--gold); border-top: none; 
-            max-height: 70vh; /* Ограничение по высоте экрана */
-            overflow-y: auto; /* Скролл только внутри маленького списка, если надо */
-            z-index: 1001;
+            max-height: 70dvh; overflow-y: auto; z-index: 10000;
         }
         .lang-wrapper:hover .lang-dropdown { display: block; }
-        .lang-item { 
-            padding: 10px; display: flex; align-items: center; cursor: pointer; 
-            font-size: 13px; border-bottom: 1px solid rgba(212,175,55,0.1);
-        }
-        .lang-item:hover { background: rgba(212, 175, 55, 0.2); }
-        .lang-item img { width: 18px; margin-right: 10px; }
+        .l-item { padding: 12px; display: flex; align-items: center; cursor: pointer; font-size: 13px; border-bottom: 1px solid rgba(212,175,55,0.1); }
+        .l-item:hover { background: rgba(212, 175, 55, 0.2); }
+        .l-item img { width: 18px; margin-right: 10px; }
 
-        /* LOGO (.) */
-        .logo { 
-            font-size: 24px; font-weight: 900; letter-spacing: 5px; 
-            height: 44px; display: flex; align-items: center;
-        }
+        .logo-frame { width: var(--w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
 
-        /* SLOGAN (.) */
+        /* CONTENT LAYOUT (.) */
         #top-slogan { 
-            position: absolute; top: 80px; width: 100%; text-align: center; 
+            position: absolute; top: 85px; width: 100%; text-align: center; 
             font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 17px; padding: 0 30px; line-height: 1.2;
-            text-shadow: 0 0 10px #000; z-index: 900;
+            font-size: 18px; padding: 0 40px; text-shadow: 2px 2px 4px #000; z-index: 900; 
         }
 
-        /* DOOR STAGE (.) */
-        .stage { 
-            width: 100%; height: 100%; 
-            display: flex; align-items: center; justify-content: center; 
-            padding-top: 40px; 
-        }
-        .door-img { 
-            width: 260px; max-width: 70vw; cursor: pointer; 
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s;
-        }
+        .block { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: 0.6s; }
+        .active { display: flex !important; opacity: 1; }
+
+        #main-door { width: 280px; cursor: pointer; transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
+        .sleep { opacity: 0.2; pointer-events: none; }
+        .box { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
     <div class="ui-header">
-        <div class="lang-wrapper">
-            <div class="lang-active" id="current-lang">
-                <img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span>
-            </div>
-            <div class="lang-dropdown" id="lang-list"></div>
+        <div class="lang-wrapper frame">
+            <div class="lang-active" id="cur-l"><img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span></div>
+            <div class="lang-dropdown" id="l-list"></div>
         </div>
-        <div class="logo">GY-GY</div>
+        <div class="logo-frame frame">GY-GY</div>
     </div>
 
-    <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете, как быстро захотите уйти, чтобы вернуться снова»</div>
+    <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
 
-    <div class="stage">
-        <img src="door_1.jpg" class="door-img" id="main-door" onclick="enterClub()">
+    <div id="b-ent" class="block active">
+        <img src="door_1.jpg" id="main-door" onclick="openDoor()">
+    </div>
+
+    <div id="b-id" class="block">
+        <div style="display:flex; gap:10px; margin-bottom:25px;">
+            <div class="box" id="id-txt" style="font-size:10px; text-align:center; padding:5px;">#ID</div>
+            <div class="box" id="qr-box"></div>
+            <div class="box" onclick="genAv()" style="cursor:pointer; background:rgba(212,175,55,0.1);">
+                <img id="av-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="av-txt" style="font-size:10px; text-align:center; font-weight:900;">GEN<br>AVATAR</span>
+            </div>
+        </div>
+        <button class="btn-gy" id="btn-save" onclick="save()">SAVE IDENTITY</button>
+        <button class="btn-gy sleep" id="btn-go" onclick="location.reload()">RE-ENTER</button>
     </div>
 
     <script>
-        const languages = [
-            { n: 'UKRAINIAN', c: 'ua' },
-            { n: 'РУССКИЙ', c: 'ru' },
-            { n: 'DEUTSCH', c: 'de' },
-            { n: 'POLSKI', c: 'pl' },
-            { n: 'FRANÇAIS', c: 'fr' },
-            { n: 'ESPAÑOL', c: 'es' },
-            { n: 'ITALIANO', c: 'it' },
-            { n: 'TÜRKÇE', c: 'tr' },
-            { n: '中文', c: 'cn' },
-            { n: '日本語', c: 'jp' }
+        // FULL 12 LANGUAGES LIST (.)
+        const langs = [
+            {n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, {n:'POLSKI', c:'pl'},
+            {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, {n:'ITALIANO', c:'it'},
+            {n:'ESPAÑOL', c:'es'}, {n:'TÜRKÇE', c:'tr'}, {n:'PORTUGUÊS', c:'pt'},
+            {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}, {n:'עברית', c:'il'}
         ];
 
-        const listDiv = document.getElementById('lang-list');
-        
-        languages.forEach(lang => {
-            const div = document.createElement('div');
-            div.className = 'lang-item';
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
-            div.onclick = () => {
-                const active = document.getElementById('current-lang');
-                const oldContent = active.innerHTML;
-                active.innerHTML = div.innerHTML;
-                div.innerHTML = oldContent;
+        const list = document.getElementById('l-list');
+        langs.forEach(l => {
+            const d = document.createElement('div'); d.className = 'l-item';
+            d.innerHTML = `<img src="https://flagcdn.com/w40/${l.c}.png"> <span>${l.n}</span>`;
+            d.onclick = () => {
+                const active = document.getElementById('cur-l');
+                const oldHtml = active.innerHTML;
+                active.innerHTML = d.innerHTML;
+                d.innerHTML = oldHtml;
             };
-            listDiv.appendChild(div);
+            list.appendChild(d);
         });
 
-        function enterClub() {
-            const door = document.getElementById('main-door');
-            door.style.transform = "scale(12)";
-            door.style.opacity = "0";
-            // Тут будет мгновенный переход без скролла
+        function openDoor() {
+            const d = document.getElementById('main-door');
+            d.style.transform = "scale(15)"; d.style.opacity = "0";
+            let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            document.getElementById('id-txt').innerText = id;
+            document.getElementById('qr-box').innerHTML = "";
+            new QRCode(document.getElementById("qr-box"), { text: id, width: 85, height: 85 });
+            setTimeout(() => {
+                document.getElementById('b-ent').classList.remove('active');
+                document.getElementById('b-id').classList.add('active');
+            }, 1200);
         }
+
+        function genAv() {
+            const seed = Math.random().toString(36).substring(7);
+            const img = document.getElementById('av-img');
+            img.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
+            img.style.display = "block";
+            document.getElementById('av-txt').style.display = "none";
+        }
+
+        function save() {
+            document.getElementById('btn-save').classList.add('sleep');
+            document.getElementById('btn-go').classList.remove('sleep');
+        }
+
+        // PHYSICAL SCROLL LOCK (.)
+        document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
     </script>
 </body>
 </html>
