@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY v4.7.1 (.)</title>
+    <title>GY-GY v4.7.2 (.)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* ДЕКЛАРАТИВНЫЕ КОНСТАНТЫ (.) */
         :root { 
             --gold: #d4af37; 
             --bg: #000; 
@@ -15,155 +14,121 @@
             --frame-h: 46px; 
         }
         
+        /* ГЛОБАЛЬНЫЙ ЗАМОК (.) */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         html, body { 
-            width: 100%; height: 100dvh; 
-            background: var(--bg); color: var(--gold); 
+            width: 100%; 
+            height: 100%; 
+            height: 100dvh; /* Динамическая высота */
+            background: var(--bg); 
+            color: var(--gold); 
             font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; /* Скролл запрещен только там, где он признак "перегруза" */
+            overflow: hidden !important; /* Жесткий запрет */
+            position: fixed; /* Фиксация порта */
         }
 
-        /* UI HEADER SYSTEM (.) */
+        /* HEADER С ФИКСИРОВАННЫМИ КООРДИНАТАМИ (.) */
         .ui-header { 
-            position: fixed; top: 20px; left: 0; width: 100%; 
+            position: absolute; top: 20px; left: 0; width: 100%; 
             display: flex; justify-content: space-between; padding: 0 25px; z-index: 9999; 
         }
         .frame { border: 2px solid var(--gold); height: var(--frame-h); display: flex; align-items: center; background: var(--bg); }
-        
         .lang-wrapper { width: var(--frame-w); position: relative; }
         .lang-active { width: 100%; height: 100%; padding: 0 12px; cursor: pointer; font-size: 14px; display: flex; align-items: center; }
         .lang-active img { width: 22px; height: 14px; margin-right: 10px; object-fit: cover; }
-
-        .lang-dropdown { 
-            display: none; position: absolute; top: calc(var(--frame-h) - 2px); left: -2px; width: calc(var(--frame-w) + 4px); 
-            background: var(--bg); border: 2px solid var(--gold); border-top: none; 
-            max-height: 50dvh; overflow-y: auto; z-index: 10000;
-        }
-        .lang-wrapper:hover .lang-dropdown { display: block; }
-        .l-item { padding: 12px; display: flex; align-items: center; cursor: pointer; font-size: 13px; border-bottom: 1px solid rgba(212,175,55,0.1); }
-        .l-item:hover { background: rgba(212, 175, 55, 0.2); }
-        .l-item img { width: 18px; margin-right: 10px; }
-
         .logo-frame { width: var(--frame-w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
 
-        /* CONTENT ARCHITECTURE (.) */
+        /* ОСНОВНОЙ КОНТЕЙНЕР (БЕЗ СКРОЛЛА) (.) */
+        .viewport-fix {
+            position: relative;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .block { 
-            position: absolute; inset: 0; 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%;
             display: none; flex-direction: column; align-items: center; 
-            padding: 100px 20px 40px 20px; /* Резерв под хедер и нижний отступ */
+            padding-top: 100px; /* Место под хедер */
+            padding-bottom: 20px;
             opacity: 0; transition: 0.6s ease-in-out; 
         }
         .active { display: flex !important; opacity: 1; }
 
         .slogan-area { 
-            min-height: 60px; display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px; text-align: center;
+            flex: 0 0 auto;
+            height: 80px; 
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 0 20px;
         }
-        #top-slogan { 
-            font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: min(18px, 4vw); line-height: 1.3; text-shadow: 0 0 15px #000;
-        }
+        #top-slogan { font-family: 'Playfair Display', serif; font-style: italic; font-size: min(18px, 4.5vw); line-height: 1.2; }
 
-        /* DOOR COMPONENT (.) */
-        .door-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; width: 100%; }
+        /* ГЕОМЕТРИЯ ДВЕРИ (МАТЕМАТИЧЕСКИЙ РАСЧЕТ) (.) */
+        .door-container { 
+            flex: 1 1 auto; /* Занимает всё свободное место, но не более того */
+            display: flex; align-items: center; justify-content: center; 
+            width: 100%;
+            overflow: hidden; 
+        }
         #main-door { 
-            height: min(350px, 45dvh); width: auto; 
+            max-height: 100%; /* Никогда не выше контейнера */
+            width: auto;
+            max-width: 80vw;
+            object-fit: contain;
             cursor: pointer; transition: 1.8s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         
-        /* IDENTITY STAGE (.) */
-        .identity-row { display: flex; gap: 10px; margin-bottom: 30px; }
-        .box { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; background: rgba(212,175,55,0.05); }
-        
-        .btn-gy { width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono'; margin: 8px 0; }
-        .btn-gy:active { background: var(--gold); color: #000; }
+        /* BUTTONS (.) */
+        .btn-gy { width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; }
         .sleep { opacity: 0.2; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div class="ui-header">
-        <div class="lang-wrapper frame">
-            <div class="lang-active" id="cur-l"><img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span></div>
-            <div class="lang-dropdown" id="l-list"></div>
+    <div class="viewport-fix">
+        <div class="ui-header">
+            <div class="lang-wrapper frame">
+                <div class="lang-active" id="cur-l"><img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span></div>
+                <div class="lang-dropdown" id="l-list"></div>
+            </div>
+            <div class="logo-frame frame">GY-GY</div>
         </div>
-        <div class="logo-frame frame">GY-GY</div>
-    </div>
 
-    <div id="b-ent" class="block active">
-        <div class="slogan-area">
-            <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
-        </div>
-        <div class="door-container">
-            <img src="door_1.jpg" id="main-door" onclick="openDoor()">
-        </div>
-    </div>
-
-    <div id="b-id" class="block">
-        <div class="slogan-area">
-            <div id="top-slogan">«Идентификация личности в процессе...»</div>
-        </div>
-        <div class="identity-row">
-            <div class="box" id="id-txt" style="font-size:10px; text-align:center;">#ID</div>
-            <div class="box" id="qr-box"></div>
-            <div class="box" onclick="genAv()" style="cursor:pointer;">
-                <img id="av-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="av-txt" style="font-size:10px; text-align:center;">GEN<br>AVATAR</span>
+        <div id="b-ent" class="block active">
+            <div class="slogan-area">
+                <div id="top-slogan">«Заходите, здесь вам так рады, что вы даже не представляете...»</div>
+            </div>
+            <div class="door-container">
+                <img src="door_1.jpg" id="main-door" onclick="openDoor()">
             </div>
         </div>
-        <button class="btn-gy" id="btn-save" onclick="saveID()">SAVE IDENTITY</button>
-        <button class="btn-gy sleep" id="btn-next" onclick="location.reload()">PROCEED</button>
     </div>
 
     <script>
-        const langs = [
-            {n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, {n:'POLSKI', c:'pl'},
-            {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, {n:'ITALIANO', c:'it'},
-            {n:'ESPAÑOL', c:'es'}, {n:'TÜRKÇE', c:'tr'}, {n:'PORTUGUÊS', c:'pt'},
-            {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}, {n:'עברית', c:'il'}
-        ];
-
+        // 12 ЯЗЫКОВ (ФИКСИРОВАННЫЙ СПИСОК) (.)
+        const langs = [{n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, {n:'POLSKI', c:'pl'}, {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, {n:'ITALIANO', c:'it'}, {n:'ESPAÑOL', c:'es'}, {n:'TÜRKÇE', c:'tr'}, {n:'PORTUGUÊS', c:'pt'}, {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}, {n:'עברית', c:'il'}];
         const list = document.getElementById('l-list');
         langs.forEach(l => {
             const d = document.createElement('div'); d.className = 'l-item';
             d.innerHTML = `<img src="https://flagcdn.com/w40/${l.c}.png"> <span>${l.n}</span>`;
-            d.onclick = () => {
-                const active = document.getElementById('cur-l');
-                const old = active.innerHTML;
-                active.innerHTML = d.innerHTML;
-                d.innerHTML = old;
-            };
+            d.onclick = () => { document.getElementById('cur-l').innerHTML = d.innerHTML; };
             list.appendChild(d);
         });
 
         function openDoor() {
             const d = document.getElementById('main-door');
             d.style.transform = "scale(15)"; d.style.opacity = "0";
-            
-            let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            document.getElementById('id-txt').innerText = id;
-            document.getElementById('qr-box').innerHTML = "";
-            new QRCode(document.getElementById("qr-box"), { text: id, width: 85, height: 85 });
-
-            setTimeout(() => {
-                document.getElementById('b-ent').classList.remove('active');
-                document.getElementById('b-id').classList.add('active');
-            }, 1200);
+            // Логика перехода
         }
 
-        function genAv() {
-            const seed = Math.random().toString(36).substring(7);
-            const img = document.getElementById('av-img');
-            img.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
-            img.style.display = "block";
-            document.getElementById('av-txt').style.display = "none";
-        }
-
-        function saveID() {
-            document.getElementById('btn-save').classList.add('sleep');
-            document.getElementById('btn-next').classList.remove('sleep');
-        }
+        // КРАЙНЯЯ МЕРА: БЛОКИРОВКА СКРОЛЛА СКРИПТОМ (.)
+        window.addEventListener('scroll', () => window.scrollTo(0, 0), { passive: false });
+        document.addEventListener('touchmove', e => { if(e.touches.length > 1 || !e.target.closest('.lang-dropdown')) e.preventDefault(); }, { passive: false });
     </script>
 </body>
 </html>
