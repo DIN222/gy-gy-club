@@ -3,133 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY v4.7.3 (.)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY v4.7.4 (.)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { 
-            --gold: #d4af37; 
-            --bg: #000; 
-            --w: 210px; 
-            --h: 46px; 
+            --gold: #d4af37; --bg: #000; --frame-w: 210px; --frame-h: 46px; 
+            --neon: rgba(138, 43, 226, 0.6); --violet: #8A2BE2;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
         html, body { 
             width: 100%; height: 100dvh; background: var(--bg); color: var(--gold); 
             font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
         }
 
-        /* HEADER СИММЕТРИЯ (.) */
+        /* HEADER ПО ПЛАНУ (.) */
         .ui-header { 
             position: absolute; top: 20px; left: 0; width: 100%; 
-            display: flex; justify-content: space-between; padding: 0 25px; z-index: 9999; 
+            display: flex; justify-content: space-between; padding: 0 25px; z-index: 10000; 
         }
+        .frame { border: 2px solid var(--gold); height: var(--frame-h); display: flex; align-items: center; background: var(--bg); position: relative; }
         
-        .frame { 
-            border: 2px solid var(--gold); 
-            height: var(--h); 
-            display: flex; 
-            align-items: center; 
-            background: var(--bg);
-            position: relative;
-        }
-
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ (ИСПРАВЛЕНО) (.) */
-        .lang-wrapper { width: var(--w); }
-        
-        .lang-active { 
-            width: 100%; height: 100%; 
-            padding: 0 15px; cursor: pointer; 
-            display: flex; align-items: center; 
-            font-size: 14px; font-weight: bold;
-            z-index: 10001;
-        }
-        .lang-active img { width: 22px; margin-right: 12px; border: 1px solid rgba(212,175,55,0.3); }
-
-        /* ВЫПАДАЮЩИЙ СПИСОК (СТРОГО ПОД РАМКОЙ) (.) */
+        .lang-wrapper { width: var(--frame-w); }
+        .lang-active { width: 100%; height: 100%; padding: 0 12px; cursor: pointer; display: flex; align-items: center; font-size: 13px; font-weight: bold; }
+        .lang-active img { width: 22px; margin-right: 10px; border: 1px solid rgba(212,175,55,0.3); }
         .lang-dropdown { 
-            display: none; 
-            position: absolute; 
-            top: calc(var(--h) - 2px); /* Стык в стык с нижней границей рамки */
-            left: -2px; /* Компенсация границы основной рамки */
-            width: calc(var(--w) + 4px); 
-            background: var(--bg); 
-            border: 2px solid var(--gold); 
-            border-top: 1px solid rgba(212,175,55,0.2); /* Тонкий разделитель */
-            max-height: 300px; 
-            overflow-y: auto; 
-            z-index: 10000;
+            display: none; position: absolute; top: 44px; left: -2px; width: calc(var(--frame-w) + 4px); 
+            background: var(--bg); border: 2px solid var(--gold); border-top: none; max-height: 50dvh; overflow-y: auto; 
         }
         .lang-wrapper:hover .lang-dropdown { display: block; }
-
-        .l-item { 
-            padding: 10px 15px; 
-            display: flex; 
-            align-items: center; 
-            cursor: pointer; 
-            font-size: 13px; 
-            transition: 0.2s;
-        }
+        .l-item { padding: 10px 12px; display: flex; align-items: center; cursor: pointer; font-size: 12px; }
         .l-item:hover { background: rgba(212, 175, 55, 0.15); }
-        .l-item img { width: 18px; margin-right: 12px; opacity: 0.8; }
+        .l-item img { width: 18px; margin-right: 10px; }
 
-        .logo-frame { width: var(--w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; }
+        .logo-frame { width: var(--frame-w); justify-content: center; font-size: 24px; font-weight: 900; letter-spacing: 5px; pointer-events: none; }
 
-        /* КОНТЕНТ (.) */
-        .content { 
-            position: absolute; inset: 0; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding-top: 80px;
+        /* ГЛОБАЛЬНЫЙ КОНТЕЙНЕР ЛОКАЦИЙ (БЛОК 2) (.) */
+        .block { 
+            position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; 
+            padding-top: 100px; padding-bottom: 40px; opacity: 0; transition: 0.8s ease-in-out; background: var(--bg);
         }
-        #top-slogan { 
-            font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 18px; text-align: center; margin-bottom: 30px; padding: 0 30px;
-        }
-        #main-door { width: 280px; cursor: pointer; transition: 1.5s; }
+        .active { display: flex !important; opacity: 1; z-index: 50; }
 
+        .quote-text { 
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: min(24px, 5.5vw); 
+            text-align: center; max-width: 85%; margin-bottom: 20px; 
+        }
+
+        /* ОБЪЕКТЫ ИЗ 4.4.56 (.) */
+        #main-door { height: min(350px, 45dvh); cursor: pointer; transition: 2s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        
+        .id-card-hall { 
+            width: 240px; padding: 20px; border: 2px solid var(--gold); background: #F5F5DC; 
+            border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; 
+        }
+        .box-final { width: 85px; height: 85px; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; background: rgba(212,175,55,0.05); overflow: hidden; }
+
+        .btn-gy { width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; }
+        .btn-sleep { opacity: 0.2; pointer-events: none; }
+
+        /* ЛОКАЦИЯ: БАР (.) */
+        #block-bar img { height: 60dvh; width: auto; object-fit: contain; margin-bottom: -10px; }
+        .bar-ui { display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; }
+        
+        /* ЛОКАЦИЯ: СТОЛИКИ (.) */
+        #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
+        .lamp-zone { position: absolute; width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--violet); box-shadow: 0 0 15px var(--neon); cursor: pointer; }
+
+        .ui-back { position: absolute; bottom: 30px; z-index: 1000; }
     </style>
 </head>
 <body>
 
     <div class="ui-header">
         <div class="lang-wrapper frame">
-            <div class="lang-active" id="cur-l">
-                <img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span>
-            </div>
-            <div class="lang-dropdown" id="l-list">
-                </div>
+            <div class="lang-active" id="cur-l"><img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span></div>
+            <div class="lang-dropdown" id="l-list"></div>
         </div>
-
         <div class="logo-frame frame">GY-GY</div>
     </div>
 
-    <div class="content">
-        <div id="top-slogan">«В каждой шутке есть доля виски...»</div>
-        <img src="door_1.jpg" id="main-door" onclick="this.style.transform='scale(10)'; this.style.opacity='0';">
+    <div id="block-entrance" class="block active">
+        <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
+    </div>
+
+    <div id="block-welcome" class="block">
+        <div class="quote-text">«В каждой шутке есть доля виски»</div>
+        <img src="horse_welcome.png" style="height: 40dvh; margin-bottom: 20px;">
+        <button class="btn-gy" onclick="portalTransition('block-identity')">ПОЛУЧИТЬ ID</button>
+    </div>
+
+    <div id="block-identity" class="block">
+        <div class="quote-text">«Шампанского много не бывает»</div>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <div class="box-final" id="id-label" style="font-size:10px; text-align:center;">#ID</div>
+            <div class="box-final" id="qr-box-reg"></div>
+            <div class="box-final" onclick="generateAvatar()" style="cursor:pointer;">
+                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="txt-avatar" style="font-size:10px; text-align:center;">GEN<br>AVATAR</span>
+            </div>
+        </div>
+        <button id="btn-save" class="btn-gy" onclick="this.classList.add('btn-sleep'); document.getElementById('btn-pass').classList.remove('btn-sleep');">СОХРАНИТЬ</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">В ХОЛЛ</button>
+    </div>
+
+    <div id="block-hall" class="block">
+        <div class="id-card-hall">
+            <div id="h-id" style="font-weight:900; margin-bottom:10px;">#ID</div>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <div class="box-final" style="border-color:#000;"><img id="h-photo" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div class="box-final" id="h-qr" style="border-color:#000;"></div>
+            </div>
+            <button class="btn-gy" style="border-color:#000; color:#000;" onclick="portalTransition('block-bar')">ВХОД В БАР</button>
+        </div>
+    </div>
+
+    <div id="block-bar" class="block">
+        <div class="quote-text">«Игого, сейчас начнем!»</div>
+        <img src="horse_bar.png">
+        <div class="bar-ui">
+            <button class="btn-gy" onclick="portalTransition('block-tables')">ЗА СТОЛИКИ</button>
+            <button class="btn-gy" onclick="portalTransition('block-hall')">В ХОЛЛ</button>
+        </div>
+    </div>
+
+    <div id="block-tables" class="block">
+        <div class="lamp-zone" style="top: 40%; left: 45%;"></div>
+        <button class="btn-gy ui-back" onclick="portalTransition('block-bar')">НАЗАД В БАР</button>
     </div>
 
     <script>
         const langs = [
-            {n:'ENGLISH', c:'gb'}, {n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, 
-            {n:'POLSKI', c:'pl'}, {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, 
-            {n:'ITALIANO', c:'it'}, {n:'ESPAÑOL', c:'es'}, {n:'TÜRKÇE', c:'tr'}, 
-            {n:'PORTUGUÊS', c:'pt'}, {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}
+            {n:'ENGLISH', c:'gb'}, {n:'UKRAINIAN', c:'ua'}, {n:'РУССКИЙ', c:'ru'}, {n:'POLSKI', c:'pl'},
+            {n:'DEUTSCH', c:'de'}, {n:'FRANÇAIS', c:'fr'}, {n:'ITALIANO', c:'it'}, {n:'ESPAÑOL', c:'es'},
+            {n:'TÜRKÇE', c:'tr'}, {n:'PORTUGUÊS', c:'pt'}, {n:'中文', c:'cn'}, {n:'日本語', c:'jp'}
         ];
 
         const list = document.getElementById('l-list');
-        const active = document.getElementById('cur-l');
-
         langs.forEach(l => {
-            const d = document.createElement('div');
-            d.className = 'l-item';
+            const d = document.createElement('div'); d.className = 'l-item';
             d.innerHTML = `<img src="https://flagcdn.com/w40/${l.c}.png"> <span>${l.n}</span>`;
-            d.onclick = () => {
-                active.innerHTML = d.innerHTML;
-                // Тут можно добавить логику смены языка
-            };
+            d.onclick = () => { document.getElementById('cur-l').innerHTML = d.innerHTML; };
             list.appendChild(d);
         });
+
+        function portalTransition(nextId) {
+            document.querySelectorAll('.block').forEach(b => {
+                b.classList.remove('active');
+            });
+            const next = document.getElementById(nextId);
+            setTimeout(() => { next.classList.add('active'); }, 50);
+        }
+
+        function handleDoor() {
+            const d = document.getElementById('main-door');
+            d.style.transform = "scale(10)"; d.style.opacity = "0";
+            
+            let id = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            document.getElementById('id-label').innerText = id;
+            document.getElementById('h-id').innerText = id;
+            
+            document.getElementById('qr-box-reg').innerHTML = "";
+            new QRCode(document.getElementById("qr-box-reg"), { text: id, width: 85, height: 85 });
+            document.getElementById('h-qr').innerHTML = "";
+            new QRCode(document.getElementById("h-qr"), { text: id, width: 85, height: 85 });
+
+            setTimeout(() => { portalTransition('block-welcome'); }, 1500);
+        }
+
+        function generateAvatar() {
+            const seed = Math.random().toString(36).substring(7);
+            const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${seed}`;
+            document.getElementById('avatar-img').src = url;
+            document.getElementById('avatar-img').style.display = "block";
+            document.getElementById('h-photo').src = url;
+            document.getElementById('txt-avatar').style.display = "none";
+        }
     </script>
 </body>
 </html>
