@@ -297,28 +297,31 @@ const clubLangs = [
     {n:'PORTUGUÊS', c:'pt', code:'pt'}, {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
 ];
 
-function buildClubLangs() {
-    const container = document.getElementById('lang-list-container');
-    const display = document.getElementById('active-lang-display');
-    if(!container) return;
+item.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     
-    container.innerHTML = '';
-    clubLangs.forEach(lang => {
-        const item = document.createElement('div');
-        item.className = 'lang-item';
-        item.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
+    // 1. Визуальное обновление (работает)
+    display.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
+    
+    // 2. Попытка достучаться до Гугла
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+        select.value = lang.code; // Устанавливаем код (en, ru, uk...)
         
-        item.onclick = (e) => {
-            e.stopPropagation();
-            // Обновляем главную рамку
-            display.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
-            // Команда для Google
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                select.value = lang.code;
-                select.dispatchEvent(new Event('change'));
-            }
-        };
+        // Генерируем сразу три типа событий для надежности
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        select.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        // Если это Chrome/Safari, иногда нужен ручной вызов клика
+        if (typeof(Event) === 'function') {
+            const changeEvent = new Event('change', { 'bubbles': true });
+            select.dispatchEvent(changeEvent);
+        }
+    } else {
+        console.error("Движок перевода еще не загружен!");
+    }
+};
         container.appendChild(item);
     });
 }
