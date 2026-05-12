@@ -1,66 +1,61 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.61 | AVATAR READY</title>
+    <title>GY-GY Club v4.4.561 | AVATAR READY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; outline: none !important; }
-a, button, input { -webkit-appearance: none; outline: none !important; pointer-events: auto !important; }
-img { -webkit-user-drag: none !important; pointer-events: none; border: none !important; }
+        * { -webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; -webkit-user-select: none !important; user-select: none !important; outline: none !important; }
+        a, button, input { -webkit-appearance: none; outline: none !important; pointer-events: auto !important; }
+        img { -webkit-user-drag: none !important; pointer-events: none; border: none !important; }
 
-html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; padding: 0; }
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-/* ОБНОВЛЕННЫЙ HEADER (.) */
-#google_translate_element { display: none !important; } 
+      /* УБИВАЕМ СТАНДАРТНЫЙ ВИДЖЕТ И ВКЛЮЧАЕМ НАШ ФАСАД (.) */
+#google_translate_element { display: none !important; }
+
 .lang-frame {
     position: fixed !important; top: 15px !important; left: 15px !important; 
     z-index: 2000000 !important; width: 210px !important; height: 46px !important; 
     border: 2px solid var(--gold) !important; background: #000 !important; 
-    cursor: pointer !important;
-    pointer-events: auto !important; /* Разрешаем клик */
-    text-decoration: none !important; /* Убираем ту самую линию */
-    display: block !important;
+    cursor: pointer !important; pointer-events: auto !important;
+    box-sizing: border-box !important;
 }
 
-/* Убираем линию у вложенного текста */
-.lang-current, .lang-item span {
+.lang-current {
+    width: 100% !important; height: 100% !important; display: flex !important; 
+    align-items: center !important; padding: 0 10px !important; 
+    font-size: 13px !important; font-weight: bold !important; color: var(--gold) !important;
     text-decoration: none !important;
-    border-bottom: none !important;
 }
+
+.lang-current img { width: 20px !important; margin-right: 10px !important; pointer-events: none; }
 
 .lang-dropdown {
-    display: none; position: absolute !important; top: 44px !important; left: -2px !important; 
+    display: none; position: absolute !important; top: 42px !important; left: -2px !important; 
     width: 210px !important; background: #000 !important; 
     border: 2px solid var(--gold) !important; border-top: none !important;
-    max-height: 60dvh !important; overflow-y: auto !important;
-    z-index: 2000001 !important; 
-    pointer-events: auto !important;
+    max-height: 60dvh !important; overflow-y: auto !important; overflow-x: hidden !important;
+    z-index: 2000001 !important;
 }
 
-/* При наведении — только наш эффект, никакой линии */
-.lang-frame:hover { text-decoration: none !important; }
 .lang-frame:hover .lang-dropdown { display: block !important; }
 
 .lang-item { 
     padding: 10px !important; display: flex !important; align-items: center !important; 
-    width: 100% !important; cursor: pointer !important;
-    pointer-events: auto !important;
+    width: 100% !important; box-sizing: border-box !important; color: var(--gold);
+    transition: 0.2s; cursor: pointer !important; text-decoration: none !important;
 }
+.lang-item:hover { background: rgba(212, 175, 55, 0.2) !important; }
+.lang-item img { width: 18px !important; margin-right: 10px !important; pointer-events: none; }
 
-.ui-header-right { 
-    position: fixed !important; top: 15px !important; right: 15px !important; 
-    z-index: 1000000 !important; height: 46px !important; width: 210px !important; 
-    border: 2px solid var(--gold) !important; display: flex !important; 
-    align-items: center !important; justify-content: center !important;
-    font-size: 24px !important; letter-spacing: 5px !important; 
-    font-weight: bold !important; color: var(--gold) !important; background: #000 !important;
-    pointer-events: none !important; /* Логотип не должен мешать кликам, если они попадут под него */
-}
+/* КИЛЛЕР ЛИНИЙ И ПОДЧЕРКИВАНИЙ */
+.lang-item span, .lang-current span, .lang-frame span { border-bottom: none !important; text-decoration: none !important; } 
         
         .ui-back-to-bar { 
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
@@ -95,17 +90,14 @@ html, body { width: 100%; height: 100%; background: #000; color: var(--gold); fo
 </head>
 <body oncontextmenu="return false;">
 
-   <div id="google_translate_element"></div>
-
-<div class="lang-frame" id="lang-root">
+    <div id="google_translate_element"></div>
+    <div class="lang-frame" id="lang-switcher">
     <div class="lang-current" id="active-lang-display">
-        <img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span>
+        <img src="https://flagcdn.com/w40/ru.png"> <span>РУССКИЙ</span>
     </div>
-    <div class="lang-dropdown" id="lang-list-container">
-        </div>
+    <div id="lang-list-container" class="lang-dropdown"></div>
 </div>
-
-<div class="ui-header-right">GY-GY</div>
+    <div class="ui-header-right">GY-GY</div>
     <button class="ui-back-to-bar" id="btn-global-back" onclick="portalTransition('block-bar')">Назад в бар</button>
 
     <audio id="snd-door" preload="auto"><source src="door_open.mp3" type="audio/mpeg"></audio>
@@ -181,6 +173,49 @@ html, body { width: 100%; height: 100%; background: #000; color: var(--gold); fo
 
     <script>
         let currentID = "";
+        /* ЛОГИКА 11+1 (ЗАПРЕТ НА РЕДАКТИРОВАНИЕ) (.) */
+    const clubLangs = [
+        {n:'ENGLISH', c:'gb', code:'en'}, 
+        {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'UKRAINIAN', c:'ua', code:'uk'}, 
+        {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, 
+        {n:'TÜRKЧE', c:'tr', code:'tr'}, 
+        {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, 
+        {n:'日本語', c:'jp', code:'ja'}
+    ];
+
+    function buildClubLangs() {
+        const container = document.getElementById('lang-list-container');
+        const display = document.getElementById('active-lang-display');
+        if(!container) return;
+        
+        container.innerHTML = '';
+        clubLangs.forEach(lang => {
+            const item = document.createElement('div');
+            item.className = 'lang-item';
+            item.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
+            
+            item.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                display.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
+                const select = document.querySelector('.goog-te-combo');
+                if (select) {
+                    select.value = lang.code;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            };
+            container.appendChild(item);
+        });
+    }
+    // Автозапуск
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', buildClubLangs); } 
+    else { buildClubLangs(); }
 
         function deepDive() {
             document.body.style.transition = "opacity 1.2s ease, filter 1.2s ease";
@@ -296,48 +331,9 @@ html, body { width: 100%; height: 100%; background: #000; color: var(--gold); fo
             document.getElementById(s).classList.remove('btn-sleep'); 
         }
 
-        function googleTranslateElementInit() { 
-            new google.translate.TranslateElement({pageLanguage: 'ru', autoDisplay: false}, 'google_translate_element'); 
-        }
-        /* ЛОГИКА УПРАВЛЕНИЯ ЯЗЫКАМИ (.) */
-const clubLangs = [
-    {n:'ENGLISH', c:'gb', code:'en'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, {n:'UKRAINIAN', c:'ua', code:'uk'},
-    {n:'POLSKI', c:'pl', code:'pl'}, {n:'DEUTSCH', c:'de', code:'de'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-    {n:'ITALIANO', c:'it', code:'it'}, {n:'ESPAÑOL', c:'es', code:'es'}, {n:'TÜRKÇE', c:'tr', code:'tr'},
-    {n:'PORTUGUÊS', c:'pt', code:'pt'}, {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-];
-
-item.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // 1. Визуальное обновление (работает)
-    display.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
-    
-    // 2. Попытка достучаться до Гугла
-    const select = document.querySelector('.goog-te-combo');
-    if (select) {
-        select.value = lang.code; // Устанавливаем код (en, ru, uk...)
-        
-        // Генерируем сразу три типа событий для надежности
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        select.dispatchEvent(new Event('input', { bubbles: true }));
-        
-        // Если это Chrome/Safari, иногда нужен ручной вызов клика
-        if (typeof(Event) === 'function') {
-            const changeEvent = new Event('change', { 'bubbles': true });
-            select.dispatchEvent(changeEvent);
-        }
-    } else {
-        console.error("Движок перевода еще не загружен!");
-    }
-};
-        container.appendChild(item);
-    });
+       function googleTranslateElementInit() { 
+    new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element'); 
 }
-
-// Запуск при загрузке
-window.addEventListener('DOMContentLoaded', buildClubLangs);
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
