@@ -19,35 +19,38 @@ html, body { width: 100%; height: 100%; background: #000; color: var(--gold); fo
 #google_translate_element { display: none !important; } 
 .lang-frame {
     position: fixed !important; top: 15px !important; left: 15px !important; 
-    z-index: 2000000 !important; /* Поднимаем выше всех */
-    width: 210px !important; height: 46px !important; 
+    z-index: 2000000 !important; width: 210px !important; height: 46px !important; 
     border: 2px solid var(--gold) !important; background: #000 !important; 
     cursor: pointer !important;
-    pointer-events: auto !important; /* ПРИНУДИТЕЛЬНО РАЗРЕШАЕМ КЛИК */
+    pointer-events: auto !important; /* Разрешаем клик */
+    text-decoration: none !important; /* Убираем ту самую линию */
+    display: block !important;
 }
 
-.lang-current {
-    width: 100%; height: 100%; display: flex; align-items: center;
-    padding: 0 10px; font-size: 13px; font-weight: bold; color: var(--gold);
+/* Убираем линию у вложенного текста */
+.lang-current, .lang-item span {
+    text-decoration: none !important;
+    border-bottom: none !important;
 }
-
-.lang-current img { width: 20px; margin-right: 10px; border: 1px solid rgba(212,175,55,0.3); }
 
 .lang-dropdown {
     display: none; position: absolute !important; top: 44px !important; left: -2px !important; 
     width: 210px !important; background: #000 !important; 
     border: 2px solid var(--gold) !important; border-top: none !important;
     max-height: 60dvh !important; overflow-y: auto !important;
-    z-index: 2000001 !important; /* Еще выше основной рамки */
+    z-index: 2000001 !important; 
     pointer-events: auto !important;
 }
 
-.lang-frame:hover .lang-dropdown { display: block; }
+/* При наведении — только наш эффект, никакой линии */
+.lang-frame:hover { text-decoration: none !important; }
+.lang-frame:hover .lang-dropdown { display: block !important; }
 
-.lang-item { padding: 10px; display: flex; align-items: center; transition: 0.2s; width: 100%; }
-.lang-item:hover { background: rgba(212, 175, 55, 0.2); }
-.lang-item img { width: 18px; margin-right: 10px; }
-.lang-item img { width: 18px; margin-right: 10px; }
+.lang-item { 
+    padding: 10px !important; display: flex !important; align-items: center !important; 
+    width: 100% !important; cursor: pointer !important;
+    pointer-events: auto !important;
+}
 
 .ui-header-right { 
     position: fixed !important; top: 15px !important; right: 15px !important; 
