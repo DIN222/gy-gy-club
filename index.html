@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.562 | AVATAR READY</title>
+    <title>GY-GY Club v4.4.563 | AVATAR READY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -14,7 +14,23 @@
         a, button, input { -webkit-appearance: none; outline: none !important; pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; pointer-events: none; border: none !important; }
 
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
+        html, body { 
+            width: 100vw !important; 
+            height: 100vh !important; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden !important; 
+            position: fixed !important; 
+            margin: 0; 
+            padding: 0;
+            left: 0;
+            top: 0;
+        }
+
+        /* Убираем мусор от Google, который может распирать экран */
+        .skiptranslate, iframe.goog-te-menu-frame { display: none !important; visibility: hidden !important; }
+        body { top: 0 !important; }
         
       /* УБИВАЕМ СТАНДАРТНЫЙ ВИДЖЕТ И ВКЛЮЧАЕМ НАШ ФАСАД (.) */
 #google_translate_element { display: none !important; }
@@ -85,11 +101,25 @@
         #main-door { width: 280px; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; z-index: 9999; pointer-events: auto !important; }
         
         #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
-        .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; z-index: 100; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); pointer-events: auto !important; }
+        
+    .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; z-index: 100; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); pointer-events: auto !important; }
+        .ui-header-right { 
+            position: fixed !important; 
+            top: 22px; 
+            right: 25px; 
+            z-index: 1000000; 
+            font-size: 24px; 
+            letter-spacing: 5px; 
+            font-weight: bold; 
+            color: var(--gold); 
+            background: transparent;
+            pointer-events: none;
+            border: none !important; /* Убираем рамку */
+        }
     </style>
+    
 </head>
-<body oncontextmenu="return false;" style="position: static !important;">
-
+<body oncontextmenu="return false;" style="position: fixed !important; width: 100vw; height: 100vh; overflow: hidden; margin: 0; padding: 0; left: 0; top: 0;">
     <div id="google_translate_element"></div>
     <div class="lang-frame" id="lang-switcher">
         <div class="lang-current" id="active-lang-display">
