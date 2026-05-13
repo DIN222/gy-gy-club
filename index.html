@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.564 | AVATAR READY</title>
+    <title>GY-GY Club v4.4.565 | AVATAR READY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -270,6 +270,15 @@ function buildClubLangs() {
         }
 
         function portalTransition(nextId) {
+            // УПРАВЛЕНИЕ ВИДИМОСТЬЮ ЯЗЫКОВОГО ШЛЮЗА (.)
+    const langSwitcher = document.getElementById('lang-switcher');
+    if (langSwitcher) {
+        if (nextId === 'block-entrance') {
+            langSwitcher.style.display = 'block';
+        } else {
+            langSwitcher.style.display = 'none'; // Скрываем везде после двери
+        }
+    }
             const current = document.querySelector('.block.active');
             const backBtn = document.getElementById('btn-global-back');
             const amb = document.getElementById('snd-ambient');
@@ -304,7 +313,10 @@ function buildClubLangs() {
             }, 800);
         }
 
-        function handleDoor() {
+      function handleDoor() {
+        document.getElementById('lang-switcher').style.display = 'none'; // Скрыть мгновенно при клике на дверь
+        const d = document.getElementById('main-door');
+        // ... остальной ваш код (звук, трансформ и т.д.) 
             const d = document.getElementById('main-door');
             document.getElementById('snd-door').play();
             d.style.transform = "scale(5)"; d.style.opacity = "0";
@@ -318,6 +330,11 @@ function buildClubLangs() {
             new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
             document.getElementById('h-qr').innerHTML = "";
             new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
+            const flagZone = document.getElementById('user-flag-icon');
+    if(flagZone) {
+        // userSelectedFlag берется из того, что юзер нащелкал на входе
+        flagZone.innerHTML = `<img src="https://flagcdn.com/w40/${userSelectedFlag}.png" style="width:30px; border:1px solid #000;">`;
+    }
             
             setTimeout(() => { 
                 portalTransition('block-welcome'); 
