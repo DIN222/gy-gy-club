@@ -23,20 +23,7 @@
         body { top: 0 !important; }
 
         /* Языковой шлюз (11+1) под размер PORTUGUÊS (.) */
-        .lang-frame {
-            position: fixed !important; top: 15px; left: 15px; 
-            z-index: 2000000; width: 235px; height: 46px; 
-            border: 2px solid var(--gold); background: #000; 
-            cursor: pointer; pointer-events: auto !important;
-        }
-        .lang-current { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 10px; font-size: 13px; font-weight: bold; }
-        .lang-current img { width: 20px; margin-right: 10px; }
-        .lang-dropdown {
-            display: none; position: absolute; top: 44px; left: -2px; 
-            width: 235px; background: #000; border: 2px solid var(--gold); border-top: none;
-            max-height: 50vh; overflow-y: auto; z-index: 2000001;
-        }
-        .lang-frame:hover .lang-dropdown { display: block; }
+        
         .lang-item { padding: 10px; display: flex; align-items: center; color: var(--gold); transition: 0.2s; }
         .lang-item:hover { background: rgba(212, 175, 55, 0.2); }
         .lang-item img { width: 18px; margin-right: 10px; }
@@ -49,9 +36,22 @@
             padding: 12px 24px; cursor: pointer; font-size: 14px; text-transform: uppercase; display: none; opacity: 0; transition: 0.5s;
         }
 
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s ease-in-out; pointer-events: none; }
-        .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
-
+       .block { 
+    position: fixed; 
+    inset: 0; 
+    display: none; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    background: #000; 
+    z-index: 100; /* Подняли уровень */
+    opacity: 0; 
+    transition: opacity 0.8s ease-in-out; 
+    pointer-events: none; 
+}
+        .block.active {
+    pointer-events: auto; /* Только активный блок принимает клики */
+}
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; color: var(--gold); text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 20px; }
 
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
@@ -64,7 +64,11 @@
         }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         
-        #main-door { width: 280px; cursor: pointer; transition: 2.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; }
+       #main-door {
+    position: relative;
+    z-index: 100;
+    pointer-events: auto !important; /* Разрешаем клики */
+}
         
         #block-bar img { height: 70vh !important; width: auto; max-width: 95vw; object-fit: contain; margin-bottom: -10px; }
         .bar-ui-container { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); width: 100%; max-width: 380px; z-index: 1000; display: flex; flex-direction: column; align-items: center; }
@@ -72,11 +76,14 @@
         
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; z-index: 100; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
     /* ГЕОМЕТРИЯ КОНСТАНТЫ v5.0 */
-    .lang-frame-locked {
-        position: fixed; top: 15px; left: 15px; z-index: 2000000;
-        width: 210px; height: 46px; border: 2px solid var(--gold);
-        background: #000; box-sizing: border-box; cursor: pointer;
-    }
+   /* Языковой шлюз — абсолютный приоритет */
+.lang-frame-locked {
+    position: fixed !important;
+    top: 15px;
+    left: 15px;
+    z-index: 9999999 !important; /* На самый верх */
+    pointer-events: auto !important; /* Разрешаем клики */
+}
     .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
     .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
     .lang-text { font-size: 14px; font-weight: 900; letter-spacing: 1px; color: var(--gold); }
@@ -191,16 +198,7 @@
             {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
         ];
 
-       const clubLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'UKRAINIAN', c:'ua', code:'uk'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'DEUTSCH', c:'de', code:'de'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'ESPAÑOL', c:'es', code:'es'}, 
-        {n:'TÜRKÇE', c:'tr', code:'tr'}, {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-    ];
-
-    let selectedLangFlag = 'gb';
+           let selectedLangFlag = 'gb';
 
     function initLangEngine() {
         const container = document.getElementById('lang-list-container');
@@ -223,12 +221,15 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
-    function applyLanguage(lang) {
-        selectedLangFlag = lang.c;
-        document.getElementById('active-lang-display').innerHTML = `
-            <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon">
-            <span class="lang-text">${lang.n}</span>
-        `;
+   function applyLanguage(lang) {
+    selectedLangFlag = lang.c;
+    selectedFlag = lang.c; // ДОБАВИТЬ ЭТУ СТРОКУ, чтобы обновить глобальную переменную флага
+    document.getElementById('active-lang-display').innerHTML = `
+        <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon">
+        <span class="lang-text">${lang.n}</span>
+    `;
+    // ... остальной код функции
+}
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) {
             gtCombo.value = lang.code;
@@ -305,6 +306,18 @@
 
         function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element'); }
         function deepDive() { document.body.style.opacity = "0"; setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200); }
+        // Принудительная очистка экрана от блокировщиков Google
+window.addEventListener('load', () => {
+    const overkill = setInterval(() => {
+        const translateBanner = document.querySelector('.goog-te-banner-frame');
+        if (translateBanner) {
+            translateBanner.style.display = 'none';
+            document.body.style.top = '0';
+        }
+        // Если нашли и убрали — останавливаем цикл
+    }, 500);
+    setTimeout(() => clearInterval(overkill), 5000);
+});
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
