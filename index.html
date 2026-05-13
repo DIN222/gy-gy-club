@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.566 | PASSPORT SYSTEM</title>
+    <title>GY-GY Club v4.4.567 | PASSPORT SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -71,17 +71,40 @@
         .bar-side-buttons { width: 100%; display: flex; justify-content: space-between; margin-bottom: 12px; }
         
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; z-index: 100; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
+    /* ГЕОМЕТРИЯ КОНСТАНТЫ v5.0 */
+    .lang-frame-locked {
+        position: fixed; top: 15px; left: 15px; z-index: 2000000;
+        width: 210px; height: 46px; border: 2px solid var(--gold);
+        background: #000; box-sizing: border-box; cursor: pointer;
+    }
+    .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
+    .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
+    .lang-text { font-size: 14px; font-weight: 900; letter-spacing: 1px; color: var(--gold); }
+
+    .lang-dropdown-adaptive {
+        display: none; position: absolute; top: 46px; left: 0; width: 210px;
+        background: rgba(0, 0, 0, 0.95); overflow-y: auto; border: 1px solid var(--gold); border-top: none;
+    }
+    .lang-item { display: flex; align-items: center; padding: 10px 12px; transition: 0.2s; border-left: 2px solid transparent; }
+    .lang-item:hover { background: rgba(214, 175, 55, 0.15); border-left: 2px solid var(--gold); }
+    
+    /* Защита от скролла Google */
+    .skiptranslate, #google_translate_element { display: none !important; }
+    body { top: 0 !important; }
+    
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="google_translate_element"></div>
-
-    <div class="lang-frame" id="lang-switcher">
-        <div class="lang-current" id="active-lang-display">
-            <img src="https://flagcdn.com/w40/gb.png"> <span>ENGLISH</span>
+    <div id="lang-switcher" class="lang-frame-locked">
+        <div class="lang-active-zone" id="active-lang-display" onclick="toggleLangList()">
+            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
+            <span class="lang-text">ENGLISH</span>
         </div>
-        <div id="lang-list-container" class="lang-dropdown"></div>
+        <div id="lang-list-container" class="lang-dropdown-adaptive"></div>
+    </div>
+    
+    <div id="google_translate_element" style="display:none;"></div>
     </div>
 
     <div class="ui-header-right">GY-GY</div>
@@ -168,26 +191,54 @@
             {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
         ];
 
-        function buildLangs() {
-            const container = document.getElementById('lang-list-container');
-            const display = document.getElementById('active-lang-display');
-            container.innerHTML = '';
-            clubLangs.forEach(lang => {
-                if(lang.code === 'en') return;
-                const item = document.createElement('div');
-                item.className = 'lang-item';
-                item.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
-                item.onclick = (e) => {
-                    selectedFlag = lang.c;
-                    display.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png"> <span>${lang.n}</span>`;
-                    const select = document.querySelector('.goog-te-combo');
-                    if (select) { select.value = lang.code; select.dispatchEvent(new Event('change', { bubbles: true })); }
-                };
-                container.appendChild(item);
-            });
-        }
-        buildLangs();
+       const clubLangs = [
+        {n:'ENGLISH', c:'gb', code:'en'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'UKRAINIAN', c:'ua', code:'uk'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'DEUTSCH', c:'de', code:'de'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, {n:'ESPAÑOL', c:'es', code:'es'}, 
+        {n:'TÜRKÇE', c:'tr', code:'tr'}, {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+    ];
 
+    let selectedLangFlag = 'gb';
+
+    function initLangEngine() {
+        const container = document.getElementById('lang-list-container');
+        if (!container) return;
+        // Расчет высоты под экран, чтобы не было внешнего скролла
+        container.style.maxHeight = (window.innerHeight - 80) + 'px';
+        container.innerHTML = '';
+        clubLangs.forEach(lang => {
+            if(lang.code === 'en') return;
+            const div = document.createElement('div');
+            div.className = 'lang-item';
+            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span class="lang-text">${lang.n}</span>`;
+            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+            container.appendChild(div);
+        });
+    }
+
+    function toggleLangList() {
+        const list = document.getElementById('lang-list-container');
+        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function applyLanguage(lang) {
+        selectedLangFlag = lang.c;
+        document.getElementById('active-lang-display').innerHTML = `
+            <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon">
+            <span class="lang-text">${lang.n}</span>
+        `;
+        const gtCombo = document.querySelector('.goog-te-combo');
+        if (gtCombo) {
+            gtCombo.value = lang.code;
+            gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        document.getElementById('lang-list-container').style.display = 'none';
+    }
+
+    // Запуск двигателя
+    window.addEventListener('load', initLangEngine);
         function portalTransition(nextId) {
             const current = document.querySelector('.block.active');
             const langS = document.getElementById('lang-switcher');
