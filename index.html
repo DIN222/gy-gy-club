@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.574 | PASSPORT SYSTEM</title>
+    <title>GY-GY Club v4.4.575 | PASSPORT SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -83,12 +83,19 @@
         }
         .block.active { pointer-events: auto; }
 
-  #main-door {
+  
+    #main-door {
+    position: relative;
+    z-index: 110;
+    pointer-events: auto !important;
+    cursor: pointer;
+    /* Увеличиваем время до 1.8с для Noir-драматизма */
+    transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.5s ease;
     height: calc(42vh + 20px) !important;
     width: auto;
     object-fit: contain;
-}
-        
+    will-change: transform, opacity;
+}    
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
@@ -225,24 +232,28 @@
             }, 800);
         }
 
-        function handleDoor() {
-            document.getElementById('lang-switcher').style.display = 'none';
-            document.getElementById('snd-door').play();
-            const d = document.getElementById('main-door');
-            d.style.transform = "scale(5)"; d.style.opacity = "0";
-            
-            currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            document.getElementById('id-label').innerText = currentID;
-            document.getElementById('h-id').innerText = currentID;
-            document.getElementById('user-flag-icon').innerHTML = `<img src="https://flagcdn.com/w40/${selectedFlag}.png" style="width:25px;">`;
-            
-            document.getElementById('qr-box-reg').innerHTML = "";
-            new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-            document.getElementById('h-qr').innerHTML = "";
-            new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
-            
-            setTimeout(() => { portalTransition('block-welcome'); document.getElementById('snd-ambient').play(); }, 1800);
-        }
+       function handleDoor() {
+    const d = document.getElementById('main-door');
+    const switcher = document.getElementById('lang-switcher');
+    
+    // Скрываем язык сразу, чтобы не мешал визуалу
+    if(switcher) switcher.style.opacity = "0"; 
+    
+    // Запуск звука
+    const snd = document.getElementById('snd-door');
+    if(snd) snd.play();
+    
+    // АНИМАЦИЯ: Дверь расширяется и исчезает
+    d.style.transform = "scale(8)"; // Увеличил до 8 для "невероятного" размера
+    d.style.opacity = "0";
+    
+    // Ждем завершения анимации перед переходом в Welcome
+    setTimeout(() => {
+        portalTransition('block-welcome');
+        const ambient = document.getElementById('snd-ambient');
+        if(ambient) ambient.play();
+    }, 1800); 
+}
 
         function swapButtons(a, s) { 
             document.getElementById(a).classList.add('btn-sleep'); 
