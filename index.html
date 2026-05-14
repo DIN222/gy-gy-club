@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.572 | PASSPORT SYSTEM</title>
+    <title>GY-GY Club v4.4.573 | PASSPORT SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -32,7 +32,7 @@
     border: 2px solid var(--gold) !important;
     background: #000;
     cursor: pointer;
-    box-sizing: border-box; /* Важно, чтобы рамка не раздувала размер */
+    box-sizing: border-box; /* Чтобы 2px рамки входили в 46px высоты */
 }
         .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
         .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
@@ -40,23 +40,22 @@
 .lang-dropdown-adaptive {
     display: none;
     position: absolute;
-    /* Смещаем на 46px (высота рамки), чтобы стык был идеальным */
-    top: 46px; 
-    left: -2px; /* Компенсируем левую рамку */
+    top: 44px; /* Ровно под нижнюю грань с учетом толщины рамки */
+    left: 0; 
     width: 235px;
     background: #000;
     border: none !important;
     box-shadow: none !important;
     z-index: 2000001;
-    /* Чтобы текст не прилипал к верху, добавим микро-отступ */
-    padding-top: 5px;
+    padding: 0;
+    margin: 0;
 }
      
 /* Убираем рамки у элементов списка, если они были */
 .lang-item {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
+    padding: 12px 15px;
     border: none !important; 
     transition: 0.2s;
 }
@@ -146,14 +145,20 @@
         let currentID = "";
         let selectedFlag = "gb";
 
-        const clubLangs = [
-            {n:'ENGLISH', c:'gb', code:'en'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-            {n:'UKRAINIAN', c:'ua', code:'uk'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-            {n:'DEUTSCH', c:'de', code:'de'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-            {n:'ITALIANO', c:'it', code:'it'}, {n:'ESPAÑOL', c:'es', code:'es'}, 
-            {n:'TÜRKÇE', c:'tr', code:'tr'}, {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
-            {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-        ];
+       const clubLangs = [
+    {n:'ENGLISH', c:'gb', code:'en'}, 
+    {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+    {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, // Было: UKRAINIAN
+    {n:'POLSKI', c:'pl', code:'pl'}, 
+    {n:'DEUTSCH', c:'de', code:'de'}, 
+    {n:'FRANÇAIS', c:'fr', code:'fr'},
+    {n:'ITALIANO', c:'it', code:'it'}, 
+    {n:'ESPAÑOL', c:'es', code:'es'}, 
+    {n:'TÜRKÇE', c:'tr', code:'tr'}, // Исправлено: TÜRKÇE (через Ç)
+    {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
+    {n:'中文', c:'cn', code:'zh-CN'}, 
+    {n:'日本語', c:'jp', code:'ja'}
+];
 
       function initLangEngine() {
     const container = document.getElementById('lang-list-container');
