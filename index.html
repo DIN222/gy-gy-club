@@ -22,33 +22,45 @@
         #google_translate_element, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; visibility: hidden !important; }
         body { top: 0 !important; }
 
-    .lang-frame-locked {
+   .lang-frame-locked {
     position: fixed !important;
     top: 15px;
     left: 15px;
     z-index: 9999999 !important;
-    width: 235px;
-    height: 46px; /* Эталонная высота под Португальский */
+    /* Эталонная ширина под "PORTUGUÊS ." */
+    width: 235px; 
+    height: 46px;
     border: 2px solid var(--gold) !important;
     background: #000;
     cursor: pointer;
-    box-sizing: border-box; /* Чтобы 2px рамки входили в 46px высоты */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
 }
         .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
         .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
-        .lang-text { font-size: 14px; font-weight: 900; letter-spacing: 1px; color: var(--gold); }
+        .lang-text {
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--gold);
+    display: inline-block;
+    white-space: nowrap;
+    /* Центрирование текста внутри отведенного под него места */
+    flex-grow: 1; 
+}
 .lang-dropdown-adaptive {
     display: none;
     position: absolute;
-    top: 44px; /* Ровно под нижнюю грань с учетом толщины рамки */
-    left: 0; 
-    width: 235px;
+    /* Стык: 46px высота - 2px рамка = 44px, чтобы не перекрывать линию */
+    top: 44px; 
+    left: -2px; /* Выравнивание по внешней границе рамки */
+    width: 235px; 
     background: #000;
     border: none !important;
     box-shadow: none !important;
     z-index: 2000001;
     padding: 0;
-    margin: 0;
 }
      
 /* Убираем рамки у элементов списка, если они были */
@@ -145,17 +157,17 @@
         let currentID = "";
         let selectedFlag = "gb";
 
-       const clubLangs = [
+    const clubLangs = [
     {n:'ENGLISH', c:'gb', code:'en'}, 
     {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-    {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, // Было: UKRAINIAN
+    {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
     {n:'POLSKI', c:'pl', code:'pl'}, 
     {n:'DEUTSCH', c:'de', code:'de'}, 
     {n:'FRANÇAIS', c:'fr', code:'fr'},
     {n:'ITALIANO', c:'it', code:'it'}, 
     {n:'ESPAÑOL', c:'es', code:'es'}, 
-    {n:'TÜRKÇE', c:'tr', code:'tr'}, // Исправлено: TÜRKÇE (через Ç)
-    {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
+    {n:'TÜRKÇE', c:'tr', code:'tr'}, 
+    {n:'PORTUGUÊS .', c:'pt', code:'pt'}, // Добавлен маркер ограничения
     {n:'中文', c:'cn', code:'zh-CN'}, 
     {n:'日本語', c:'jp', code:'ja'}
 ];
