@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.577 | PASSPORT SYSTEM</title>
+    <title>GY-GY Club v4.4.578 | PASSPORT SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -27,15 +27,17 @@
     top: 15px;
     left: 15px;
     z-index: 9999999 !important;
-    /* Эталонная ширина под "PORTUGUÊS ." */
-    width: 235px; 
-    height: 46px;
+    /* Точный размер под PORTUGUÊS . */
+    width: 235px !important; 
+    height: 46px !important;
     border: 2px solid var(--gold) !important;
     background: #000;
     cursor: pointer;
-    box-sizing: border-box;
+    box-sizing: border-box; /* ГАРАНТИЯ: рамка не увеличит ширину */
     display: flex;
     align-items: center;
+    padding: 0 10px;
+    overflow: hidden;
 }
         .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
         .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
@@ -49,18 +51,22 @@
     /* Центрирование текста внутри отведенного под него места */
     flex-grow: 1; 
 }
-.lang-dropdown-adaptive {
-    display: none;
-    position: absolute;
-    /* Стык: 46px высота - 2px рамка = 44px, чтобы не перекрывать линию */
-    top: 44px; 
-    left: -2px; /* Выравнивание по внешней границе рамки */
-    width: 235px; 
+.lang-frame-locked {
+    position: fixed !important;
+    top: 15px;
+    left: 15px;
+    z-index: 9999999 !important;
+    /* Точный размер под PORTUGUÊS . */
+    width: 235px !important; 
+    height: 46px !important;
+    border: 2px solid var(--gold) !important;
     background: #000;
-    border: none !important;
-    box-shadow: none !important;
-    z-index: 2000001;
-    padding: 0;
+    cursor: pointer;
+    box-sizing: border-box; /* ГАРАНТИЯ: рамка не увеличит ширину */
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    overflow: hidden;
 }
      
 /* Убираем рамки у элементов списка, если они были */
@@ -232,27 +238,22 @@
             }, 800);
         }
 
-      function handleDoor() {
+     function handleDoor() {
     const d = document.getElementById('main-door');
-    const switcher = document.getElementById('lang-switcher');
+    document.getElementById('snd-door').play();
     
-    // Скрываем язык сразу, чтобы не мешал визуалу
-    if(switcher) switcher.style.opacity = "0"; 
-    
-    // Запуск звука
-    const snd = document.getElementById('snd-door');
-    if(snd) snd.play();
-    
-    // АНИМАЦИЯ: Дверь расширяется и исчезает
-    d.style.transform = "scale(8)"; // Увеличил до 8 для "невероятного" размера
+    // Прячем меню выбора языка, чтобы не мешало Noir-сцене
+    document.getElementById('lang-switcher').style.opacity = "0";
+
+    // Плавный, но мощный взрыв двери
+    d.style.transition = "transform 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.5s ease";
+    d.style.transform = "scale(10)"; 
     d.style.opacity = "0";
     
-    // Ждем завершения анимации перед переходом в Welcome
     setTimeout(() => {
         portalTransition('block-welcome');
-        const ambient = document.getElementById('snd-ambient');
-        if(ambient) ambient.play();
-    }, 1800); 
+        document.getElementById('snd-ambient').play();
+    }, 1800);
 }
         function swapButtons(a, s) { 
             document.getElementById(a).classList.add('btn-sleep'); 
