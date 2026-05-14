@@ -23,17 +23,16 @@
         body { top: 0 !important; }
 
         /* Языковой шлюз v5.0 */
-       .lang-frame-locked {
+      .lang-frame-locked {
     position: fixed !important;
     top: 15px;
     left: 15px;
     z-index: 9999999 !important;
-    width: 235px; /* Размер под PORTUGUÊS (.) */
+    width: 235px;
     height: 46px;
-    border: 2px solid var(--gold) !important; /* Рамка остается здесь */
+    border: 2px solid var(--gold) !important;
     background: #000;
     cursor: pointer;
-    pointer-events: auto !important;
 }
         .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
         .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
@@ -42,16 +41,13 @@
         .lang-dropdown-adaptive {
     display: none;
     position: absolute;
-    top: 44px; /* Вплотную к нижней границе рамки */
-    left: -2px; /* Выравнивание с учетом толщины рамки */
+    top: 44px;
+    left: -2px; /* Выравнивание по рамке */
     width: 235px;
     background: #000;
-    overflow-y: auto;
-    border: none !important; /* Рамки нет */
+    border: none !important; /* РАМКИ НЕТ */
     box-shadow: none !important;
-    z-index: 2000001;
 }
-
 /* Убираем рамки у элементов списка, если они были */
 .lang-item {
     display: flex;
@@ -72,14 +68,16 @@
         }
         .block.active { pointer-events: auto; }
 
-       #main-door {
+     #main-door {
     position: relative;
     z-index: 110;
     pointer-events: auto !important;
     cursor: pointer;
     transition: transform 1.8s, opacity 1.5s;
-    height: 40vh !important; /* Константа высоты */
+    /* Установлено 42vh + 20px для веса */
+    height: calc(42vh + 20px) !important; 
     width: auto;
+    object-fit: contain;
 }
         
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
@@ -93,13 +91,15 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="lang-switcher" class="lang-frame-locked">
-        <div class="lang-active-zone" id="active-lang-display" onclick="toggleLangList()">
-            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
-            <span class="lang-text">ENGLISH</span>
-        </div>
-        <div id="lang-list-container" class="lang-dropdown-adaptive"></div>
+    <div id="lang-switcher" class="lang-frame-locked notranslate">
+    <div class="lang-active-zone" id="active-lang-display" onclick="toggleLangList()">
+        <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
+        <span class="lang-text">ENGLISH</span>
     </div>
+    <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
+</div>
+
+<div class="ui-header-right notranslate">GY-GY</div>
     
     <div id="google_translate_element" style="display:none;"></div>
 
@@ -157,21 +157,19 @@
             {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
         ];
 
-        function initLangEngine() {
-            const container = document.getElementById('lang-list-container');
-            if (!container) return;
-            container.style.maxHeight = (window.innerHeight - 80) + 'px';
-            container.innerHTML = '';
-            clubLangs.forEach(lang => {
-                if(lang.code === 'en') return;
-                const div = document.createElement('div');
-                div.className = 'lang-item';
-                div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span class="lang-text">${lang.n}</span>`;
-                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-                container.appendChild(div);
-            });
-        }
-
+       function initLangEngine() {
+    const container = document.getElementById('lang-list-container');
+    if (!container) return;
+    container.innerHTML = '';
+    clubLangs.forEach(lang => {
+        const div = document.createElement('div');
+        // Добавляем notranslate каждому пункту
+        div.className = 'lang-item notranslate'; 
+        div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span class="lang-text">${lang.n}</span>`;
+        div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+        container.appendChild(div);
+    });
+}
         function toggleLangList() {
             const list = document.getElementById('lang-list-container');
             list.style.display = (list.style.display === 'block') ? 'none' : 'block';
