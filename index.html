@@ -3,273 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.578 | PASSPORT SYSTEM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&family=Inter:wght@900&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.4.57 | FULL RESTORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
-        * { -webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; outline: none !important; }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+        button, input { pointer-events: auto !important; }
+        img { -webkit-user-drag: none !important; pointer-events: none; }
+
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        html, body { 
-            width: 100vw; height: 100vh; height: 100dvh; 
-            background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden !important; position: fixed !important; margin:0; padding:0; touch-action: none;
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ - РАМКА 235px */
+        .lang-frame-locked {
+            position: fixed; top: 15px; left: 15px; z-index: 9999999; 
+            width: 235px; height: 46px; border: 2px solid var(--gold); 
+            background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 12px;
         }
-        
-        /* Глушилка мусора Google */
-        #google_translate_element, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; visibility: hidden !important; }
-        body { top: 0 !important; }
 
-   .lang-frame-locked {
-    position: fixed !important;
-    top: 15px;
-    left: 15px;
-    z-index: 9999999 !important;
-    /* Точный размер под PORTUGUÊS . */
-    width: 235px !important; 
-    height: 46px !important;
-    border: 2px solid var(--gold) !important;
-    background: #000;
-    cursor: pointer;
-    box-sizing: border-box; /* ГАРАНТИЯ: рамка не увеличит ширину */
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    overflow: hidden;
-}
-        .lang-active-zone { width: 100%; height: 100%; display: flex; align-items: center; padding: 0 12px; }
-        .flag-icon { width: 22px; height: auto; margin-right: 12px; border: 1px solid rgba(214, 175, 55, 0.3); }
-        .lang-text {
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 1px;
-    color: var(--gold);
-    display: inline-block;
-    white-space: nowrap;
-    /* Центрирование текста внутри отведенного под него места */
-    flex-grow: 1; 
-}
-.lang-frame-locked {
-    position: fixed !important;
-    top: 15px;
-    left: 15px;
-    z-index: 9999999 !important;
-    /* Точный размер под PORTUGUÊS . */
-    width: 235px !important; 
-    height: 46px !important;
-    border: 2px solid var(--gold) !important;
-    background: #000;
-    cursor: pointer;
-    box-sizing: border-box; /* ГАРАНТИЯ: рамка не увеличит ширину */
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    overflow: hidden;
-}
-     
-/* Убираем рамки у элементов списка, если они были */
-.lang-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    border: none !important; 
-    transition: 0.2s;
-}
-
-.lang-item:hover {
-    background: rgba(214, 175, 55, 0.15); /* Подсветка при наведении */
-}
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000000; font-size: 24px; letter-spacing: 5px; font-weight: bold; color: var(--gold); pointer-events: none; }
-        
-        .block { 
-            position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; 
-            background: #000; z-index: 100; opacity: 0; transition: opacity 0.8s ease-in-out; pointer-events: none; 
+        .lang-dropdown-adaptive {
+            display: none; position: absolute; top: 44px; left: -2px; 
+            width: 235px; background: #000; border: none !important; z-index: 10000;
         }
-        .block.active { pointer-events: auto; }
 
-  
-#main-door {
-    position: relative;
-    z-index: 110;
-    pointer-events: auto !important;
-    cursor: pointer;
-    /* Увеличиваем время до 1.8с для Noir-драматизма */
-    transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.5s ease;
-    height: calc(42vh + 20px) !important;
-    width: auto;
-    object-fit: contain;
-    will-change: transform, opacity;
-}
+        .lang-item { display: flex; align-items: center; padding: 12px; cursor: pointer; }
+        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
+        .flag-icon { width: 22px; margin-right: 12px; }
+
+        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000000; font-size: 24px; letter-spacing: 5px; font-weight: bold; }
+        
+        .ui-back-to-bar { 
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
+            background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold);
+            padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s;
+        }
+
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s ease-in-out; }
+        .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
+
+        #main-door { height: calc(40vh + 20px); width: auto; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; z-index: 9999; pointer-events: auto !important; }
+        
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; }
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
-        .id-card-hall { position: absolute; top: 70%; left: 50%; transform: translate(-50%,-50%); width: 230px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
+        .id-card-hall { position: absolute; top: 72%; left: 50%; transform: translate(-50%,-50%); width: 220px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; color: var(--gold); text-align: center; max-width: 85%; line-height: 1.2; margin-bottom: 20px; }
+
+        /* BAR & TABLES */
+        #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
+        .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); pointer-events: auto !important; }
+        .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
+
+        .notranslate { translate: no; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div id="lang-switcher" class="lang-frame-locked notranslate">
-    <div class="lang-active-zone" id="active-lang-display" onclick="toggleLangList()">
-        <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
-        <span class="lang-text">ENGLISH</span>
+        <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
+            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
+            <span>ENGLISH</span>
+        </div>
+        <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
     </div>
-    <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
-</div>
 
-<div class="ui-header-right notranslate">GY-GY</div>
-    
     <div id="google_translate_element" style="display:none;"></div>
+    <div class="ui-header-right notranslate">GY-GY</div>
+    <button class="ui-back-to-bar" id="btn-global-back" onclick="portalTransition('block-bar')">BACK TO BAR</button>
 
-    <div class="ui-header-right">GY-GY</div>
+    <audio id="snd-door"><source src="door_open.mp3"></audio>
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
+    <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
+    <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
 
-    <audio id="snd-door" preload="auto"><source src="door_open.mp3" type="audio/mpeg"></audio>
-    <audio id="snd-ambient" loop preload="auto"><source src="bar_ambient.mp3" type="audio/mpeg"></audio>
-
-    <div id="block-entrance" class="block active" style="opacity: 1; display: flex; pointer-events: auto;">
+    <div id="block-entrance" class="block active">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block" style="justify-content: flex-start; padding-top: 5vh;">
         <div class="quote-text">«В каждой шутке есть доля виски»</div>
-        <img src="horse_welcome.png" style="max-height: 40vh; width: auto;">
-        <div style="font-size: 38px; font-weight: 700; letter-spacing: 12px; color: var(--gold); font-style: italic;">WELCOME</div>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">ПОЛУЧИТЬ ID</button>
+        <img src="horse_welcome.png" style="max-height: 45vh;">
+        <div style="font-size: 38px; font-weight: 700; letter-spacing: 12px; font-style: italic;">WELCOME</div>
+        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
+        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>
 
     <div id="block-identity" class="block">
         <div class="quote-text">«Шампанского много не бывает»</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg"></div>
+            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold);"></div>
+            <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
+                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="txt-photo" style="color:var(--gold); font-size:10px; font-weight:900;">PHOTO</span>
+            </div>
+            <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="generateAvatar()">
+                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+                <span id="txt-avatar" style="color:var(--gold); font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
+            </div>
         </div>
-        <button id="btn-save" class="btn-gy" onclick="swapButtons('btn-save', 'btn-pass')">СОХРАНИТЬ</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">ПРОЙТИ В ХОЛЛ</button>
+        <button id="btn-save" class="btn-gy" onclick="swapButtons('btn-save', 'btn-pass')">SAVE</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
     <div id="block-hall" class="block">
-        <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; z-index:15;"></div>
-        <div class="id-card-hall">
-            <div id="h-id" style="font-weight:900; font-size:12px;">#ID</div>
-            <div id="user-flag-icon"></div>
-            <div id="h-qr" class="box-final" style="margin: 10px 0;"></div>
-            <button class="btn-gy" style="border-color:#000; color:#000;" onclick="portalTransition('block-bar')">ВХОД В БАР</button>
+        <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; z-index:1;"></div>
+        <div class="id-card-hall" style="z-index:2;">
+            <div id="h-id" style="font-weight:900; font-size:14px; margin-bottom:12px;">#ID</div>
+            <div style="display:flex; gap:15px; margin-bottom:12px;">
+                <div class="box-final"><img id="h-photo" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div class="box-final" id="h-qr"></div>
+            </div>
+            <button id="btn-confirm" class="btn-gy" style="min-width:100%; border-color:#000; color:#000;" onclick="swapButtons('btn-confirm', 'btn-enter-bar')">CONFIRM</button>
+            <button id="btn-enter-bar" class="btn-gy btn-sleep" style="min-width:100%; border-color:#000; color:#000;" onclick="portalTransition('block-bar')">ENTER BAR</button>
         </div>
     </div>
 
-    <div id="block-bar" class="block">
-        <div class="quote-text">«Игого, сейчас начнем!»</div>
-        <img src="horse_bar.png" style="max-height: 60vh;">
+    <div id="block-bar" class="block" style="justify-content: flex-end;">
+        <div class="quote-text" style="position:absolute; top:8vh;">«Игого, сейчас начнем!»</div>
+        <div class="bar-ui-container">
+            <div style="display:flex; justify-content: space-between; width:100%; margin-bottom:12px;">
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-tables')">TABLES</button>
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="deepDive()">AI ROOM</button>
+            </div>
+            <button class="btn-gy" style="font-size:12px;" onclick="portalTransition('block-hall')">HALL</button>
+        </div>
+        <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
+    </div>
+
+    <div id="block-tables" class="block">
+        <div class="lamp-zone" style="bottom: 49.2%; left: 49.9%;"></div>
+        <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;"></div>
     </div>
 
     <script>
         let currentID = "";
-        let selectedFlag = "gb";
+        const clubLangs = [
+            {n:'ENGLISH', c:'gb', code:'en'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+            {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+            {n:'DEUTSCH', c:'de', code:'de'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+            {n:'ITALIANO', c:'it', code:'it'}, {n:'ESPAÑOL', c:'es', code:'es'}, 
+            {n:'TÜRKÇE', c:'tr', code:'tr'}, {n:'PORTUGUÊS .', c:'pt', code:'pt'}, 
+            {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+        ];
 
-    const clubLangs = [
-    {n:'ENGLISH', c:'gb', code:'en'}, 
-    {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-    {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-    {n:'POLSKI', c:'pl', code:'pl'}, 
-    {n:'DEUTSCH', c:'de', code:'de'}, 
-    {n:'FRANÇAIS', c:'fr', code:'fr'},
-    {n:'ITALIANO', c:'it', code:'it'}, 
-    {n:'ESPAÑOL', c:'es', code:'es'}, 
-    {n:'TÜRKÇE', c:'tr', code:'tr'}, 
-    {n:'PORTUGUÊS .', c:'pt', code:'pt'}, // Добавлен маркер ограничения
-    {n:'中文', c:'cn', code:'zh-CN'}, 
-    {n:'日本語', c:'jp', code:'ja'}
-];
+        function initLangEngine() {
+            const container = document.getElementById('lang-list-container');
+            container.innerHTML = '';
+            clubLangs.forEach(lang => {
+                if(lang.code === 'en') return;
+                const div = document.createElement('div');
+                div.className = 'lang-item notranslate';
+                div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`;
+                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+                container.appendChild(div);
+            });
+        }
 
-      function initLangEngine() {
-    const container = document.getElementById('lang-list-container');
-    if (!container) return;
-    container.innerHTML = '';
-    
-    // Оставляем все языки КРОМЕ английского в списке
-    clubLangs.forEach(lang => {
-        if (lang.code === 'en') return; // Игнорируем английский, он уже в рамке
-        
-        const div = document.createElement('div');
-        div.className = 'lang-item notranslate'; 
-        div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span class="lang-text">${lang.n}</span>`;
-        div.onclick = (e) => { 
-            e.stopPropagation(); 
-            applyLanguage(lang); 
-        };
-        container.appendChild(div);
-    });
-}
         function toggleLangList() {
             const list = document.getElementById('lang-list-container');
             list.style.display = (list.style.display === 'block') ? 'none' : 'block';
         }
 
         function applyLanguage(lang) {
-            selectedFlag = lang.c;
-            document.getElementById('active-lang-display').innerHTML = `
-                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon">
-                <span class="lang-text">${lang.n}</span>
-            `;
+            document.getElementById('active-lang-display').innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`;
             const gtCombo = document.querySelector('.goog-te-combo');
-            if (gtCombo) {
-                gtCombo.value = lang.code;
-                gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+            if (gtCombo) { gtCombo.value = lang.code; gtCombo.dispatchEvent(new Event('change', { bubbles: true })); }
             document.getElementById('lang-list-container').style.display = 'none';
+        }
+
+        function handleDoor() {
+            document.getElementById('snd-door').play();
+            const d = document.getElementById('main-door');
+            d.style.transform = "scale(5)"; d.style.opacity = "0";
+            document.getElementById('lang-switcher').style.opacity = "0";
+            
+            currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            document.getElementById('id-label').innerText = currentID;
+            document.getElementById('h-id').innerText = currentID;
+            
+            document.getElementById('qr-box-reg').innerHTML = "";
+            new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+            document.getElementById('h-qr').innerHTML = "";
+            new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
+            
+            setTimeout(() => { portalTransition('block-welcome'); const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); }, 1800);
         }
 
         function portalTransition(nextId) {
             const current = document.querySelector('.block.active');
-            const langS = document.getElementById('lang-switcher');
+            const backBtn = document.getElementById('btn-global-back');
+            const amb = document.getElementById('snd-ambient');
             if(current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
-            
-            langS.style.display = (nextId === 'block-entrance') ? 'block' : 'none';
+            backBtn.style.opacity = "0";
 
             setTimeout(() => {
                 if(current) { current.classList.remove('active'); current.style.display = "none"; }
                 const next = document.getElementById(nextId);
                 next.style.display = "flex";
-                setTimeout(() => { next.classList.add('active'); next.style.opacity = "1"; next.style.pointerEvents = "auto"; }, 50);
+                setTimeout(() => { 
+                    next.classList.add('active'); next.style.opacity = "1";
+                    if (nextId === 'block-bar') { fadeAudio(amb, 1, 800); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
+                    if (nextId === 'block-tables') { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = "1", 50); fadeAudio(amb, 0, 800); }
+                    else { backBtn.style.display = 'none'; }
+                }, 50);
             }, 800);
         }
 
-     function handleDoor() {
-    const d = document.getElementById('main-door');
-    document.getElementById('snd-door').play();
-    
-    // Прячем меню выбора языка, чтобы не мешало Noir-сцене
-    document.getElementById('lang-switcher').style.opacity = "0";
-
-    // Плавный, но мощный взрыв двери
-    d.style.transition = "transform 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.5s ease";
-    d.style.transform = "scale(10)"; 
-    d.style.opacity = "0";
-    
-    setTimeout(() => {
-        portalTransition('block-welcome');
-        document.getElementById('snd-ambient').play();
-    }, 1800);
-}
-        function swapButtons(a, s) { 
-            document.getElementById(a).classList.add('btn-sleep'); 
-            document.getElementById(s).classList.remove('btn-sleep'); 
+        function fadeAudio(audio, target, duration) {
+            const start = audio.volume; const startTime = Date.now();
+            const interval = setInterval(() => {
+                const progress = Math.min((Date.now() - startTime) / duration, 1);
+                audio.volume = start + (target - start) * progress;
+                if (progress === 1) clearInterval(interval);
+            }, 50);
         }
 
+        function preview(i) {
+            if(i.files && i.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => { 
+                    document.getElementById('avatar-img').style.display = "none";
+                    document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
+                    document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
+                };
+                r.readAsDataURL(i.files[0]);
+            }
+        }
+
+        function generateAvatar() {
+            document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+            const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+            const avImg = document.getElementById('avatar-img');
+            avImg.src = url; avImg.style.display = "block";
+            document.getElementById('txt-avatar').style.display = "none";
+            document.getElementById('h-photo').src = url;
+        }
+
+        function deepDive() {
+            document.body.style.transition = "opacity 1.2s, filter 1.2s";
+            document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
+            setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
+        }
+
+        function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
         function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element'); }
-        
-        window.addEventListener('load', () => {
-            initLangEngine();
-            setInterval(() => {
-                const banner = document.querySelector('.goog-te-banner-frame');
-                if (banner) banner.style.display = 'none';
-                document.body.style.top = '0';
-            }, 500);
-        });
+        window.addEventListener('load', initLangEngine);
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
