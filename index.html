@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.63 | FULL RESTORE</title>
+    <title>GY-GY Club v4.4.64 | FULL RESTORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -141,9 +141,8 @@
     </div>
 
     <script>
-      <script>
-    let currentID = "";
-    let currentActiveCode = 'en'; // Глобальная переменная для активного языка
+ let currentID = "";
+    let currentActiveCode = 'en';
 
     const allLangs = [
         {n:'ENGLISH', c:'gb', code:'en'}, 
@@ -167,7 +166,7 @@
         container.innerHTML = ''; 
         
         allLangs.forEach(lang => {
-            if(lang.code === currentActiveCode) return; // Не показываем текущий язык в списке
+            if(lang.code === currentActiveCode) return; 
 
             const div = document.createElement('div');
             div.className = 'lang-item notranslate'; 
@@ -187,13 +186,11 @@
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         
-        // Обновляем главную кнопку
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
             <span>${lang.n}</span>
         `;
         
-        // Команда для Google Translate
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) { 
             gtCombo.value = lang.code; 
@@ -201,34 +198,55 @@
         }
         
         document.getElementById('lang-list-container').style.display = 'none';
-        renderLangList(); // Пересобираем список, чтобы убрать новый активный язык
+        renderLangList();
     }
 
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
-        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        if (list) {
+            const isNone = list.style.display === 'none' || list.style.display === '';
+            list.style.display = isNone ? 'block' : 'none';
+        }
     }
 
-    // 3. Логика дверей и входа
+    // 3. Логика дверей
     function handleDoor() {
-        document.getElementById('snd-door').play();
+        const doorSnd = document.getElementById('snd-door');
+        if (doorSnd) doorSnd.play();
+
         const d = document.getElementById('main-door');
-        d.style.transform = "scale(5)"; d.style.opacity = "0";
-        document.getElementById('lang-switcher').style.opacity = "0";
+        if (d) {
+            d.style.transform = "scale(5)"; 
+            d.style.opacity = "0";
+            d.style.pointerEvents = "none"; // Чтобы не кликалось повторно
+        }
+
+        const ls = document.getElementById('lang-switcher');
+        if (ls) ls.style.opacity = "0";
         
         currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        document.getElementById('id-label').innerText = currentID;
-        document.getElementById('h-id').innerText = currentID;
+        const label = document.getElementById('id-label');
+        const hId = document.getElementById('h-id');
+        if (label) label.innerText = currentID;
+        if (hId) hId.innerText = currentID;
         
-        document.getElementById('qr-box-reg').innerHTML = "";
-        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-        document.getElementById('h-qr').innerHTML = "";
-        new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
+        const qrReg = document.getElementById('qr-box-reg');
+        if (qrReg) {
+            qrReg.innerHTML = "";
+            new QRCode(qrReg, { text: currentID, width: 85, height: 85 });
+        }
+        const qrHall = document.getElementById('h-qr');
+        if (qrHall) {
+            qrHall.innerHTML = "";
+            new QRCode(qrHall, { text: currentID, width: 75, height: 75 });
+        }
         
         setTimeout(() => { 
             portalTransition('block-welcome'); 
             const a = document.getElementById('snd-ambient'); 
-            a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
+            if (a) {
+                a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
+            }
         }, 1800);
     }
 
@@ -236,24 +254,49 @@
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
-        if(current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
-        backBtn.style.opacity = "0";
+        
+        if(current) { 
+            current.style.opacity = "0"; 
+            current.style.pointerEvents = "none"; 
+        }
+        if (backBtn) backBtn.style.opacity = "0";
 
         setTimeout(() => {
-            if(current) { current.classList.remove('active'); current.style.display = "none"; }
+            if(current) { 
+                current.classList.remove('active'); 
+                current.style.display = "none"; 
+            }
             const next = document.getElementById(nextId);
-            next.style.display = "flex";
-            setTimeout(() => { 
-                next.classList.add('active'); next.style.opacity = "1";
-                if (nextId === 'block-bar') { fadeAudio(amb, 1, 800); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
-                if (nextId === 'block-tables') { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = "1", 50); fadeAudio(amb, 0, 800); }
-                else { backBtn.style.display = 'none'; }
-            }, 50);
+            if (next) {
+                next.style.display = "flex";
+                setTimeout(() => { 
+                    next.classList.add('active'); 
+                    next.style.opacity = "1";
+                    next.style.pointerEvents = "auto";
+                    
+                    if (nextId === 'block-bar') { 
+                        if (amb) fadeAudio(amb, 1, 800); 
+                        const khe = document.getElementById('snd-khe');
+                        setTimeout(() => { if (khe) khe.play(); }, 800); 
+                    }
+                    if (nextId === 'block-tables') { 
+                        if (backBtn) {
+                            backBtn.style.display = 'block'; 
+                            setTimeout(() => backBtn.style.opacity = "1", 50);
+                        }
+                        if (amb) fadeAudio(amb, 0, 800); 
+                    } else if (backBtn) {
+                        backBtn.style.display = 'none'; 
+                    }
+                }, 50);
+            }
         }, 800);
     }
 
     function fadeAudio(audio, target, duration) {
-        const start = audio.volume; const startTime = Date.now();
+        if (!audio) return;
+        const start = audio.volume; 
+        const startTime = Date.now();
         const interval = setInterval(() => {
             const progress = Math.min((Date.now() - startTime) / duration, 1);
             audio.volume = start + (target - start) * progress;
@@ -266,29 +309,38 @@
             const r = new FileReader();
             r.onload = (e) => { 
                 document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
+                const pp = document.getElementById('pp');
+                pp.src = e.target.result; 
+                pp.style.display = "block";
+                document.getElementById('h-photo').src = e.target.result; 
+                document.getElementById('txt-photo').style.display = "none";
             };
             r.readAsDataURL(i.files[0]);
         }
     }
 
     function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+        document.getElementById('pp').style.display = "none"; 
+        document.getElementById('txt-photo').style.display = "block";
         const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
         const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
+        avImg.src = url; 
+        avImg.style.display = "block";
         document.getElementById('txt-avatar').style.display = "none";
         document.getElementById('h-photo').src = url;
     }
 
     function deepDive() {
         document.body.style.transition = "opacity 1.2s, filter 1.2s";
-        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
+        document.body.style.opacity = "0"; 
+        document.body.style.filter = "blur(10px) brightness(0)";
         setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
     }
 
-    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
+    function swapButtons(a, s) { 
+        document.getElementById(a).classList.add('btn-sleep'); 
+        document.getElementById(s).classList.remove('btn-sleep'); 
+    }
 
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -297,7 +349,6 @@
         }, 'google_translate_element');
     }
 
-    // Запуск при загрузке
     window.addEventListener('load', () => {
         renderLangList(); 
     });
