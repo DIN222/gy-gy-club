@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.66 | FULL RESTORE</title>
+    <title>GY-GY Club v4.4.67 | FULL RESTORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ - АДАПТИРОВАНА ПОД 235px */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ - АДАПТИРОВАНА ПОД 180px */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -63,6 +63,35 @@
         body { top: 0 !important; }
         .skiptranslate > iframe { display: none !important; }
         .notranslate { translate: no; }
+/* ПРАВКА ТОЛЬКО ДЛЯ БЛОКА ПРИВЕТСТВИЯ — СТРОГО ПО ПЛАНУ */
+#block-welcome {
+    justify-content: flex-start !important; 
+    padding-top: 8vh !important; /* Даем место верхним стрелкам */
+}
+
+#block-welcome .quote-text {
+    margin-bottom: 2vh !important;
+    font-size: 24px; /* Чуть компактнее для мобильных */
+}
+
+#block-welcome img {
+    max-height: 35vh !important; /* Константа высоты Коня */
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 2vh !important;
+    /* Золотое свечение Коня */
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)) drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+    pointer-events: auto !important;
+}
+
+#block-welcome .btn-gy {
+    margin: 4px 0 !important; /* Максимальная компактность */
+    padding: 12px !important;
+}
+
+#block-welcome div[style*="font-size: 34px"] {
+    margin-bottom: 5px !important; /* Расстояние под словом WELCOME */
+}
     </style> 
 </head>
 
@@ -89,13 +118,20 @@
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
-    <div id="block-welcome" class="block" style="justify-content: flex-start; padding-top: 5vh;">
+  <div id="block-welcome" class="block">
+        <div class="notranslate" style="position:fixed; top:15px; left:15px; z-index:1000001; display:flex; gap:20px; font-size:30px; cursor:pointer; color:var(--gold);">
+            <div onclick="portalTransition('block-entrance')" title="К двери">‹</div>
+            <div onclick="portalTransition('block-entrance')" title="Назад">«</div>
+        </div>
+
         <div class="quote-text">«В каждой шутке есть доля виски»</div>
-        <img src="horse_welcome.png" style="max-height: 45vh;">
-        <div style="font-size: 38px; font-weight: 700; letter-spacing: 12px; font-style: italic;">WELCOME</div>
+        
+        <img src="horse_welcome.png">
+        
+        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 10px;">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
-    </div>
+    </div>  
 
     <div id="block-identity" class="block">
         <div class="quote-text">«Шампанского много не бывает»</div>
@@ -220,10 +256,11 @@
         }, 1800);
     }
 
-    function portalTransition(nextId) {
+ function portalTransition(nextId) {
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
+        
         if(current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         backBtn.style.opacity = "0";
 
@@ -231,11 +268,29 @@
             if(current) { current.classList.remove('active'); current.style.display = "none"; }
             const next = document.getElementById(nextId);
             next.style.display = "flex";
+            
+            // УПРАВЛЕНИЕ ЯЗЫКОВОЙ ПАНЕЛЬЮ (Скрываем после входа)
+            const langPanel = document.getElementById('lang-switcher');
+            langPanel.style.display = (nextId === 'block-entrance') ? 'flex' : 'none';
+
             setTimeout(() => { 
-                next.classList.add('active'); next.style.opacity = "1"; next.style.pointerEvents = "auto";
-                if (nextId === 'block-bar') { fadeAudio(amb, 1, 800); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
-                if (nextId === 'block-tables') { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = "1", 50); fadeAudio(amb, 0, 800); }
-                else { backBtn.style.display = 'none'; }
+                next.classList.add('active'); 
+                next.style.opacity = "1"; 
+                next.style.pointerEvents = "auto";
+                
+                if (nextId === 'block-bar') { 
+                    fadeAudio(amb, 1, 800); 
+                    setTimeout(() => document.getElementById('snd-khe').play(), 800); 
+                }
+                
+                // Управление кнопкой возврата для таблиц
+                if (nextId === 'block-tables') { 
+                    backBtn.style.display = 'block'; 
+                    setTimeout(() => backBtn.style.opacity = "1", 50); 
+                    fadeAudio(amb, 0, 800); 
+                } else { 
+                    backBtn.style.display = 'none'; 
+                }
             }, 50);
         }, 800);
     }
