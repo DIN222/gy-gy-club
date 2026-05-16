@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.68 | FULL RESTORE</title>
+    <title>GY-GY Club v4.4.69 | FULL RESTORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -63,35 +63,36 @@
         body { top: 0 !important; }
         .skiptranslate > iframe { display: none !important; }
         .notranslate { translate: no; }
-/* ПРАВКА ТОЛЬКО ДЛЯ БЛОКА ПРИВЕТСТВИЯ — СТРОГО ПО ПЛАНУ */
-#block-welcome {
-    justify-content: flex-start !important; 
-    padding-top: 8vh !important; /* Даем место верхним стрелкам */
-}
 
-#block-welcome .quote-text {
-    margin-bottom: 2vh !important;
-    font-size: 24px; /* Чуть компактнее для мобильных */
-}
+        /* ПРАВКА ТОЛЬКО ДЛЯ БЛОКА ПРИВЕТСТВИЯ — СТРОГО ПО ПЛАНУ */
+        #block-welcome {
+            justify-content: flex-start !important; 
+            padding-top: 8vh !important; /* Даем место верхним стрелкам */
+        }
 
-#block-welcome img {
-    max-height: 35vh !important; /* Константа высоты Коня */
-    width: auto;
-    object-fit: contain;
-    margin-bottom: 2vh !important;
-    /* Золотое свечение Коня */
-    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)) drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
-    pointer-events: auto !important;
-}
+        #block-welcome .quote-text {
+            margin-bottom: 2vh !important;
+            font-size: 24px; /* Чуть компактнее для мобильных */
+        }
 
-#block-welcome .btn-gy {
-    margin: 4px 0 !important; /* Максимальная компактность */
-    padding: 12px !important;
-}
+        #block-welcome img {
+            max-height: 35vh !important; /* Константа высоты Коня */
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 2vh !important;
+            /* Золотое свечение Коня */
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)) drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+            pointer-events: auto !important;
+        }
 
-#block-welcome div[style*="font-size: 34px"] {
-    margin-bottom: 5px !important; /* Расстояние под словом WELCOME */
-}
+        #block-welcome .btn-gy {
+            margin: 4px 0 !important; /* Максимальная компактность */
+            padding: 12px !important;
+        }
+
+        #block-welcome div[style*="font-size: 34px"] {
+            margin-bottom: 5px !important; /* Расстояние под словом WELCOME */
+        }
     </style> 
 </head>
 
@@ -118,23 +119,20 @@
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
- <div class="notranslate" style="
-            position: fixed; 
-            top: 18px; /* Выровнено по одной линии с логотипом */
-            left: 20px; 
-            z-index: 1000001; 
-            display: flex; 
-            gap: 20px; 
-            font-size: 24px; /* Точный размер логотипа */
-            font-weight: bold; 
-            font-family: sans-serif; /* Округлые и четкие стрелки */
-            cursor: pointer; 
-            color: var(--gold);
-            line-height: 1;
-        ">
-            <div onclick="portalTransition('block-entrance')" style="padding: 0 5px;" title="К двери">‹</div>
-            <div onclick="portalTransition('block-entrance')" style="padding: 0 5px;" title="Назад">«</div>
+    <div id="block-welcome" class="block">
+        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 1000001; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1;">
+            <div onclick="portalTransition('block-entrance')" style="padding: 10px; margin: -10px;" title="К двери">‹</div>
+            <div onclick="portalTransition('block-entrance')" style="padding: 10px; margin: -10px;" title="Назад">«</div>
         </div>
+
+        <div class="quote-text">«В каждой шутке есть доля виски»</div>
+        
+        <img src="horse_welcome.png">
+        
+        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
+        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
+        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
+    </div>  
 
     <div id="block-identity" class="block">
         <div class="quote-text">«Шампанского много не бывает»</div>
@@ -259,7 +257,7 @@
         }, 1800);
     }
 
- function portalTransition(nextId) {
+    function portalTransition(nextId) {
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
@@ -321,33 +319,3 @@
     }
 
     function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
-        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-        const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
-        document.getElementById('txt-avatar').style.display = "none";
-        document.getElementById('h-photo').src = url;
-    }
-
-    function deepDive() {
-        document.body.style.transition = "opacity 1.2s, filter 1.2s";
-        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
-        setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
-    }
-
-    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
-
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en', 
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            autoDisplay: false,
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-    }
-
-    window.addEventListener('load', renderLangList);
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
