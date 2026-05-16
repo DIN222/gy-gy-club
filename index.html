@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.69 | FULL RESTORE</title>
+    <title>GY-GY Club v4.4.68 | FULL RESTORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -319,3 +319,33 @@
     }
 
     function generateAvatar() {
+        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+        const avImg = document.getElementById('avatar-img');
+        avImg.src = url; avImg.style.display = "block";
+        document.getElementById('txt-avatar').style.display = "none";
+        document.getElementById('h-photo').src = url;
+    }
+
+    function deepDive() {
+        document.body.style.transition = "opacity 1.2s, filter 1.2s";
+        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
+        setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
+    }
+
+    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
+
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en', 
+            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+            autoDisplay: false,
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+
+    window.addEventListener('load', renderLangList);
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
