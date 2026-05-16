@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.68 | FULL RESTORE</title>
+    <title>GY-GY Club v4.4.69 | TOTAL FIX</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ - АДАПТИРОВАНА ПОД 180px */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -41,8 +41,9 @@
             padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s;
         }
 
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.8s ease-in-out; }
-        .block.active { display: flex !important; opacity: 1; pointer-events: auto; }
+        /* ИСПРАВЛЕНО: display переключается скриптом, чтобы избежать конфликтов анимации */
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.6s ease-in-out; }
+        .block.active { opacity: 1; pointer-events: auto; }
 
         #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; z-index: 9999; pointer-events: auto !important; }
         
@@ -58,40 +59,32 @@
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); pointer-events: auto !important; }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
-        /* СКРЫВАЕМ МУСОР ГУГЛА */
-        .goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-te-spinner-pos { display: none !important; }
+        /* ИСПРАВЛЕНО: Убраны лишние display:none для гугл-виджета, чтобы перевод работал */
         body { top: 0 !important; }
-        .skiptranslate > iframe { display: none !important; }
         .notranslate { translate: no; }
 
-        /* ПРАВКА ТОЛЬКО ДЛЯ БЛОКА ПРИВЕТСТВИЯ — СТРОГО ПО ПЛАНУ */
         #block-welcome {
             justify-content: flex-start !important; 
-            padding-top: 8vh !important; /* Даем место верхним стрелкам */
+            padding-top: 10vh !important; 
         }
 
         #block-welcome .quote-text {
             margin-bottom: 2vh !important;
-            font-size: 24px; /* Чуть компактнее для мобильных */
+            font-size: 24px; 
         }
 
         #block-welcome img {
-            max-height: 35vh !important; /* Константа высоты Коня */
+            max-height: 35vh !important; 
             width: auto;
             object-fit: contain;
             margin-bottom: 2vh !important;
-            /* Золотое свечение Коня */
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)) drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
             pointer-events: auto !important;
         }
 
         #block-welcome .btn-gy {
-            margin: 4px 0 !important; /* Максимальная компактность */
+            margin: 4px 0 !important; 
             padding: 12px !important;
-        }
-
-        #block-welcome div[style*="font-size: 34px"] {
-            margin-bottom: 5px !important; /* Расстояние под словом WELCOME */
         }
     </style> 
 </head>
@@ -106,7 +99,8 @@
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
     </div>
 
-    <div id="google_translate_element" style="display:none;"></div>
+    <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
+    
     <div class="ui-header-right notranslate">GY-GY</div>
     <button class="ui-back-to-bar" id="btn-global-back" onclick="portalTransition('block-bar')">BACK TO BAR</button>
 
@@ -115,20 +109,18 @@
     <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
 
-    <div id="block-entrance" class="block active">
+    <div id="block-entrance" class="block" style="display: flex; opacity: 1;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 1000001; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1;">
-            <div onclick="portalTransition('block-entrance')" style="padding: 10px; margin: -10px;" title="К двери">‹</div>
-            <div onclick="portalTransition('block-entrance')" style="padding: 10px; margin: -10px;" title="Назад">«</div>
+        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 1000005; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
+            <div onclick="portalTransition('block-entrance')" style="padding: 15px 10px; margin: -15px -10px;" title="К двери">‹</div>
+            <div onclick="portalTransition('block-entrance')" style="padding: 15px 10px; margin: -15px -10px;" title="Назад">«</div>
         </div>
 
         <div class="quote-text">«В каждой шутке есть доля виски»</div>
-        
         <img src="horse_welcome.png">
-        
         <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
@@ -247,105 +239,4 @@
         document.getElementById('h-id').innerText = currentID;
         
         document.getElementById('qr-box-reg').innerHTML = "";
-        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-        document.getElementById('h-qr').innerHTML = "";
-        new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
-        
-        setTimeout(() => { 
-            portalTransition('block-welcome'); 
-            const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
-        }, 1800);
-    }
-
-    function portalTransition(nextId) {
-        const current = document.querySelector('.block.active');
-        const backBtn = document.getElementById('btn-global-back');
-        const amb = document.getElementById('snd-ambient');
-        
-        if(current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
-        backBtn.style.opacity = "0";
-
-        setTimeout(() => {
-            if(current) { current.classList.remove('active'); current.style.display = "none"; }
-            const next = document.getElementById(nextId);
-            next.style.display = "flex";
-            
-            // УПРАВЛЕНИЕ ЯЗЫКОВОЙ ПАНЕЛЬЮ (Скрываем после входа)
-            const langPanel = document.getElementById('lang-switcher');
-            langPanel.style.display = (nextId === 'block-entrance') ? 'flex' : 'none';
-
-            setTimeout(() => { 
-                next.classList.add('active'); 
-                next.style.opacity = "1"; 
-                next.style.pointerEvents = "auto";
-                
-                if (nextId === 'block-bar') { 
-                    fadeAudio(amb, 1, 800); 
-                    setTimeout(() => document.getElementById('snd-khe').play(), 800); 
-                }
-                
-                // Управление кнопкой возврата для таблиц
-                if (nextId === 'block-tables') { 
-                    backBtn.style.display = 'block'; 
-                    setTimeout(() => backBtn.style.opacity = "1", 50); 
-                    fadeAudio(amb, 0, 800); 
-                } else { 
-                    backBtn.style.display = 'none'; 
-                }
-            }, 50);
-        }, 800);
-    }
-
-    function fadeAudio(audio, target, duration) {
-        if (!audio) return;
-        const start = audio.volume; const startTime = Date.now();
-        const interval = setInterval(() => {
-            const progress = Math.min((Date.now() - startTime) / duration, 1);
-            audio.volume = start + (target - start) * progress;
-            if (progress === 1) clearInterval(interval);
-        }, 50);
-    }
-
-    function preview(i) {
-        if(i.files && i.files[0]) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
-            };
-            r.readAsDataURL(i.files[0]);
-        }
-    }
-
-    function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
-        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-        const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
-        document.getElementById('txt-avatar').style.display = "none";
-        document.getElementById('h-photo').src = url;
-    }
-
-    function deepDive() {
-        document.body.style.transition = "opacity 1.2s, filter 1.2s";
-        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
-        setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
-    }
-
-    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
-
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en', 
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            autoDisplay: false,
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-    }
-
-    window.addEventListener('load', renderLangList);
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
+        new QRCode(document.getElementById("qr-box-reg"), { text: currentID
