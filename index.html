@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.74 | HARD SOUND STOP</title>
+    <title>GY-GY Club v4.4.78 | ARROWS LOGO MATCH</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -25,14 +25,15 @@
         
         /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
-            position: fixed; top: 15px; left: 15px; z-index: 9999999; 
+            position: fixed; top: 15px; left: 15px; z-index: 99999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
             background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 12px;
+            max-height: 40px !important; overflow: visible !important;
         }
 
         .lang-dropdown-adaptive {
             display: none; position: absolute; top: 44px; left: -2px; 
-            width: 180px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
+            width: 180px; background: #000; border: 1px solid var(--gold) !important; z-index: 100000;
             max-height: 70vh; overflow-y: auto;
         }
 
@@ -72,7 +73,8 @@
             width: auto; 
             cursor: pointer; 
             transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
-            z-index: 9999; 
+            z-index: 9999999 !important; 
+            pointer-events: auto !important;
         }
         
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; }
@@ -134,12 +136,12 @@
     <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
 
-    <div id="block-entrance" class="block active" style="display: flex; opacity: 1;">
+    <div id="block-entrance" class="block active" style="display: flex; opacity: 1; z-index: 999999 !important;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
+        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: 'Share Tech Mono', monospace; letter-spacing: 5px; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
             <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="To Door">‹</div>
             <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Back">«</div>
         </div>
@@ -152,7 +154,7 @@
     </div>  
 
     <div id="block-identity" class="block">
-        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
+        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: 'Share Tech Mono', monospace; letter-spacing: 5px; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
             <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="To Door">‹</div>
             <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Back">«</div>
         </div>
@@ -291,7 +293,6 @@
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
         
-        // ЖЕЛЕЗНЫЙ ФИКС ЗВУКА: Глушим звук бара моментально в самом начале клика, если идём на Вход
         if (nextId === 'block-entrance' && amb) {
             amb.pause();
             amb.currentTime = 0;
@@ -321,7 +322,7 @@
                 door.style.transition = "none"; 
                 door.style.transform = "scale(1)"; 
                 door.style.opacity = "1"; 
-                door.style.pointerEvents = "auto";
+                door.style.pointerEvents = "auto !important";
                 
                 if (langPanel) {
                     langPanel.style.display = 'flex';
@@ -348,10 +349,13 @@
                     backBtn.style.display = 'none'; 
                 }
                 
-                const gtCombo = document.querySelector('.goog-te-combo');
-                if (gtCombo && currentActiveCode !== 'en') {
-                    gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
-                }
+                setTimeout(() => {
+                    const gtCombo = document.querySelector('.goog-te-combo');
+                    if (gtCombo && currentActiveCode !== 'en') {
+                        gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }, 150);
+                
             }, 50);
         }, 400); 
     }
