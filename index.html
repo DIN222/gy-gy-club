@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.75 | TRANSLATION FIX</title>
+    <title>GY-GY Club v4.4.76 | DOOR CLICK FIX</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -307,84 +307,3 @@
                 current.classList.remove('active'); 
                 current.style.display = "none"; 
             }
-            
-            const next = document.getElementById(nextId);
-            if (!next) return;
-            
-            next.style.display = "flex";
-            
-            const langPanel = document.getElementById('lang-switcher');
-            
-            if (nextId === 'block-entrance') {
-                const door = document.getElementById('main-door');
-                door.style.transition = "none"; 
-                door.style.transform = "scale(1)"; 
-                door.style.opacity = "1"; 
-                door.style.pointerEvents = "auto";
-                
-                if (langPanel) {
-                    langPanel.style.display = 'flex';
-                    langPanel.style.opacity = '1';
-                }
-            } else {
-                if (langPanel) langPanel.style.display = 'none';
-            }
-
-            setTimeout(() => { 
-                next.classList.add('active'); 
-                next.style.pointerEvents = "auto";
-                
-                if (nextId === 'block-bar') { 
-                    fadeAudio(amb, 1, 800); 
-                    setTimeout(() => document.getElementById('snd-khe').play(), 800); 
-                }
-                
-                if (nextId === 'block-tables') { 
-                    backBtn.style.display = 'block'; 
-                    setTimeout(() => backBtn.style.opacity = "1", 50); 
-                    fadeAudio(amb, 0, 800); 
-                } else { 
-                    backBtn.style.display = 'none'; 
-                }
-                
-                // ИСПРАВЛЕНО: Микро-таймаут гарантирует, что Google успевает считать обновлённый DOM и перевести слоганы
-                setTimeout(() => {
-                    const gtCombo = document.querySelector('.goog-te-combo');
-                    if (gtCombo && currentActiveCode !== 'en') {
-                        gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
-                }, 150);
-                
-            }, 50);
-        }, 400); 
-    }
-
-    function fadeAudio(audio, target, duration) {
-        if (!audio) return;
-        const start = audio.volume; const startTime = Date.now();
-        const interval = setInterval(() => {
-            const progress = Math.min((Date.now() - startTime) / duration, 1);
-            audio.volume = start + (target - start) * progress;
-            if (progress === 1) clearInterval(interval);
-        }, 50);
-    }
-
-    function preview(i) {
-        if(i.files && i.files[0]) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
-            };
-            r.readAsDataURL(i.files[0]);
-        }
-    }
-
-    function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
-        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-        const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
-        document.getElementById('txt-avatar').style.display = "none";
-        document.getElementById('h
