@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.70 | TOTAL UNBLOCK</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.4.72 | LOCKED CODE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
-        /* ИСПРАВЛЕНО: Убран агрессивный user-select, ломавший тапы на смартфонах */
         * { 
             -webkit-tap-highlight-color: transparent !important; 
             box-sizing: border-box; 
         }
         
-        /* Разрешаем клики везде, где это нужно, явно */
         body, button, input, div, img, span { 
             pointer-events: auto !important; 
         }
@@ -50,7 +48,6 @@
             padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s;
         }
 
-        /* ИСПРАВЛЕНО: Неактивные блоки физически убираются из DOM через display: none */
         .block { 
             position: fixed; 
             inset: 0; 
@@ -64,25 +61,28 @@
             transition: opacity 0.4s ease-in-out; 
         }
         
-        /* Активный блок всегда имеет высший приоритет слоев */
         .block.active { 
             display: flex !important; 
             opacity: 1 !important; 
             z-index: 5000 !important;
         }
 
-        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s; z-index: 9999; }
+        #main-door { 
+            height: calc(50vh + 20px); 
+            width: auto; 
+            cursor: pointer; 
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
+            z-index: 9999; 
+        }
         
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; }
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
         
-        /* Блокировка спящих кнопок */
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
         .id-card-hall { position: absolute; top: 72%; left: 50%; transform: translate(-50%,-50%); width: 220px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* BAR & TABLES */
         #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
@@ -140,11 +140,11 @@
 
     <div id="block-welcome" class="block">
         <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
-            <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="К двери">‹</div>
-            <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Назад">«</div>
+            <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="To Door">‹</div>
+            <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Back">«</div>
         </div>
 
-        <div class="quote-text">«В каждой шутке есть доля виски»</div>
+        <div class="quote-text">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
         <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
@@ -152,7 +152,12 @@
     </div>  
 
     <div id="block-identity" class="block">
-        <div class="quote-text">«Шампанского много не бывает»</div>
+        <div class="notranslate" style="position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 20px; font-size: 24px; font-weight: bold; font-family: sans-serif; cursor: pointer; color: var(--gold); line-height: 1; pointer-events: auto !important;">
+            <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="To Door">‹</div>
+            <div onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Back">«</div>
+        </div>
+
+        <div class="quote-text">There is never too much champagne</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold);"></div>
@@ -184,7 +189,7 @@
     </div>
 
     <div id="block-bar" class="block" style="justify-content: flex-end;">
-        <div class="quote-text" style="position:absolute; top:8vh;">«Игого, сейчас начнем!»</div>
+        <div class="quote-text" style="position:absolute; top:8vh;">Igogo, let us start now!</div>
         <div class="bar-ui-container">
             <div style="display:flex; justify-content: space-between; width:100%; margin-bottom:12px;">
                 <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-tables')">TABLES</button>
@@ -256,33 +261,39 @@
     function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
-        d.style.transform = "scale(5)"; d.style.opacity = "0"; d.style.pointerEvents = "none";
+        
+        d.style.transition = "transform 1.2s ease-in, opacity 1s";
+        d.style.transform = "scale(5)"; 
+        d.style.opacity = "0"; 
+        d.style.pointerEvents = "none";
+        
         document.getElementById('lang-switcher').style.opacity = "0";
         
-        currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        document.getElementById('id-label').innerText = currentID;
-        document.getElementById('h-id').innerText = currentID;
-        
-        document.getElementById('qr-box-reg').innerHTML = "";
-        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-        document.getElementById('h-qr').innerHTML = "";
-        new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
+        if (!currentID) {
+            currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            document.getElementById('id-label').innerText = currentID;
+            document.getElementById('h-id').innerText = currentID;
+            
+            document.getElementById('qr-box-reg').innerHTML = "";
+            new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+            document.getElementById('h-qr').innerHTML = "";
+            new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
+        }
         
         setTimeout(() => { 
             portalTransition('block-welcome'); 
             const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
-        }, 1800);
+        }, 1000);
     }
 
-    // ИСПРАВЛЕНО: Полная зачистка фантомных блоков и блокировок кликов
     function portalTransition(nextId) {
-        const current = document.querySelector('.block.active') || document.getElementById('block-entrance');
+        const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
         
         if (current) { 
             current.style.opacity = "0"; 
-            current.style.pointerEvents = "none"; // Моментально лишаем блок физики
+            current.style.pointerEvents = "none"; 
         }
         backBtn.style.opacity = "0";
 
@@ -295,20 +306,25 @@
             const next = document.getElementById(nextId);
             if (!next) return;
             
-            // Сначала включаем отображение
             next.style.display = "flex";
             
             const langPanel = document.getElementById('lang-switcher');
-            if (langPanel) {
-                if (nextId === 'block-entrance') {
+            
+            if (nextId === 'block-entrance') {
+                const door = document.getElementById('main-door');
+                door.style.transition = "none"; 
+                door.style.transform = "scale(1)"; 
+                door.style.opacity = "1"; 
+                door.style.pointerEvents = "auto";
+                
+                if (langPanel) {
                     langPanel.style.display = 'flex';
                     langPanel.style.opacity = '1';
-                } else {
-                    langPanel.style.display = 'none';
                 }
+            } else {
+                if (langPanel) langPanel.style.display = 'none';
             }
 
-            // Мягко проявляем сцену и даем ей высший приоритет
             setTimeout(() => { 
                 next.classList.add('active'); 
                 next.style.pointerEvents = "auto";
@@ -325,8 +341,13 @@
                 } else { 
                     backBtn.style.display = 'none'; 
                 }
+                
+                const gtCombo = document.querySelector('.goog-te-combo');
+                if (gtCombo && currentActiveCode !== 'en') {
+                    gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
+                }
             }, 50);
-        }, 400); // Оптимизировано время переключения под мгновенный отклик
+        }, 400); 
     }
 
     function fadeAudio(audio, target, duration) {
