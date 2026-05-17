@@ -373,4 +373,18 @@
         if(i.files && i.files[0]) {
             const r = new FileReader();
             r.onload = (e) => { 
-                document.getElementById
+                document.getElementById('avatar-img').style.display = "none";
+                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
+                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
+            };
+            r.readAsDataURL(i.files[0]);
+        }
+    }
+
+    function generateAvatar() {
+        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+        const avImg = document.getElementById('avatar-img');
+        avImg.src = url; avImg.style.display = "block";
+        document.getElementById('txt-avatar').style.display = "none";
+        document.getElementById('h
