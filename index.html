@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.82 | TEXT ARROWS SOLID</title>
+    <title>GY-GY Club v4.4.83 | FIX NAVIGATION & TOGGLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -122,8 +122,8 @@
             cursor: pointer; 
             color: var(--gold); 
             line-height: 1; 
-            letter-spacing: -2px; /* Плотное, дорогое сжатие знаков */
-            text-shadow: 0.5px 0.5px 0px var(--gold), -0.5px -0.5px 0px var(--gold); /* Эффект благородного литья */
+            letter-spacing: -2px; 
+            text-shadow: 0.5px 0.5px 0px var(--gold), -0.5px -0.5px 0px var(--gold); 
             pointer-events: auto !important;
             user-select: none;
         }
@@ -163,8 +163,8 @@
 
     <div id="block-welcome" class="block">
         <div class="notranslate ui-nav-arrows">
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="To Door">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Back">&lt;&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Назад к дверям">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
         </div>
 
         <div class="quote-text">In every joke there is a share of whisky</div>
@@ -176,19 +176,21 @@
 
     <div id="block-identity" class="block">
         <div class="notranslate ui-nav-arrows">
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="To Door">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Back">&lt;&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-welcome')" style="padding: 15px; margin: -15px;" title="Назад к приветствию">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
         </div>
 
         <div class="quote-text">There is never too much champagne</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold);"></div>
+            
             <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:var(--gold); font-size:10px; font-weight:900;">PHOTO</span>
             </div>
+            
             <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:var(--gold); font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
@@ -199,6 +201,10 @@
     </div>
 
     <div id="block-hall" class="block">
+        <div class="notranslate ui-nav-arrows">
+            <div class="arrow-item" onclick="portalTransition('block-identity')" style="padding: 15px; margin: -15px;" title="Назад к регистрации">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
+        </div>
         <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; z-index:1;"></div>
         <div class="id-card-hall" style="z-index:2;">
             <div id="h-id" style="font-weight:900; font-size:14px; margin-bottom:12px;">#ID</div>
@@ -224,6 +230,10 @@
     </div>
 
     <div id="block-tables" class="block">
+        <div class="notranslate ui-nav-arrows">
+            <div class="arrow-item" onclick="portalTransition('block-bar')" style="padding: 15px; margin: -15px;" title="Назад к бару">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
+        </div>
         <div class="lamp-zone" style="bottom: 49.2%; left: 49.9%;"></div>
         <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;"></div>
     </div>
@@ -388,24 +398,41 @@
         }, 50);
     }
 
+    /* ИЛИ ФОТО, ИЛИ АВАТАР - ИСКЛЮЧАЮЩИЙ ВЫБОР */
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
             r.onload = (e) => { 
+                // Сбрасываем и полностью скрываем Аватар
                 document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                document.getElementById('h-photo').src = e.target.result; document.getElementById('txt-photo').style.display = "none";
+                document.getElementById('txt-avatar').style.display = "block";
+                
+                // Активируем загруженное Фото
+                document.getElementById('pp').src = e.target.result; 
+                document.getElementById('pp').style.display = "block";
+                document.getElementById('txt-photo').style.display = "none";
+                
+                // Передаем фото в карточку Холла
+                document.getElementById('h-photo').src = e.target.result; 
             };
             r.readAsDataURL(i.files[0]);
         }
     }
 
     function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+        // Сбрасываем и полностью скрываем загруженное Фото
+        document.getElementById('pp').style.display = "none"; 
+        document.getElementById('txt-photo').style.display = "block";
+        document.getElementById('file-input').value = ""; // очистка инпута
+        
+        // Генерируем Аватар
         const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
         const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
+        avImg.src = url; 
+        avImg.style.display = "block";
         document.getElementById('txt-avatar').style.display = "none";
+        
+        // Передаем сгенерированный аватар в карточку Холла
         document.getElementById('h-photo').src = url;
     }
 
@@ -417,6 +444,7 @@
 
     function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
 
+    /* ФИКС ИНИЦИАЛИЗАЦИИ GOOGLE TRANSLATE */
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en', 
