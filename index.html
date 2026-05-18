@@ -427,3 +427,81 @@
     function fadeAudio(audio, target, duration) {
         if (!audio) return;
         const start = audio.volume; const startTime = Date.now();
+        const interval = setInterval(() => {
+            const progress = Math.min((Date.now() - startTime) / duration, 1);
+            audio.volume = start + (target - start) * progress;
+            if (progress === 1) clearInterval(interval);
+        }, 50);
+    }
+
+    function preview(i) {
+        if(i.files && i.files[0]) {
+            const r = new FileReader();
+            r.onload = (e) => { 
+                document.getElementById('avatar-img').style.display = "none";
+                document.getElementById('txt-avatar').style.display = "block";
+                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
+                document.getElementById('txt-photo').style.display = "none";
+                currentUserImage = e.target.result;
+            };
+            r.readAsDataURL(i.files[0]);
+        }
+    }
+
+    function generateAvatar() {
+        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+        document.getElementById('file-input').value = ""; 
+        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+        const avImg = document.getElementById('avatar-img');
+        avImg.src = url; avImg.style.display = "block";
+        document.getElementById('txt-avatar').style.display = "none";
+        currentUserImage = url;
+    }
+
+    function saveUserProfile() {
+        if(!currentUserImage) { alert("Please select PHOTO or generate AVATAR first!"); return; }
+        localStorage.setItem('gy_user_id', currentID);
+        localStorage.setItem('gy_user_img', currentUserImage);
+        swapButtons('btn-save', 'btn-pass');
+    }
+
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        modal.style.display = "flex";
+        setTimeout(() => modal.style.opacity = "1", 10);
+    }
+
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        modal.style.opacity = "0";
+        setTimeout(() => modal.style.display = "none", 300);
+    }
+
+    function deepDive() {
+        document.body.style.transition = "opacity 1.2s, filter 1.2s";
+        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
+        setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
+    }
+
+    function enterStudio() {
+        alert("Studio is under construction. Calibration in progress...");
+    }
+
+    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
+
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+
+    window.addEventListener('load', () => {
+        renderLangList();
+        if (currentUserImage && currentID) {
+            document.getElementById('badge-avatar-img').src = currentUserImage;
+            document.getElementById('pass-avatar-img').src = currentUserImage;
+            document.getElementById('global-user-badge').style.display = "block";
+        }
+    });
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
