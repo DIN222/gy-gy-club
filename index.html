@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.83 | FIX NAVIGATION & TOGGLE</title>
+    <title>GY-GY Club v4.4.84 | FROZEN WITH CONTOUR</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -40,7 +40,16 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000000; font-size: 24px; letter-spacing: 5px; font-weight: bold; }
+        /* ЛОГОТИП GY-GY С ЧЕРНОЙ ОБВОДКОЙ В 1 ПИКСЕЛЬ ДЛЯ СВЕТЛОГО ХОЛЛА */
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000; /* Контур 1px */
+        }
         
         .ui-back-to-bar { 
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
@@ -112,7 +121,7 @@
             padding: 12px !important;
         }
 
-        /* СОЛИДНОЕ ОФОРМЛЕНИЕ ТЕКСТОВЫХ СТРЕЛОК ПОД СТИЛЬ КЛУБА */
+        /* СТРЕЛКИ С ЧЕРНОЙ ОБВОДКОЙ В 1 ПИКСЕЛЬ ДЛЯ СВЕТЛОГО ХОЛЛА */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; 
@@ -123,7 +132,12 @@
             color: var(--gold); 
             line-height: 1; 
             letter-spacing: -2px; 
-            text-shadow: 0.5px 0.5px 0px var(--gold), -0.5px -0.5px 0px var(--gold); 
+            /* Сверхчеткий черный контур 1px во все стороны */
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000;
             pointer-events: auto !important;
             user-select: none;
         }
@@ -398,21 +412,17 @@
         }, 50);
     }
 
-    /* ИЛИ ФОТО, ИЛИ АВАТАР - ИСКЛЮЧАЮЩИЙ ВЫБОР */
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
             r.onload = (e) => { 
-                // Сбрасываем и полностью скрываем Аватар
                 document.getElementById('avatar-img').style.display = "none";
                 document.getElementById('txt-avatar').style.display = "block";
                 
-                // Активируем загруженное Фото
                 document.getElementById('pp').src = e.target.result; 
                 document.getElementById('pp').style.display = "block";
                 document.getElementById('txt-photo').style.display = "none";
                 
-                // Передаем фото в карточку Холла
                 document.getElementById('h-photo').src = e.target.result; 
             };
             r.readAsDataURL(i.files[0]);
@@ -420,19 +430,16 @@
     }
 
     function generateAvatar() {
-        // Сбрасываем и полностью скрываем загруженное Фото
         document.getElementById('pp').style.display = "none"; 
         document.getElementById('txt-photo').style.display = "block";
-        document.getElementById('file-input').value = ""; // очистка инпута
+        document.getElementById('file-input').value = ""; 
         
-        // Генерируем Аватар
         const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
         const avImg = document.getElementById('avatar-img');
         avImg.src = url; 
         avImg.style.display = "block";
         document.getElementById('txt-avatar').style.display = "none";
         
-        // Передаем сгенерированный аватар в карточку Холла
         document.getElementById('h-photo').src = url;
     }
 
@@ -444,7 +451,6 @@
 
     function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
 
-    /* ФИКС ИНИЦИАЛИЗАЦИИ GOOGLE TRANSLATE */
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en', 
