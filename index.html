@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.84 | FROZEN WITH CONTOUR</title>
+    <title>GY-GY Club v4.4.85 | USER BADGE CONSTANT</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -40,17 +40,42 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY С ЧЕРНОЙ ОБВОДКОЙ В 1 ПИКСЕЛЬ ДЛЯ СВЕТЛОГО ХОЛЛА */
+        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: 
-                -1px -1px 0 #000,  
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000; /* Контур 1px */
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
+        /* СКВОЗНОЙ ЭЛЕМЕНТ: АВАТАР С ФЛАГОМ С ЧЕРНОЙ ОБВОДКОЙ */
+        .ui-user-badge {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 2px solid var(--gold); background: #111;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            z-index: 1000000; cursor: pointer; display: none; pointer-events: auto !important;
+        }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        .ui-user-badge .badge-flag {
+            position: absolute; bottom: -2px; right: -4px;
+            width: 17px; height: 12px; object-fit: cover;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 0 1px #000;
+        }
+
+        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
+        .passport-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            z-index: 2000000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .passport-card {
+            background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px;
+            padding: 25px; width: 280px; color: #000; text-align: center;
+            box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative;
+        }
+        .passport-card .box-final { margin: 15px auto; border-color: #000; }
+
         .ui-back-to-bar { 
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
             background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold);
@@ -58,35 +83,13 @@
         }
 
         .block { 
-            position: fixed; 
-            inset: 0; 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            background: #000; 
-            z-index: 10; 
-            opacity: 0; 
-            transition: opacity 0.4s ease-in-out; 
+            position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; 
         }
-        
-        .block.active { 
-            display: flex !important; 
-            opacity: 1 !important; 
-            z-index: 5000 !important;
-        }
+        .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
 
-        #main-door { 
-            height: calc(50vh + 20px); 
-            width: auto; 
-            cursor: pointer; 
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
-            z-index: 9999999 !important; 
-        }
-        
+        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 0.5s ease-out, opacity 0.5s ease-out; z-index: 9999999 !important; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; }
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
-        
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
         .id-card-hall { position: absolute; top: 72%; left: 50%; transform: translate(-50%,-50%); width: 220px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
@@ -97,61 +100,41 @@
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
         body { top: 0 !important; }
+        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
+        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
+        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
+        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        #block-welcome {
-            justify-content: flex-start !important; 
-            padding-top: 12vh !important; 
-        }
-
-        #block-welcome .quote-text {
-            margin-bottom: 2vh !important;
-            font-size: 24px; 
-        }
-
-        #block-welcome img {
-            max-height: 35vh !important; 
-            width: auto;
-            object-fit: contain;
-            margin-bottom: 2vh !important;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
-        }
-
-        #block-welcome .btn-gy {
-            margin: 4px 0 !important; 
-            padding: 12px !important;
-        }
-
-        /* СТРЕЛКИ С ЧЕРНОЙ ОБВОДКОЙ В 1 ПИКСЕЛЬ ДЛЯ СВЕТЛОГО ХОЛЛА */
+        /* СТРЕЛКИ С ЧЕРНОЙ ОБВОДКОЙ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 25px; 
-            font-size: 26px; 
-            font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; 
-            cursor: pointer; 
-            color: var(--gold); 
-            line-height: 1; 
-            letter-spacing: -2px; 
-            /* Сверхчеткий черный контур 1px во все стороны */
-            text-shadow: 
-                -1px -1px 0 #000,  
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000;
-            pointer-events: auto !important;
-            user-select: none;
+            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
+            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            pointer-events: auto !important; user-select: none; display: none;
         }
-        
-        .arrow-item {
-            transition: opacity 0.2s;
-        }
-        .arrow-item:hover {
-            opacity: 0.8;
-        }
+        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item:hover { opacity: 0.8; }
     </style> 
 </head>
 
 <body oncontextmenu="return false;">
+
+    <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
+        <img id="badge-avatar-img" class="badge-img" src="">
+        <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
+    </div>
+
+    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
+        <div class="passport-card" onclick="event.stopPropagation()">
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click outside to close</div>
+        </div>
+    </div>
 
     <div id="lang-switcher" class="lang-frame-locked notranslate">
         <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
@@ -176,11 +159,10 @@
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="notranslate ui-nav-arrows">
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="Назад к дверям">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
+        <div class="notranslate ui-nav-arrows" id="nav-welcome">
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-
         <div class="quote-text">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
         <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
@@ -189,35 +171,32 @@
     </div>  
 
     <div id="block-identity" class="block">
-        <div class="notranslate ui-nav-arrows">
-            <div class="arrow-item" onclick="portalTransition('block-welcome')" style="padding: 15px; margin: -15px;" title="Назад к приветствию">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
+        <div class="notranslate ui-nav-arrows" id="nav-identity">
+            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-
         <div class="quote-text">There is never too much champagne</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold);"></div>
-            
             <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:var(--gold); font-size:10px; font-weight:900;">PHOTO</span>
             </div>
-            
             <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:var(--gold); font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
             </div>
         </div>
-        <button id="btn-save" class="btn-gy" onclick="swapButtons('btn-save', 'btn-pass')">SAVE</button>
+        <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
     <div id="block-hall" class="block">
-        <div class="notranslate ui-nav-arrows">
-            <div class="arrow-item" onclick="portalTransition('block-identity')" style="padding: 15px; margin: -15px;" title="Назад к регистрации">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
+        <div class="notranslate ui-nav-arrows" id="nav-hall">
+            <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
         <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; z-index:1;"></div>
         <div class="id-card-hall" style="z-index:2;">
@@ -244,31 +223,27 @@
     </div>
 
     <div id="block-tables" class="block">
-        <div class="notranslate ui-nav-arrows">
-            <div class="arrow-item" onclick="portalTransition('block-bar')" style="padding: 15px; margin: -15px;" title="Назад к бару">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')" style="padding: 15px; margin: -15px;" title="В корень">&lt;&lt;</div>
+        <div class="notranslate ui-nav-arrows" id="nav-tables">
+            <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
         <div class="lamp-zone" style="bottom: 49.2%; left: 49.9%;"></div>
         <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;"></div>
     </div>
 
 <script>
-    let currentID = "";
+    let currentID = localStorage.getItem('gy_user_id') || "";
     let currentActiveCode = 'en';
+    let currentUserImage = localStorage.getItem('gy_user_img') || "";
+    let currentFlagCode = 'gb';
 
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, 
-        {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, 
-        {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, 
-        {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊС .', c:'pt', code:'pt'}, 
-        {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
-        {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, 
-        {n:'日本語', c:'jp', code:'ja'}
+        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'PORTUGUÊС .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
 
     function renderLangList() {
@@ -287,10 +262,12 @@
 
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
+        currentFlagCode = lang.c;
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
             <span>${lang.n}</span>
         `;
+        document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
         const gtCombo = document.querySelector('.goog-te-combo');
         if (gtCombo) { 
             gtCombo.value = lang.code; 
@@ -318,17 +295,21 @@
         
         if (!currentID) {
             currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            document.getElementById('id-label').innerText = currentID;
-            document.getElementById('h-id').innerText = currentID;
-            
-            document.getElementById('qr-box-reg').innerHTML = "";
-            new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-            document.getElementById('h-qr').innerHTML = "";
-            new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
         }
         
+        document.getElementById('id-label').innerText = currentID;
+        document.getElementById('h-id').innerText = currentID;
+        document.getElementById('pass-id-val').innerText = currentID;
+        
+        document.getElementById('qr-box-reg').innerHTML = "";
+        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+        document.getElementById('h-qr').innerHTML = "";
+        new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
+        document.getElementById('pass-qr-box').innerHTML = "";
+        new QRCode(document.getElementById("pass-qr-box"), { text: currentID, width: 100, height: 100 });
+        
         setTimeout(() => { 
-            portalTransition('block-welcome'); 
+            portalTransition(currentUserImage ? 'block-hall' : 'block-welcome'); 
             const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
         }, 1000);
     }
@@ -337,67 +318,67 @@
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
+        const badge = document.getElementById('global-user-badge');
         
-        if (nextId === 'block-entrance' && amb) {
-            amb.pause();
-            amb.currentTime = 0;
-        }
-
-        if (current) { 
-            current.style.opacity = "0"; 
-            current.style.pointerEvents = "none"; 
-        }
+        if (nextId === 'block-entrance' && amb) { amb.pause(); amb.currentTime = 0; }
+        if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         backBtn.style.opacity = "0";
 
         setTimeout(() => {
-            if (current) { 
-                current.classList.remove('active'); 
-                current.style.display = "none"; 
-            }
+            if (current) { current.classList.remove('active'); current.style.display = "none"; }
             
             const next = document.getElementById(nextId);
             if (!next) return;
-            
             next.style.display = "flex";
             
             const langPanel = document.getElementById('lang-switcher');
             
+            // УПРАВЛЕНИЕ АВАТАРОМ И СТРЕЛКАМИ НА ВСЕХ ЭКРАНАХ
             if (nextId === 'block-entrance') {
                 const door = document.getElementById('main-door');
-                door.style.transition = "none"; 
-                door.style.transform = "scale(1)"; 
-                door.style.opacity = "1"; 
-                door.style.pointerEvents = "auto";
+                door.style.transition = "none"; door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
+                if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
                 
-                if (langPanel) {
-                    langPanel.style.display = 'flex';
-                    langPanel.style.opacity = '1';
+                // Для Бывалого (если профиль создан) — аватар строго по центру вверху
+                if (currentUserImage) {
+                    badge.style.display = "block";
+                } else {
+                    badge.style.display = "none";
                 }
+                document.getElementById('nav-welcome').style.display = "none";
+                document.getElementById('nav-identity').style.display = "none";
+                document.getElementById('nav-hall').style.display = "none";
+                document.getElementById('nav-tables').style.display = "none";
             } else {
                 if (langPanel) langPanel.style.display = 'none';
+                
+                // Внутри клуба: Навигатор (стрелки) активны на внутренних сценах
+                if(nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; badge.style.display = "none"; }
+                if(nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; badge.style.display = "none"; }
+                
+                // В Холле аватар стоит по центру между стрелками и лого
+                if(nextId === 'block-hall' || nextId === 'block-bar' || nextId === 'block-tables') {
+                    if (currentUserImage) {
+                        document.getElementById('badge-avatar-img').src = currentUserImage;
+                        document.getElementById('pass-avatar-img').src = currentUserImage;
+                        badge.style.display = "block";
+                    }
+                    if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
+                    if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
+                    if(nextId === 'block-bar') {
+                        document.getElementById('nav-hall').style.display = "none";
+                        document.getElementById('nav-tables').style.display = "none";
+                    }
+                }
             }
 
             setTimeout(() => { 
-                next.classList.add('active'); 
-                next.style.pointerEvents = "auto";
-                
-                if (nextId === 'block-bar') { 
-                    fadeAudio(amb, 1, 800); 
-                    setTimeout(() => document.getElementById('snd-khe').play(), 800); 
-                }
-                
-                if (nextId === 'block-tables') { 
-                    backBtn.style.display = 'block'; 
-                    setTimeout(() => backBtn.style.opacity = "1", 50); 
-                    fadeAudio(amb, 0, 800); 
-                } else { 
-                    backBtn.style.display = 'none'; 
-                }
+                next.classList.add('active'); next.style.pointerEvents = "auto";
+                if (nextId === 'block-bar') { fadeAudio(amb, 1, 800); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
+                if (nextId === 'block-tables') { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = "1", 50); fadeAudio(amb, 0, 800); } else { backBtn.style.display = 'none'; }
                 
                 const gtCombo = document.querySelector('.goog-te-combo');
-                if (gtCombo && currentActiveCode !== 'en') {
-                    gtCombo.dispatchEvent(new Event('change', { bubbles: true }));
-                }
+                if (gtCombo && currentActiveCode !== 'en') { gtCombo.dispatchEvent(new Event('change', { bubbles: true })); }
             }, 50);
         }, 400); 
     }
@@ -418,11 +399,9 @@
             r.onload = (e) => { 
                 document.getElementById('avatar-img').style.display = "none";
                 document.getElementById('txt-avatar').style.display = "block";
-                
-                document.getElementById('pp').src = e.target.result; 
-                document.getElementById('pp').style.display = "block";
+                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
                 document.getElementById('txt-photo').style.display = "none";
-                
+                currentUserImage = e.target.result;
                 document.getElementById('h-photo').src = e.target.result; 
             };
             r.readAsDataURL(i.files[0]);
@@ -430,17 +409,34 @@
     }
 
     function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; 
-        document.getElementById('txt-photo').style.display = "block";
+        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
         document.getElementById('file-input').value = ""; 
-        
         const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
         const avImg = document.getElementById('avatar-img');
-        avImg.src = url; 
-        avImg.style.display = "block";
+        avImg.src = url; avImg.style.display = "block";
         document.getElementById('txt-avatar').style.display = "none";
-        
+        currentUserImage = url;
         document.getElementById('h-photo').src = url;
+    }
+
+    function saveUserProfile() {
+        if(!currentUserImage) { alert("Please select PHOTO or generate AVATAR first!"); return; }
+        localStorage.setItem('gy_user_id', currentID);
+        localStorage.setItem('gy_user_img', currentUserImage);
+        swapButtons('btn-save', 'btn-pass');
+    }
+
+    /* ФУНКЦИОНАЛ ЦИФРОВОГО ПАСПОРТА */
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        modal.style.display = "flex";
+        setTimeout(() => modal.style.opacity = "1", 10);
+    }
+
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        modal.style.opacity = "0";
+        setTimeout(() => modal.style.display = "none", 300);
     }
 
     function deepDive() {
@@ -452,15 +448,18 @@
     function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
 
     function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en', 
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            autoDisplay: false,
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
+        new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
     }
 
-    window.addEventListener('load', renderLangList);
+    // Первичная проверка Бывалого при загрузке страницы
+    window.addEventListener('load', () => {
+        renderLangList();
+        if (currentUserImage && currentID) {
+            document.getElementById('badge-avatar-img').src = currentUserImage;
+            document.getElementById('pass-avatar-img').src = currentUserImage;
+            document.getElementById('global-user-badge').style.display = "block";
+        }
+    });
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
