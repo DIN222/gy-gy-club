@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.85 | USER BADGE CONSTANT</title>
+    <title>GY-GY Club v4.4.90 | HALL LAYOUT WITH STUDIO</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -47,7 +47,7 @@
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
-        /* СКВОЗНОЙ ЭЛЕМЕНТ: АВАТАР С ФЛАГОМ С ЧЕРНОЙ ОБВОДКОЙ */
+        /* СКВОЗНОЙ АВАТАР С ФЛАГОМ */
         .ui-user-badge {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
             width: 42px; height: 42px; border-radius: 50%;
@@ -75,6 +75,12 @@
             box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative;
         }
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
+        
+        .passport-close-btn {
+            position: absolute; top: 10px; right: 14px;
+            font-size: 28px; font-weight: bold; color: #000;
+            cursor: pointer; line-height: 1; user-select: none;
+        }
 
         .ui-back-to-bar { 
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
@@ -92,7 +98,14 @@
         .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
 
-        .id-card-hall { position: absolute; top: 72%; left: 50%; transform: translate(-50%,-50%); width: 220px; padding: 15px; border: 2px solid var(--gold); background: #F5F5DC; border-radius: 12px; display: flex; flex-direction: column; align-items: center; color: #000; z-index: 30; }
+        /* БЛОК НАВИГАЦИИ В ХОЛЛЕ */
+        .hall-navigation-box {
+            position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%);
+            width: 300px; display: flex; flex-direction: column; align-items: center;
+            z-index: 30; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 12px;
+            border: 1px solid rgba(214, 175, 55, 0.3); backdrop-filter: blur(5px);
+        }
+
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
@@ -116,6 +129,22 @@
         }
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
+        
+        /* СЕРВЕРНЫЙ НАСТРОЕЧНЫЙ КОРИДОР */
+        .server-leds { display: flex; gap: 8px; margin-top: 15px; }
+        .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
+        .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
+        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
+
+        .corridor-door-btn {
+            margin-top: 45px; min-width: 240px; padding: 20px;
+            background: #111; border: 2px solid var(--violet); color: #fff;
+            font-size: 16px; font-weight: 900; letter-spacing: 4px;
+            box-shadow: 0 0 20px var(--neon-glow); cursor: pointer;
+            text-transform: uppercase; text-align: center;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
     </style> 
 </head>
 
@@ -128,11 +157,12 @@
 
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
+            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click outside to close</div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click × or outside to close</div>
         </div>
     </div>
 
@@ -153,6 +183,7 @@
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
     <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
+    <audio id="snd-server" loop><source src="server_room.mp3"></audio>
 
     <div id="block-entrance" class="block active" style="display: flex; opacity: 1;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
@@ -199,23 +230,36 @@
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
         <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; z-index:1;"></div>
-        <div class="id-card-hall" style="z-index:2;">
-            <div id="h-id" style="font-weight:900; font-size:14px; margin-bottom:12px;">#ID</div>
-            <div style="display:flex; gap:15px; margin-bottom:12px;">
-                <div class="box-final"><img id="h-photo" style="width:100%; height:100%; object-fit:cover;"></div>
-                <div class="box-final" id="h-qr"></div>
-            </div>
-            <button id="btn-confirm" class="btn-gy" style="min-width:100%; border-color:#000; color:#000;" onclick="swapButtons('btn-confirm', 'btn-enter-bar')">CONFIRM</button>
-            <button id="btn-enter-bar" class="btn-gy btn-sleep" style="min-width:100%; border-color:#000; color:#000;" onclick="portalTransition('block-bar')">ENTER BAR</button>
+        
+        <div class="hall-navigation-box" style="z-index:2;">
+            <div style="font-size: 20px; font-weight: 700; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase; text-shadow: 1px 1px 2px #000;">PROCEED TO</div>
+            <button class="btn-gy" style="min-width:100%; font-size:13px; margin: 4px 0;" onclick="portalTransition('block-bar')">THE BAR</button>
+            <button class="btn-gy" style="min-width:100%; font-size:13px; margin: 4px 0;" onclick="portalTransition('block-server')">AI ROOM</button>
+            <button class="btn-gy" style="min-width:100%; font-size:13px; margin: 4px 0; border-color: rgba(214,175,55,0.4); color: rgba(214,175,55,0.6);" onclick="enterStudio()">STUDIO</button>
         </div>
     </div>
 
+    <div id="block-server" class="block" style="background: #050505;">
+        <div class="notranslate ui-nav-arrows" id="nav-server">
+            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        </div>
+        <div class="quote-text" style="color: #444; font-size: 18px; letter-spacing: 1px;">[ Configuration Corridor Active ]</div>
+        <div style="font-size: 13px; color: var(--violet); letter-spacing: 4px;">CALIBRATING NEURAL CHANNELS...</div>
+        
+        <div class="server-leds">
+            <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        </div>
+        
+        <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
+    </div>
+
     <div id="block-bar" class="block" style="justify-content: flex-end;">
-        <div class="quote-text" style="position:absolute; top:8vh;">Igogo, let us start now!</div>
+        <div class="quote-text" style="position:absolute; top:8vh;">In every joke there is a share of whisky</div>
         <div class="bar-ui-container">
             <div style="display:flex; justify-content: space-between; width:100%; margin-bottom:12px;">
                 <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-tables')">TABLES</button>
-                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="deepDive()">AI ROOM</button>
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">AI ROOM</button>
             </div>
             <button class="btn-gy" style="font-size:12px;" onclick="portalTransition('block-hall')">HALL</button>
         </div>
@@ -298,13 +342,10 @@
         }
         
         document.getElementById('id-label').innerText = currentID;
-        document.getElementById('h-id').innerText = currentID;
         document.getElementById('pass-id-val').innerText = currentID;
         
         document.getElementById('qr-box-reg').innerHTML = "";
         new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-        document.getElementById('h-qr').innerHTML = "";
-        new QRCode(document.getElementById("h-qr"), { text: currentID, width: 75, height: 75 });
         document.getElementById('pass-qr-box').innerHTML = "";
         new QRCode(document.getElementById("pass-qr-box"), { text: currentID, width: 100, height: 100 });
         
@@ -318,11 +359,14 @@
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const amb = document.getElementById('snd-ambient');
+        const srvSnd = document.getElementById('snd-server');
         const badge = document.getElementById('global-user-badge');
         
         if (nextId === 'block-entrance' && amb) { amb.pause(); amb.currentTime = 0; }
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         backBtn.style.opacity = "0";
+        
+        if(current && current.id === 'block-server') { fadeAudio(srvSnd, 0, 400); setTimeout(() => srvSnd.pause(), 400); }
 
         setTimeout(() => {
             if (current) { current.classList.remove('active'); current.style.display = "none"; }
@@ -333,31 +377,24 @@
             
             const langPanel = document.getElementById('lang-switcher');
             
-            // УПРАВЛЕНИЕ АВАТАРОМ И СТРЕЛКАМИ НА ВСЕХ ЭКРАНАХ
             if (nextId === 'block-entrance') {
                 const door = document.getElementById('main-door');
                 door.style.transition = "none"; door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
                 if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
                 
-                // Для Бывалого (если профиль создан) — аватар строго по центру вверху
-                if (currentUserImage) {
-                    badge.style.display = "block";
-                } else {
-                    badge.style.display = "none";
-                }
+                if (currentUserImage) { badge.style.display = "block"; } else { badge.style.display = "none"; }
                 document.getElementById('nav-welcome').style.display = "none";
                 document.getElementById('nav-identity').style.display = "none";
                 document.getElementById('nav-hall').style.display = "none";
                 document.getElementById('nav-tables').style.display = "none";
+                if(document.getElementById('nav-server')) document.getElementById('nav-server').style.display = "none";
             } else {
                 if (langPanel) langPanel.style.display = 'none';
                 
-                // Внутри клуба: Навигатор (стрелки) активны на внутренних сценах
                 if(nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; badge.style.display = "none"; }
                 if(nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; badge.style.display = "none"; }
                 
-                // В Холле аватар стоит по центру между стрелками и лого
-                if(nextId === 'block-hall' || nextId === 'block-bar' || nextId === 'block-tables') {
+                if(nextId === 'block-hall' || nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
                     if (currentUserImage) {
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
@@ -365,9 +402,11 @@
                     }
                     if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
                     if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
+                    if(nextId === 'block-server') document.getElementById('nav-server').style.display = "flex";
                     if(nextId === 'block-bar') {
                         document.getElementById('nav-hall').style.display = "none";
                         document.getElementById('nav-tables').style.display = "none";
+                        if(document.getElementById('nav-server')) document.getElementById('nav-server').style.display = "none";
                     }
                 }
             }
@@ -375,6 +414,8 @@
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
                 if (nextId === 'block-bar') { fadeAudio(amb, 1, 800); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
+                if (nextId === 'block-server') { srvSnd.volume = 0; srvSnd.play(); fadeAudio(srvSnd, 0.8, 600); }
+                
                 if (nextId === 'block-tables') { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = "1", 50); fadeAudio(amb, 0, 800); } else { backBtn.style.display = 'none'; }
                 
                 const gtCombo = document.querySelector('.goog-te-combo');
@@ -386,81 +427,3 @@
     function fadeAudio(audio, target, duration) {
         if (!audio) return;
         const start = audio.volume; const startTime = Date.now();
-        const interval = setInterval(() => {
-            const progress = Math.min((Date.now() - startTime) / duration, 1);
-            audio.volume = start + (target - start) * progress;
-            if (progress === 1) clearInterval(interval);
-        }, 50);
-    }
-
-    function preview(i) {
-        if(i.files && i.files[0]) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('txt-avatar').style.display = "block";
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
-                document.getElementById('txt-photo').style.display = "none";
-                currentUserImage = e.target.result;
-                document.getElementById('h-photo').src = e.target.result; 
-            };
-            r.readAsDataURL(i.files[0]);
-        }
-    }
-
-    function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
-        document.getElementById('file-input').value = ""; 
-        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
-        const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
-        document.getElementById('txt-avatar').style.display = "none";
-        currentUserImage = url;
-        document.getElementById('h-photo').src = url;
-    }
-
-    function saveUserProfile() {
-        if(!currentUserImage) { alert("Please select PHOTO or generate AVATAR first!"); return; }
-        localStorage.setItem('gy_user_id', currentID);
-        localStorage.setItem('gy_user_img', currentUserImage);
-        swapButtons('btn-save', 'btn-pass');
-    }
-
-    /* ФУНКЦИОНАЛ ЦИФРОВОГО ПАСПОРТА */
-    function openPassport() {
-        const modal = document.getElementById('modal-passport');
-        modal.style.display = "flex";
-        setTimeout(() => modal.style.opacity = "1", 10);
-    }
-
-    function closePassport() {
-        const modal = document.getElementById('modal-passport');
-        modal.style.opacity = "0";
-        setTimeout(() => modal.style.display = "none", 300);
-    }
-
-    function deepDive() {
-        document.body.style.transition = "opacity 1.2s, filter 1.2s";
-        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
-        setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
-    }
-
-    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
-
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-    }
-
-    // Первичная проверка Бывалого при загрузке страницы
-    window.addEventListener('load', () => {
-        renderLangList();
-        if (currentUserImage && currentID) {
-            document.getElementById('badge-avatar-img').src = currentUserImage;
-            document.getElementById('pass-avatar-img').src = currentUserImage;
-            document.getElementById('global-user-badge').style.display = "block";
-        }
-    });
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
