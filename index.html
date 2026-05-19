@@ -3,22 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.91 | HALL LAYOUT WITH STUDIO</title>
+    <title>GY-GY Club v4.4.911 | HALL RECOMPOSITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
-        * { 
-            -webkit-tap-highlight-color: transparent !important; 
-            box-sizing: border-box; 
-        }
-        
-        body, button, input, div, img, span { 
-            pointer-events: auto !important; 
-        }
-        
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        body, button, input, div, img, span { pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; }
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
@@ -29,13 +22,11 @@
             width: 180px; height: 40px; border: 2px solid var(--gold); 
             background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 12px;
         }
-
         .lang-dropdown-adaptive {
             display: none; position: absolute; top: 44px; left: -2px; 
             width: 180px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
             max-height: 70vh; overflow-y: auto;
         }
-
         .lang-item { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; line-height: 1; }
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
@@ -47,64 +38,36 @@
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
-        /* СКВОЗНОЙ АВАТАР С ФЛАГОМ */
+        /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
             width: 42px; height: 42px; border-radius: 50%;
             border: 2px solid var(--gold); background: #111;
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer; display: none; pointer-events: auto !important;
+            z-index: 1000000; cursor: pointer; display: none;
         }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px;
             width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold);
-            box-shadow: 0 0 0 1px #000;
+            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
         }
 
-        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
-        .passport-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-            z-index: 2000000; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease;
-        }
-        .passport-card {
-            background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px;
-            padding: 25px; width: 280px; color: #000; text-align: center;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative;
-        }
+        /* ПАСПОРТ */
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
-        
-        .passport-close-btn {
-            position: absolute; top: 10px; right: 14px;
-            font-size: 28px; font-weight: bold; color: #000;
-            cursor: pointer; line-height: 1; user-select: none;
-        }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
 
-        .ui-back-to-bar { 
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005;
-            background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold);
-            padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s;
-        }
+        .ui-back-to-bar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold); padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s; }
 
-        .block { 
-            position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; 
-        }
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; }
         .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
 
-        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 0.5s ease-out, opacity 0.5s ease-out; z-index: 9999999 !important; }
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; }
-        .btn-gy { min-width: 270px; padding: 14px; background: transparent; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; }
+        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 1.2s ease-in, opacity 1s; z-index: 9999999 !important; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+        .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
-
-        /* БЛОК НАВИГАЦИИ В ХОЛЛЕ */
-        .hall-navigation-box {
-            position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%);
-            width: 300px; display: flex; flex-direction: column; align-items: center;
-            z-index: 30; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 12px;
-            border: 1px solid rgba(214, 175, 55, 0.3); backdrop-filter: blur(5px);
-        }
 
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
@@ -118,7 +81,7 @@
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        /* СТРЕЛКИ С ЧЕРНОЙ ОБВОДКОЙ */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -129,21 +92,56 @@
         }
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
+
+        /* ==========================================================================
+           НОВАЯ КОМПОНОВКА ХОЛЛА (ИНТЕРЬЕР И КАРТИНЫ)
+           ========================================================================== */
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
         
-        /* СЕРВЕРНЫЙ НАСТРОЕЧНЫЙ КОРИДОР */
+        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+        
+        /* Слоган над дверью */
+        .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
+
+        /* Кликабельная дверь в бар по центру */
+        .hall-door-target {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
+            background: rgba(255,255,255,0); /* Полностью прозрачная зона поверх графики двери */
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hall-door-label { color: var(--gold); font-size: 18px; font-weight: 900; letter-spacing: 6px; background: rgba(0,0,0,0.8); padding: 8px 16px; border: 1px solid var(--gold); border-radius: 4px; pointer-events: none; opacity: 0; transition: opacity 0.3s; text-shadow: none; }
+        .hall-door-target:hover .hall-door-label { opacity: 1; }
+
+        /* Галерея картин по бокам */
+        .gallery-wing { position: absolute; top: 25vh; width: 30vw; height: 60vh; display: flex; flex-direction: column; justify-content: space-between; z-index: 6; }
+        .wing-left { left: 3vw; align-items: flex-end; }
+        .wing-right { right: 3vw; align-items: flex-start; }
+
+        .painting-frame { width: 12vw; height: 24vh; background: #111; border: 4px solid #3a2212; box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px #000; position: relative; cursor: default; transition: border-color 0.3s; }
+        .painting-frame img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        
+        /* Активный верхний ярус */
+        .painting-active { cursor: pointer !important; border-color: #5a3d28; }
+        .painting-active:hover { border-color: var(--gold); }
+        
+        /* Пульсирующие стрелки-подсказки внутри Холла */
+        .cue-arrow { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000; pointer-events: none; }
+        @keyframes cuePulse { from { transform: translate(-50%, 0); opacity: 0.4; } to { transform: translate(-50%, -8px); opacity: 1; } }
+
+        /* Выплывающие кнопки под картинами */
+        .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
+        .manifest-btn-box.revealed { opacity: 1; pointer-events: auto; bottom: -35px; }
+        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
+        .btn-manifest.studio-tint { border-color: rgba(214,175,55,0.4); color: rgba(214,175,55,0.6); }
+
+        /* СЕРВЕРНЫЙ КОРИДОР */
         .server-leds { display: flex; gap: 8px; margin-top: 15px; }
         .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
         .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
         @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
 
-        .corridor-door-btn {
-            margin-top: 45px; min-width: 240px; padding: 20px;
-            background: #111; border: 2px solid var(--violet); color: #fff;
-            font-size: 16px; font-weight: 900; letter-spacing: 4px;
-            box-shadow: 0 0 20px var(--neon-glow); cursor: pointer;
-            text-transform: uppercase; text-align: center;
-            transition: background 0.3s, transform 0.2s;
-        }
+        .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
         .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
     </style> 
 </head>
@@ -160,7 +158,7 @@
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"></div>
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
             <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click × or outside to close</div>
         </div>
@@ -208,16 +206,16 @@
         </div>
         <div class="quote-text">There is never too much champagne</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:transparent; border-color:var(--gold); color:var(--gold); font-size:11px;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold);"></div>
-            <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
+            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
+            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:var(--gold); font-size:10px; font-weight:900;">PHOTO</span>
+                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">PHOTO</span>
             </div>
-            <div class="box-final" style="border-color:var(--gold); cursor:pointer;" onclick="generateAvatar()">
+            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:var(--gold); font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
+                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
             </div>
         </div>
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
@@ -229,13 +227,39 @@
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-        <div style="position:absolute; inset:0; background:url('hall_bg_jpg.jpg') center/cover; z-index:1;"></div>
         
-        <div class="hall-navigation-box" style="z-index:2;">
-            <div style="font-size: 20px; font-weight: 700; letter-spacing: 4px; margin-bottom: 15px; text-transform: uppercase; text-shadow: 1px 1px 2px #000;">PROCEED TO</div>
-            <button class="btn-gy" style="min-width:100%; font-size:13px; margin: 4px 0;" onclick="portalTransition('block-bar')">THE BAR</button>
-            <button class="btn-gy" style="min-width:100%; font-size:13px; margin: 4px 0;" onclick="portalTransition('block-server')">AI ROOM</button>
-            <button class="btn-gy" style="min-width:100%; font-size:13px; margin: 4px 0; border-color: rgba(214,175,55,0.4); color: rgba(214,175,55,0.6);" onclick="enterStudio()">STUDIO</button>
+        <div class="hall-interior">
+            <div class="quote-text">In every joke there is a share of whisky</div>
+            
+            <div class="hall-door-target" onclick="portalTransition('block-bar')">
+                <div class="hall-door-label notranslate">THE BAR</div>
+            </div>
+            
+            <div class="gallery-wing wing-left">
+                <div class="painting-frame painting-active" onclick="toggleManifest('box-ai-reveal')">
+                    <div class="cue-arrow">↑</div>
+                    <img src="painting_left_top.jpg" onerror="this.style.display='none'">
+                    <div id="box-ai-reveal" class="manifest-btn-box">
+                        <button class="btn-gy btn-manifest" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+                    </div>
+                </div>
+                <div class="painting-frame">
+                    <img src="painting_left_bottom.jpg" onerror="this.style.display='none'">
+                </div>
+            </div>
+            
+            <div class="gallery-wing wing-right">
+                <div class="painting-frame painting-active" onclick="toggleManifest('box-studio-reveal')">
+                    <div class="cue-arrow">↑</div>
+                    <img src="painting_right_top.jpg" onerror="this.style.display='none'">
+                    <div id="box-studio-reveal" class="manifest-btn-box">
+                        <button class="btn-gy btn-manifest studio-tint" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
+                    </div>
+                </div>
+                <div class="painting-frame">
+                    <img src="painting_right_bottom.jpg" onerror="this.style.display='none'">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -304,6 +328,7 @@
         });
     }
 
+    // НАДЕЖНЫЙ ЗАПУСК ПЕРЕВОДА (Ожидание загрузки виджета в DOM)
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c;
@@ -312,13 +337,21 @@
             <span>${lang.n}</span>
         `;
         document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
-        const gtCombo = document.querySelector('.goog-te-combo');
-        if (gtCombo) { 
-            gtCombo.value = lang.code; 
-            gtCombo.dispatchEvent(new Event('change', { bubbles: true })); 
-        }
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
+
+        // Безопасный цикл поиска и активации выпадающего списка Google Translate
+        let translateAttempts = 0;
+        const checkCombo = setInterval(() => {
+            const gtCombo = document.querySelector('.goog-te-combo');
+            if (gtCombo) {
+                gtCombo.value = lang.code; 
+                gtCombo.dispatchEvent(new Event('change', { bubbles: true })); 
+                clearInterval(checkCombo);
+            }
+            translateAttempts++;
+            if(translateAttempts > 30) clearInterval(checkCombo); // Защита от бесконечного цикла (3 секунды)
+        }, 100);
     }
 
     function toggleLangList() {
@@ -326,11 +359,20 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
+    // Клик по картине: Проявить/Спрятать скрытую кнопку под ней
+    function toggleManifest(boxId) {
+        // Закрываем другие открытые панели для чистоты интерфейса
+        document.querySelectorAll('.manifest-btn-box').forEach(box => {
+            if(box.id !== boxId) box.classList.remove('revealed');
+        });
+        const targetBox = document.getElementById(boxId);
+        if(targetBox) targetBox.classList.toggle('revealed');
+    }
+
     function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
         
-        d.style.transition = "transform 1.2s ease-in, opacity 1s";
         d.style.transform = "scale(5)"; 
         d.style.opacity = "0"; 
         d.style.pointerEvents = "none";
@@ -350,7 +392,8 @@
         new QRCode(document.getElementById("pass-qr-box"), { text: currentID, width: 100, height: 100 });
         
         setTimeout(() => { 
-            portalTransition(currentUserImage ? 'block-hall' : 'block-welcome'); 
+            // Главная дверь ВСЕГДА ведет на приветствие для чистоты цепочки
+            portalTransition('block-welcome'); 
             const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
         }, 1000);
     }
@@ -362,6 +405,9 @@
         const srvSnd = document.getElementById('snd-server');
         const badge = document.getElementById('global-user-badge');
         
+        // Закрываем выплывающие кнопки картин при любом уходе из Холла
+        document.querySelectorAll('.manifest-btn-box').forEach(box => box.classList.remove('revealed'));
+
         if (nextId === 'block-entrance' && amb) { amb.pause(); amb.currentTime = 0; }
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         backBtn.style.opacity = "0";
@@ -383,14 +429,16 @@
                 if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
                 
                 if (currentUserImage) { badge.style.display = "block"; } else { badge.style.display = "none"; }
-                document.getElementById('nav-welcome').style.display = "none";
-                document.getElementById('nav-identity').style.display = "none";
-                document.getElementById('nav-hall').style.display = "none";
-                document.getElementById('nav-tables').style.display = "none";
-                if(document.getElementById('nav-server')) document.getElementById('nav-server').style.display = "none";
+                document.querySelectorAll('.ui-nav-arrows').forEach(el => el.style.display = "none");
             } else {
                 if (langPanel) langPanel.style.display = 'none';
                 
+                // РАЗМОРОЗКА НАВИГАЦИИ ДЛЯ БЫВАЛЫХ
+                if(currentUserImage && currentID) {
+                    document.getElementById('btn-w-hall').classList.remove('btn-sleep');
+                    document.getElementById('btn-pass').classList.remove('btn-sleep');
+                }
+
                 if(nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; badge.style.display = "none"; }
                 if(nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; badge.style.display = "none"; }
                 
@@ -404,9 +452,7 @@
                     if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
                     if(nextId === 'block-server') document.getElementById('nav-server').style.display = "flex";
                     if(nextId === 'block-bar') {
-                        document.getElementById('nav-hall').style.display = "none";
-                        document.getElementById('nav-tables').style.display = "none";
-                        if(document.getElementById('nav-server')) document.getElementById('nav-server').style.display = "none";
+                        document.querySelectorAll('.ui-nav-arrows').forEach(el => { if(el.id !== 'nav-server' && el.id !== 'nav-tables') el.style.display = "none"; });
                     }
                 }
             }
@@ -434,13 +480,18 @@
         }, 50);
     }
 
+    // ИСПРАВЛЕНИЕ СТАТИЧНОГО ФОНА КОНТЕЙНЕРОВ (Устранение бага Черный/Белый)
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
             r.onload = (e) => { 
                 document.getElementById('avatar-img').style.display = "none";
                 document.getElementById('txt-avatar').style.display = "block";
-                document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display = "block";
+                
+                const pp = document.getElementById('pp');
+                pp.src = e.target.result; 
+                pp.style.display = "block";
+                
                 document.getElementById('txt-photo').style.display = "none";
                 currentUserImage = e.target.result;
             };
@@ -449,7 +500,8 @@
     }
 
     function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; document.getElementById('txt-photo').style.display = "block";
+        document.getElementById('pp').style.display = "none"; 
+        document.getElementById('txt-photo').style.display = "block";
         document.getElementById('file-input').value = ""; 
         const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
         const avImg = document.getElementById('avatar-img');
@@ -463,6 +515,8 @@
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         swapButtons('btn-save', 'btn-pass');
+        // Сразу активируем и кнопку на экране приветствия
+        document.getElementById('btn-w-hall').classList.remove('btn-sleep');
     }
 
     function openPassport() {
