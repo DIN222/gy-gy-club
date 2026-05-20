@@ -221,47 +221,40 @@
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
-
-    <div id="block-hall" class="block">
+<div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
         </div>
         
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
-            <div class="hall-door-target" onclick="portalTransition('block-bar')">
-                <div class="hall-door-label notranslate">THE BAR</div>
+            <div class="hall-door-target" onclick="portalTransition('block-bar')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 65vh; cursor: pointer; z-index: 5; background: transparent;">
             </div>
             
-            <div class="gallery-wing wing-left">
-                <div class="painting-frame painting-active" onclick="toggleManifest('box-ai-reveal')">
-                    <div class="cue-arrow">↑</div>
-                    <img src="painting_left_top.jpg" onerror="this.style.display='none'">
-                    <div id="box-ai-reveal" class="manifest-btn-box">
-                        <button class="btn-gy btn-manifest" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+            <div class="gallery-wing wing-left" style="position: absolute; top: 25vh; left: 3vw; width: 30vw; height: 60vh; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; z-index: 6;">
+                <div class="painting-frame painting-active" onclick="toggleManifest('box-ai-reveal')" style="width: 12vw; height: 24vh; position: relative; cursor: pointer;">
+                    <div class="cue-arrow" style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000;">↑</div>
+                    <div id="box-ai-reveal" class="manifest-btn-box" style="position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 140px; opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 10;">
+                        <button class="btn-gy btn-manifest" style="width: 100%; padding: 6px 0; font-size: 12px; background: #000; border: 2px solid var(--gold); color: var(--gold);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                     </div>
                 </div>
-                <div class="painting-frame">
-                    <img src="painting_left_bottom.jpg" onerror="this.style.display='none'">
-                </div>
+                <div class="painting-frame" style="width: 12vw; height: 24vh; opacity: 0.7;"></div>
             </div>
             
-            <div class="gallery-wing wing-right">
-                <div class="painting-frame painting-active" onclick="toggleManifest('box-studio-reveal')">
-                    <div class="cue-arrow">↑</div>
-                    <img src="painting_right_top.jpg" onerror="this.style.display='none'">
-                    <div id="box-studio-reveal" class="manifest-btn-box">
-                        <button class="btn-gy btn-manifest studio-tint" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
+            <div class="gallery-wing wing-right" style="position: absolute; top: 25vh; right: 3vw; width: 30vw; height: 60vh; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; z-index: 6;">
+                <div class="painting-frame painting-active" onclick="toggleManifest('box-studio-reveal')" style="width: 12vw; height: 24vh; position: relative; cursor: pointer;">
+                    <div class="cue-arrow" style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000;">↑</div>
+                    <div id="box-studio-reveal" class="manifest-btn-box" style="position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 140px; opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 10;">
+                        <button class="btn-gy btn-manifest" style="width: 100%; padding: 6px 0; font-size: 12px; background: #000; border: 2px solid rgba(214,175,55,0.4); color: rgba(214,175,55,0.6);" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                     </div>
                 </div>
-                <div class="painting-frame">
-                    <img src="painting_right_bottom.jpg" onerror="this.style.display='none'">
-                </div>
+                <div class="painting-frame" style="width: 12vw; height: 24vh; opacity: 0.7;"></div>
             </div>
         </div>
     </div>
+
 
     <div id="block-server" class="block" style="background: #050505;">
         <div class="notranslate ui-nav-arrows" id="nav-server">
@@ -359,14 +352,18 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
-    // Клик по картине: Проявить/Спрятать скрытую кнопку под ней
+  // Обновленная функция проявления кнопок под картинами
     function toggleManifest(boxId) {
-        // Закрываем другие открытые панели для чистоты интерфейса
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id !== boxId) box.classList.remove('revealed');
+            if(box.id === boxId) {
+                const isOpened = box.style.opacity === "1";
+                box.style.opacity = isOpened ? "0" : "1";
+                box.style.pointerEvents = isOpened ? "none" : "auto";
+            } else {
+                box.style.opacity = "0";
+                box.style.pointerEvents = "none";
+            }
         });
-        const targetBox = document.getElementById(boxId);
-        if(targetBox) targetBox.classList.toggle('revealed');
     }
 
     function handleDoor() {
