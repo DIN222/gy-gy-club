@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.92 | HALL RECOMPOSITION</title>
+    <title>GY-GY Club v4.4.93 | HALL RECOMPOSITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -352,16 +352,27 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
-  // Обновленная функция проявления кнопок под картинами
+ // Железобетонная функция проявления кнопок под картинами для v4.4.92
     function toggleManifest(boxId) {
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
             if(box.id === boxId) {
-                const isOpened = box.style.opacity === "1";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
+                // Проверяем, открыта ли кнопка сейчас
+                const isOpened = box.getAttribute('data-opened') === "true";
+                
+                if (isOpened) {
+                    box.style.opacity = "0";
+                    box.style.pointerEvents = "none";
+                    box.setAttribute('data-opened', "false");
+                } else {
+                    box.style.opacity = "1";
+                    box.style.pointerEvents = "auto";
+                    box.setAttribute('data-opened', "true");
+                }
             } else {
+                // Все остальные кнопки гарантированно прячем
                 box.style.opacity = "0";
                 box.style.pointerEvents = "none";
+                box.setAttribute('data-opened', "false");
             }
         });
     }
