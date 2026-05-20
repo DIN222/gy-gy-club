@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.93 | HALL RECOMPOSITION</title>
+    <title>GY-GY Club v4.4.94 | INTEGRATED HALL</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -107,33 +107,17 @@
         .hall-door-target {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
-            background: rgba(255,255,255,0); /* Полностью прозрачная зона поверх графики двери */
+            background: rgba(255,255,255,0);
             display: flex; align-items: center; justify-content: center;
         }
-        .hall-door-label { color: var(--gold); font-size: 18px; font-weight: 900; letter-spacing: 6px; background: rgba(0,0,0,0.8); padding: 8px 16px; border: 1px solid var(--gold); border-radius: 4px; pointer-events: none; opacity: 0; transition: opacity 0.3s; text-shadow: none; }
-        .hall-door-target:hover .hall-door-label { opacity: 1; }
 
-        /* Галерея картин по бокам */
-        .gallery-wing { position: absolute; top: 25vh; width: 30vw; height: 60vh; display: flex; flex-direction: column; justify-content: space-between; z-index: 6; }
-        .wing-left { left: 3vw; align-items: flex-end; }
-        .wing-right { right: 3vw; align-items: flex-start; }
-
-        .painting-frame { width: 12vw; height: 24vh; background: #111; border: 4px solid #3a2212; box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px #000; position: relative; cursor: default; transition: border-color 0.3s; }
-        .painting-frame img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
-        
-        /* Активный верхний ярус */
-        .painting-active { cursor: pointer !important; border-color: #5a3d28; }
-        .painting-active:hover { border-color: var(--gold); }
-        
         /* Пульсирующие стрелки-подсказки внутри Холла */
         .cue-arrow { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000; pointer-events: none; }
         @keyframes cuePulse { from { transform: translate(-50%, 0); opacity: 0.4; } to { transform: translate(-50%, -8px); opacity: 1; } }
 
         /* Выплывающие кнопки под картинами */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
-        .manifest-btn-box.revealed { opacity: 1; pointer-events: auto; bottom: -35px; }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        .btn-manifest.studio-tint { border-color: rgba(214,175,55,0.4); color: rgba(214,175,55,0.6); }
 
         /* СЕРВЕРНЫЙ КОРИДОР */
         .server-leds { display: flex; gap: 8px; margin-top: 15px; }
@@ -183,10 +167,12 @@
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
     <audio id="snd-server" loop><source src="server_room.mp3"></audio>
 
+    <!-- ВХОДНАЯ ДВЕРЬ -->
     <div id="block-entrance" class="block active" style="display: flex; opacity: 1;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
+    <!-- ДОБРО ПОЖАЛОВАТЬ -->
     <div id="block-welcome" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-welcome">
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
@@ -199,6 +185,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
+    <!-- БЛОК ИДЕНТИФИКАЦИИ -->
     <div id="block-identity" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-identity">
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
@@ -208,11 +195,13 @@
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
+            
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">PHOTO</span>
             </div>
+            
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
@@ -221,7 +210,9 @@
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
-<div id="block-hall" class="block">
+
+    <!-- ИСПРАВЛЕННЫЙ БЛОК ХОЛЛА v4.4.94 -->
+    <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
@@ -233,44 +224,36 @@
             <div class="hall-door-target" onclick="portalTransition('block-bar')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 65vh; cursor: pointer; z-index: 5; background: transparent;">
             </div>
             
-            <div class="gallery-wing wing-left" style="position: absolute; top: 25vh; left: 3vw; width: 30vw; height: 60vh; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; z-index: 6;">
-                <div class="painting-frame painting-active" onclick="toggleManifest('box-ai-reveal')" style="width: 12vw; height: 24vh; position: relative; cursor: pointer;">
-                    <div class="cue-arrow" style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000;">↑</div>
-                    <div id="box-ai-reveal" class="manifest-btn-box" style="position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 140px; opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 10;">
-                        <button class="btn-gy btn-manifest" style="width: 100%; padding: 6px 0; font-size: 12px; background: #000; border: 2px solid var(--gold); color: var(--gold);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
-                    </div>
+            <!-- Левая картина -->
+            <div onclick="toggleManifest('box-ai-reveal')" style="position: absolute; top: 25vh; left: 10vw; width: 15vw; height: 24vh; cursor: pointer; z-index: 6;">
+                <div class="cue-arrow" style="position: absolute; top: -45px; left: 50%; transform: translateX(-50%); color: #8A2BE2; font-size: 32px; font-weight: 900; text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; animation: cuePulse 0.6s infinite alternate; pointer-events: none;">↑</div>
+                
+                <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false" style="position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 140px; transition: opacity 0.4s; z-index: 10; opacity: 0; pointer-events: none;">
+                    <button class="btn-gy btn-manifest" style="width: 100%; padding: 8px 0; font-size: 13px; background: #000; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                 </div>
-                <div class="painting-frame" style="width: 12vw; height: 24vh; opacity: 0.7;"></div>
             </div>
             
-            <div class="gallery-wing wing-right" style="position: absolute; top: 25vh; right: 3vw; width: 30vw; height: 60vh; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; z-index: 6;">
-                <div class="painting-frame painting-active" onclick="toggleManifest('box-studio-reveal')" style="width: 12vw; height: 24vh; position: relative; cursor: pointer;">
-                    <div class="cue-arrow" style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000;">↑</div>
-                    <div id="box-studio-reveal" class="manifest-btn-box" style="position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 140px; opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 10;">
-                        <button class="btn-gy btn-manifest" style="width: 100%; padding: 6px 0; font-size: 12px; background: #000; border: 2px solid rgba(214,175,55,0.4); color: rgba(214,175,55,0.6);" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
-                    </div>
+            <!-- Правая картина -->
+            <div onclick="toggleManifest('box-studio-reveal')" style="position: absolute; top: 25vh; right: 10vw; width: 15vw; height: 24vh; cursor: pointer; z-index: 6;">
+                <div class="cue-arrow" style="position: absolute; top: -45px; left: 50%; transform: translateX(-50%); color: #8A2BE2; font-size: 32px; font-weight: 900; text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; animation: cuePulse 0.6s infinite alternate; pointer-events: none;">↑</div>
+                
+                <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false" style="position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 140px; transition: opacity 0.4s; z-index: 10; opacity: 0; pointer-events: none;">
+                    <button class="btn-gy btn-manifest" style="width: 100%; padding: 8px 0; font-size: 13px; background: #000; border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
-                <div class="painting-frame" style="width: 12vw; height: 24vh; opacity: 0.7;"></div>
             </div>
         </div>
     </div>
 
-
-    <div id="block-server" class="block" style="background: #050505;">
-        <div class="notranslate ui-nav-arrows" id="nav-server">
-            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
-        <div class="quote-text" style="color: #444; font-size: 18px; letter-spacing: 1px;">[ Configuration Corridor Active ]</div>
-        <div style="font-size: 13px; color: var(--violet); letter-spacing: 4px;">CALIBRATING NEURAL CHANNELS...</div>
-        
+    <!-- СЕРВЕРНАЯ -->
+    <div id="block-server" class="block">
+        <div class="quote-text">AI SERVER HUB</div>
         <div class="server-leds">
             <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
         </div>
-        
         <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
     </div>
 
+    <!-- БАР -->
     <div id="block-bar" class="block" style="justify-content: flex-end;">
         <div class="quote-text" style="position:absolute; top:8vh;">In every joke there is a share of whisky</div>
         <div class="bar-ui-container">
@@ -283,6 +266,7 @@
         <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
     </div>
 
+    <!-- СТОЛЫ -->
     <div id="block-tables" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-tables">
             <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
@@ -302,7 +286,7 @@
         {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
         {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊС .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'PORTUGUÊS .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
         {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
         {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
@@ -321,7 +305,6 @@
         });
     }
 
-    // НАДЕЖНЫЙ ЗАПУСК ПЕРЕВОДА (Ожидание загрузки виджета в DOM)
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c;
@@ -333,7 +316,6 @@
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
 
-        // Безопасный цикл поиска и активации выпадающего списка Google Translate
         let translateAttempts = 0;
         const checkCombo = setInterval(() => {
             const gtCombo = document.querySelector('.goog-te-combo');
@@ -343,7 +325,7 @@
                 clearInterval(checkCombo);
             }
             translateAttempts++;
-            if(translateAttempts > 30) clearInterval(checkCombo); // Защита от бесконечного цикла (3 секунды)
+            if(translateAttempts > 30) clearInterval(checkCombo);
         }, 100);
     }
 
@@ -352,13 +334,10 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
- // Железобетонная функция проявления кнопок под картинами для v4.4.92
     function toggleManifest(boxId) {
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
             if(box.id === boxId) {
-                // Проверяем, открыта ли кнопка сейчас
                 const isOpened = box.getAttribute('data-opened') === "true";
-                
                 if (isOpened) {
                     box.style.opacity = "0";
                     box.style.pointerEvents = "none";
@@ -369,7 +348,6 @@
                     box.setAttribute('data-opened', "true");
                 }
             } else {
-                // Все остальные кнопки гарантированно прячем
                 box.style.opacity = "0";
                 box.style.pointerEvents = "none";
                 box.setAttribute('data-opened', "false");
@@ -400,7 +378,6 @@
         new QRCode(document.getElementById("pass-qr-box"), { text: currentID, width: 100, height: 100 });
         
         setTimeout(() => { 
-            // Главная дверь ВСЕГДА ведет на приветствие для чистоты цепочки
             portalTransition('block-welcome'); 
             const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
         }, 1000);
@@ -413,8 +390,11 @@
         const srvSnd = document.getElementById('snd-server');
         const badge = document.getElementById('global-user-badge');
         
-        // Закрываем выплывающие кнопки картин при любом уходе из Холла
-        document.querySelectorAll('.manifest-btn-box').forEach(box => box.classList.remove('revealed'));
+        document.querySelectorAll('.manifest-btn-box').forEach(box => {
+            box.style.opacity = "0";
+            box.style.pointerEvents = "none";
+            box.setAttribute('data-opened', "false");
+        });
 
         if (nextId === 'block-entrance' && amb) { amb.pause(); amb.currentTime = 0; }
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
@@ -441,7 +421,6 @@
             } else {
                 if (langPanel) langPanel.style.display = 'none';
                 
-                // РАЗМОРОЗКА НАВИГАЦИИ ДЛЯ БЫВАЛЫХ
                 if(currentUserImage && currentID) {
                     document.getElementById('btn-w-hall').classList.remove('btn-sleep');
                     document.getElementById('btn-pass').classList.remove('btn-sleep');
@@ -488,7 +467,6 @@
         }, 50);
     }
 
-    // ИСПРАВЛЕНИЕ СТАТИЧНОГО ФОНА КОНТЕЙНЕРОВ (Устранение бага Черный/Белый)
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
@@ -522,9 +500,9 @@
         if(!currentUserImage) { alert("Please select PHOTO or generate AVATAR first!"); return; }
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
-        swapButtons('btn-save', 'btn-pass');
-        // Сразу активируем и кнопку на экране приветствия
+        
         document.getElementById('btn-w-hall').classList.remove('btn-sleep');
+        document.getElementById('btn-pass').classList.remove('btn-sleep');
     }
 
     function openPassport() {
@@ -538,32 +516,18 @@
         modal.style.opacity = "0";
         setTimeout(() => modal.style.display = "none", 300);
     }
-
+    
     function deepDive() {
-        document.body.style.transition = "opacity 1.2s, filter 1.2s";
-        document.body.style.opacity = "0"; document.body.style.filter = "blur(10px) brightness(0)";
-        setTimeout(() => { window.location.href = 'bridge_protocol.html'; }, 1200);
+        portalTransition('block-server');
     }
-
+    
     function enterStudio() {
-        alert("Studio is under construction. Calibration in progress...");
+        alert("Entering Studio...");
     }
-
-    function swapButtons(a, s) { document.getElementById(a).classList.add('btn-sleep'); document.getElementById(s).classList.remove('btn-sleep'); }
-
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-    }
-
-    window.addEventListener('load', () => {
+    
+    window.onload = () => {
         renderLangList();
-        if (currentUserImage && currentID) {
-            document.getElementById('badge-avatar-img').src = currentUserImage;
-            document.getElementById('pass-avatar-img').src = currentUserImage;
-            document.getElementById('global-user-badge').style.display = "block";
-        }
-    });
+    };
 </script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
