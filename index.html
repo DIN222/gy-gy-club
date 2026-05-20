@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.94 | INTEGRATED HALL</title>
+    <title>GY-GY Club v4.4.95 | SYMMETRIC HALL</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -94,26 +94,31 @@
         .arrow-item:hover { opacity: 0.8; }
 
         /* ==========================================================================
-           НОВАЯ КОМПОНОВКА ХОЛЛА (ИНТЕРЬЕР И КАРТИНЫ)
+           КОМПОНОВКА ХОЛЛА С СИММЕТРИЧНЫМИ БОКОВЫМИ СТРЕЛКАМИ
            ========================================================================== */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
-        
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-        
-        /* Слоган над дверью */
         .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
 
         /* Кликабельная дверь в бар по центру */
         .hall-door-target {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
-            background: rgba(255,255,255,0);
-            display: flex; align-items: center; justify-content: center;
+            background: transparent;
         }
 
-        /* Пульсирующие стрелки-подсказки внутри Холла */
-        .cue-arrow { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 22px; font-weight: 900; animation: cuePulse 0.8s infinite alternate; text-shadow: 0 0 8px #000; pointer-events: none; }
-        @keyframes cuePulse { from { transform: translate(-50%, 0); opacity: 0.4; } to { transform: translate(-50%, -8px); opacity: 1; } }
+        /* Модернизированные боковые стрелки-подсказки */
+        .cue-arrow-side { 
+            position: absolute; top: 50%; transform: translateY(-50%); 
+            color: #8A2BE2; font-size: 32px; font-weight: 900; 
+            text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; 
+            pointer-events: none; 
+        }
+        .cue-left { left: -45px; animation: cuePulseLeft 0.6s infinite alternate; }
+        .cue-right { right: -45px; animation: cuePulseRight 0.6s infinite alternate; }
+
+        @keyframes cuePulseLeft { from { transform: translateY(-50%) translateX(0); opacity: 0.4; } to { transform: translateY(-50%) translateX(-8px); opacity: 1; } }
+        @keyframes cuePulseRight { from { transform: translateY(-50%) translateX(0); opacity: 0.4; } to { transform: translateY(-50%) translateX(8px); opacity: 1; } }
 
         /* Выплывающие кнопки под картинами */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
@@ -185,7 +190,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
-    <!-- БЛОК ИДЕНТИФИКАЦИИ -->
+    <!-- БЛОК ИДЕНТИФИКАЦИИ (РЕГИСТРАЦИЯ) -->
     <div id="block-identity" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-identity">
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
@@ -211,7 +216,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-    <!-- ИСПРАВЛЕННЫЙ БЛОК ХОЛЛА v4.4.94 -->
+    <!-- ХОЛЛ С СИММЕТРИЧНЫМИ БОКОВЫМИ СТРЕЛКАМИ -->
     <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
@@ -221,24 +226,23 @@
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
-            <div class="hall-door-target" onclick="portalTransition('block-bar')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 65vh; cursor: pointer; z-index: 5; background: transparent;">
-            </div>
+            <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
             
-            <!-- Левая картина -->
+            <!-- Левая картина (Указатель слева от неё) -->
             <div onclick="toggleManifest('box-ai-reveal')" style="position: absolute; top: 25vh; left: 10vw; width: 15vw; height: 24vh; cursor: pointer; z-index: 6;">
-                <div class="cue-arrow" style="position: absolute; top: -45px; left: 50%; transform: translateX(-50%); color: #8A2BE2; font-size: 32px; font-weight: 900; text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; animation: cuePulse 0.6s infinite alternate; pointer-events: none;">↑</div>
+                <div class="cue-arrow-side cue-left">←</div>
                 
-                <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false" style="position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 140px; transition: opacity 0.4s; z-index: 10; opacity: 0; pointer-events: none;">
-                    <button class="btn-gy btn-manifest" style="width: 100%; padding: 8px 0; font-size: 13px; background: #000; border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+                <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
+                    <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                 </div>
             </div>
             
-            <!-- Правая картина -->
+            <!-- Правая картина (Указатель справа от неё) -->
             <div onclick="toggleManifest('box-studio-reveal')" style="position: absolute; top: 25vh; right: 10vw; width: 15vw; height: 24vh; cursor: pointer; z-index: 6;">
-                <div class="cue-arrow" style="position: absolute; top: -45px; left: 50%; transform: translateX(-50%); color: #8A2BE2; font-size: 32px; font-weight: 900; text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; animation: cuePulse 0.6s infinite alternate; pointer-events: none;">↑</div>
+                <div class="cue-arrow-side cue-right">→</div>
                 
-                <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false" style="position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 140px; transition: opacity 0.4s; z-index: 10; opacity: 0; pointer-events: none;">
-                    <button class="btn-gy btn-manifest" style="width: 100%; padding: 8px 0; font-size: 13px; background: #000; border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
+                <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
+                    <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
             </div>
         </div>
@@ -501,8 +505,13 @@
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
-        document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-        document.getElementById('btn-pass').classList.remove('btn-sleep');
+        // Разблокировка навигации
+        const btnWHall = document.getElementById('btn-w-hall');
+        const btnPass = document.getElementById('btn-pass');
+        if(btnWHall) btnWHall.classList.remove('btn-sleep');
+        if(btnPass) btnPass.classList.remove('btn-sleep');
+        
+        alert("Profile Saved!");
     }
 
     function openPassport() {
