@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.2 | SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.3 | SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -202,13 +202,14 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
-    <!-- БЛОК ИДЕНТИФИКАЦИИ (РЕГИСТРАЦИЯ) -->
+<!-- БЛОК ИДЕНТИФИКАЦИИ (РЕГИСТРАЦИЯ) -->
     <div id="block-identity" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-identity">
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
         <div class="quote-text">There is never too much champagne</div>
+        
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
@@ -224,31 +225,37 @@
                 <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
             </div>
         </div>
+        
+        <!-- Кнопки управления регистрацией -->
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-    <!-- ХОЛЛ -->
+    <!-- ХОЛЛ (С исправленным позиционированием подсказок) -->
     <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
         </div>
         
-        <div class="hall-interior">
-            <div class="quote-text">In every joke there is a share of whisky</div>
-            <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+        <div class="hall-interior" style="position: relative; width: 100%; height: 100%;">
+            <div class="quote-text" style="position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center;">In every joke there is a share of whisky</div>
             
-            <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
-                <div class="cue-arrow-side">&larr;</div>
-                <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
+            <!-- Центральная дверь в Бар -->
+            <div class="hall-door-target" onclick="portalTransition('block-bar')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 30vw; height: 65vh; cursor: pointer; z-index: 5; background: transparent;"></div>
+            
+            <!-- ЛЕВАЯ КАРТИНА (AI ROOM) -->
+            <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')" style="position: absolute; top: 30vh; left: 5vw; width: 20vw; height: 30vh; cursor: pointer; z-index: 6;">
+                <div class="cue-arrow-side" style="left: -25px;">&larr;</div>
+                <div id="box-ai-reveal" class="manifest-btn-box">
                     <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                 </div>
             </div>
             
-            <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')">
-                <div class="cue-arrow-side">&rarr;</div>
-                <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
+            <!-- ПРАВАЯ КАРТИНА (STUDIO) -->
+            <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')" style="position: absolute; top: 30vh; right: 5vw; width: 20vw; height: 30vh; cursor: pointer; z-index: 6;">
+                <div class="cue-arrow-side" style="right: -25px;">&rarr;</div>
+                <div id="box-studio-reveal" class="manifest-btn-box">
                     <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
             </div>
@@ -472,24 +479,39 @@
         document.getElementById('txt-avatar').style.display = "none";
     }
 
-    function saveUserProfile() {
+   function saveUserProfile() {
         if(!currentUserImage) { 
             alert("Генерируй аватар или загрузи фото!"); 
             return; 
         }
         
+        // Сохранение в базу
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
-        document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-        document.getElementById('btn-w-hall').style.opacity = "1";
-        document.getElementById('btn-w-hall').style.pointerEvents = "auto";
+        // 1. Гасим и блокируем кнопку SAVE
+        const btnSave = document.getElementById('btn-save');
+        if(btnSave) {
+            btnSave.classList.add('btn-sleep');
+        }
+
+        // 2. Включаем кнопку PROCEED (Проходите)
+        const btnPass = document.getElementById('btn-pass');
+        if(btnPass) {
+            btnPass.classList.remove('btn-sleep');
+            btnPass.style.opacity = "1";
+            btnPass.style.pointerEvents = "auto";
+        }
         
-        document.getElementById('btn-pass').classList.remove('btn-sleep');
-        document.getElementById('btn-pass').style.opacity = "1";
-        document.getElementById('btn-pass').style.pointerEvents = "auto";
+        // 3. Включаем кнопку на экране Welcome (на всякий случай)
+        const btnWHall = document.getElementById('btn-w-hall');
+        if(btnWHall) {
+            btnWHall.classList.remove('btn-sleep');
+            btnWHall.style.opacity = "1";
+            btnWHall.style.pointerEvents = "auto";
+        }
         
-        alert("Saved! Кнопки разблокированы.");
+        alert("Saved! Профиль зафиксирован, доступ открыт.");
     }
 
     function openPassport() { document.getElementById('modal-passport').style.display = "flex"; document.getElementById('modal-passport').style.opacity = "1"; }
