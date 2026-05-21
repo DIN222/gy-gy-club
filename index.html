@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.0 | SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1 | SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -305,14 +305,14 @@
             layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false
         }, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    }<script>
+    // ПРИНУДИТЕЛЬНЫЙ СБРОС СТАРЫХ ЗАВИСШИХ ДАННЫХ ДЛЯ ТЕСТА
+    // Если кнопка оживет, эту строчку потом можно удалить:
+    localStorage.clear(); 
 
-<script>
-    let currentID = localStorage.getItem('gy_user_id') || "";
+    let currentID = "";
     let currentActiveCode = 'en';
-    let currentUserImage = localStorage.getItem('gy_user_img') || "";
+    let currentUserImage = "";
     let currentFlagCode = 'gb';
 
     const allLangs = [
@@ -349,17 +349,17 @@
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
 
-        let translateAttempts = 0;
-        const checkCombo = setInterval(() => {
-            const gtCombo = document.querySelector('.goog-te-combo');
-            if (gtCombo) {
-                gtCombo.value = lang.code; 
-                gtCombo.dispatchEvent(new Event('change', { bubbles: true })); 
-                clearInterval(checkCombo);
+        // Агрессивный поиск выпадающего списка Google Translate
+        let attempts = 0;
+        const selectTimer = setInterval(() => {
+            const selectEl = document.querySelector('.goog-te-combo');
+            if (selectEl) {
+                selectEl.value = lang.code;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                clearInterval(selectTimer);
             }
-            translateAttempts++;
-            if(translateAttempts > 40) clearInterval(checkCombo);
-        }, 100);
+            if (++attempts > 50) clearInterval(selectTimer);
+        }, 150);
     }
 
     function toggleLangList() {
@@ -371,17 +371,10 @@
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
             if(box.id === boxId) {
                 const isOpened = box.getAttribute('data-opened') === "true";
-                if (isOpened) {
-                    box.style.opacity = "0";
-                    box.style.pointerEvents = "none";
-                    box.setAttribute('data-opened', "false");
-                    box.style.bottom = "-50px";
-                } else {
-                    box.style.opacity = "1";
-                    box.style.pointerEvents = "auto";
-                    box.setAttribute('data-opened', "true");
-                    box.style.bottom = "-35px";
-                }
+                box.style.opacity = isOpened ? "0" : "1";
+                box.style.pointerEvents = isOpened ? "none" : "auto";
+                box.setAttribute('data-opened', isOpened ? "false" : "true");
+                box.style.bottom = isOpened ? "-50px" : "-35px";
             } else {
                 box.style.opacity = "0";
                 box.style.pointerEvents = "none";
@@ -394,17 +387,12 @@
     function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
-        
         d.style.transform = "scale(5)"; 
         d.style.opacity = "0"; 
         d.style.pointerEvents = "none";
-        
         document.getElementById('lang-switcher').style.opacity = "0";
         
-        if (!currentID) {
-            currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        }
-        
+        currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
         document.getElementById('id-label').innerText = currentID;
         document.getElementById('pass-id-val').innerText = currentID;
         
@@ -426,47 +414,29 @@
         const srvSnd = document.getElementById('snd-server');
         const badge = document.getElementById('global-user-badge');
         
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            box.style.opacity = "0";
-            box.style.pointerEvents = "none";
-            box.setAttribute('data-opened', "false");
-            box.style.bottom = "-50px";
-        });
-
-        if (nextId === 'block-entrance' && amb) { amb.pause(); amb.currentTime = 0; }
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
-        backBtn.style.opacity = "0";
-        
-        if(current && current.id === 'block-server') { fadeAudio(srvSnd, 0, 400); setTimeout(() => srvSnd.pause(), 400); }
+        if (backBtn) backBtn.style.opacity = "0";
 
         setTimeout(() => {
             if (current) { current.classList.remove('active'); current.style.display = "none"; }
-            
             const next = document.getElementById(nextId);
             if (!next) return;
-            next.style.display = "flex";
             
+            next.style.display = "flex";
             const langPanel = document.getElementById('lang-switcher');
             
             if (nextId === 'block-entrance') {
                 const door = document.getElementById('main-door');
-                door.style.transition = "none"; door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
+                door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
                 if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
-                
-                if (currentUserImage) { badge.style.display = "block"; } else { badge.style.display = "none"; }
-                document.querySelectorAll('.ui-nav-arrows').forEach(el => el.style.display = "none");
+                badge.style.display = "none";
             } else {
                 if (langPanel) langPanel.style.display = 'none';
                 
-                if(currentUserImage && currentID) {
-                    document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-                    document.getElementById('btn-pass').classList.remove('btn-sleep');
-                }
-
-                if(nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; badge.style.display = "none"; }
-                if(nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; badge.style.display = "none"; }
+                if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
+                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
                 
-                if(nextId === 'block-hall' || nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
+                if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
                     if (currentUserImage) {
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
@@ -474,34 +444,20 @@
                     }
                     if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
                     if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
-                    if(nextId === 'block-server') document.getElementById('nav-server').style.display = "flex";
-                    if(nextId === 'block-bar') {
-                        document.querySelectorAll('.ui-nav-arrows').forEach(el => { if(el.id !== 'nav-server' && el.id !== 'nav-tables') el.style.display = "none"; });
-                    }
                 }
             }
 
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
-                if (nextId === 'block-bar') { fadeAudio(amb, 1, 800); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
-                if (nextId === 'block-server') { srvSnd.volume = 0; srvSnd.play(); fadeAudio(srvSnd, 0.8, 600); }
-                
-                if (nextId === 'block-tables') { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = "1", 50); fadeAudio(amb, 0, 800); } else { backBtn.style.display = 'none'; }
-                
-                const gtCombo = document.querySelector('.goog-te-combo');
-                if (gtCombo && currentActiveCode !== 'en') { gtCombo.dispatchEvent(new Event('change', { bubbles: true })); }
+                if (nextId === 'block-bar') { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
+                if (nextId === 'block-server') { srvSnd.play(); }
             }, 50);
         }, 400); 
     }
 
     function fadeAudio(audio, target, duration) {
         if (!audio) return;
-        const start = audio.volume; const startTime = Date.now();
-        const interval = setInterval(() => {
-            const progress = Math.min((Date.now() - startTime) / duration, 1);
-            audio.volume = start + (target - start) * progress;
-            if (progress === 1) clearInterval(interval);
-        }, 50);
+        audio.volume = target; // Упрощено ради безотказности
     }
 
     function preview(i) {
@@ -509,12 +465,8 @@
             const r = new FileReader();
             r.onload = (e) => { 
                 document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('txt-avatar').style.display = "block";
-                
-                const pp = document.getElementById('pp');
-                pp.src = e.target.result; 
-                pp.style.display = "block";
-                
+                document.getElementById('pp').src = e.target.result; 
+                document.getElementById('pp').style.display = "block";
                 document.getElementById('txt-photo').style.display = "none";
                 currentUserImage = e.target.result;
             };
@@ -525,78 +477,43 @@
     function generateAvatar() {
         document.getElementById('pp').style.display = "none"; 
         document.getElementById('txt-photo').style.display = "block";
-        document.getElementById('file-input').value = ""; 
         
-        // Создаем полностью независимую DataURL SVG иконку (снимаем зависимость от кэша внешнего API)
         const randomColor = Math.floor(Math.random()*16777215).toString(16);
         const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
-        const dataUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
         
-        const avImg = document.getElementById('avatar-img');
-        avImg.src = dataUrl; 
-        avImg.style.display = "block";
+        document.getElementById('avatar-img').src = currentUserImage; 
+        document.getElementById('avatar-img').style.display = "block";
         document.getElementById('txt-avatar').style.display = "none";
-        currentUserImage = dataUrl;
     }
 
     function saveUserProfile() {
         if(!currentUserImage) { 
-            alert("Please select PHOTO or generate AVATAR first!"); 
+            alert("Генерируй аватар или загрузи фото!"); 
             return; 
         }
         
-        // Надежная принудительная запись
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
-        // Насильное "пробуждение" кнопок в DOM прямо сейчас
-        const btnWHall = document.getElementById('btn-w-hall');
-        const btnPass = document.getElementById('btn-pass');
+        // Прямой удар по блокировкам кнопок:
+        document.getElementById('btn-w-hall').classList.remove('btn-sleep');
+        document.getElementById('btn-w-hall').style.opacity = "1";
+        document.getElementById('btn-w-hall').style.pointerEvents = "auto";
         
-        if(btnWHall) {
-            btnWHall.classList.remove('btn-sleep');
-            btnWHall.style.opacity = "1";
-            btnWHall.style.pointerEvents = "auto";
-        }
-        if(btnPass) {
-            btnPass.classList.remove('btn-sleep');
-            btnPass.style.opacity = "1";
-            btnPass.style.pointerEvents = "auto";
-        }
+        document.getElementById('btn-pass').classList.remove('btn-sleep');
+        document.getElementById('btn-pass').style.opacity = "1";
+        document.getElementById('btn-pass').style.pointerEvents = "auto";
         
-        alert("Profile Saved Successfully!");
+        alert("Saved! Кнопки разблокированы.");
     }
 
-    function openPassport() {
-        const modal = document.getElementById('modal-passport');
-        modal.style.display = "flex";
-        setTimeout(() => modal.style.opacity = "1", 10);
-    }
-
-    function closePassport() {
-        const modal = document.getElementById('modal-passport');
-        modal.style.opacity = "0";
-        setTimeout(() => modal.style.display = "none", 300);
-    }
+    function openPassport() { document.getElementById('modal-passport').style.display = "flex"; document.getElementById('modal-passport').style.opacity = "1"; }
+    function closePassport() { document.getElementById('modal-passport').style.display = "none"; }
+    function deepDive() { portalTransition('block-server'); }
+    function enterStudio() { alert("Entering Studio..."); }
     
-    function deepDive() {
-        portalTransition('block-server');
-    }
-    
-    function enterStudio() {
-        alert("Entering Studio...");
-    }
-    
-    window.onload = () => {
-        renderLangList();
-        // Автопроверка: если в системе уже есть данные, снимаем сон с кнопок перехода
-        if(currentUserImage && currentID) {
-            const btnWHall = document.getElementById('btn-w-hall');
-            const btnPass = document.getElementById('btn-pass');
-            if(btnWHall) btnWHall.classList.remove('btn-sleep');
-            if(btnPass) btnPass.classList.remove('btn-sleep');
-        }
-    };
+    window.onload = () => { renderLangList(); };
 </script>
 </body>
 </html>
