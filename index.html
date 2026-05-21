@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.4.95 | SYMMETRIC HALL</title>
+    <title>GY-GY Club v4.5.0 | SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Слева) */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -31,7 +31,7 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY */
+        /* ЛОГОТИП GY-GY (Справа) */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -67,7 +67,9 @@
         #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 1.2s ease-in, opacity 1s; z-index: 9999999 !important; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; }
+        
+        /* Стили блокировки кнопок */
+        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
 
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
@@ -94,31 +96,40 @@
         .arrow-item:hover { opacity: 0.8; }
 
         /* ==========================================================================
-           КОМПОНОВКА ХОЛЛА С СИММЕТРИЧНЫМИ БОКОВЫМИ СТРЕЛКАМИ
+           КОМПОНОВКА ХОЛЛА И КАРТИН С БОКОВЫМИ СТРЕЛКАМИ
            ========================================================================== */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
 
-        /* Кликабельная дверь в бар по центру */
         .hall-door-target {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
 
-        /* Модернизированные боковые стрелки-подсказки */
+        /* Контейнеры интерактивных зон картин */
+        .painting-zone {
+            position: absolute; top: 25vh; width: 15vw; height: 24vh; 
+            cursor: pointer; z-index: 6; background: rgba(255,255,255,0.01);
+        }
+        .painting-left { left: 10vw; }
+        .painting-right { right: 10vw; }
+
+        /* Пульсирующие стрелки строго по бокам внешних границ картин */
         .cue-arrow-side { 
             position: absolute; top: 50%; transform: translateY(-50%); 
-            color: #8A2BE2; font-size: 32px; font-weight: 900; 
+            color: #8A2BE2; font-size: 36px; font-weight: 900; 
             text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; 
-            pointer-events: none; 
+            pointer-events: none; user-select: none;
         }
-        .cue-left { left: -45px; animation: cuePulseLeft 0.6s infinite alternate; }
-        .cue-right { right: -45px; animation: cuePulseRight 0.6s infinite alternate; }
+        /* Левая стрелка — с левого бока левой картины */
+        .painting-left .cue-arrow-side { left: -45px; animation: cuePulseLeft 0.6s infinite alternate; }
+        /* Правая стрелка — с правого бока правой картины */
+        .painting-right .cue-arrow-side { right: -45px; animation: cuePulseRight 0.6s infinite alternate; }
 
-        @keyframes cuePulseLeft { from { transform: translateY(-50%) translateX(0); opacity: 0.4; } to { transform: translateY(-50%) translateX(-8px); opacity: 1; } }
-        @keyframes cuePulseRight { from { transform: translateY(-50%) translateX(0); opacity: 0.4; } to { transform: translateY(-50%) translateX(8px); opacity: 1; } }
+        @keyframes cuePulseLeft { from { transform: translateY(-50%) translateX(0); opacity: 0.5; } to { transform: translateY(-50%) translateX(-8px); opacity: 1; } }
+        @keyframes cuePulseRight { from { transform: translateY(-50%) translateX(0); opacity: 0.5; } to { transform: translateY(-50%) translateX(8px); opacity: 1; } }
 
         /* Выплывающие кнопки под картинами */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
@@ -132,6 +143,10 @@
 
         .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
         .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
+        
+        /* Скрытие оригинального тулбара Гугла */
+        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
+        body { top: 0 !important; }
     </style> 
 </head>
 
@@ -153,6 +168,7 @@
         </div>
     </div>
 
+    <!-- ЯЗЫКОВАЯ ПАНЕЛЬ -->
     <div id="lang-switcher" class="lang-frame-locked notranslate">
         <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
@@ -161,6 +177,7 @@
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
     </div>
 
+    <!-- Контейнер для подключения переводчика -->
     <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
     
     <div class="ui-header-right notranslate">GY-GY</div>
@@ -216,7 +233,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-    <!-- ХОЛЛ С СИММЕТРИЧНЫМИ БОКОВЫМИ СТРЕЛКАМИ -->
+    <!-- ХОЛЛ С СИММЕТРИЧНЫМИ СТРЕЛКАМИ НА КАРТИНАХ -->
     <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
@@ -226,21 +243,20 @@
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
+            <!-- Центральная дверь в бар -->
             <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
             
-            <!-- Левая картина (Указатель слева от неё) -->
-            <div onclick="toggleManifest('box-ai-reveal')" style="position: absolute; top: 25vh; left: 10vw; width: 15vw; height: 24vh; cursor: pointer; z-index: 6;">
-                <div class="cue-arrow-side cue-left">←</div>
-                
+            <!-- Левая картина (Зона + Стрелка слева снаружи) -->
+            <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
+                <div class="cue-arrow-side">←</div>
                 <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                 </div>
             </div>
             
-            <!-- Правая картина (Указатель справа от неё) -->
-            <div onclick="toggleManifest('box-studio-reveal')" style="position: absolute; top: 25vh; right: 10vw; width: 15vw; height: 24vh; cursor: pointer; z-index: 6;">
-                <div class="cue-arrow-side cue-right">→</div>
-                
+            <!-- Правая картина (Зона + Стрелка справа снаружи) -->
+            <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')">
+                <div class="cue-arrow-side">→</div>
                 <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
@@ -279,6 +295,19 @@
         <div class="lamp-zone" style="bottom: 49.2%; left: 49.9%;"></div>
         <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;"></div>
     </div>
+
+<!-- ОФИЦИАЛЬНЫЙ СКРИПТ КЛИЕНТСКОГО ПЕРЕВОДЧИКА GOOGLE -->
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
     let currentID = localStorage.getItem('gy_user_id') || "";
@@ -329,7 +358,7 @@
                 clearInterval(checkCombo);
             }
             translateAttempts++;
-            if(translateAttempts > 30) clearInterval(checkCombo);
+            if(translateAttempts > 40) clearInterval(checkCombo);
         }, 100);
     }
 
@@ -346,15 +375,18 @@
                     box.style.opacity = "0";
                     box.style.pointerEvents = "none";
                     box.setAttribute('data-opened', "false");
+                    box.style.bottom = "-50px";
                 } else {
                     box.style.opacity = "1";
                     box.style.pointerEvents = "auto";
                     box.setAttribute('data-opened', "true");
+                    box.style.bottom = "-35px";
                 }
             } else {
                 box.style.opacity = "0";
                 box.style.pointerEvents = "none";
                 box.setAttribute('data-opened', "false");
+                box.style.bottom = "-50px";
             }
         });
     }
@@ -398,6 +430,7 @@
             box.style.opacity = "0";
             box.style.pointerEvents = "none";
             box.setAttribute('data-opened', "false");
+            box.style.bottom = "-50px";
         });
 
         if (nextId === 'block-entrance' && amb) { amb.pause(); amb.currentTime = 0; }
@@ -493,25 +526,45 @@
         document.getElementById('pp').style.display = "none"; 
         document.getElementById('txt-photo').style.display = "block";
         document.getElementById('file-input').value = ""; 
-        const url = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${Math.random()}`;
+        
+        // Создаем полностью независимую DataURL SVG иконку (снимаем зависимость от кэша внешнего API)
+        const randomColor = Math.floor(Math.random()*16777215).toString(16);
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
+        const dataUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+        
         const avImg = document.getElementById('avatar-img');
-        avImg.src = url; avImg.style.display = "block";
+        avImg.src = dataUrl; 
+        avImg.style.display = "block";
         document.getElementById('txt-avatar').style.display = "none";
-        currentUserImage = url;
+        currentUserImage = dataUrl;
     }
 
     function saveUserProfile() {
-        if(!currentUserImage) { alert("Please select PHOTO or generate AVATAR first!"); return; }
+        if(!currentUserImage) { 
+            alert("Please select PHOTO or generate AVATAR first!"); 
+            return; 
+        }
+        
+        // Надежная принудительная запись
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
-        // Разблокировка навигации
+        // Насильное "пробуждение" кнопок в DOM прямо сейчас
         const btnWHall = document.getElementById('btn-w-hall');
         const btnPass = document.getElementById('btn-pass');
-        if(btnWHall) btnWHall.classList.remove('btn-sleep');
-        if(btnPass) btnPass.classList.remove('btn-sleep');
         
-        alert("Profile Saved!");
+        if(btnWHall) {
+            btnWHall.classList.remove('btn-sleep');
+            btnWHall.style.opacity = "1";
+            btnWHall.style.pointerEvents = "auto";
+        }
+        if(btnPass) {
+            btnPass.classList.remove('btn-sleep');
+            btnPass.style.opacity = "1";
+            btnPass.style.pointerEvents = "auto";
+        }
+        
+        alert("Profile Saved Successfully!");
     }
 
     function openPassport() {
@@ -536,6 +589,13 @@
     
     window.onload = () => {
         renderLangList();
+        // Автопроверка: если в системе уже есть данные, снимаем сон с кнопок перехода
+        if(currentUserImage && currentID) {
+            const btnWHall = document.getElementById('btn-w-hall');
+            const btnPass = document.getElementById('btn-pass');
+            if(btnWHall) btnWHall.classList.remove('btn-sleep');
+            if(btnPass) btnPass.classList.remove('btn-sleep');
+        }
     };
 </script>
 </body>
