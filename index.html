@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1 | SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.2 | SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -95,9 +95,7 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ==========================================================================
-           КОМПОНОВКА ХОЛЛА И КАРТИН С БОКОВЫМИ СТРЕЛКАМИ
-           ========================================================================== */
+        /* КОМПОНОВКА ХОЛЛА И КАРТИН С БОКОВЫМИ СТРЕЛКАМИ */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
@@ -116,16 +114,14 @@
         .painting-left { left: 10vw; }
         .painting-right { right: 10vw; }
 
-        /* Пульсирующие стрелки строго по бокам внешних границ картин */
+        /* Пульсирующие стрелки по бокам внешних границ картин */
         .cue-arrow-side { 
             position: absolute; top: 50%; transform: translateY(-50%); 
             color: #8A2BE2; font-size: 36px; font-weight: 900; 
             text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; 
             pointer-events: none; user-select: none;
         }
-        /* Левая стрелка — с левого бока левой картины */
         .painting-left .cue-arrow-side { left: -45px; animation: cuePulseLeft 0.6s infinite alternate; }
-        /* Правая стрелка — с правого бока правой картины */
         .painting-right .cue-arrow-side { right: -45px; animation: cuePulseRight 0.6s infinite alternate; }
 
         @keyframes cuePulseLeft { from { transform: translateY(-50%) translateX(0); opacity: 0.5; } to { transform: translateY(-50%) translateX(-8px); opacity: 1; } }
@@ -144,7 +140,6 @@
         .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
         .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
         
-        /* Скрытие оригинального тулбара Гугла */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; }
     </style> 
@@ -164,7 +159,7 @@
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click × or outside to close</div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
 
@@ -233,7 +228,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-    <!-- ХОЛЛ С СИММЕТРИЧНЫМИ СТРЕЛКАМИ НА КАРТИНАХ -->
+    <!-- ХОЛЛ -->
     <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
@@ -242,21 +237,17 @@
         
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
-            
-            <!-- Центральная дверь в бар -->
             <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
             
-            <!-- Левая картина (Зона + Стрелка слева снаружи) -->
             <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
-                <div class="cue-arrow-side">←</div>
+                <div class="cue-arrow-side">&larr;</div>
                 <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                 </div>
             </div>
             
-            <!-- Правая картина (Зона + Стрелка справа снаружи) -->
             <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')">
-                <div class="cue-arrow-side">→</div>
+                <div class="cue-arrow-side">&rarr;</div>
                 <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
@@ -296,7 +287,7 @@
         <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;"></div>
     </div>
 
-<!-- ОФИЦИАЛЬНЫЙ СКРИПТ КЛИЕНТСКОГО ПЕРЕВОДЧИКА GOOGLE -->
+<!-- СКРИПТ ПОДКЛЮЧЕНИЯ И ЛОГИКИ СТРАНИЦЫ -->
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -305,9 +296,9 @@
             layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false
         }, 'google_translate_element');
-    }<script>
-    // ПРИНУДИТЕЛЬНЫЙ СБРОС СТАРЫХ ЗАВИСШИХ ДАННЫХ ДЛЯ ТЕСТА
-    // Если кнопка оживет, эту строчку потом можно удалить:
+    }
+
+    // Очистка данных для теста
     localStorage.clear(); 
 
     let currentID = "";
@@ -320,7 +311,7 @@
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
         {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
         {n:'PORTUGUÊS .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'TÜRKÇЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
         {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
 
@@ -349,7 +340,6 @@
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
 
-        // Агрессивный поиск выпадающего списка Google Translate
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -403,7 +393,7 @@
         
         setTimeout(() => { 
             portalTransition('block-welcome'); 
-            const a = document.getElementById('snd-ambient'); a.volume = 0; a.play(); fadeAudio(a, 1, 2000); 
+            const a = document.getElementById('snd-ambient'); a.volume = 1; a.play();
         }, 1000);
     }
 
@@ -455,11 +445,6 @@
         }, 400); 
     }
 
-    function fadeAudio(audio, target, duration) {
-        if (!audio) return;
-        audio.volume = target; // Упрощено ради безотказности
-    }
-
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
@@ -496,7 +481,6 @@
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
-        // Прямой удар по блокировкам кнопок:
         document.getElementById('btn-w-hall').classList.remove('btn-sleep');
         document.getElementById('btn-w-hall').style.opacity = "1";
         document.getElementById('btn-w-hall').style.pointerEvents = "auto";
@@ -510,10 +494,14 @@
 
     function openPassport() { document.getElementById('modal-passport').style.display = "flex"; document.getElementById('modal-passport').style.opacity = "1"; }
     function closePassport() { document.getElementById('modal-passport').style.display = "none"; }
-    function deepDive() { portalTransition('block-server'); }
+    function deepDive() { portalTransition('block-server'); } // Измените на целевой ID блока при необходимости
     function enterStudio() { alert("Entering Studio..."); }
     
     window.onload = () => { renderLangList(); };
 </script>
+
+<!-- Подключение API переводчика (раскомментируйте при необходимости на хостинге) -->
+<!-- <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
+
 </body>
 </html>
