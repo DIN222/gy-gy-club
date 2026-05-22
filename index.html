@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.5 | SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.7 | SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -580,6 +580,76 @@
     };
   })();
 </script>
+<!-- ... какой-то ваш старый код, таблицы, кнопки ... -->
 
+    <!-- ВСТАВЛЯЕМ СЮДА ПЕРЕД ЗАКРЫВАЮЩИМ ТЕГОМ BODY -->
+    <script>
+        // 1. Генерация уникального цифрового следа (ID)
+        function generateUniqueTrace() {
+            return 'gygy_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        }
+
+        // 2. Функция сохранения профиля
+        function saveGYGYProfile() {
+            try {
+                let currentID = localStorage.getItem('gygy_user_id') || getCookie('gygy_user_id');
+                if (!currentID) currentID = generateUniqueTrace();
+
+                let nicknameInput = document.getElementById('gygy_nick_input');
+                let nickname = nicknameInput ? nicknameInput.value : "Веселый Аноним_" + Math.floor(Math.random() * 1000);
+
+                let userData = {
+                    userId: currentID,
+                    nickname: nickname,
+                    avatar: "🎯"
+                };
+
+                localStorage.setItem('gygy_user_id', currentID);
+                localStorage.setItem('gygy_profile_data', JSON.stringify(userData));
+                setCookie('gygy_user_id', currentID, 365);
+
+                alert(`😜 Профиль ${userData.nickname} успешно сохранен!`);
+                return userData;
+            } catch (error) {
+                console.error("Кнопка сломалась:", error);
+            }
+        }
+
+        // Хелперы для работы с Cookie
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Strict";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Автоматический запуск проверки при загрузке страницы
+        window.onload = function() {
+            const cachedID = localStorage.getItem('gygy_user_id') || getCookie('gygy_user_id');
+            const cachedProfile = localStorage.getItem('gygy_profile_data');
+
+            if (cachedID && cachedProfile) {
+                const profile = JSON.parse(cachedProfile);
+                // Если на странице есть поле ввода, покажем там сохраненный ник
+                let nicknameInput = document.getElementById('gygy_nick_input');
+                if (nicknameInput) nicknameInput.value = profile.nickname;
+                console.log(`🎉 Авторизован: ${profile.nickname}`);
+            }
+        };
+    </script>
 </body>
 </html>
