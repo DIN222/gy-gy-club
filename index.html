@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.4 | SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.5 | SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -226,16 +226,16 @@
             </div>
         </div>
         
-        <!-- Кнопки управления регистрацией -->
-       <!-- Кнопка сохранения профиля -->
-<button id="btn-save-profile" class="gy-btn btn-primary">
-    Сохранить профиль
-</button>
+       <!-- Кнопки управления регистрацией -->
+        <!-- Кнопка сохранения профиля -->
+        <button id="btn-save-profile" class="btn-gy" onclick="saveProfileData()">
+            SAVE PROFILE
+        </button>
 
-<!-- Кнопка прохода в Холл (изначально заблокирована) -->
-<button id="btn-enter-hall" class="gy-btn btn-success" disabled style="opacity: 0.5; cursor: not-allowed;">
-    Проходите
-</button>
+        <!-- Кнопка прохода в Холл (изначально заблокирована) -->
+        <button id="btn-enter-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">
+            PROCEED
+        </button>
     </div>
 
     <!-- ХОЛЛ (С исправленным позиционированием подсказок) -->
@@ -531,6 +531,55 @@
 
 <!-- Подключение API переводчика (раскомментируйте при необходимости на хостинге) -->
 <!-- <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
+    <!-- Вставлять строго перед </body> -->
+<script>
+  (function() {
+    // Юморной логотип и инициализация GY-GY Клуба
+    console.log("🤪 GY-GY Engine активирован. Ищем цифровой след пользователя...");
+
+    // 1. Проверка Cookie-recognition и скрытого ID
+    function getDigitalTrace() {
+      let trace = document.cookie.replace(/(?:(?:^|.*;\s*)gy_digital_trace\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+      if (!trace) {
+        trace = 'id_' + Math.random().toString(36).substr(2, 9);
+        document.cookie = "gy_digital_trace=" + trace + "; max-age=31536000; path=/";
+        return { isNew: true, id: trace };
+      }
+      return { isNew: false, id: trace };
+    }
+
+    // 2. Автоматическое назначение аватарки и ника (для новичков)
+    function assignFunnyPersona() {
+      const funnyNicks = ["Смехозавр", "Кринж-Мастер", "Хохотун-Рецидивист", "Программист-Юморист"];
+      const funnyAvatars = ["🤪", "🤡", "🦧", "🛸", "🐱‍💻"];
+      
+      return {
+        nickname: funnyNicks[Math.floor(Math.random() * funnyNicks.length)],
+        avatar: funnyAvatars[Math.floor(Math.random() * funnyAvatars.length)]
+      };
+    }
+
+    const userTrace = getDigitalTrace();
+    if (userTrace.isNew) {
+      const persona = assignFunnyPersona();
+      console.log(`✨ Приветствуем нового резидента! Твой ник: ${persona.nickname} ${persona.avatar}`);
+      // Здесь логика сохранения персоны в локальное хранилище
+    } else {
+      console.log(`🕵️‍♂️ Старый знакомый вернулся. ID следа: ${userTrace.id}`);
+    }
+
+    // 3. Логика для кнопок: стабильный Telegram и Магический QR-ключ
+    window.initGYGYAuth = function(method) {
+      if (method === 'telegram') {
+        alert("🤖 Запускаем Telegram-телепорт для максимальной стабильности...");
+        // Интеграция с Telegram Login Widget
+      } else if (method === 'magic_key') {
+        alert("🔑 Генерируем Магический QR-код. Сохрани эту аватарку, чтобы не потерять профиль!");
+        // Логика скачивания QR/аватарки
+      }
+    };
+  })();
+</script>
 
 </body>
 </html>
