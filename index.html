@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.6| SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.7| SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -113,33 +113,38 @@
         }
         .painting-left { left: 10vw; }
         .painting-right { right: 10vw; }
-
-       /* Пульсирующие стрелки, развернутые на 180 градусов и прижатые к картинам */
+/* Абсолютное позиционирование внутри контейнеров картин */
         .cue-arrow-side { 
-            position: absolute; top: 50%; transform: translateY(-50%); 
-            color: #8A2BE2; font-size: 36px; font-weight: 900; 
-            text-shadow: 0 0 12px #8A2BE2, 0 0 20px #8A2BE2; 
+            position: absolute; top: 50%; 
+            color: #8A2BE2; font-size: 42px; font-weight: 900; 
+            text-shadow: 0 0 12px #8A2BE2, 0 0 25px #8A2BE2; 
             pointer-events: none; user-select: none;
+            z-index: 10;
         }
-        /* Левая стрелка теперь смотрит НАПРАВО (внутрь картины) и пододвинута ближе (было -45px) */
-        .painting-left .cue-arrow-side { left: -15px; transform: translateY(-50%) rotate(180deg); animation: cuePulseLeft 0.6s infinite alternate; }
-        /* Правая стрелка теперь смотрит НАЛЕВО (внутрь картины) и пододвинута ближе */
-        .painting-right .cue-arrow-side { right: -15px; transform: translateY(-50%) rotate(180deg); animation: cuePulseRight 0.6s infinite alternate; }
+        
+        /* Левая картина: стрелку прижимаем к её ЛЕВОМУ краю и разворачиваем НАПРАВО, на картину */
+        .painting-left .cue-arrow-side { 
+            left: 10px; 
+            transform: translateY(-50%) rotate(180deg); 
+            animation: cuePulseLeft 0.6s infinite alternate; 
+        }
+        
+        /* Правая картина: стрелку прижимаем к её ПРАВОМУ краю и разворачиваем НАЛЕВО, на картину */
+        .painting-right .cue-arrow-side { 
+            right: 10px; 
+            transform: translateY(-50%) rotate(180deg); 
+            animation: cuePulseRight 0.6s infinite alternate; 
+        }
 
-        /* Обновленная анимация пульсации с учетом разворота rotate(180deg) */
+        /* Анимация пульсации строго по горизонтали с сохранением разворота 180° */
         @keyframes cuePulseLeft { 
-            from { transform: translateY(-50%) rotate(180deg) translateX(0); opacity: 0.6; } 
-            to { transform: translateY(-50%) rotate(180deg) translateX(-8px); opacity: 1; } 
+            from { transform: translateY(-50%) rotate(180deg) translateX(0); opacity: 0.5; } 
+            to { transform: translateY(-50%) rotate(180deg) translateX(10px); opacity: 1; } 
         }
         @keyframes cuePulseRight { 
-            from { transform: translateY(-50%) rotate(180deg) translateX(0); opacity: 0.6; } 
-            to { transform: translateY(-50%) rotate(180deg) translateX(8px); opacity: 1; } 
+            from { transform: translateY(-50%) rotate(180deg) translateX(0); opacity: 0.5; } 
+            to { transform: translateY(-50%) rotate(180deg) translateX(-10px); opacity: 1; } 
         }
-        .painting-left .cue-arrow-side { left: -45px; animation: cuePulseLeft 0.6s infinite alternate; }
-        .painting-right .cue-arrow-side { right: -45px; animation: cuePulseRight 0.6s infinite alternate; }
-
-        @keyframes cuePulseLeft { from { transform: translateY(-50%) translateX(0); opacity: 0.5; } to { transform: translateY(-50%) translateX(-8px); opacity: 1; } }
-        @keyframes cuePulseRight { from { transform: translateY(-50%) translateX(0); opacity: 0.5; } to { transform: translateY(-50%) translateX(8px); opacity: 1; } }
 
         /* Выплывающие кнопки под картинами */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
