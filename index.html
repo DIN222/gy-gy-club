@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.2 | SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.3| SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -445,86 +445,85 @@
         }, 400); 
     }
 
- function preview(i) {
-        if(i.files && i.files[0]) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('pp').src = e.target.result; 
-                document.getElementById('pp').style.display = "block";
-                document.getElementById('txt-photo').style.display = "none";
-                currentUserImage = e.target.result;
+function preview(i) {
+    if(i.files && i.files[0]) {
+        const r = new FileReader();
+        r.onload = (e) => { 
+            document.getElementById('avatar-img').style.display = "none";
+            document.getElementById('pp').src = e.target.result; 
+            document.getElementById('pp').style.display = "block";
+            document.getElementById('txt-photo').style.display = "none";
+            currentUserImage = e.target.result;
 
-                // Блокируем "ПРОХОДИТЕ", так как данные изменились и их нужно сохранить!
-                const btnPass = document.getElementById('btn-pass');
-                btnPass.classList.add('btn-sleep');
-            };
-            r.readAsDataURL(i.files[0]);
-        }
+            // Блокируем кнопку "PROCEED", так как данные изменились и их нужно сохранить!
+            const btnPass = document.getElementById('btn-pass');
+            if(btnPass) btnPass.classList.add('btn-sleep');
+        };
+        r.readAsDataURL(i.files[0]);
     }
+}
 
-    function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; 
-        document.getElementById('txt-photo').style.display = "block";
-        
-        const randomColor = Math.floor(Math.random()*16777215).toString(16);
-        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
-        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
-        
-        document.getElementById('avatar-img').src = currentUserImage; 
-        document.getElementById('avatar-img').style.display = "block";
-        document.getElementById('txt-avatar').style.display = "none";
-
-        // Блокируем "ПРОХОДИТЕ" обратно — аватар новый, надо пересохранить
-        const btnPass = document.getElementById('btn-pass');
-        btnPass.classList.add('btn-sleep');
-    }
-
-    function saveUserProfile() {
-        if(!currentUserImage) { 
-            alert("Генерируй аватар или загрузи фото!"); 
-            return; 
-        }
-        
-        // Запись в локальное хранилище браузера
-        localStorage.setItem('gy_user_id', currentID);
-        localStorage.setItem('gy_user_img', currentUserImage);
-        
-        // Оживляем кнопку продолжения в блоке Welcome (на всякий случай)
-        const btnWHall = document.getElementById('btn-w-hall');
-        if(btnWHall) {
-            btnWHall.classList.remove('btn-sleep');
-        }
-        
-        // СТРОГАЯ АКТИВАЦИЯ КНОПКИ "ПРОХОДИТЕ"
-        const btnPass = document.getElementById('btn-pass');
-        if(btnPass) {
-            btnPass.classList.remove('btn-sleep'); // Убираем сонный режим
-        }
-        
-        alert("Saved! Паспорт готов, кнопка 'PROCEED' активирована.");
-    }
-        
-        localStorage.setItem('gy_user_id', currentID);
-        localStorage.setItem('gy_user_img', currentUserImage);
-        
-        document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-        document.getElementById('btn-w-hall').style.opacity = "1";
-        document.getElementById('btn-w-hall').style.pointerEvents = "auto";
-        
-        document.getElementById('btn-pass').classList.remove('btn-sleep');
-        document.getElementById('btn-pass').style.opacity = "1";
-        document.getElementById('btn-pass').style.pointerEvents = "auto";
-        
-        alert("Saved! Кнопки разблокированы.");
-    }
-
-    function openPassport() { document.getElementById('modal-passport').style.display = "flex"; document.getElementById('modal-passport').style.opacity = "1"; }
-    function closePassport() { document.getElementById('modal-passport').style.display = "none"; }
-    function deepDive() { portalTransition('block-server'); } // Измените на целевой ID блока при необходимости
-    function enterStudio() { alert("Entering Studio..."); }
+function generateAvatar() {
+    document.getElementById('pp').style.display = "none"; 
+    document.getElementById('txt-photo').style.display = "block";
     
-    window.onload = () => { renderLangList(); };
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
+    currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+    
+    document.getElementById('avatar-img').src = currentUserImage; 
+    document.getElementById('avatar-img').style.display = "block";
+    document.getElementById('txt-avatar').style.display = "none";
+
+    // Блокируем "PROCEED" обратно — аватар новый, надо пересохранить
+    const btnPass = document.getElementById('btn-pass');
+    if(btnPass) btnPass.classList.add('btn-sleep');
+}
+
+function saveUserProfile() {
+    if(!currentUserImage) { 
+        alert("Генерируй аватар или загрузи фото!"); 
+        return; 
+    }
+    
+    // Запись в локальное хранилище браузера
+    localStorage.setItem('gy_user_id', currentID);
+    localStorage.setItem('gy_user_img', currentUserImage);
+    
+    // Оживляем кнопку продолжения в блоке Welcome
+    const btnWHall = document.getElementById('btn-w-hall');
+    if(btnWHall) {
+        btnWHall.classList.remove('btn-sleep');
+    }
+    
+    // СТРОГАЯ АКТИВАЦИЯ КНОПКИ "PROCEED"
+    const btnPass = document.getElementById('btn-pass');
+    if(btnPass) {
+        btnPass.classList.remove('btn-sleep'); // Убираем сонный режим
+    }
+    
+    alert("Saved! Паспорт готов, кнопка 'PROCEED' активирована.");
+}
+
+function openPassport() { 
+    document.getElementById('modal-passport').style.display = "flex"; 
+    setTimeout(() => { document.getElementById('modal-passport').style.opacity = "1"; }, 10);
+}
+
+function closePassport() { 
+    document.getElementById('modal-passport').style.opacity = "0";
+    setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
+}
+
+function deepDive() { 
+    portalTransition('block-bar'); // Ссылка вела в никуда, теперь переводит в Бар/AI Room
+} 
+
+function enterStudio() { 
+    alert("Entering Studio... Печатные станки прогреваются!"); 
+}
+    
+window.onload = () => { renderLangList(); };
 </script>
 
 <!-- Подключение API переводчика (раскомментируйте при необходимости на хостинге) -->
