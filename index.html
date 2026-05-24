@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.9| SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.10| SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -105,7 +105,7 @@
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
-/* ВРЕМЕННО: Добавь border: 1px solid red; чтобы увидеть границы зон на экране! */
+/* Зоны картин с легкой пунктирной подсветкой границ */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -114,44 +114,36 @@
             cursor: pointer; 
             z-index: 6; 
             background: rgba(255,255,255,0.01);
-            border: 1px dashed rgba(138, 43, 226, 0.4); /* Подсветка границ зон */
+            border: 1px dashed rgba(138, 43, 226, 0.3);
         }
         .painting-left { left: 10vw; }
         .painting-right { right: 10vw; }
 
-        /* Базовый стиль стрелки БЕЗ разворотов в CSS, управляем только символом в HTML */
+        /* Абсолютно статичная, крупная фиолетовая стрелка */
         .cue-arrow-side { 
             position: absolute; 
             top: 50%; 
             transform: translateY(-50%); 
             color: #8A2BE2; 
-            font-size: 45px; 
+            font-size: 48px; 
             font-weight: 900; 
             text-shadow: 0 0 15px #8A2BE2, 0 0 25px #8A2BE2; 
             pointer-events: none; 
             user-select: none;
             z-index: 10;
+            animation: none !important; /* Убирает любую пульсацию */
         }
         
-        /* Смещаем стрелки ЗА пределы рамки, чтобы они указывали ТОЧНО на картину */
-        /* Если стрелка слишком далеко от картины, уменьшай -60px (например, до -30px) */
-        .painting-left .cue-arrow-side { right: -60px; animation: cuePulseLeft 0.5s infinite alternate; }
-        .painting-right .cue-arrow-side { left: -60px; animation: cuePulseRight 0.5s infinite alternate; }
-
-        /* Чистая анимация движения к центру картины */
-        @keyframes cuePulseLeft { 
-            from { transform: translateY(-50%) translateX(0); opacity: 0.6; } 
-            to { transform: translateY(-50%) translateX(10px); opacity: 1; } 
+        /* Левая стрелка: вынесена за левый край рамки и прижата снаружи */
+        .painting-left .cue-arrow-side { 
+            left: -35px; 
+            right: auto;
         }
-        @keyframes cuePulseRight { 
-            from { transform: translateY(-50%) translateX(0); opacity: 0.6; } 
-            to { transform: translateY(-50%) translateX(-10px); opacity: 1; } 
-        }
- 
-        }
-        @keyframes cuePulseRight { 
-            from { transform: translateY(-50%) rotate(180deg) translateX(0); opacity: 0.5; } 
-            to { transform: translateY(-50%) rotate(180deg) translateX(-10px); opacity: 1; } 
+        
+        /* Правая стрелка: вынесена за правый край рамки и прижата снаружи */
+        .painting-right .cue-arrow-side { 
+            right: -35px; 
+            left: auto;
         }
 
         /* Выплывающие кнопки под картинами */
@@ -256,7 +248,7 @@
     </div>
 
     <!-- ХОЛЛ -->
-    <div id="block-hall" class="block">
+ <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
@@ -265,18 +257,15 @@
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
             <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
-           <!-- Левая зона (AI ROOM) -->
+            
             <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
-                <div class="cue-arrow-side">&rarr;</div> <!-- Стрелка смотрит ВПРАВО на картину -->
-                <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
+                <div class="cue-arrow-side">&rarr;</div> <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                 </div>
             </div>
             
-            <!-- Правая зона (STUDIO) -->
             <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')">
-                <div class="cue-arrow-side">&larr;</div> <!-- Стрелка смотрит ВЛЕВО на картину -->
-                <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
+                <div class="cue-arrow-side">&larr;</div> <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
             </div>   
