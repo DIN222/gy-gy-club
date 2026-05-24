@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.10| SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.11| SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -105,21 +105,22 @@
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
-/* Зоны картин с легкой пунктирной подсветкой границ */
+/* Зоны теперь шире (18vw вместо 15vw), чтобы и картина, и стрелка были одной кликабельной кнопкой */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
-            width: 15vw; 
+            width: 18vw; 
             height: 24vh; 
             cursor: pointer; 
             z-index: 6; 
             background: rgba(255,255,255,0.01);
-            border: 1px dashed rgba(138, 43, 226, 0.3);
+            border: 1px dashed rgba(138, 43, 226, 0.3); /* Временная рамка для проверки */
         }
-        .painting-left { left: 10vw; }
-        .painting-right { right: 10vw; }
+        /* Сдвигаем сами зоны чуть ближе к краям экрана, чтобы они идеально сели на картины */
+        .painting-left { left: 8vw; }
+        .painting-right { right: 8vw; }
 
-        /* Абсолютно статичная, крупная фиолетовая стрелка */
+        /* Статичная фиолетовая стрелка */
         .cue-arrow-side { 
             position: absolute; 
             top: 50%; 
@@ -131,21 +132,20 @@
             pointer-events: none; 
             user-select: none;
             z-index: 10;
-            animation: none !important; /* Убирает любую пульсацию */
+            animation: none !important;
         }
         
-        /* Левая стрелка: вынесена за левый край рамки и прижата снаружи */
+        /* Левая стрелка: жестко прижата к левому краю интерактивной зоны (снаружи от картины) */
         .painting-left .cue-arrow-side { 
-            left: -35px; 
+            left: 0; 
             right: auto;
         }
         
-        /* Правая стрелка: вынесена за правый край рамки и прижата снаружи */
+        /* Правая стрелка: жестко прижата к правому краю интерактивной зоны (снаружи от картины) */
         .painting-right .cue-arrow-side { 
-            right: -35px; 
+            right: 0; 
             left: auto;
         }
-
         /* Выплывающие кнопки под картинами */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
