@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.11| SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.12| SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -105,7 +105,7 @@
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
-/* Зоны теперь шире (18vw вместо 15vw), чтобы и картина, и стрелка были одной кликабельной кнопкой */
+/* Расширяем зоны до 18vw, чтобы они покрывали и картину, и стрелку рядом */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -114,9 +114,9 @@
             cursor: pointer; 
             z-index: 6; 
             background: rgba(255,255,255,0.01);
-            border: 1px dashed rgba(138, 43, 226, 0.3); /* Временная рамка для проверки */
+            border: 1px dashed rgba(138, 43, 226, 0.4); /* Фиолетовый пунктир, чтобы ты видел новые границы */
         }
-        /* Сдвигаем сами зоны чуть ближе к краям экрана, чтобы они идеально сели на картины */
+        /* Корректируем положение зон, чтобы они сели точно поверх картин на фоне */
         .painting-left { left: 8vw; }
         .painting-right { right: 8vw; }
 
@@ -132,16 +132,16 @@
             pointer-events: none; 
             user-select: none;
             z-index: 10;
-            animation: none !important;
+            animation: none !important; /* Полная статика, как договаривались */
         }
         
-        /* Левая стрелка: жестко прижата к левому краю интерактивной зоны (снаружи от картины) */
+        /* Левая стрелка: упирается в левый край расширенной зоны (снаружи от картины) */
         .painting-left .cue-arrow-side { 
             left: 0; 
             right: auto;
         }
         
-        /* Правая стрелка: жестко прижата к правому краю интерактивной зоны (снаружи от картины) */
+        /* Правая стрелка: упирается в правый край расширенной зоны (снаружи от картины) */
         .painting-right .cue-arrow-side { 
             right: 0; 
             left: auto;
