@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.21| SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.22| SYSTEM RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -447,51 +447,82 @@
     }
 
 function portalTransition(nextId) {
-        const current = document.querySelector('.block.active');
-        const backBtn = document.getElementById('btn-global-back');
-        const amb = document.getElementById('snd-ambient');
-        const srvSnd = document.getElementById('snd-server');
-        const badge = document.getElementById('global-user-badge');
-        
-        if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
-        if (backBtn) backBtn.style.opacity = "0";
+    const current = document.querySelector('.block.active');
+    const backBtn = document.getElementById('btn-global-back');
+    const amb = document.getElementById('snd-ambient');
+    const srvSnd = document.getElementById('snd-server');
+    const badge = document.getElementById('global-user-badge');
+    
+    // 1. ОСТАВЛЯЕМ: Мгновенно тушим текущий активный блок
+    if (current) { 
+        current.style.opacity = "0"; 
+        current.style.pointerEvents = "none"; 
+    }
+    if (backBtn) backBtn.style.opacity = "0";
 
-        // ГАСИМ ЗВУКИ ПРИ ВОЗВРАТЕ К ДВЕРЯМ
-        if (nextId === 'block-entrance') {
-            if (amb) { amb.pause(); amb.currentTime = 0; }
-            if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+    // 2. ОСТАВЛЯЕМ: Гасим звуки, если юзер вернулся к самым дверям
+    if (nextId === 'block-entrance') {
+        if (amb) { amb.pause(); amb.currentTime = 0; }
+        if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+    }
+
+    setTimeout(() => {
+        // 3. ИСПРАВЛЕНО: Жёстко убираем старый блок с экрана (теперь конь не вылезет)
+        if (current) { 
+            current.classList.remove('active'); 
+            current.style.display = "none"; 
         }
-
-        setTimeout(() => {
-            if (current) { current.classList.remove('active'); current.style.display = "none"; }
-            const next = document.getElementById(nextId);
-            if (!next) return;
+        
+        const next = document.getElementById(nextId);
+        if (!next) return;
+        
+        // Включаем новый блок и вешаем на него маркер активности
+        next.style.display = "flex";
+        next.classList.add('active'); // Важная строка для фиксации состояния!
+        
+        // Управление плавным проявлением
+        setTimeout(() => { next.style.style.opacity = "1"; next.style.pointerEvents = "auto"; }, 10);
+        
+        const langPanel = document.getElementById('lang-switcher');
+        
+        // 4. ОСТАВЛЯЕМ: Логика Дверей (Вход)
+        if (nextId === 'block-entrance') {
+            const door = document.getElementById('main-door');
+            if (door) { door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto"; }
+            if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
+            if (badge) badge.style.display = "none";
+        } else {
+            // Если ушли от дверей — языковая панель прячется
+            if (langPanel) langPanel.style.display = 'none';
             
-            next.style.display = "flex";
-            const langPanel = document.getElementById('lang-switcher');
+            // Специфическая навигация для промежуточных шагов
+            if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
+            if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
             
-            if (nextId === 'block-entrance') {
-                const door = document.getElementById('main-door');
-                door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
-                if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
-                badge.style.display = "none";
-            } else {
-                if (langPanel) langPanel.style.display = 'none';
-                
-                if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
-                
-                if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
-                    if (currentUserImage) {
-                        document.getElementById('badge-avatar-img').src = currentUserImage;
-                        document.getElementById('pass-avatar-img').src = currentUserImage;
-                        badge.style.display = "block";
-                    }
-                    if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
-                    if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
+            // 5. ОСТАВЛЯЕМ: Подгрузка аватара в HUD (Бэйдж) и Паспорт для игровых зон
+            if (['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                if (typeof currentUserImage !== 'undefined' && currentUserImage) {
+                    const badgeImg = document.getElementById('badge-avatar-img');
+                    const passImg = document.getElementById('pass-avatar-img');
+                    if (badgeImg) badgeImg.src = currentUserImage;
+                    if (passImg) passImg.src = currentUserImage;
+                    if (badge) badge.style.display = "block";
                 }
+                
+                // Включаем навигационные стрелки для конкретных залов
+                if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
+                if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
             }
-
+        }
+        
+        // 6. ДОБАВЛЕНО: Тот самый пинок для Google Translate, о котором говорили
+        const googleSelect = document.querySelector('select.goog-te-combo');
+        if (googleSelect) {
+            googleSelect.dispatchEvent(new Event('change'));
+        }
+        
+    }, 200); // Оставляем твою стандартную задержку таймаута для плавности анимации
+} .
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
                 if (nextId === 'block-bar') { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
