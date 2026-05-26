@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.22 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.23 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -266,16 +266,23 @@
         <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
     </div>
 
-    <div id="block-bar" class="block" style="justify-content: flex-end;">
+   <!-- 6. ИНТЕРАКТИВНЫЙ БАР -->
+    <div id="block-bar" class="block">
+        <!-- Стандартные кнопки навигации: < ведет в Холл, << ко входу -->
+        <div class="notranslate ui-nav-arrows" id="nav-bar" style="display: flex;">
+            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        </div>
+        
         <div class="quote-text" style="position:absolute; top:8vh;">In every joke there is a share of whisky</div>
+        
+        <!-- Кнопку HALL убрали, остался только чистый выбор целевых зон -->
         <div class="bar-ui-container">
-            <div style="display:flex; justify-content: space-between; width:100%; margin-bottom:12px;">
+            <div style="display:flex; justify-content: space-between; width:100%;">
                 <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-tables')">TABLES</button>
                 <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">AI ROOM</button>
             </div>
-            <button class="btn-gy" style="font-size:12px;" onclick="portalTransition('block-hall')">HALL</button>
         </div>
-        <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
     </div>
 
     <div id="block-tables" class="block">
