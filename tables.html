@@ -10,7 +10,7 @@
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; }
 
-        /* НАВИГАЦИЯ КЛУБА */
+        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
@@ -20,9 +20,10 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
+        /* ЛОГОТИП GY-GY СПРАВА ПО СТАНДАРТУ */
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
-        /* СЛОЙ ЗАЛА С АВТОМАСШТАБОМ ПОД ЭКРАН */
+        /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
         #hall-layer { 
             width: 100vw; height: 100vh; 
             position: relative; 
@@ -30,6 +31,7 @@
             overflow: hidden;
         }
         
+        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА (МАСШТАБИРУЕТСЯ ЦЕЛИКОМ С КОЛЬЦАМИ) */
         .table-scene {
             position: relative;
             width: 1000px; 
@@ -41,7 +43,7 @@
             transform-origin: center center;
         }
         
-        /* ВСЕ КОЛЬЦА ОДИНАКОВЫЕ — СТРОГО ФИОЛЕТОВЫЙ НЕОН */
+        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ СВЕТЛЯЧКИ НА АБАЖУРАХ */
         .lamp-zone { 
             position: absolute; 
             width: 44px; height: 44px; 
@@ -51,15 +53,12 @@
             background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); 
             border: 1px solid var(--violet); 
             box-shadow: 0 0 18px var(--neon-glow);
+            transition: 0.3s;
             transform: translate(-50%, -50%); 
         }
-        /* Подсветка выбранного при настройке кольца */
-        .lamp-zone.selected-target {
-            border-color: #fff !important;
-            box-shadow: 0 0 30px #fff, 0 0 15px var(--violet) !important;
-        }
+        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ТЕКУЩИЕ КООРДИНАТЫ (ПОДВИГАЙ ИХ ПАНЕЛЬЮ, ЕСЛИ НЕ ПОПАЛИ НА АБАЖУРЫ) */
+        /* ТВОИ ПРОВЕРЕННЫЕ ЭТАЛОННЫЕ КООРДИНАТЫ */
         #table-1 { top: 396px; left: 330px; }   
         #table-2 { top: 344px; left: 419px; }   
         #table-3 { top: 303px; left: 438px; }   
@@ -68,7 +67,7 @@
         #table-6 { top: 396px; left: 659px; }   
         #mic-zone { top: 234px; left: 503px; } 
 
-        /* НАДПИСИ (КЛИК ПРОХОДИТ СКВОЗЬ ТЕКСТ) */
+        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
@@ -77,31 +76,24 @@
             padding: 6px 12px; font-size: 13px; white-space: nowrap; border-radius: 4px;
             opacity: 0; 
             pointer-events: none; 
-            transition: opacity 0.2s ease;
+            transition: opacity 0.2s ease, transform 0.2s ease; 
             font-family: 'Share Tech Mono', monospace;
             box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
             z-index: 999999;
         }
-        .lamp-zone:hover::after { opacity: 1; }
+        .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
-        /* ИНЖЕНЕРНЫЙ ПУЛЬТ ДЛЯ РЕГУЛИРОВКИ НА ЭКРАНЕ */
-        #debug-panel {
-            position: fixed; bottom: 15px; left: 15px; z-index: 999999;
-            background: rgba(0,0,0,0.9); border: 1px solid var(--gold);
-            padding: 15px; border-radius: 6px; width: 250px;
-            color: #fff; font-size: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-        .db-btn { background: #222; border: 1px solid var(--gold); color: var(--gold); padding: 5px 10px; cursor: pointer; font-family: inherit; font-size: 11px; }
-        .db-btn:hover { background: var(--gold); color: #000; }
-
+        /* HUD АВАТАРА */
         #hud { position: fixed; top: 15px; left: 110px; z-index: 5500; }
         .user-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; object-fit: cover; }
+
         #google_translate_element { display: none !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div id="google_translate_element"></div>
+    
     <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
     
     <div class="notranslate ui-nav-arrows" id="global-nav">
@@ -111,77 +103,24 @@
     
     <div id="ui-logo" class="notranslate">GY-GY</div>
 
-    <!-- ИНЖЕНЕРНЫЙ ПУЛЬТ (УДАЛИМ В СЛЕДУЮЩЕЙ ВЕРСИИ) -->
-    <div id="debug-panel">
-        <div style="font-weight: bold; color: var(--gold); margin-bottom: 8px;">ENGINEER TOOLS v1.5.1</div>
-        <div id="db-target" style="margin-bottom: 10px; color: #aaa;">Кликни на кольцо для калибровки</div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; text-align: center; margin-bottom: 10px;">
-            <div></div><button class="db-btn" onclick="Debug.move('up')">▲</button><div></div>
-            <button class="db-btn" onclick="Debug.move('left')">◀</button><div></div><button class="db-btn" onclick="Debug.move('right')">▶</button>
-            <div></div><button class="db-btn" onclick="Debug.move('down')">▼</button><div></div>
-        </div>
-        <div id="db-res" style="font-family: monospace; background: #111; padding: 6px; border: 1px solid #333; color: #0f0;"></div>
-    </div>
-
-    <!-- ЗАЛ СО СТОЛИКАМИ -->
     <div id="hall-layer">
         <div id="hud" style="display: none;">
             <img id="user-avatar" class="user-mini" src="">
         </div>
 
         <div class="table-scene">
-            <!-- ЖЕСТКАЯ НУМЕРАЦИЯ: СТОЛЫ СТРОГО СВОИ, МИКРОФОН СВОЙ -->
-            <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Debug.select(this, event, 'risk.html')"></div>
-            <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Debug.select(this, event, 'battle.html')"></div>
-            <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Анонимные Диалоги» (Рулетка)" onclick="Debug.select(this, event, 'anon.html')"></div>
-            <div id="table-4" class="lamp-zone" data-label="TABLE 4: «Переводчик М / Ж»" onclick="Debug.select(this, event, 'translator.html')"></div>
-            <div id="table-5" class="lamp-zone" data-label="TABLE 5: «Дуэль Комплиментов»" onclick="Debug.select(this, event, 'compliments.html')"></div>
-            <div id="table-6" class="lamp-zone" data-label="TABLE 6: «Тень Барона» (vs ИИ)" onclick="Debug.select(this, event, 'baron.html')"></div>
+            <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Core.loadZone('risk.html')"></div>
+            <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Core.loadZone('battle.html')"></div>
+            <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Анонимные Диалоги» (Рулетка)" onclick="Core.loadZone('anon.html')"></div>
+            <div id="table-4" class="lamp-zone" data-label="TABLE 4: «Переводчик М / Ж»" onclick="Core.loadZone('translator.html')"></div>
+            <div id="table-5" class="lamp-zone" data-label="TABLE 5: «Дуэль Комплиментов»" onclick="Core.loadZone('compliments.html')"></div>
+            <div id="table-6" class="lamp-zone" data-label="TABLE 6: «Тень Барона» (vs ИИ)" onclick="Core.loadZone('baron.html')"></div>
             
-            <div id="mic-zone" class="lamp-zone" data-label="MIC ZONE: «Open Mic»" onclick="Debug.select(this, event, 'openmic.html')"></div>
+            <div id="mic-zone" class="lamp-zone" data-label="MIC ZONE: «Open Mic»" onclick="Core.loadZone('openmic.html')"></div>
         </div>
     </div>
 
     <script>
-        let selectedEl = null;
-
-        const Debug = {
-            select(el, e, url) {
-                // Если кликнули просто настроить, блокируем переход по ссылке
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if(selectedEl) selectedEl.classList.remove('selected-target');
-                selectedEl = el;
-                selectedEl.classList.add('selected-target');
-                
-                document.getElementById('db-target').innerText = "Настройка: " + el.id.toUpperCase();
-                this.updateLabel();
-            },
-            move(dir) {
-                if(!selectedEl) return;
-                let top = parseInt(window.getComputedStyle(selectedEl).top);
-                let left = parseInt(window.getComputedStyle(selectedEl).left);
-                
-                if(dir === 'up') top--;
-                if(dir === 'down') top++;
-                if(dir === 'left') left--;
-                if(dir === 'right') left++;
-                
-                selectedEl.style.top = top + 'px';
-                selectedEl.style.left = left + 'px';
-                this.updateLabel();
-            },
-            updateLabel() {
-                if(!selectedEl) return;
-                document.getElementById('db-res').innerText = `#${selectedEl.id} {\n  top: ${selectedEl.style.top};\n  left: ${selectedEl.style.left};\n}`;
-            },
-            launch(url) {
-                // Обычный переход, если пульт не используется
-                if(!selectedEl) location.href = url;
-            }
-        };
-
         const Core = {
             init() {
                 const amb = document.getElementById('snd-ambient');
@@ -191,20 +130,22 @@
                         document.body.addEventListener('click', () => { amb.play(); }, { once: true });
                     });
                 }
+
                 const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                 if (savedAvatar) {
                     document.getElementById('user-avatar').src = savedAvatar;
                     document.getElementById('hud').style.display = 'block';
                 }
-                // Двойной клик по кольцу — переведет на локацию, одиночный — выберет для пульта
-                document.querySelectorAll('.lamp-zone').forEach(z => {
-                    z.addEventListener('dblclick', () => {
-                        location.href = z.getAttribute('onclick').match(/'([^']+)'/)[1];
-                    });
-                });
             },
-            backToBar() { location.href = 'bar.html'; },
-            exitToEntrance() { location.href = 'index.html'; }
+            loadZone(url) {
+                location.href = url;
+            },
+            backToBar() {
+                location.href = 'bar.html';
+            },
+            exitToEntrance() {
+                location.href = 'index.html';
+            }
         };
 
         window.onload = () => { Core.init(); };
