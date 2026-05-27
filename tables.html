@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club | Tables v1.4.5 .</title>
+    <title>GY-GY Club | Tables v1.3.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -25,18 +25,7 @@
 
         /* СЛОИ */
         #entry-layer { position: fixed; inset: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; }
-        
-        /* Исправление пропадающих колец: жесткий контейнер с сохранением пропорций интерьера */
-        #hall-layer { width: 100vw; height: 100vh; display: none; position: relative; background: #000; }
-        
-        .lounge-scene {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100vw; height: 100vh;
-            max-width: 177.78vh; /* Соотношение 16:9 под стандартные рендеры */
-            max-height: 56.25vw;
-            background: url('lounge.jpg') no-repeat center bottom / contain;
-        }
+        #hall-layer { width: 100vw; height: 100vh; background: url('lounge.jpg') no-repeat center bottom / contain #000; position: relative; display: none; }
         
         /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ */
         .lamp-zone { 
@@ -48,16 +37,16 @@
             transition: 0.3s;
             transform: translate(-50%, -50%); 
         }
-        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 25px #fff, 0 0 15px var(--violet); }
+        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 28px var(--violet); }
 
-        /* ИСПРАВЛЕННЫЕ КООРДИНАТЫ (НАМЕРТВО ПРИВЯЗАНЫ К СЦЕНЕ) */
+        /* КООРДИНАТЫ (-8% ОТ ЗАМЕРОВ) */
         #table-1 { bottom: 49.2%; left: 49.9%; } 
         #table-2 { bottom: 22.1%; left: 35.7%; } 
         #table-3 { bottom: 33.1%; left: 43.1%; } 
         #table-4 { bottom: 36.1%; left: 44.5%; } 
         #table-5 { bottom: 35.7%; left: 56.2%; } 
         #table-6 { bottom: 21.9%; left: 63.8%; } 
-        #mic-zone { bottom: 32.4%; left: 58.3%; border-width: 2px; border-color: #ff00ff; box-shadow: 0 0 18px rgba(255, 0, 255, 0.6); }
+        #mic-zone { bottom: 32.4%; left: 58.3%; border-width: 2px; }
 
         /* АВАТАР */
         #hud { position: fixed; top: 110px; left: 15px; z-index: 1500; display: none; }
@@ -65,15 +54,6 @@
 
         .reg-btn { background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 15px 40px; cursor: pointer; margin-top: 20px; font-family: inherit; letter-spacing: 2px; }
         .reg-btn:hover { background: var(--gold); color: #000; }
-
-        /* ИНФОРМАЦИОННЫЙ ТЕРМИНАЛ КОНЦЕПТОВ */
-        #concept-terminal {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 600px; background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--gold); padding: 15px; text-align: center;
-            color: #fff; font-size: 13px; min-height: 40px; z-index: 1000;
-            box-shadow: 0 0 15px rgba(214, 175, 55, 0.2); pointer-events: none;
-        }
     </style>
 </head>
 <body>
@@ -94,20 +74,13 @@
         <div id="hud">
             <img id="user-avatar" class="user-mini" src="">
         </div>
-        
-        <div class="lounge-scene">
-            <div id="table-1" class="lamp-zone" onclick="Core.selectZone(1, 'Стратегия «Риск»', 'Переход в зону тактических решений и взвешенных ставок. Карта готова.', 'risk.html')"></div>
-            <div id="table-2" class="lamp-zone" onclick="Core.selectZone(2, 'Дуэль на Цитатах (Баттл)', 'Два спикера. Одна абсурдная ситуация. Зрители за столиками голосуют за лучшего шутника. Победитель забирает статус «Барон Гы-Гы».')"></div>
-            <div id="table-3" class="lamp-zone" onclick="Core.selectZone(3, 'Анонимные Диалоги', 'Чат-рулетка смыслов. Никаких имён, только клубные аватары. Разговоры обо всём — от квантовой физики до качества суррогата.')"></div>
-            <div id="table-4" class="lamp-zone" onclick="Core.selectZone(4, 'Переводчик М ↔ Ж', 'Коллективный словарь стереотипов. Узнай, что на самом деле значит фраза «Я не обиделась» или «Я скоро буду».')"></div>
-            <div id="table-5" class="lamp-zone" onclick="Core.selectZone(5, 'Дуэль Комплиментов', 'Территория галантности в стиле GY-GY. М пишет комплимент — Ж оценивает по шкале от Кринжа до Вау. Набивай рейтинг обаяния.')"></div>
-            <div id="table-6" class="lamp-zone" onclick="Core.selectZone(6, 'Тень Барона', 'Словесный поединок один на один против хитроумного ИИ-бота клуба. Проверь свой интеллект.')"></div>
-            <div id="mic-zone" class="lamp-zone" onclick="Core.selectZone(7, '🎙️ Открытый Микрофон', 'Зона общего вещания. Голосовые приколы, анонсы резидентов и главные манифесты Клуба GY-GY.')"></div>
-        </div>
-
-        <div id="concept-terminal">
-            Чарли протирает стаканы. Нажми на любое фиолетовое кольцо, чтобы выбрать активность...
-        </div>
+        <div id="table-1" class="lamp-zone" onclick="location.href='risk.html'"></div>
+        <div id="table-2" class="lamp-zone"></div>
+        <div id="table-3" class="lamp-zone"></div>
+        <div id="table-4" class="lamp-zone"></div>
+        <div id="table-5" class="lamp-zone"></div>
+        <div id="table-6" class="lamp-zone"></div>
+        <div id="mic-zone" class="lamp-zone"></div>
     </div>
 
     <script>
@@ -132,15 +105,6 @@
                 document.getElementById('charlie-msg').innerText = 'Чарли: "Вы вернулись в бар. Что желаете?"';
                 document.getElementById('gate-btn').innerText = 'К СТОЛАМ';
                 document.getElementById('gate-btn').onclick = () => Core.enter();
-            },
-            selectZone(num, title, desc, redirectUrl = null) {
-                const terminal = document.getElementById('concept-terminal');
-                terminal.innerHTML = `<strong>${title}</strong><br>${desc}`;
-                
-                // Если у столика прописан конкретный рабочий урл (как у Стола 1), перенаправляем через секунду
-                if (redirectUrl) {
-                    setTimeout(() => { location.href = redirectUrl; }, 1500);
-                }
             }
         };
         window.onload = () => { if(localStorage.getItem('gygy_id')) Core.enter(); };
