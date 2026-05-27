@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.4.8</title>
+    <title>GY-GY Club | Tables v1.4.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -22,20 +22,29 @@
 
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
-        /* ПОЛНОЭКРАННАЯ СЦЕНА ЗАЛА */
-        #hall-layer { width: 100vw; height: 100vh; position: relative; }
+        /* АДАПТИВНЫЙ ИЗОЛИРОВАННЫЙ СЛОЙ ЗАЛА */
+        #hall-layer { 
+            width: 100vw; height: 100vh; 
+            position: relative; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        
+        /* КАРТИНКА УМЕНЬШЕНА И ЗАФИКСИРОВАНА В 16:9 БЕЗ ОБРЕЗАНИЯ КРАЕВ */
         .table-scene {
-            position: absolute;
-            inset: 0;
-            width: 100%; height: 100%;
-            background: url('lounge.jpg') no-repeat center center / cover;
+            position: relative;
+            width: 100vw;
+            height: 56.25vw; 
+            max-height: 100vh;
+            max-width: 177.78vh; 
+            aspect-ratio: 16 / 9;
+            background: url('lounge.jpg') no-repeat center center / contain;
             z-index: 10;
         }
         
-        /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ (УЛУЧШЕННАЯ ЗОНА КЛИКА) */
+        /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ (ПОВЫШЕННАЯ КЛИКАБЕЛЬНОСТЬ) */
         .lamp-zone { 
             position: absolute; 
-            width: 46px; height: 46px; 
+            width: 44px; height: 44px; 
             border-radius: 50%; 
             cursor: pointer; 
             z-index: 100; 
@@ -47,16 +56,16 @@
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ЖЕЛЕЗОБЕТОННЫЕ КООРДИНАТЫ ОТ ЦЕНТРА ЭКРАНА */
-        #table-1 { top: calc(50% + 0.8%);  left: 49.9%; } 
-        #table-2 { top: calc(50% + 27.9%); left: 35.7%; } 
-        #table-3 { top: calc(50% + 16.9%); left: 43.1%; } 
-        #table-4 { top: calc(50% + 13.9%); left: 44.5%; } 
-        #table-5 { top: calc(50% + 14.3%); left: 56.2%; } 
-        #table-6 { top: calc(50% + 28.1%); left: 63.8%; } 
-        #mic-zone { top: calc(50% + 17.6%); left: 58.3%; border-width: 2px; }
+        /* ПЕРЕПРИВЯЗАННЫЕ ТОЧНЫЕ КООРДИНАТЫ ВНУТРИ СЕТКИ КАРТИНКИ (ОТ ЛЕВОГО ВЕРХНЕГО КУТКА СЦЕНЫ) */
+        #table-1 { top: 50.8%; left: 49.9%; }   /* Дальний центральный стол */
+        #table-2 { top: 77.9%; left: 35.7%; }   /* Ближний левый стол */
+        #table-3 { top: 66.9%; left: 43.1%; }   /* Средний левый стол */
+        #table-4 { top: 63.9%; left: 44.5%; }   /* Дальний левый стол */
+        #table-5 { top: 64.3%; left: 56.2%; }   /* Дальний правый стол */
+        #table-6 { top: 78.1%; left: 63.8%; }   /* Ближний правый стол */
+        #mic-zone { top: 67.6%; left: 58.3%; border-width: 2px; } /* Сцена / Стойка микрофона */
 
-        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
+        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ ТАП) */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
@@ -64,7 +73,7 @@
             background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
             padding: 6px 12px; font-size: 12px; white-space: nowrap; border-radius: 4px;
             opacity: 0; 
-            pointer-events: none; /* Буквы физически не могут перехватить клик */
+            pointer-events: none; /* Текст полностью прозрачен для клика */
             transition: opacity 0.2s ease, transform 0.2s ease; 
             font-family: 'Share Tech Mono', monospace;
             box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
