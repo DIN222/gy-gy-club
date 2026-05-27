@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.4.0</title>
+    <title>GY-GY Club | Tables v1.4.1-Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; }
 
-        /* НАШИ СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ (ВМЕСТО ВСЕГО, ЧТО БЫЛО СЛЕВА) */
+        /* НАШИ СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
@@ -20,45 +20,54 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ПРАВЫЙ ЛОГОТИП КЛУБА */
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
-        /* ХОЛЛ С СТОЛАМИ (НАМЕРТВО СЕЛА ЧЕРЕЗ COVER) */
-        #hall-layer { width: 100vw; height: 100vh; background: url('lounge.jpg') no-repeat center center / cover #000; position: relative; display: block; }
+        /* АДАПТИВНАЯ СЦЕНА: Фиксирует кольца прямо на картинке */
+        .table-scene {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw; height: 100vh;
+            max-width: 100%; max-height: 100%;
+            background: url('lounge.jpg') no-repeat center center / contain;
+            z-index: 10;
+        }
         
-        /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ (РОВНО ОДНО КОЛЬЦО НА ЗОНУ) */
+        /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ (ОДИНАРНЫЕ И СТРОГИЕ) */
         .lamp-zone { 
-            position: absolute; width: 44px; height: 44px; border-radius: 50%; 
+            position: absolute; width: 42px; height: 42px; border-radius: 50%; 
             cursor: pointer; z-index: 100; 
             background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); 
             border: 2px solid var(--violet); 
             box-shadow: 0 0 18px var(--neon-glow);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             transform: translate(-50%, -50%); 
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); border-color: #fff; }
 
-        /* ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ ПРИ НАВЕДЕНИИ ДЛЯ МАРКИРОВКИ */
+        /* ПОДСКАЗКИ ПРИ НАВЕДЕНИИ */
         .lamp-zone::after {
             content: attr(data-label);
-            position: absolute; bottom: 55px; left: 50%; transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9); border: 1px solid var(--gold); color: var(--gold);
+            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
             padding: 5px 10px; font-size: 11px; white-space: nowrap; border-radius: 4px;
             opacity: 0; pointer-events: none; transition: opacity 0.2s; font-family: 'Share Tech Mono', monospace;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 200;
         }
         .lamp-zone:hover::after { opacity: 1; }
 
-        /* ТОЧНЫЕ КАЛИБРОВАННЫЕ КООРДИНАТЫ (РОВНО 7 ЗОН) */
+        /* ЖЕСТКИЕ НАДЕННЫЕ КООРДИНАТЫ (РОВНО 7 ЗОН) */
         #table-1 { bottom: 49.2%; left: 49.9%; } 
         #table-2 { bottom: 22.1%; left: 35.7%; } 
         #table-3 { bottom: 33.1%; left: 43.1%; } 
         #table-4 { bottom: 36.1%; left: 44.5%; } 
         #table-5 { bottom: 35.7%; left: 56.2%; } 
         #table-6 { bottom: 21.9%; left: 63.8%; } 
-        #mic-zone { bottom: 32.4%; left: 58.3%; border-color: #fff; box-shadow: 0 0 22px #fff; }
+        
+        /* Вернули микрофону фиолетовый неон, просто сделали чуть мощнее */
+        #mic-zone { bottom: 32.4%; left: 58.3%; border: 2px solid #b066ff; box-shadow: 0 0 25px #8A2BE2; }
 
-        /* ТЕХНИЧЕСКИЙ КЛУБНЫЙ HUD ДЛЯ АВАТАРА */
+        /* HUD АВАТАРА */
         #hud { position: fixed; top: 15px; left: 110px; z-index: 5500; }
         .user-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; object-fit: cover; }
 
@@ -81,20 +90,20 @@
             <img id="user-avatar" class="user-mini" src="">
         </div>
 
-        <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Core.loadZone('risk.html')"></div>
-        <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Core.loadZone('battle.html')"></div>
-        <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Анонимные Диалоги» (Рулетка)" onclick="Core.loadZone('anon.html')"></div>
-        <div id="table-4" class="lamp-zone" data-label="TABLE 4: «Переводчик М / Ж»" onclick="Core.loadZone('translator.html')"></div>
-        <div id="table-5" class="lamp-zone" data-label="TABLE 5: «Дуэль Комплиментов»" onclick="Core.loadZone('compliments.html')"></div>
-        <div id="table-6" class="lamp-zone" data-label="TABLE 6: «Тень Барона» (vs ИИ)" onclick="Core.loadZone('baron.html')"></div>
-        
-        <div id="mic-zone" class="lamp-zone" data-label="MIC ZONE: «Open Mic» (Анонсы)" onclick="Core.loadZone('openmic.html')"></div>
+        <div class="table-scene">
+            <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Core.loadZone('risk.html')"></div>
+            <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Core.loadZone('battle.html')"></div>
+            <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Анонимные Диалоги» (Рулетка)" onclick="Core.loadZone('anon.html')"></div>
+            <div id="table-4" class="lamp-zone" data-label="TABLE 4: «Переводчик М / Ж»" onclick="Core.loadZone('translator.html')"></div>
+            <div id="table-5" class="lamp-zone" data-label="TABLE 5: «Дуэль Комплиментов»" onclick="Core.loadZone('compliments.html')"></div>
+            <div id="table-6" class="lamp-zone" data-label="TABLE 6: «Тень Барона» (vs ИИ)" onclick="Core.loadZone('baron.html')"></div>
+            <div id="mic-zone" class="lamp-zone" data-label="MIC ZONE: «Open Mic» (Анонсы)" onclick="Core.loadZone('openmic.html')"></div>
+        </div>
     </div>
 
     <script>
         const Core = {
             init() {
-                // Извлекаем сквозной аватар, если он был сохранен на прошлых страницах
                 const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                 if (savedAvatar) {
                     document.getElementById('user-avatar').src = savedAvatar;
@@ -102,16 +111,13 @@
                 }
             },
             loadZone(url) {
-                // Переход в выбранный концептуальный блок
                 console.log("Загрузка активности: " + url);
                 location.href = url;
             },
             backToBar() {
-                // Одиночная стрелка < бесшовно возвращает в бар
                 location.href = 'bar.html';
             },
             exitToEntrance() {
-                // Двойная стрелка << выбрасывает на главный вход
                 location.href = 'index.html';
             }
         };
