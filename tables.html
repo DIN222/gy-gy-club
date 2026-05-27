@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.4.3</title>
+    <title>GY-GY Club | Tables v1.4.8</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -22,64 +22,55 @@
 
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
-        /* АДАПТИВНАЯ СЦЕНА ЗАЛА */
+        /* ПОЛНОЭКРАННАЯ СЦЕНА ЗАЛА */
+        #hall-layer { width: 100vw; height: 100vh; position: relative; }
         .table-scene {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100vw; height: 100vh;
-            max-width: 100%; max-height: 100%;
+            inset: 0;
+            width: 100%; height: 100%;
             background: url('lounge.jpg') no-repeat center center / cover;
             z-index: 10;
         }
         
-        /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ */
+        /* ФИОЛЕТОВЫЕ СВЕТЛЯЧКИ (УЛУЧШЕННАЯ ЗОНА КЛИКА) */
         .lamp-zone { 
-            position: absolute; width: 42px; height: 42px; border-radius: 50%; 
-            cursor: pointer; z-index: 100; 
+            position: absolute; 
+            width: 46px; height: 46px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            z-index: 100; 
             background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); 
             border: 1px solid var(--violet); 
             box-shadow: 0 0 18px var(--neon-glow);
             transition: 0.3s;
             transform: translate(-50%, -50%); 
         }
-        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 28px var(--violet); z-index: 500; }
+        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ОРИГИНАЛЬНЫЕ КООРДИНАТЫ (-8%) */
-        #table-1 { bottom: 49.2%; left: 49.9%; } 
-        #table-2 { bottom: 22.1%; left: 35.7%; } 
-        #table-3 { bottom: 33.1%; left: 43.1%; } 
-        #table-4 { bottom: 36.1%; left: 44.5%; } 
-        #table-5 { bottom: 35.7%; left: 56.2%; } 
-        #table-6 { bottom: 21.9%; left: 63.8%; } 
-        #mic-zone { bottom: 32.4%; left: 58.3%; border-width: 2px; }
+        /* ЖЕЛЕЗОБЕТОННЫЕ КООРДИНАТЫ ОТ ЦЕНТРА ЭКРАНА */
+        #table-1 { top: calc(50% + 0.8%);  left: 49.9%; } 
+        #table-2 { top: calc(50% + 27.9%); left: 35.7%; } 
+        #table-3 { top: calc(50% + 16.9%); left: 43.1%; } 
+        #table-4 { top: calc(50% + 13.9%); left: 44.5%; } 
+        #table-5 { top: calc(50% + 14.3%); left: 56.2%; } 
+        #table-6 { top: calc(50% + 28.1%); left: 63.8%; } 
+        #mic-zone { top: calc(50% + 17.6%); left: 58.3%; border-width: 2px; }
 
-        /* ИСПРАВЛЕННЫЕ НАДПИСИ: УВЕЛИЧЕН ОТСТУП И ПОДНЯТ Z-INDEX */
+        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
         .lamp-zone::after {
             content: attr(data-label);
-            position: absolute; 
-            bottom: 100%; /* Гарантированно выталкивает текст выше кольца */
-            left: 50%; 
-            transform: translateX(-50%) translateY(-12px); /* Сдвиг вверх, чтобы не лежать на кольце */
-            background: rgba(0, 0, 0, 0.95); 
-            border: 1px solid var(--gold); 
-            color: var(--gold);
-            padding: 6px 12px; 
-            font-size: 12px; 
-            white-space: nowrap; 
-            border-radius: 4px;
+            position: absolute; bottom: 100%; left: 50%; 
+            transform: translateX(-50%) translateY(-14px); 
+            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
+            padding: 6px 12px; font-size: 12px; white-space: nowrap; border-radius: 4px;
             opacity: 0; 
-            pointer-events: none; 
+            pointer-events: none; /* Буквы физически не могут перехватить клик */
             transition: opacity 0.2s ease, transform 0.2s ease; 
             font-family: 'Share Tech Mono', monospace;
             box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
-            z-index: 99999; /* Всегда поверх колец и графики */
+            z-index: 999999;
         }
-        /* При наведении текст плавно приподнимается еще выше */
-        .lamp-zone:hover::after { 
-            opacity: 1; 
-            transform: translateX(-50%) translateY(-18px); 
-        }
+        .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
         /* HUD АВАТАРА */
         #hud { position: fixed; top: 15px; left: 110px; z-index: 5500; }
@@ -92,15 +83,18 @@
 
     <div id="google_translate_element"></div>
     
+    <!-- СКВОЗНОЙ АУДИОПЛЕЕР БАРА -->
     <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
     
-    <div class="notranslate ui-nav-arrows">
+    <!-- НАВИГАЦИЯ -->
+    <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="Core.backToBar()">&lt;</div>
         <div class="arrow-item" onclick="Core.exitToEntrance()">&lt;&lt;</div>
     </div>
     
     <div id="ui-logo" class="notranslate">GY-GY</div>
 
+    <!-- ЗАЛ СО СТОЛИКАМИ -->
     <div id="hall-layer">
         <div id="hud" style="display: none;">
             <img id="user-avatar" class="user-mini" src="">
