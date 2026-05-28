@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.37 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.38 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -534,9 +534,46 @@
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
     window.onload = () => { renderLangList(); };
+    
 </script>
-
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</div> 
+
+<script>
+    // Находим экраны бара и столиков
+    const barScreen = document.getElementById('screen-bar');
+    const tablesScreen = document.getElementById('screen-tables');
+
+    // Кнопки перемещения
+    const toTablesBtn = document.getElementById('go-to-tables-btn');
+    const toBarBtn = document.getElementById('back-to-bar-btn');
+    const arrowLeft = document.getElementById('nav-arrow-left');
+    const arrowRight = document.getElementById('nav-arrow-right');
+
+    // Функция для плавного переключения на СТОЛИКИ (Бар тухнет -> Столики нарастают)
+    function showTables() {
+        if (barScreen && tablesScreen) {
+            barScreen.classList.remove('active');
+            tablesScreen.classList.add('active');
+        }
+    }
+
+    // Функция для плавного переключения на БАР (Столики тухнут -> Бар нарастает)
+    function showBar() {
+        if (barScreen && tablesScreen) {
+            tablesScreen.classList.remove('active');
+            barScreen.classList.add('active');
+        }
+    }
+
+    // Вешаем события на кнопки внутри залов (проверяем на всякий случай, есть ли они на странице)
+    if (toTablesBtn) toTablesBtn.addEventListener('click', showTables);
+    if (toBarBtn) toBarBtn.addEventListener('click', showBar);
+
+    // Вешаем события на стрелки навигации в шапке
+    if (arrowRight) arrowRight.addEventListener('click', showTables);
+    if (arrowLeft) arrowLeft.addEventListener('click', showBar);
+</script>
 
 </body>
 </html>
