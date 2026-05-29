@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.2</title>
+    <title>GY-GY Club | Tables v1.5.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; }
+        
+        /* Добавили плавное проявление всей страницы при загрузке */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; background: #000; 
+            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
+            opacity: 0; transition: opacity 0.5s ease-in-out; 
+        }
 
         /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
         .ui-nav-arrows {
@@ -31,7 +37,7 @@
             overflow: hidden;
         }
         
-        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА (МАСШТАБИРУЕТСЯ ЦЕЛИКОМ С КОЛЬЦАМИ) */
+        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА */
         .table-scene {
             position: relative;
             width: 1000px; 
@@ -58,7 +64,7 @@
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ТВОИ ПРОВЕРЕННЫЕ ЭТАЛОННЫЕ КООРДИНАТЫ */
+        /* ТВОИ ПРОВЕРЕННЫЕ ЭТАЛОННЫЕ КООРДИНАТЫ (ВСЕ НА МЕСТЕ) */
         #table-1 { top: 396px; left: 330px; }   
         #table-2 { top: 344px; left: 419px; }   
         #table-3 { top: 303px; left: 438px; }   
@@ -67,7 +73,7 @@
         #table-6 { top: 396px; left: 659px; }   
         #mic-zone { top: 234px; left: 503px; } 
 
-        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
+        /* НАДПИСИ НАД КОЛЬЦАМИ */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
@@ -94,8 +100,6 @@
 
     <div id="google_translate_element"></div>
     
-    <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
-    
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="Core.backToBar()">&lt;</div>
         <div class="arrow-item" onclick="Core.exitToEntrance()">&lt;&lt;</div>
@@ -121,15 +125,30 @@
     </div>
 
     <script>
+        // АУДИОКОНТЕКСТ ДЛЯ СТОЛИКОВ (Тот же уровень, что в баре + Конь)
+        const barAmbient = new Audio('bar_ambient.mp3');
+        const horseCough = new Audio('charlie_bar_fx.mp3');
+
+        barAmbient.loop = true;
+        barAmbient.volume = 0.8; // Уровень громкости как в твоем оригинале
+        horseCough.volume = 0.7;
+
+        let coughInterval = null;
+
         const Core = {
             init() {
-                const amb = document.getElementById('snd-ambient');
-                if (amb) {
-                    amb.volume = 0.8;
-                    amb.play().catch(() => {
-                        document.body.addEventListener('click', () => { amb.play(); }, { once: true });
-                    });
-                }
+                // Плавное появление страницы при загрузке
+                document.body.style.opacity = "1";
+
+                // Запуск стабильного звука
+                barAmbient.play().then(() => {
+                    this.startCough();
+                }).catch(() => {
+                    document.body.addEventListener('click', () => { 
+                        barAmbient.play(); 
+                        this.startCough();
+                    }, { once: true });
+                });
 
                 const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                 if (savedAvatar) {
@@ -137,14 +156,32 @@
                     document.getElementById('hud').style.display = 'block';
                 }
             },
+            
+            startCough() {
+                if (!coughInterval) {
+                    coughInterval = setInterval(() => {
+                        if (!barAmbient.paused) {
+                            horseCough.currentTime = 0;
+                            horseCough.play();
+                        }
+                    }, 15000); // Четкий кашель каждые 15 сек на том же уровне
+                }
+            },
+
             loadZone(url) {
-                location.href = url;
+                document.body.style.opacity = "0"; // Плавное затухание при уходе в подзоны
+                setTimeout(() => { location.href = url; }, 500);
             },
+
             backToBar() {
-                location.href = 'bar.html';
+                document.body.style.opacity = "0"; // Плавный визуальный уход
+                setTimeout(() => { location.href = 'bar.html'; }, 500);
             },
+
             exitToEntrance() {
-                location.href = 'index.html';
+                document.body.style.opacity = "0";
+                // Железный возврат по истории браузера назад в Холл (избавляет от 404 ошибки)
+                setTimeout(() => { window.history.back(); }, 500);
             }
         };
 
