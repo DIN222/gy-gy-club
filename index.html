@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.39 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.40 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -190,7 +190,7 @@
     <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
     <audio id="snd-server" loop><source src="server_room.mp3"></audio>
-    <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx (3).mp3"></audio>
+    <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
 
     <div id="block-entrance" class="block active" style="display: flex; opacity: 1; pointer-events: auto !important;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
@@ -540,39 +540,88 @@
 </div> 
 
 <script>
-    // Находим экраны бара и столиков
+    // 1. АУДИОФАЙЛЫ БАРА
+    const barAmbient = new Audio('bar_ambient.mp3');   // Фоновый шум бара
+    const horseCough = new Audio('charlie_bar_fx.mp3'); // Тот самый кашель Коня
+
+    barAmbient.loop = true;
+    barAmbient.volume = 0.5;
+    horseCough.volume = 0.7; // Чтобы "Кхе-кхе" выделялось на фоне гула
+
+    // Функция запуска звуковой атмосферы
+    function playBarSound() {
+        barAmbient.play().then(() => {
+            const duration = barAmbient.duration; 
+            
+            if (duration) {
+                // Считаем середину трека бара
+                const halfTime = (duration / 2) * 1000; 
+                
+                // Запускаем кашель первый раз ровно посередине
+                setTimeout(() => {
+                    if (!barAmbient.paused) {
+                        horseCough.play();
+                    }
+                    
+                    // Циклим кашель, чтобы он повторялся в каждом следующем круге бара
+                    setInterval(() => {
+                        if (!barAmbient.paused) {
+                            horseCough.play();
+                        }
+                    }, duration * 1000);
+
+                }, halfTime);
+            }
+        }).catch(error => console.log("Браузер ждет клика для активации звука"));
+    }
+
+
+    // 2. ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
     const barScreen = document.getElementById('screen-bar');
     const tablesScreen = document.getElementById('screen-tables');
 
-    // Кнопки перемещения
     const toTablesBtn = document.getElementById('go-to-tables-btn');
     const toBarBtn = document.getElementById('back-to-bar-btn');
     const arrowLeft = document.getElementById('nav-arrow-left');
     const arrowRight = document.getElementById('nav-arrow-right');
 
-    // Функция для плавного переключения на СТОЛИКИ (Бар тухнет -> Столики нарастают)
+    // Уходим к столикам (Бар тухнет, звук выключается)
     function showTables() {
         if (barScreen && tablesScreen) {
             barScreen.classList.remove('active');
             tablesScreen.classList.add('active');
+            
+            // Выключаем звук, чтобы Конь не кашлял гостям в спину у столиков
+            barAmbient.pause(); 
+            horseCough.pause();
+            horseCough.currentTime = 0; // Сбрасываем кашель на начало
         }
     }
 
-    // Функция для плавного переключения на БАР (Столики тухнут -> Бар нарастает)
+    // Возвращаемся в бар (Бар нарастает, Конь снова кашляет)
     function showBar() {
         if (barScreen && tablesScreen) {
             tablesScreen.classList.remove('active');
             barScreen.classList.add('active');
+            
+            // Включаем атмосферу заново
+            playBarSound();
         }
     }
 
-    // Вешаем события на кнопки внутри залов (проверяем на всякий случай, есть ли они на странице)
+    // Привязываем функции к кнопкам и стрелкам навигации
     if (toTablesBtn) toTablesBtn.addEventListener('click', showTables);
     if (toBarBtn) toBarBtn.addEventListener('click', showBar);
-
-    // Вешаем события на стрелки навигации в шапке
     if (arrowRight) arrowRight.addEventListener('click', showTables);
     if (arrowLeft) arrowLeft.addEventListener('click', showBar);
+
+
+    // 3. СНЯТИЕ БЛОКИРОВКИ АВТОПЛЕЯ БРАУЗЕРА
+    document.addEventListener('click', () => {
+        if (barScreen && barScreen.classList.contains('active')) {
+            playBarSound();
+        }
+    }, { once: true }); // Срабатывает 1 раз при самом первом клике пользователя по экрану
 </script>
 
 </body>
