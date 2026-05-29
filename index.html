@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.43 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.44 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -235,36 +235,35 @@
     </div>
 
     <div id="block-hall" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-hall">
-            <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
+    <!-- Две верхние давящие стрелки (остаются на месте) -->
+    <div class="notranslate ui-nav-arrows" id="nav-hall">
+        <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
+        <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
+    </div>
+    
+    <div class="hall-interior">
+        <!-- Наша фирменная цитата -->
+        <div class="quote-text">In every joke there is a share of whisky</div>
+        
+        <!-- КЛЮЧЕВОЙ УЗЕЛ БАЛАНСА: Соединяем двери и третью стрелку в один контейнер -->
+        <div class="hall-doors-container">
+            <!-- Твоя рабочая интерактивная дверь в бар -->
+            <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+            
+            <!-- ТРЕТЬЯ СТРЕЛКА: Стоит строго под дверью, выглядит точь-в-точь как верхние -->
+            <button id="nav-arrow-bottom" class="arrow-item nav-arrow-bottom" onclick="portalTransition('block-bar')">↓</button>
         </div>
         
-        <div class="hall-interior">
-            <div class="quote-text">In every joke there is a share of whisky</div>
-            <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
-            
-            <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
-                <div class="cue-arrow-side">&rarr;</div> 
-                <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
-                </div>
+        <!-- Левая картина (AI ROOM) теперь чистая и ничего не ломает -->
+        <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
+            <div class="cue-arrow-side">&rarr;</div> 
+            <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
+                <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
             </div>
-            <div class="hall-doors-container">
-    <div id="hall-doors"> ... </div> 
-    
-    <button id="nav-arrow-bottom" class="nav-arrow nav-arrow-bottom">↓</button>
-</div>
-            
-            <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')">
-                <div class="cue-arrow-side">&larr;</div> 
-                <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
-                </div>
-            </div>   
         </div>
-    </div>
-
+        
+    </div> <!-- Закрылся hall-interior -->
+</div> <!-- Закрылся block-hall -->
     <div id="block-server" class="block">
         <div class="quote-text">AI SERVER HUB</div>
         <div class="server-leds">
