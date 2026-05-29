@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.40 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.41 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -541,87 +541,99 @@
 
 <script>
     // 1. АУДИОФАЙЛЫ БАРА
-    const barAmbient = new Audio('bar_ambient.mp3');   // Фоновый шум бара
-    const horseCough = new Audio('charlie_bar_fx.mp3'); // Тот самый кашель Коня
+    const barAmbient = new Audio('bar_ambient.mp3');   
+    const horseCough = new Audio('charlie_bar_fx.mp3'); 
 
     barAmbient.loop = true;
     barAmbient.volume = 0.5;
-    horseCough.volume = 0.7; // Чтобы "Кхе-кхе" выделялось на фоне гула
+    horseCough.volume = 0.7; 
 
-    // Функция запуска звуковой атмосферы
+    let coughInterval = null; // Сюда запишем таймер кашля, чтобы его можно было выключить
+
+    // Функция включения атмосферы бара и цикличного кашля
     function playBarSound() {
         barAmbient.play().then(() => {
-            const duration = barAmbient.duration; 
-            
-            if (duration) {
-                // Считаем середину трека бара
-                const halfTime = (duration / 2) * 1000; 
-                
-                // Запускаем кашель первый раз ровно посередине
-                setTimeout(() => {
+            // Если таймер кашля еще не запущен — запускаем его
+            if (!coughInterval) {
+                coughInterval = setInterval(() => {
                     if (!barAmbient.paused) {
+                        horseCough.currentTime = 0; // Сбрасываем звук кашля на начало
                         horseCough.play();
                     }
-                    
-                    // Циклим кашель, чтобы он повторялся в каждом следующем круге бара
-                    setInterval(() => {
-                        if (!barAmbient.paused) {
-                            horseCough.play();
-                        }
-                    }, duration * 1000);
-
-                }, halfTime);
+                }, 15000); // 15000 миллисекунд = 15 секунд. Конь будет кашлять каждые 15 сек.
             }
-        }).catch(error => console.log("Браузер ждет клика для активации звука"));
+        }).catch(error => console.log("Браузер ждет клика"));
+    }
+
+    // Функция выключения звуков
+    function stopBarSound() {
+        barAmbient.pause();
+        horseCough.pause();
+        if (coughInterval) {
+            clearInterval(coughInterval); // Уничтожаем таймер, чтобы не кашлял в темноте
+            coughInterval = null;
+        }
     }
 
 
-    // 2. ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
+    // 2. ЭКРАНЫ И НАВИГАЦИЯ
     const barScreen = document.getElementById('screen-bar');
     const tablesScreen = document.getElementById('screen-tables');
 
     const toTablesBtn = document.getElementById('go-to-tables-btn');
-    const toBarBtn = document.getElementById('back-to-bar-btn');
+    const toBarBtn = document.getElementById('back-to-bar-btn'); // Кнопка возврата на уровень выше
     const arrowLeft = document.getElementById('nav-arrow-left');
     const arrowRight = document.getElementById('nav-arrow-right');
 
-    // Уходим к столикам (Бар тухнет, звук выключается)
+    // Переход к столикам
     function showTables() {
         if (barScreen && tablesScreen) {
             barScreen.classList.remove('active');
             tablesScreen.classList.add('active');
-            
-            // Выключаем звук, чтобы Конь не кашлял гостям в спину у столиков
-            barAmbient.pause(); 
-            horseCough.pause();
-            horseCough.currentTime = 0; // Сбрасываем кашель на начало
+            // Звук выключаем с легкой задержкой, чтобы переход экрана оставался плавным
+            setTimeout(stopBarSound, 300); 
         }
     }
 
-    // Возвращаемся в бар (Бар нарастает, Конь снова кашляет)
+    // Возврат к бару
     function showBar() {
         if (barScreen && tablesScreen) {
             tablesScreen.classList.remove('active');
             barScreen.classList.add('active');
-            
-            // Включаем атмосферу заново
             playBarSound();
         }
     }
 
-    // Привязываем функции к кнопкам и стрелкам навигации
-    if (toTablesBtn) toTablesBtn.addEventListener('click', showTables);
-    if (toBarBtn) toBarBtn.addEventListener('click', showBar);
+    // НАЗНАЧАЕМ ДЕЙСТВИЯ КНОПКАМ
+
+    // Стрелка Вперед веде к столикам, стрелка Назад возвращает к бару
     if (arrowRight) arrowRight.addEventListener('click', showTables);
     if (arrowLeft) arrowLeft.addEventListener('click', showBar);
+    
+    // Кнопка внутри бара ведет к столикам
+    if (toTablesBtn) toTablesBtn.addEventListener('click', showTables);
+
+    // КНОПКА ВОЗВРАТА НА ПРЕДЫДУЩУЮ СТРАНИЦУ (из столиков)
+    if (toBarBtn) {
+        toBarBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Проверяем: если мы у столиков, то сначала возвращаемся в бар
+            if (tablesScreen && tablesScreen.classList.contains('active')) {
+                showBar();
+            } else {
+                // Если мы уже в баре, то кнопка кидает на предыдущую страницу сайта/истории
+                window.history.back();
+            }
+        });
+    }
 
 
-    // 3. СНЯТИЕ БЛОКИРОВКИ АВТОПЛЕЯ БРАУЗЕРА
+    // 3. АВТИВАЦИЯ ПРИ ПЕРВОМ КЛИКЕ
     document.addEventListener('click', () => {
         if (barScreen && barScreen.classList.contains('active')) {
             playBarSound();
         }
-    }, { once: true }); // Срабатывает 1 раз при самом первом клике пользователя по экрану
+    }, { once: true });
 </script>
 
 </body>
