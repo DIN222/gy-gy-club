@@ -3,29 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.5</title>
+    <title>GY-GY Club | Tables v1.5.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
-        /* УБРАЛИ OPACITY: 0! Теперь страница видима изначально и не побелеет */
+        /* ПЛАВНЫЙ ПЕРЕХОД: Анимация мягкого проявления страницы при загрузке */
+        @keyframes fadeInPage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; background: #000; 
             font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
+            animation: fadeInPage 0.4s ease-in-out forwards;
         }
 
+        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА (СТРОГО ЗОЛОТЫЕ) */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
-            cursor: pointer; color: var(--gold); user-select: none; line-height: 1;
+            cursor: pointer; 
+            color: var(--gold) !important; 
+            user-select: none; line-height: 1;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
-        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item { transition: opacity 0.2s; color: var(--gold) !important; text-decoration: none; }
         .arrow-item:hover { opacity: 0.8; }
 
+        /* ЛОГОТИП GY-GY СПРАВА ПО СТАНДАРТУ */
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
+        /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
         #hall-layer { 
             width: 100vw; height: 100vh; 
             position: relative; 
@@ -33,6 +43,7 @@
             overflow: hidden;
         }
         
+        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА (МАСШТАБИРУЕТСЯ ЦЕЛИКОМ С КОЛЬЦАМИ) */
         .table-scene {
             position: relative;
             width: 1000px; 
@@ -44,6 +55,7 @@
             transform-origin: center center;
         }
         
+        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ СВЕТЛЯЧКИ НА АБАЖУРАХ */
         .lamp-zone { 
             position: absolute; 
             width: 44px; height: 44px; 
@@ -58,6 +70,7 @@
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
+        /* ТВОИ ПРОВЕРЕННЫЕ ЭТАЛОННЫЕ КООРДИНАТЫ */
         #table-1 { top: 396px; left: 330px; }   
         #table-2 { top: 344px; left: 419px; }   
         #table-3 { top: 303px; left: 438px; }   
@@ -66,6 +79,7 @@
         #table-6 { top: 396px; left: 659px; }   
         #mic-zone { top: 234px; left: 503px; } 
 
+        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
@@ -81,6 +95,7 @@
         }
         .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
+        /* HUD АВАТАРА */
         #hud { position: fixed; top: 15px; left: 110px; z-index: 5500; }
         .user-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; object-fit: cover; }
 
@@ -116,7 +131,7 @@
     </div>
 
     <script>
-        // АВТОНОМНЫЙ ЗВУКОВОЙ ДВИЖОК
+        // АУДИОКОНТЕКСТ (Фон Бара + Кашель Коня)
         let barAmbient = null;
         let horseCough = null;
         let coughInterval = null;
@@ -128,22 +143,24 @@
             barAmbient.volume = 0.8;
             horseCough.volume = 0.7;
         } catch(e) {
-            console.log("Audio files missing or blocked");
+            console.log("Audio load paused");
         }
 
         const Core = {
             init() {
+                // Плавный запуск стабильного фонового звука бара
                 if (barAmbient) {
                     barAmbient.play().then(() => {
                         Core.startCough();
                     }).catch(() => {
                         document.body.addEventListener('click', () => { 
-                            if(barAmbient) barAmbient.play(); 
+                            if (barAmbient) barAmbient.play(); 
                             Core.startCough();
                         }, { once: true });
                     });
                 }
 
+                // Загрузка аватара из скрытого цифрового следа (localStorage)
                 try {
                     const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                     if (savedAvatar) {
@@ -154,6 +171,7 @@
             },
             
             startCough() {
+                // Запуск интервала кашля Коня каждые 15 секунд
                 if (barAmbient && !coughInterval) {
                     coughInterval = setInterval(() => {
                         if (!barAmbient.paused && horseCough) {
@@ -169,11 +187,13 @@
             },
 
             backToBar() {
-                location.href = 'bar.html';
+                // Уходим назад по истории — прямиком на экран Бара в index.html
+                window.history.back();
             },
 
             exitToEntrance() {
-                window.history.back();
+                // Уходим на корень index.html — на экран Холла
+                location.href = 'index.html';
             }
         };
 
