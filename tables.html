@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.3</title>
+    <title>GY-GY Club | Tables v1.5.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
-        /* Добавили плавное проявление всей страницы при загрузке */
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; background: #000; 
             font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
             opacity: 0; transition: opacity 0.5s ease-in-out; 
         }
 
-        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
@@ -26,10 +24,8 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ЛОГОТИП GY-GY СПРАВА ПО СТАНДАРТУ */
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
-        /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
         #hall-layer { 
             width: 100vw; height: 100vh; 
             position: relative; 
@@ -37,7 +33,6 @@
             overflow: hidden;
         }
         
-        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА */
         .table-scene {
             position: relative;
             width: 1000px; 
@@ -49,7 +44,6 @@
             transform-origin: center center;
         }
         
-        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ СВЕТЛЯЧКИ НА АБАЖУРАХ */
         .lamp-zone { 
             position: absolute; 
             width: 44px; height: 44px; 
@@ -64,7 +58,6 @@
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ТВОИ ПРОВЕРЕННЫЕ ЭТАЛОННЫЕ КООРДИНАТЫ (ВСЕ НА МЕСТЕ) */
         #table-1 { top: 396px; left: 330px; }   
         #table-2 { top: 344px; left: 419px; }   
         #table-3 { top: 303px; left: 438px; }   
@@ -73,7 +66,6 @@
         #table-6 { top: 396px; left: 659px; }   
         #mic-zone { top: 234px; left: 503px; } 
 
-        /* НАДПИСИ НАД КОЛЬЦАМИ */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
@@ -89,7 +81,6 @@
         }
         .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
-        /* HUD АВАТАРА */
         #hud { position: fixed; top: 15px; left: 110px; z-index: 5500; }
         .user-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; object-fit: cover; }
 
@@ -125,28 +116,25 @@
     </div>
 
     <script>
-        // АУДИОКОНТЕКСТ ДЛЯ СТОЛИКОВ (Тот же уровень, что в баре + Конь)
         const barAmbient = new Audio('bar_ambient.mp3');
         const horseCough = new Audio('charlie_bar_fx.mp3');
 
         barAmbient.loop = true;
-        barAmbient.volume = 0.8; // Уровень громкости как в твоем оригинале
+        barAmbient.volume = 0.8;
         horseCough.volume = 0.7;
 
         let coughInterval = null;
 
         const Core = {
             init() {
-                // Плавное появление страницы при загрузке
                 document.body.style.opacity = "1";
 
-                // Запуск стабильного звука
                 barAmbient.play().then(() => {
-                    this.startCough();
+                    Core.startCough();
                 }).catch(() => {
                     document.body.addEventListener('click', () => { 
                         barAmbient.play(); 
-                        this.startCough();
+                        Core.startCough();
                     }, { once: true });
                 });
 
@@ -164,23 +152,22 @@
                             horseCough.currentTime = 0;
                             horseCough.play();
                         }
-                    }, 15000); // Четкий кашель каждые 15 сек на том же уровне
+                    }, 15000);
                 }
             },
 
             loadZone(url) {
-                document.body.style.opacity = "0"; // Плавное затухание при уходе в подзоны
+                document.body.style.opacity = "0";
                 setTimeout(() => { location.href = url; }, 500);
             },
 
             backToBar() {
-                document.body.style.opacity = "0"; // Плавный визуальный уход
+                document.body.style.opacity = "0";
                 setTimeout(() => { location.href = 'bar.html'; }, 500);
             },
 
             exitToEntrance() {
                 document.body.style.opacity = "0";
-                // Железный возврат по истории браузера назад в Холл (избавляет от 404 ошибки)
                 setTimeout(() => { window.history.back(); }, 500);
             }
         };
@@ -188,6 +175,6 @@
         window.onload = () => { Core.init(); };
         function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
     </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
