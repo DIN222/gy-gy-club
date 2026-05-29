@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.50 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.51 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -770,6 +770,29 @@
     document.addEventListener('click', () => {
         startClubAudio();
     }, { once: true });
+    function checkClubNavigationHash() {
+    const currentHash = window.location.hash;
+    
+    // Даем движку 100мс на инициализацию, затем переключаем экран
+    setTimeout(() => {
+        if (currentHash === '#bar') {
+            if (typeof portalTransition === 'function') {
+                portalTransition('block-bar');
+            }
+        } else if (currentHash === '#hall') {
+            if (typeof portalTransition === 'function') {
+                portalTransition('block-hall');
+            }
+        }
+    }, 100); 
+}
+
+// Вешаем железные триггеры на загрузку и смену хэша
+window.addEventListener('DOMContentLoaded', checkClubNavigationHash);
+window.addEventListener('hashchange', checkClubNavigationHash);
+
+// На всякий случай дублируем при полной загрузке всех картинок
+window.addEventListener('load', checkClubNavigationHash);
 </script>
 </body>
 </html>
