@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.22| SYSTEM RECOVERY</title>
+    <title>GY-GY Club v4.5.1.55 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Слева) */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -31,7 +31,7 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY (Справа) */
+        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -68,22 +68,19 @@
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
-        /* Стили блокировки кнопок */
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
-        body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
+        /* НАВИГАЦИОННЫЕ СТЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -95,35 +92,41 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* КОМПОНОВКА ХОЛЛА И КАРТИН С БОКОВЫМИ СТРЕЛКАМИ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
+        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
 
         .hall-door-target {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
+            position: absolute; bottom: 15vh; left: 50%; transform: translateX(-50%);
+            width: 25vw; height: 50vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
-/* Расширяем зоны до 18vw, чтобы они покрывали и картину, и стрелку рядом */
+
+        .cue-arrow-hall {
+            position: absolute; bottom: 8vh; left: 50%; transform: translateX(-50%);
+            color: var(--violet); font-size: 36px; font-weight: 900;
+            text-shadow: 0 0 15px var(--violet), 0 0 25px var(--violet);
+            cursor: pointer; user-select: none; z-index: 10;
+        }
+
+        /* Интерактивные зоны */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
-            width: 10vw; 
-            height: 24vh; 
+            width: 5vw; 
+            height: 10vh; 
             cursor: pointer; 
             z-index: 6; 
             background: rgba(255,255,255,0.01);
-            border: 1px dashed rgba(138, 43, 226, 0.4); /* Фиолетовый пунктир, чтобы ты видел новые границы */
+            border: 1px dashed rgba(138, 43, 226, 0.4);
         }
-        /* Корректируем положение зон, чтобы они сели точно поверх картин на фоне */
-        .painting-left { left: 25vw; }
-        .painting-right { right: 25vw; }
+        .painting-left { left: 24vw; }
+        .painting-right { right: 24vw; }
 
-        /* Статичная фиолетовая стрелка */
         .cue-arrow-side { 
             position: absolute; 
-            top: 50%; 
+            top: 40%; 
             transform: translateY(-50%); 
             color: #8A2BE2; 
             font-size: 48px; 
@@ -132,25 +135,15 @@
             pointer-events: none; 
             user-select: none;
             z-index: 10;
-            animation: none !important; /* Полная статика, как договаривались */
+            animation: none !important;
         }
-        
-        /* Левая стрелка: упирается в левый край расширенной зоны (снаружи от картины) */
-        .painting-left .cue-arrow-side { 
-            left: 0; 
-            right: auto;
-        }
-        
-        /* Правая стрелка: упирается в правый край расширенной зоны (снаружи от картины) */
-        .painting-right .cue-arrow-side { 
-            right: 0; 
-            left: auto;
-        }
-        /* Выплывающие кнопки под картинами */
+        .painting-left .cue-arrow-side { left: 0; right: auto; }
+        .painting-right .cue-arrow-side { right: 0; left: auto; }
+
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
 
-        /* СЕРВЕРНЫЙ КОРИДОР */
+        /* СЕРВЕРНАЯ */
         .server-leds { display: flex; gap: 8px; margin-top: 15px; }
         .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
         .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
@@ -160,7 +153,6 @@
         .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
         
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; }
     </style> 
 </head>
 
@@ -182,7 +174,6 @@
         </div>
     </div>
 
-    <!-- ЯЗЫКОВАЯ ПАНЕЛЬ -->
     <div id="lang-switcher" class="lang-frame-locked notranslate">
         <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
@@ -191,7 +182,6 @@
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
     </div>
 
-    <!-- Контейнер для подключения переводчика -->
     <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
     
     <div class="ui-header-right notranslate">GY-GY</div>
@@ -202,18 +192,18 @@
     <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
     <audio id="snd-server" loop><source src="server_room.mp3"></audio>
+    <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
 
-   <!-- ВХОДНАЯ ДВЕРЬ -->
-<div id="block-entrance" class="block active" style="display: flex; opacity: 1; pointer-events: auto !important;">
-    <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
-</div>
+    <div id="block-entrance" class="block active" style="display: flex; opacity: 1; pointer-events: auto !important;">
+        <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
+    </div>
 
-    <!-- ДОБРО ПОЖАЛОВАТЬ -->
     <div id="block-welcome" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-welcome">
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
+        <div class="quote-text">I'M CHARLIE</div>
         <div class="quote-text">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
         <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
@@ -221,7 +211,6 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
-    <!-- БЛОК ИДЕНТИФИКАЦИИ (РЕГИСТРАЦИЯ) -->
     <div id="block-identity" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-identity">
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
@@ -235,45 +224,39 @@
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">PHOTO</span>
+                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
             </div>
             
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">GEN<br>AVATAR</span>
+                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
             </div>
         </div>
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-    <!-- ХОЛЛ -->
- <div id="block-hall" class="block">
+    <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
         </div>
-        
+
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
-            <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
             
-            <div class="painting-zone painting-left" onclick="toggleManifest('box-ai-reveal')">
-                <div class="cue-arrow-side">&rarr;</div> <div id="box-ai-reveal" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest" style="border: 2px solid var(--gold); color: var(--gold); font-weight: 900; box-shadow: 0 0 15px rgba(214,175,55,0.4);" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
-                </div>
+            <div class="hall-doors-container">
+                <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+                <div class="cue-arrow-hall" onclick="portalTransition('block-bar')">↑</div>
             </div>
-            
-            <div class="painting-zone painting-right" onclick="toggleManifest('box-studio-reveal')">
-                <div class="cue-arrow-side">&larr;</div> <div id="box-studio-reveal" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest" style="border: 2px solid rgba(214,175,55,0.5); color: rgba(214,175,55,0.8); font-weight: 900;" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
-                </div>
-            </div>   
         </div>
     </div>
 
-    <!-- СЕРВЕРНАЯ -->
     <div id="block-server" class="block">
+        <div class="notranslate ui-nav-arrows" id="nav-server">
+            <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;&lt;</div>
+        </div>
         <div class="quote-text">AI SERVER HUB</div>
         <div class="server-leds">
             <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
@@ -281,62 +264,33 @@
         <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
     </div>
 
-    <!-- БАР -->
-    <div id="block-bar" class="block" style="justify-content: flex-end;">
-        <!-- Стандартные стрелки навигации -->
-        <div class="notranslate ui-nav-arrows" id="nav-bar" style="display: flex;">
+    <div id="block-bar" class="block">
+        <div class="notranslate ui-nav-arrows" id="nav-bar">
             <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-
-        <div class="quote-text" style="position:absolute; top:8vh;">In every joke there is a share of whisky</div>
         
-        <div class="bar-ui-container">
-            <!-- Подсвеченный аватар юзера -->
-            <div class="notranslate" style="margin-bottom: 15px; text-align: center;" onclick="openPassport()">
-                <img id="bar-avatar-img" src="" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); display: none; box-shadow: 0 0 15px var(--gold); object-fit: cover; margin: 0 auto;">
-            </div>
-
-            <!-- Две аккуратные кнопки в один ряд -->
-            <div style="display:flex; justify-content: space-between; width:100%; margin-bottom:12px;">
-                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-tables')">TABLES</button>
-                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="alert('Механика в разработке...')">???</button>
+        <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
+        
+        <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
+        <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
+        <div class="bar-ui-container" style="z-index: 10;">
+            <div style="display:flex; justify-content: space-between; width:100%;">
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="goToTables()">TABLES</button>
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
             </div>
         </div>
-        <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
-    </div>
-            
-            <!-- Кнопка HALL удалена. Оставлена пустая заготовка под новую механику -->
-            <button id="btn-bar-mystery" class="btn-gy" style="font-size:12px;" onclick="alert('Механика в разработке...')">???</button>
-        </div>
-        <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
     </div>
 
-    <!-- СТОЛЫ -->
-   <div id="block-tables" class="block">
+    <div id="block-tables" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-tables">
             <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-
-        <div style="position: relative; width: 100%; height: 100%; max-width: 600px; margin: 0 auto;">
-            
-            <div class="lamp-zone" style="bottom: 49.2%; left: 49.9%;" onclick="clickTable(1, this)"></div>
-            <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;" onclick="clickTable(2, this)"></div>
-            <div class="lamp-zone" style="bottom: 22.1%; left: 64.3%;" onclick="clickTable(3, this)"></div>
-            <div class="lamp-zone" style="bottom: 35.5%; left: 18.2%;" onclick="clickTable(4, this)"></div>
-            <div class="lamp-zone" style="bottom: 35.5%; left: 81.8%;" onclick="clickTable(5, this)"></div>
-            <div class="lamp-zone" style="bottom: 58.0%; left: 31.0%;" onclick="clickTable(6, this)"></div>
-
-            <div class="lamp-zone" style="bottom: 72.5%; left: 50%; width: 50px; height: 50px; border-color: #ff00ff; box-shadow: 0 0 25px #ff00ff;" onclick="clickMicrophone(this)"></div>
-
-            <div id="lounge-terminal" class="notranslate" style="position: absolute; bottom: 8vh; left: 50%; transform: translateX(-50%); width: 85%; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); padding: 10px; text-align: center; font-size: 13px; min-height: 45px; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 0 15px rgba(214,175,55,0.2);">
-                Нажми на столик или микрофон...
-            </div>
-        </div>
+        <div class="lamp-zone" style="bottom: 49.2%; left: 49.9%;"></div>
+        <div class="lamp-zone" style="bottom: 22.1%; left: 35.7%;"></div>
     </div>
 
-<!-- СКРИПТ ПОДКЛЮЧЕНИЯ И ЛОГИКИ СТРАНИЦЫ -->
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -347,7 +301,6 @@
         }, 'google_translate_element');
     }
 
-    // Очистка данных для теста
     localStorage.clear(); 
 
     let currentID = "";
@@ -360,7 +313,7 @@
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
         {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
         {n:'PORTUGUÊS .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKÇЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
         {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
 
@@ -380,7 +333,8 @@
 
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
-        currentFlagCode = lang.c;
+        currentFlagCode = lang.c; 
+        
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
             <span>${lang.n}</span>
@@ -406,23 +360,6 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-50px" : "-35px";
-            } else {
-                box.style.opacity = "0";
-                box.style.pointerEvents = "none";
-                box.setAttribute('data-opened', "false");
-                box.style.bottom = "-50px";
-            }
-        });
-    }
-
     function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
@@ -446,83 +383,53 @@
         }, 1000);
     }
 
-function portalTransition(nextId) {
-    const current = document.querySelector('.block.active');
-    const backBtn = document.getElementById('btn-global-back');
-    const amb = document.getElementById('snd-ambient');
-    const srvSnd = document.getElementById('snd-server');
-    const badge = document.getElementById('global-user-badge');
-    
-    // 1. ОСТАВЛЯЕМ: Мгновенно тушим текущий активный блок
-    if (current) { 
-        current.style.opacity = "0"; 
-        current.style.pointerEvents = "none"; 
-    }
-    if (backBtn) backBtn.style.opacity = "0";
+    function portalTransition(nextId) {
+        const current = document.querySelector('.block.active');
+        const backBtn = document.getElementById('btn-global-back');
+        const amb = document.getElementById('snd-ambient');
+        const srvSnd = document.getElementById('snd-server');
+        const badge = document.getElementById('global-user-badge');
+        
+        if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
+        if (backBtn) backBtn.style.opacity = "0";
 
-    // 2. ОСТАВЛЯЕМ: Гасим звуки, если юзер вернулся к самым дверям
-    if (nextId === 'block-entrance') {
-        if (amb) { amb.pause(); amb.currentTime = 0; }
-        if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
-    }
-
-    setTimeout(() => {
-        // 3. ИСПРАВЛЕНО: Жёстко убираем старый блок с экрана (теперь конь не вылезет)
-        if (current) { 
-            current.classList.remove('active'); 
-            current.style.display = "none"; 
-        }
-        
-        const next = document.getElementById(nextId);
-        if (!next) return;
-        
-        // Включаем новый блок и вешаем на него маркер активности
-        next.style.display = "flex";
-        next.classList.add('active'); // Важная строка для фиксации состояния!
-        
-        // Управление плавным проявлением
-        setTimeout(() => { next.style.style.opacity = "1"; next.style.pointerEvents = "auto"; }, 10);
-        
-        const langPanel = document.getElementById('lang-switcher');
-        
-        // 4. ОСТАВЛЯЕМ: Логика Дверей (Вход)
         if (nextId === 'block-entrance') {
-            const door = document.getElementById('main-door');
-            if (door) { door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto"; }
-            if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
-            if (badge) badge.style.display = "none";
-        } else {
-            // Если ушли от дверей — языковая панель прячется
-            if (langPanel) langPanel.style.display = 'none';
+            if (amb) { amb.pause(); amb.currentTime = 0; }
+            if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+        }
+
+        setTimeout(() => {
+            if (current) { current.classList.remove('active'); current.style.display = "none"; }
+            const next = document.getElementById(nextId);
+            if (!next) return;
             
-            // Специфическая навигация для промежуточных шагов
-            if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-            if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
+            next.style.display = "flex";
+            const langPanel = document.getElementById('lang-switcher');
             
-            // 5. ОСТАВЛЯЕМ: Подгрузка аватара в HUD (Бэйдж) и Паспорт для игровых зон
-            if (['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
-                if (typeof currentUserImage !== 'undefined' && currentUserImage) {
-                    const badgeImg = document.getElementById('badge-avatar-img');
-                    const passImg = document.getElementById('pass-avatar-img');
-                    if (badgeImg) badgeImg.src = currentUserImage;
-                    if (passImg) passImg.src = currentUserImage;
-                    if (badge) badge.style.display = "block";
-                }
+            if (nextId === 'block-entrance') {
+                const door = document.getElementById('main-door');
+                door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
+                if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
+                badge.style.display = "none";
+            } else {
+                if (langPanel) langPanel.style.display = 'none';
                 
-                // Включаем навигационные стрелки для конкретных залов
-                if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
-                if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
+                if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
+                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
+                if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
+                if (nextId === 'block-server') { document.getElementById('nav-server').style.display = "flex"; }
+                if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
+                if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
+                
+                if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                    if (currentUserImage) {
+                        document.getElementById('badge-avatar-img').src = currentUserImage;
+                        document.getElementById('pass-avatar-img').src = currentUserImage;
+                        badge.style.display = "block";
+                    }
+                }
             }
-        }
-        
-        // 6. ДОБАВЛЕНО: Тот самый пинок для Google Translate, о котором говорили
-        const googleSelect = document.querySelector('select.goog-te-combo');
-        if (googleSelect) {
-            googleSelect.dispatchEvent(new Event('change'));
-        }
-        
-    }, 200); // Оставляем твою стандартную задержку таймаута для плавности анимации
-} .
+
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
                 if (nextId === 'block-bar') { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
@@ -531,89 +438,106 @@ function portalTransition(nextId) {
         }, 400); 
     }
 
-function preview(i) {
-    if(i.files && i.files[0]) {
-        const r = new FileReader();
-        r.onload = (e) => { 
-            document.getElementById('avatar-img').style.display = "none";
-            document.getElementById('pp').src = e.target.result; 
-            document.getElementById('pp').style.display = "block";
-            document.getElementById('txt-photo').style.display = "none";
-            currentUserImage = e.target.result;
+    function preview(i) {
+        if(i.files && i.files[0]) {
+            const r = new FileReader();
+            r.onload = (e) => { 
+                document.getElementById('avatar-img').style.display = "none";
+                document.getElementById('pp').src = e.target.result; 
+                document.getElementById('pp').style.display = "block";
+                document.getElementById('txt-photo').style.display = "none";
+                currentUserImage = e.target.result;
 
-            // Блокируем кнопку "PROCEED", так как данные изменились и их нужно сохранить!
-            const btnPass = document.getElementById('btn-pass');
-            if(btnPass) btnPass.classList.add('btn-sleep');
-        };
-        r.readAsDataURL(i.files[0]);
+                const btnPass = document.getElementById('btn-pass');
+                if(btnPass) btnPass.classList.add('btn-sleep');
+            };
+            r.readAsDataURL(i.files[0]);
+        }
     }
-}
 
-function generateAvatar() {
-    document.getElementById('pp').style.display = "none"; 
-    document.getElementById('txt-photo').style.display = "block";
-    
-    const randomColor = Math.floor(Math.random()*16777215).toString(16);
-    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
-    currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
-    
-    document.getElementById('avatar-img').src = currentUserImage; 
-    document.getElementById('avatar-img').style.display = "block";
-    document.getElementById('txt-avatar').style.display = "none";
+    function generateAvatar() {
+        document.getElementById('pp').style.display = "none"; 
+        document.getElementById('txt-photo').style.display = "block";
+        
+        const randomColor = Math.floor(Math.random()*16777215).toString(16);
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
+        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+        
+        document.getElementById('avatar-img').src = currentUserImage; 
+        document.getElementById('avatar-img').style.display = "block";
+        document.getElementById('txt-avatar').style.display = "none";
 
-    // Блокируем "PROCEED" обратно — аватар новый, надо пересохранить
-    const btnPass = document.getElementById('btn-pass');
-    if(btnPass) btnPass.classList.add('btn-sleep');
-}
-
-function saveUserProfile() {
-    if(!currentUserImage) { 
-        alert("Генерируй аватар или загрузи фото!"); 
-        return; 
+        const btnPass = document.getElementById('btn-pass');
+        if(btnPass) btnPass.classList.add('btn-sleep');
     }
-    
-    // Запись в локальное хранилище браузера
-    localStorage.setItem('gy_user_id', currentID);
-    localStorage.setItem('gy_user_img', currentUserImage);
-    
-    // Оживляем кнопку продолжения в блоке Welcome
-    const btnWHall = document.getElementById('btn-w-hall');
-    if(btnWHall) {
-        btnWHall.classList.remove('btn-sleep');
+
+    function saveUserProfile() {
+        if(!currentUserImage) { 
+            alert("Генерируй аватар или загрузи фото!"); 
+            return; 
+        }
+        
+        localStorage.setItem('gy_user_id', currentID);
+        localStorage.setItem('gy_user_img', currentUserImage);
+        
+        const btnWHall = document.getElementById('btn-w-hall');
+        if(btnWHall) { btnWHall.classList.remove('btn-sleep'); }
+        
+        const btnPass = document.getElementById('btn-pass');
+        if(btnPass) { btnPass.classList.remove('btn-sleep'); }
     }
-    
-    // СТРОГАЯ АКТИВАЦИЯ КНОПКИ "PROCEED"
-    const btnPass = document.getElementById('btn-pass');
-    if(btnPass) {
-        btnPass.classList.remove('btn-sleep'); // Убираем сонный режим
+
+    function openPassport() { 
+        document.getElementById('modal-passport').style.display = "flex"; 
+        setTimeout(() => { document.getElementById('modal-passport').style.opacity = "1"; }, 10);
     }
+
+    function closePassport() { 
+        document.getElementById('modal-passport').style.opacity = "0";
+        setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
+    }
+
+    function goToTables() {
+        window.location.href = 'tables.html'; 
+    }
+
+    function deepDive() { portalTransition('block-bar'); } 
     
-    
-}
-
-function openPassport() { 
-    document.getElementById('modal-passport').style.display = "flex"; 
-    setTimeout(() => { document.getElementById('modal-passport').style.opacity = "1"; }, 10);
-}
-
-function closePassport() { 
-    document.getElementById('modal-passport').style.opacity = "0";
-    setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
-}
-
-function deepDive() { 
-    portalTransition('block-bar'); // Ссылка вела в никуда, теперь переводит в Бар/AI Room
-} 
-
-function enterStudio() { 
-    alert("Entering Studio... Печатные станки прогреваются!"); 
-}
-    
-window.onload = () => { renderLangList(); };
+    window.onload = () => { renderLangList(); };
 </script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-<!-- Подключение API переводчика (раскомментируйте при необходимости на хостинге) -->
-<!-- <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
+<script>
+    const barAmbient = new Audio('bar_ambient.mp3');   
+    const horseCough = new Audio('charlie_bar_fx.mp3'); 
 
+    barAmbient.loop = true;
+    barAmbient.volume = 0.5;
+    horseCough.volume = 0.7; 
+
+    let coughInterval = null;
+
+    function playBarSound() {
+        barAmbient.play().then(() => {
+            if (!coughInterval) {
+                coughInterval = setInterval(() => {
+                    if (!barAmbient.paused) {
+                        horseCough.currentTime = 0;
+                        horseCough.play();
+                    }
+                }, 15000);
+            }
+        }).catch(error => console.log("Браузер ждет клика"));
+    }
+
+    function stopBarSound() {
+        barAmbient.pause();
+        horseCough.pause();
+        if (coughInterval) {
+            clearInterval(coughInterval);
+            coughInterval = null;
+        }
+    }
+</script>
 </body>
 </html>
