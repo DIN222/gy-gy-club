@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.54 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.55 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -768,38 +768,6 @@
     document.addEventListener('click', () => {
         startClubAudio();
     }, { once: true });
-   function checkClubNavigationHash() {
-    const currentHash = window.location.hash;
-    
-    setTimeout(() => {
-        if (currentHash === '#bar') {
-            if (typeof portalTransition === 'function') {
-                portalTransition('block-bar');
-            }
-        } else if (currentHash === '#hall') {
-            if (typeof portalTransition === 'function') {
-                portalTransition('block-hall');
-                
-                // СИЛОВОЙ ВОЗВРАТ СТРЕЛОК:
-                // Находим блок стрелок Холла и принудительно делаем его видимым
-                const hallNav = document.getElementById('nav-hall');
-                if (hallNav) {
-                    hallNav.style.display = 'flex'; // Показываем контейнер
-                    // Если сами стрелки были скрыты внутри, делаем видимыми все дочерние элементы
-                    Array.from(hallNav.children).forEach(arrow => arrow.style.display = 'block');
-                }
-                
-                // Проверяем нижнюю стрелку (↓) под дверью
-                const downArrow = document.querySelector("#block-hall .arrow-item[onclick*='block-bar']");
-                if (downArrow) downArrow.style.display = 'block';
-            }
-        }
-    }, 150); // Чуть увеличили задержку, чтобы index.html успел полностью проснуться
-}
-
-// Триггеры остаются те же
-window.addEventListener('DOMContentLoaded', checkClubNavigationHash);
-window.addEventListener('hashchange', checkClubNavigationHash);
-window.addEventListener('load', checkClubNavigationHash);
+   
 </body>
 </html>
