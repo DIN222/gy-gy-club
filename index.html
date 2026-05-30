@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.58 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.59 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -35,7 +35,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
@@ -87,7 +87,7 @@
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
             pointer-events: auto !important; user-select: none; display: none;
         }
         .arrow-item { transition: opacity 0.2s; }
@@ -104,36 +104,35 @@
             background: transparent;
         }
 
-        /* Интерактивные зоны (картина + стрелка = один элемент) */
+        /* Интерактивные зоны стрелок в Холле */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
-            width: 5vw; 
-            height: 10vh; 
+            width: 6vw; 
+            height: 12vh; 
             cursor: pointer; 
             z-index: 6; 
-            background: rgba(255,255,255,0.01);
-            border: 1px dashed rgba(138, 43, 226, 0.4); /* Фиолетовая рамка для дебага */
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .painting-left { left: 24vw; }
         .painting-right { right: 24vw; }
 
-        /* Полная статика стрелок */
-        .cue-arrow-side { 
-            position: absolute; 
-            top: 40%; 
-            transform: translateY(-50%); 
-            color: #8A2BE2; 
-            font-size: 48px; 
+        /* Изящный единый стиль для всех навигационных стрелок Холла */
+        .cue-arrow-hall { 
+            color: var(--violet); 
+            font-size: 38px; 
             font-weight: 900; 
-            text-shadow: 0 0 15px #8A2BE2, 0 0 25px #8A2BE2; 
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
             pointer-events: none; 
             user-select: none;
             z-index: 10;
-            animation: none !important;
+            transition: opacity 0.2s;
         }
-        .painting-left .cue-arrow-side { left: 0; right: auto; }
-        .painting-right .cue-arrow-side { right: 0; left: auto; }
+        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
 
         /* Выплывающие подменю */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
@@ -244,16 +243,17 @@
         <div class="quote-text">In every joke there is a share of whisky</div>
         
         <div class="painting-zone painting-left">
-            <span class="cue-arrow-side">&lt;</span>
+            <span class="cue-arrow-hall">←</span>
         </div>
         <div class="painting-zone painting-right">
-            <span class="cue-arrow-side">&gt;</span>
+            <span class="cue-arrow-hall">→</span>
         </div>
         
         <div class="hall-doors-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0;">
             <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
-            <div style="position: absolute; bottom: 12vh; font-size: 36px; font-weight: 900; color: #8A2BE2; cursor: pointer; user-select: none; text-shadow: 0 0 15px #8A2BE2, 0 0 25px #8A2BE2; z-index: 10;" 
-                 onclick="portalTransition('block-bar')">↑</div>
+            <div style="position: absolute; bottom: 12vh; cursor: pointer;" onclick="portalTransition('block-bar')">
+                <span class="cue-arrow-hall">↑</span>
+            </div>
         </div>
     </div>
 </div>
@@ -539,44 +539,39 @@
     barAmbient.volume = 0.5;
     horseCough.volume = 0.7; 
 
-    let coughInterval = null; // Сюда запишем таймер кашля, чтобы его можно было выключить
+    let coughInterval = null; 
 
-    // Функция включения атмосферы бара и цикличного кашля
     function playBarSound() {
         barAmbient.play().then(() => {
-            // Если таймер кашля еще не запущен — запускаем его
             if (!coughInterval) {
                 coughInterval = setInterval(() => {
                     if (!barAmbient.paused) {
-                        horseCough.currentTime = 0; // Сбрасываем звук кашля на начало
+                        horseCough.currentTime = 0; 
                         horseCough.play();
                     }
-                }, 15000); // 15000 миллисекунд = 15 секунд. Конь будет кашлять каждые 15 сек.
+                }, 15000); 
             }
         }).catch(error => console.log("Браузер ждет клика"));
     }
 
-    // Функция выключения звуков
     function stopBarSound() {
         barAmbient.pause();
         horseCough.pause();
         if (coughInterval) {
-            clearInterval(coughInterval); // Уничтожаем таймер, чтобы не кашлял в темноте
+            clearInterval(coughInterval); 
             coughInterval = null;
         }
     }
-
 
     // 2. ЭКРАНЫ И НАВИГАЦИЯ
     const barScreen = document.getElementById('screen-bar');
     const tablesScreen = document.getElementById('screen-tables');
 
     const toTablesBtn = document.getElementById('go-to-tables-btn');
-    const toBarBtn = document.getElementById('back-to-bar-btn'); // Кнопка возврата на уровень выше
+    const toBarBtn = document.getElementById('back-to-bar-btn'); 
     const arrowLeft = document.getElementById('nav-arrow-left');
     const arrowRight = document.getElementById('nav-arrow-right');
 
-    // Переход к столикам
     function showTables() {
         if (barScreen && tablesScreen) {
             barScreen.classList.remove('active');
