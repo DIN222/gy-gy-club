@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.56 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.67 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -434,6 +434,7 @@
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         if (backBtn) backBtn.style.opacity = "0";
 
+        // НЕ глушим амбиент бара при переходах между баром и столиками
         if (nextId === 'block-entrance') {
             if (amb) { amb.pause(); amb.currentTime = 0; }
             if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
@@ -472,7 +473,8 @@
 
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
-                if (nextId === 'block-bar') { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
+                // Запускаем звук, только если он до этого не играл
+                if (nextId === 'block-bar' && amb && amb.paused) { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
                 if (nextId === 'block-server') { srvSnd.play(); }
             }, 50);
         }, 400); 
@@ -536,8 +538,10 @@
         document.getElementById('modal-passport').style.opacity = "0";
         setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
     }
+    
+    // Плавный бесшовный переход к столикам внутри текущей разметки без сброса звука
     function goToTables() {
-        window.location.href = 'tables.html'; 
+        portalTransition('block-tables'); 
     }
 
     function deepDive() { portalTransition('block-bar'); } 
