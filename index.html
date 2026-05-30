@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.56 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.57 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -75,13 +75,12 @@
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
-        body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
+        /* НАВИГАЦИОННЫЕ СТЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -98,12 +97,20 @@
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
 
-        .hall-doors-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
         .hall-door-target {
-            width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
+            position: absolute; bottom: 15vh; left: 50%; transform: translateX(-50%);
+            width: 25vw; height: 50vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
 
+        .cue-arrow-hall {
+            position: absolute; bottom: 8vh; left: 50%; transform: translateX(-50%);
+            color: var(--violet); font-size: 36px; font-weight: 900;
+            text-shadow: 0 0 15px var(--violet), 0 0 25px var(--violet);
+            cursor: pointer; user-select: none; z-index: 10;
+        }
+
+        /* Интерактивные зоны */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -146,7 +153,6 @@
         .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
         
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; }
     </style> 
 </head>
 
@@ -231,12 +237,9 @@
     </div>
 
     <div id="block-hall" class="block">
-        <div style="position: fixed; top: 15px; left: 20px; z-index: 9999999; display: flex; gap: 25px;">
-            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-                 onclick="portalTransition('block-identity')">&lt;</div>
-                 
-            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-                 onclick="portalTransition('block-welcome')">&lt;&lt;</div>
+        <div class="notranslate ui-nav-arrows" id="nav-hall">
+            <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
         </div>
 
         <div class="hall-interior">
@@ -244,14 +247,16 @@
             
             <div class="hall-doors-container">
                 <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
-                
-                <div style="margin-top: 15px; font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; z-index: 10;" 
-                     onclick="portalTransition('block-bar')">↓</div>
+                <div class="cue-arrow-hall" onclick="portalTransition('block-bar')">↑</div>
             </div>
         </div>
     </div>
 
     <div id="block-server" class="block">
+        <div class="notranslate ui-nav-arrows" id="nav-server">
+            <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;&lt;</div>
+        </div>
         <div class="quote-text">AI SERVER HUB</div>
         <div class="server-leds">
             <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
@@ -260,13 +265,11 @@
     </div>
 
     <div id="block-bar" class="block">
-        <div style="position: fixed; top: 15px; left: 20px; z-index: 9999999; display: flex; gap: 25px;">
-            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-                 onclick="portalTransition('block-hall')">&lt;</div>
-            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-                 onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        <div class="notranslate ui-nav-arrows" id="nav-bar">
+            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-
+        
         <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
         
         <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
@@ -357,23 +360,6 @@
         list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-50px" : "-35px";
-            } else {
-                box.style.opacity = "0";
-                box.style.pointerEvents = "none";
-                box.setAttribute('data-opened', "false");
-                box.style.bottom = "-50px";
-            }
-        });
-    }
-
     function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
@@ -430,6 +416,10 @@
                 
                 if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
                 if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
+                if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
+                if (nextId === 'block-server') { document.getElementById('nav-server').style.display = "flex"; }
+                if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
+                if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
                 
                 if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
                     if (currentUserImage) {
@@ -512,8 +502,7 @@
     }
 
     function deepDive() { portalTransition('block-bar'); } 
-    function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
-        
+    
     window.onload = () => { renderLangList(); };
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
