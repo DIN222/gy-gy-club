@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.55 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.56 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Слева, по феншую клуба) */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -31,7 +31,7 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY (Справа, как заказывали) */
+        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -94,17 +94,16 @@
         .arrow-item:hover { opacity: 0.8; }
 
         /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
 
+        .hall-doors-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; }
         .hall-door-target {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 25vw; height: 65vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
 
-        /* Интерактивные зоны (картина + стрелка = один элемент) */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -113,12 +112,11 @@
             cursor: pointer; 
             z-index: 6; 
             background: rgba(255,255,255,0.01);
-            border: 1px dashed rgba(138, 43, 226, 0.4); /* Фиолетовая рамка для дебага */
+            border: 1px dashed rgba(138, 43, 226, 0.4);
         }
         .painting-left { left: 24vw; }
         .painting-right { right: 24vw; }
 
-        /* Полная статика стрелок */
         .cue-arrow-side { 
             position: absolute; 
             top: 40%; 
@@ -135,7 +133,6 @@
         .painting-left .cue-arrow-side { left: 0; right: auto; }
         .painting-right .cue-arrow-side { right: 0; left: auto; }
 
-        /* Выплывающие подменю */
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
 
@@ -148,7 +145,6 @@
         .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
         .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
         
-        /* Глушим системные плашки Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; }
     </style> 
@@ -219,14 +215,12 @@
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
             
-           <!-- БЛОК ЗАГРУЗКИ ФОТО -->
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
             </div>
             
-            <!-- БЛОК ГЕНЕРАЦИИ АВАТАРА -->
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
@@ -236,29 +230,27 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-<div id="block-hall" class="block">
+    <div id="block-hall" class="block">
+        <div style="position: fixed; top: 15px; left: 20px; z-index: 9999999; display: flex; gap: 25px;">
+            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
+                 onclick="portalTransition('block-identity')">&lt;</div>
+                 
+            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
+                 onclick="portalTransition('block-welcome')">&lt;&lt;</div>
+        </div>
 
-    <div style="position: fixed; top: 15px; left: 20px; z-index: 9999; display: flex; gap: 25px;">
-        <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-             onclick="portalTransition('block-identity')">&lt;</div>
-             
-        <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-             onclick="portalTransition('block-welcome')">&lt;&lt;</div>
-    </div>
-
-    <div class="hall-interior">
-        <div class="quote-text">In every joke there is a share of whisky</div>
-        
-        <div class="hall-doors-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+        <div class="hall-interior">
+            <div class="quote-text">In every joke there is a share of whisky</div>
             
-            <div style="margin-top: 15px; font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
-                 onclick="portalTransition('block-bar')">↓</div>
+            <div class="hall-doors-container">
+                <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+                
+                <div style="margin-top: 15px; font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; z-index: 10;" 
+                     onclick="portalTransition('block-bar')">↓</div>
+            </div>
         </div>
     </div>
-</div>
-    </div> <!-- Закрылся hall-interior -->
-</div> <!-- Закрылся block-hall -->
+
     <div id="block-server" class="block">
         <div class="quote-text">AI SERVER HUB</div>
         <div class="server-leds">
@@ -267,26 +259,25 @@
         <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
     </div>
 
-   <!-- 6. ИНТЕРАКТИВНЫЙ БАР -->
-   <div id="block-bar" class="block">
-    <!-- ВОТ СЮДА, В САМОЕ НАЧАЛО БЛОКА БАРА -->
-       
-       <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
+    <div id="block-bar" class="block">
+        <div style="position: fixed; top: 15px; left: 20px; z-index: 9999999; display: flex; gap: 25px;">
+            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
+                 onclick="portalTransition('block-hall')">&lt;</div>
+            <div style="font-size: 26px; font-weight: 900; color: #d4af37; cursor: pointer; user-select: none; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
+                 onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        </div>
 
-    <div class="notranslate ui-nav-arrows" id="nav-bar" style="display: flex; z-index: 10;">
-        <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
-        <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-    </div>
-    
-    <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
-    <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
-    <div class="bar-ui-container" style="z-index: 10;">
-        <div style="display:flex; justify-content: space-between; width:100%;">
-            <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="goToTables()">TABLES</button>
-            <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
+        <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
+        
+        <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
+        <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
+        <div class="bar-ui-container" style="z-index: 10;">
+            <div style="display:flex; justify-content: space-between; width:100%;">
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="goToTables()">TABLES</button>
+                <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
+            </div>
         </div>
     </div>
-</div>
 
     <div id="block-tables" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-tables">
@@ -314,7 +305,6 @@
     let currentUserImage = "";
     let currentFlagCode = 'gb';
 
-    // Наш закрытый пул из 12 языков интерфейса
     const allLangs = [
         {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -338,10 +328,9 @@
         });
     }
 
-    // Синхронизация: Запись флага в след + пинок Google Translate
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
-        currentFlagCode = lang.c; // Этот маркер улетит в Паспорт
+        currentFlagCode = lang.c; 
         
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
@@ -351,7 +340,6 @@
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
 
-        // Скрытая передача команды в Google движок
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -449,8 +437,6 @@
                         document.getElementById('pass-avatar-img').src = currentUserImage;
                         badge.style.display = "block";
                     }
-                    if(nextId === 'block-hall') document.getElementById('nav-hall').style.display = "flex";
-                    if(nextId === 'block-tables') document.getElementById('nav-tables').style.display = "flex";
                 }
             }
 
@@ -520,26 +506,19 @@
         document.getElementById('modal-passport').style.opacity = "0";
         setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
     }
-    function goToTables() {
-    // Если у тебя на index.html проигрывается фоновая музыка бармена или коня, 
-    // здесь можно приглушить её перед уходом:
-    // const audio = document.getElementById('snd-khe-new'); if(audio) audio.pause();
 
-    // Перенаправление на файл столиков
-    window.location.href = 'tables.html'; 
-}
+    function goToTables() {
+        window.location.href = 'tables.html'; 
+    }
 
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
     window.onload = () => { renderLangList(); };
-    
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</div> 
 
 <script>
-    // 1. АУДИОФАЙЛЫ БАРА
     const barAmbient = new Audio('bar_ambient.mp3');   
     const horseCough = new Audio('charlie_bar_fx.mp3'); 
 
@@ -547,227 +526,29 @@
     barAmbient.volume = 0.5;
     horseCough.volume = 0.7; 
 
-    let coughInterval = null; // Сюда запишем таймер кашля, чтобы его можно было выключить
+    let coughInterval = null;
 
-    // Функция включения атмосферы бара и цикличного кашля
     function playBarSound() {
         barAmbient.play().then(() => {
-            // Если таймер кашля еще не запущен — запускаем его
             if (!coughInterval) {
                 coughInterval = setInterval(() => {
                     if (!barAmbient.paused) {
-                        horseCough.currentTime = 0; // Сбрасываем звук кашля на начало
+                        horseCough.currentTime = 0;
                         horseCough.play();
                     }
-                }, 15000); // 15000 миллисекунд = 15 секунд. Конь будет кашлять каждые 15 сек.
+                }, 15000);
             }
         }).catch(error => console.log("Браузер ждет клика"));
     }
 
-    // Функция выключения звуков
     function stopBarSound() {
         barAmbient.pause();
         horseCough.pause();
         if (coughInterval) {
-            clearInterval(coughInterval); // Уничтожаем таймер, чтобы не кашлял в темноте
+            clearInterval(coughInterval);
             coughInterval = null;
         }
     }
-
-
-    // 2. ЭКРАНЫ И НАВИГАЦИЯ
-    const barScreen = document.getElementById('screen-bar');
-    const tablesScreen = document.getElementById('screen-tables');
-
-    const toTablesBtn = document.getElementById('go-to-tables-btn');
-    const toBarBtn = document.getElementById('back-to-bar-btn'); // Кнопка возврата на уровень выше
-    const arrowLeft = document.getElementById('nav-arrow-left');
-    const arrowRight = document.getElementById('nav-arrow-right');
-
-    // Переход к столикам
-    function showTables() {
-        if (barScreen && tablesScreen) {
-            barScreen.classList.remove('active');
-            tablesScreen.classList.add('active');
-            // Звук выключаем с легкой задержкой, чтобы переход экрана оставался плавным
-            setTimeout(stopBarSound, 300); 
-        }
-    }
-
-    // Возврат к бару
-    function showBar() {
-        if (barScreen && tablesScreen) {
-            tablesScreen.classList.remove('active');
-            barScreen.classList.add('active');
-            playBarSound();
-        }
-    }
-
-    // НАЗНАЧАЕМ ДЕЙСТВИЯ КНОПКАМ
-
-    // Стрелка Вперед веде к столикам, стрелка Назад возвращает к бару
-    if (arrowRight) arrowRight.addEventListener('click', showTables);
-    if (arrowLeft) arrowLeft.addEventListener('click', showBar);
-    
-    // Кнопка внутри бара ведет к столикам
-    if (toTablesBtn) toTablesBtn.addEventListener('click', showTables);
-
-    // КНОПКА ВОЗВРАТА НА ПРЕДЫДУЩУЮ СТРАНИЦУ (из столиков)
-    if (toBarBtn) {
-        toBarBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Проверяем: если мы у столиков, то сначала возвращаемся в бар
-            if (tablesScreen && tablesScreen.classList.contains('active')) {
-                showBar();
-            } else {
-                // Если мы уже в баре, то кнопка кидает на предыдущую страницу сайта/истории
-                window.history.back();
-            }
-        });
-    }
-
-
-    // 3. АВТИВАЦИЯ ПРИ ПЕРВОМ КЛИКЕ
-    document.addEventListener('click', () => {
-        if (barScreen && barScreen.classList.contains('active')) {
-            playBarSound();
-        }
-    }, { once: true });
 </script>
-<style>
-    /* 1. СТИЛИ ДЛЯ ПЛАВНОГО ВИЗУАЛА (ПЕРЕХОД ЭКРАНОВ) */
-    .screen {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        visibility: hidden;
-        /* Мягкое угасание и нарастание за 0.5 секунды */
-        transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-    }
-
-    .screen.active {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* 2. ТРЕТЬЯ СТРЕЛКА В ХОЛЛЕ (ТОЧНО ТАКАЯ ЖЕ, КАК ПЕРВЫЕ ДВЕ) */
-    .nav-arrow-bottom {
-        /* Копируем базовый стиль твоих навигационных стрелок */
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        
-        /* Центрируем её под дверями */
-        margin: 20px auto 0 auto; 
-        
-        /* Убираем анимацию пульсации, оставляем строго стандартный вид */
-        transition: all 0.2s ease; 
-    }
-    
-    /* Контейнер для выравнивания стрелки по центру под дверями */
-    .hall-doors-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-</style>
-
-<script>
-    // ==========================================
-    // 1. АУДИОСИСТЕМА (СТАБИЛЬНЫЙ КОНЬ И БАР)
-    // ==========================================
-    const barAmbient = new Audio('bar_ambient.mp3');   
-    const horseCough = new Audio('charlie_bar_fx.mp3'); 
-
-    barAmbient.loop = true;
-    barAmbient.volume = 0.5;
-    horseCough.volume = 0.7; // Конь кашляет отчетливо
-
-    let coughInterval = null;
-
-    // Включаем звук один раз на стабильном уровне (звук не прерывается между баром и столиками)
-    function startClubAudio() {
-        barAmbient.play().then(() => {
-            if (!coughInterval) {
-                // Стабильный кашель строго каждые 15 секунд
-                coughInterval = setInterval(() => {
-                    if (!barAmbient.paused) {
-                        horseCough.currentTime = 0; 
-                        horseCough.play();
-                    }
-                }, 15000); 
-            }
-        }).catch(error => console.log("Ждем первого взаимодействия пользователя с экраном..."));
-    }
-
-    // ==========================================
-    // 2. СЕЛАКТОРЫ ЭКРАНОВ И КНОПОК
-    // ==========================================
-    const barScreen = document.getElementById('screen-bar');
-    const tablesScreen = document.getElementById('screen-tables');
-
-    // Кнопки перемещения
-    const toTablesBtn = document.getElementById('go-to-tables-btn');
-    const toBarBtn = document.getElementById('back-to-bar-btn'); // Стрелка в столиках
-    
-    // Стрелки в шапке
-    const arrowLeft = document.getElementById('nav-arrow-left');
-    const arrowRight = document.getElementById('nav-arrow-right');
-    
-    // Элементы Холла (Двери и Новая Нижняя Стрелка)
-    const hallDoors = document.getElementById('hall-doors');
-    const arrowBottom = document.getElementById('nav-arrow-bottom');
-
-    // ==========================================
-    // 3. ФУНКЦИИ ПЛАВНОГО ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ
-    // ==========================================
-    function showTables() {
-        if (barScreen && tablesScreen) {
-            barScreen.classList.remove('active');
-            tablesScreen.classList.add('active');
-            // Звук остается на том же уровне, не выключается!
-        }
-    }
-
-    function showBar() {
-        if (barScreen && tablesScreen) {
-            tablesScreen.classList.remove('active');
-            barScreen.classList.add('active');
-        }
-    }
-
-    // ==========================================
-    // 4. НАЗНАЧЕНИЕ СОБЫТИЙ (БЕЗ 404 И СБОЕВ)
-    // ==========================================
-
-    // Переходы по кнопкам интерфейса
-    if (toTablesBtn) toTablesBtn.addEventListener('click', showTables);
-
-    // СТРЕЛКА В СТОЛИКАХ: Лечим 404. Вместо перехода по ссылке возвращаем назад по истории
-    if (toBarBtn) {
-        toBarBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Глушим стандартный переход на 404
-            window.history.back(); // Железный возврат на предыдущую страницу
-        });
-    }
-
-    // Стрелки навигации в шапке
-    if (arrowRight) arrowRight.addEventListener('click', showTables);
-    if (arrowLeft) arrowLeft.addEventListener('click', showBar);
-
-    // Вход из Холла в Бар (Клик по дверям или по третьей нижней стрелке)
-    if (hallDoors) hallDoors.addEventListener('click', showBar);
-    if (arrowBottom) arrowBottom.addEventListener('click', showBar);
-
-    // Снятие блокировки звука при первом клике в клубе
-    document.addEventListener('click', () => {
-        startClubAudio();
-    }, { once: true });
-   
 </body>
 </html>
