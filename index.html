@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.70 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.71 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -150,7 +150,7 @@
         }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
 
-        /* СЕРВЕРНАЯ */
+       /* СЕРВЕРНАЯ */
         .server-leds { display: flex; gap: 8px; margin-top: 15px; }
         .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
         .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
@@ -161,10 +161,15 @@
         
         /* Глушим системные плашки Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; }
+        
+        /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ НА СТАРТЕ */
+        body { 
+            top: 0 !important; 
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
     </style> 
 </head>
-
 <body oncontextmenu="return false;">
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
@@ -297,7 +302,7 @@
     <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
     <div class="bar-ui-container" style="z-index: 10;">
         <div style="display:flex; justify-content: space-between; width:100%;">
-            <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="goToTables()">TABLES</button>
+            <button onclick="fadeOutAndGo('tables.html')">ПЕРЕЙТИ К СТОЛИКАМ</button>
             <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
         </div>
     </div>
@@ -606,5 +611,20 @@
         }
     }
 </script>
+    <script>
+        // Принудительно включаем плавное проявление при заходе на главную
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.transition = "opacity 0.5s ease-in-out";
+            document.body.style.opacity = "1";
+        });
+
+        // Функция плавного ухода
+        function fadeOutAndGo(url) {
+            document.body.style.opacity = '0';
+            setTimeout(function() {
+                location.href = url;
+            }, 500);
+        }
+    </script>
 </body>
 </html>
