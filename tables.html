@@ -3,36 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.4</title>
+    <title>GY-GY Club | Tables v1.5.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
-        /* ПЛАВНЫЙ ПЕРЕХОД: Анимация мягкого проявления страницы при загрузке */
-        @keyframes fadeInPage {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        body, html { 
+        /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ */
+        body { 
             margin: 0; padding: 0; width: 100%; height: 100%; background: #000; 
             font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
-            animation: fadeInPage 0.4s ease-in-out forwards;
+            opacity: 0; transition: opacity 0.5s ease-in-out;
         }
+        body.page-loaded { opacity: 1; }
 
-        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА (СТРОГО ЗОЛОТЫЕ) */
+        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
-            cursor: pointer; 
-            color: var(--gold) !important; 
-            user-select: none; line-height: 1;
+            cursor: pointer; color: var(--gold); user-select: none; line-height: 1;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
-        .arrow-item { transition: opacity 0.2s; color: var(--gold) !important; text-decoration: none; }
+        .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ЛОГОТИП GY-GY СПРАВА ПО СТАНДАРТУ */
+        /* КЛУБНЫЙ ЛОГОТИП GY-GY */
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
 
         /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
@@ -55,7 +50,7 @@
             transform-origin: center center;
         }
         
-        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ СВЕТЛЯЧКИ НА АБАЖУРАХ */
+        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ КОЛЬЦА С КЛИКОМ ПО ОДНОМУ ТАПУ */
         .lamp-zone { 
             position: absolute; 
             width: 44px; height: 44px; 
@@ -70,7 +65,7 @@
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ТВОИ ПРОВЕРЕННЫЕ ЭТАЛОННЫЕ КООРДИНАТЫ */
+        /* ЮВЕЛИРНЫЕ НАСТРОЕННЫЕ КООРДИНАТЫ АБАЖУРОВ СТОЛОВ И СЦЕНЫ */
         #table-1 { top: 396px; left: 330px; }   
         #table-2 { top: 344px; left: 419px; }   
         #table-3 { top: 303px; left: 438px; }   
@@ -87,7 +82,7 @@
             background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
             padding: 6px 12px; font-size: 13px; white-space: nowrap; border-radius: 4px;
             opacity: 0; 
-            pointer-events: none; 
+            pointer-events: none; /* Текст полностью прозрачен для тапов */
             transition: opacity 0.2s ease, transform 0.2s ease; 
             font-family: 'Share Tech Mono', monospace;
             box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
@@ -105,6 +100,8 @@
 <body oncontextmenu="return false;">
 
     <div id="google_translate_element"></div>
+    
+    <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
     
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="Core.backToBar()">&lt;</div>
@@ -131,75 +128,52 @@
     </div>
 
     <script>
-        // АУДИОКОНТЕКСТ (Фон Бара + Кашель Коня)
-        let barAmbient = null;
-        let horseCough = null;
-        let coughInterval = null;
-
-        try {
-            barAmbient = new Audio('bar_ambient.mp3');
-            horseCough = new Audio('charlie_bar_fx.mp3');
-            barAmbient.loop = true;
-            barAmbient.volume = 0.8;
-            horseCough.volume = 0.7;
-        } catch(e) {
-            console.log("Audio load paused");
-        }
-
         const Core = {
             init() {
-                // Плавный запуск стабильного фонового звука бара
-                if (barAmbient) {
-                    barAmbient.play().then(() => {
-                        Core.startCough();
-                    }).catch(() => {
-                        document.body.addEventListener('click', () => { 
-                            if (barAmbient) barAmbient.play(); 
-                            Core.startCough();
-                        }, { once: true });
+                // Включаем плавное проявление страницы
+                document.body.classList.add('page-loaded');
+
+                const amb = document.getElementById('snd-ambient');
+                if (amb) {
+                    amb.volume = 0.8;
+                    amb.play().catch(() => {
+                        document.body.addEventListener('click', () => { amb.play(); }, { once: true });
                     });
                 }
 
-                // Загрузка аватара из скрытого цифрового следа (localStorage)
-                try {
-                    const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-                    if (savedAvatar) {
-                        document.getElementById('user-avatar').src = savedAvatar;
-                        document.getElementById('hud').style.display = 'block';
-                    }
-                } catch(e) {}
-            },
-            
-            startCough() {
-                // Запуск интервала кашля Коня каждые 15 секунд
-                if (barAmbient && !coughInterval) {
-                    coughInterval = setInterval(() => {
-                        if (!barAmbient.paused && horseCough) {
-                            horseCough.currentTime = 0;
-                            horseCough.play();
-                        }
-                    }, 15000);
+                const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                if (savedAvatar) {
+                    document.getElementById('user-avatar').src = savedAvatar;
+                    document.getElementById('hud').style.display = 'block';
                 }
             },
-
+            // Клик по зоне — плавный Fade-Out и переход
             loadZone(url) {
-                location.href = url;
+                document.body.style.opacity = '0';
+                setTimeout(() => {
+                    location.href = url;
+                }, 500);
             },
-
+            // Плавный возврат в бар к Коню на index.html
             backToBar() {
-                // Уходим назад по истории — прямиком на экран Бара в index.html
-                location.href = 'index.html#bar
+                document.body.style.opacity = '0';
+                setTimeout(() => {
+                    location.href = 'index.html';
+                }, 500);
             },
-
+            // Выход наружу к приветствию со сбросом сессии
             exitToEntrance() {
-                // Уходим на корень index.html — на экран Холла
-            location.href = 'index.html#hall';
+                document.body.style.opacity = '0';
+                setTimeout(() => {
+                    localStorage.removeItem('gygy_id');
+                    location.href = 'index.html';
+                }, 500);
             }
         };
 
         window.onload = () => { Core.init(); };
         function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
     </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
