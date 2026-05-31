@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.3</title>
+    <title>GY-GY Club | Tables v1.5.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -127,10 +127,10 @@
         </div>
     </div>
 
-    <script>
+  <script>
         const Core = {
             init() {
-                // Включаем плавное проявление страницы
+                // Включаем плавное проявление страницы столиков
                 document.body.classList.add('page-loaded');
 
                 const amb = document.getElementById('snd-ambient');
@@ -147,21 +147,25 @@
                     document.getElementById('hud').style.display = 'block';
                 }
             },
-            // Клик по зоне — плавный Fade-Out и переход
+            // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
                 document.body.style.opacity = '0';
                 setTimeout(() => {
                     location.href = url;
                 }, 500);
             },
-            // Плавный возврат в бар к Коню на index.html
+            // ХИТРЫЙ ВОЗВРАТ НАПРЯМУЮ К КОНЮ
             backToBar() {
                 document.body.style.opacity = '0';
+                // Перед уходом жестко проверяем, что ID на месте, чтобы главная открыла бар
+                if (!localStorage.getItem('gygy_id')) {
+                    localStorage.setItem('gygy_id', 'GY-RECOVERY-' + Math.floor(100 + Math.random() * 899));
+                }
                 setTimeout(() => {
                     location.href = 'index.html';
                 }, 500);
             },
-            // Выход наружу к приветствию со сбросом сессии
+            // Выход наружу к приветствию со сбросом сессии (двойная стрелка)
             exitToEntrance() {
                 document.body.style.opacity = '0';
                 setTimeout(() => {
@@ -176,4 +180,4 @@
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
-</html>
+</html>.
