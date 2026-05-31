@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.82 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.83 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -319,7 +319,7 @@
         <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
         <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
     </div>
-<script type="text/javascript">
+    <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
@@ -329,7 +329,7 @@
         }, 'google_translate_element');
     }
 
-    localStorage.clear(); 
+    // ЗЛОПАТНЫЙ LOCALSTORAGE.CLEAR() УБРАН НАВСЕГДА! СЕССИЯ БОЛЬШЕ НЕ СЛЕТАЕТ.
 
     let currentID = "";
     let currentActiveCode = 'en';
@@ -360,10 +360,9 @@
         });
     }
 
-    // Синхронизация: Запись флага в след + пинок Google Translate
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
-        currentFlagCode = lang.c; // Этот маркер улетит в Паспорт
+        currentFlagCode = lang.c; 
         
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
@@ -373,7 +372,6 @@
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
 
-        // Скрытая передача команды в Google движок
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -416,7 +414,8 @@
         d.style.pointerEvents = "none";
         document.getElementById('lang-switcher').style.opacity = "0";
         
-        currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+        currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+        localStorage.setItem('gygy_id', currentID); // Железно пишем в сессию
         document.getElementById('id-label').innerText = currentID;
         document.getElementById('pass-id-val').innerText = currentID;
         
@@ -434,16 +433,14 @@
     function portalTransition(nextId) {
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
-        const amb = document.getElementById('snd-ambient');
         const srvSnd = document.getElementById('snd-server');
         const badge = document.getElementById('global-user-badge');
         
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         if (backBtn) backBtn.style.opacity = "0";
 
-        // НЕ глушим амбиент бара при переходах между баром и столиками
         if (nextId === 'block-entrance') {
-            if (amb) { amb.pause(); amb.currentTime = 0; }
+            stopBarSound();
             if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
         }
 
@@ -470,6 +467,8 @@
                 if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
                 
                 if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                    // Подтягиваем аватар из любого хранилища
+                    currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                     if (currentUserImage) {
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
@@ -480,9 +479,8 @@
 
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
-                // Запускаем звук, только если он до этого не играл
-                if (nextId === 'block-bar' && amb && amb.paused) { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
-                if (nextId === 'block-server') { srvSnd.play(); }
+                if (nextId === 'block-bar') { playBarSound(); }
+                if (nextId === 'block-server') { if(srvSnd) srvSnd.play(); }
             }, 50);
         }, 400); 
     }
@@ -496,6 +494,7 @@
                 document.getElementById('pp').style.display = "block";
                 document.getElementById('txt-photo').style.display = "none";
                 currentUserImage = e.target.result;
+                localStorage.setItem('gygy_avatar', currentUserImage);
 
                 const btnPass = document.getElementById('btn-pass');
                 if(btnPass) btnPass.classList.add('btn-sleep');
@@ -511,6 +510,7 @@
         const randomColor = Math.floor(Math.random()*16777215).toString(16);
         const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+        localStorage.setItem('gygy_avatar', currentUserImage);
         
         document.getElementById('avatar-img').src = currentUserImage; 
         document.getElementById('avatar-img').style.display = "block";
@@ -525,7 +525,6 @@
             alert("Генерируй аватар или загрузи фото!"); 
             return; 
         }
-        
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
@@ -546,19 +545,24 @@
         setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
     }
     
-    // Плавный бесшовный переход к столикам внутри текущей разметки без сброса звука
-    function goToTables() {
-        portalTransition('block-tables'); 
-    }
-
+    function goToTables() { portalTransition('block-tables'); }
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-    window.onload = () => { renderLangList(); };
-    
+    // АВТОЗАПУСК И ПРОВЕРКА КЛЮЧА АВТОРИЗАЦИИ
+    window.onload = () => { 
+        renderLangList(); 
+        const savedID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+        if (savedID) {
+            currentID = savedID;
+            // Если ключ в браузере есть — летим мимо Чарли сразу к Коню!
+            portalTransition('block-bar');
+        } else {
+            portalTransition('block-entrance');
+        }
+    };
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</div> 
 
 <script>
     // 1. АУДИОФАЙЛЫ БАРА
@@ -593,63 +597,27 @@
         }
     }
 
-    // 2. ЭКРАНЫ И НАВИГАЦИЯ
-    const barScreen = document.getElementById('screen-bar');
-    const tablesScreen = document.getElementById('screen-tables');
+    // 2. СИНХРОНИЗАЦИЯ ПЛАВНОГО УХОДА НА СТОЛИКИ И ИЗМЕНЕНИЯ ЗВУКА
+    function smoothTransitionToTables() {
+        let vol = 10;
+        const fadeInterval = setInterval(() => {
+            vol--;
+            if (barAmbient && barAmbient.volume > 0.02) barAmbient.volume = vol / 20;
+            if (horseCough && horseCough.volume > 0.02) horseCough.volume = vol / 15;
+            
+            if (vol <= 0) {
+                clearInterval(fadeInterval);
+                stopBarSound();
+            }
+        }, 30);
 
-    const toTablesBtn = document.getElementById('go-to-tables-btn');
-    const toBarBtn = document.getElementById('back-to-bar-btn'); 
-    const arrowLeft = document.getElementById('nav-arrow-left');
-    const arrowRight = document.getElementById('nav-arrow-right');
+        document.body.style.transition = "opacity 0.6s ease-in-out";
+        document.body.style.opacity = '0';
 
-    function showTables() {
-        if (barScreen && tablesScreen) {
-            barScreen.classList.remove('active');
-            tablesScreen.classList.add('active');
-        }
+        setTimeout(() => {
+            location.href = 'tables.html';
+        }, 600);
     }
 </script>
-    <script>
-        // Принудительно включаем плавное проявление при заходе на главную
-        document.addEventListener("DOMContentLoaded", function() {
-            document.body.style.transition = "opacity 0.5s ease-in-out";
-            document.body.style.opacity = "1";
-        });
-
-        // Функция плавного ухода
-        function fadeOutAndGo(url) {
-            document.body.style.opacity = '0';
-            setTimeout(function() {
-                location.href = url;
-            }, 500);
-        }
-    </script>
-    <script>
-        function smoothTransitionToTables() {
-            // Плавно глушим звук, если плееры существуют
-            const amb = document.getElementById('snd-ambient');
-            const fx = document.getElementById('snd-charlie-fx');
-            
-            let vol = 10;
-            const fadeInterval = setInterval(() => {
-                vol--;
-                if (amb && amb.volume > 0.05) amb.volume = vol / 25;
-                if (fx && fx.volume > 0.05) fx.volume = vol / 15;
-                
-                if (vol <= 0) {
-                    clearInterval(fadeInterval);
-                }
-            }, 30);
-
-            // Гасим экран
-            document.body.style.transition = "opacity 0.6s ease-in-out";
-            document.body.style.opacity = '0';
-
-            // Улетаем на столики только когда всё затихло и потемнело
-            setTimeout(() => {
-                location.href = 'tables.html';
-            }, 600);
-        }
-    </script>
 </body>
 </html>
