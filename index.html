@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.86 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.87 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -612,10 +612,21 @@
     // 2. СИНХРОНИЗАЦИЯ ПЛАВНОГО УХОДА НА СТОЛИКИ И ИЗМЕНЕНИЯ ЗВУКА
     function smoothTransitionToTables() {
         let vol = 10;
+        
+        // Перед уходом принудительно фиксируем стартовую громкость для безопасного шага вниз
+        if (barAmbient) barAmbient.volume = 0.5;
+        if (horseCough) horseCough.volume = 0.7;
+
         const fadeInterval = setInterval(() => {
             vol--;
-            if (barAmbient && barAmbient.volume > 0.02) barAmbient.volume = vol / 20;
-            if (horseCough && horseCough.volume > 0.02) horseCough.volume = vol / 15;
+            
+            // Безопасный декремент громкости (не прыгает выше 1.0 и не падает ниже 0)
+            if (barAmbient && barAmbient.volume > 0.05) {
+                barAmbient.volume = Math.max(0, Math.min(0.5, vol / 20));
+            }
+            if (horseCough && horseCough.volume > 0.05) {
+                horseCough.volume = Math.max(0, Math.min(0.7, vol / 14));
+            }
             
             if (vol <= 0) {
                 clearInterval(fadeInterval);
@@ -623,13 +634,15 @@
             }
         }, 30);
 
+        // Гасим экран матрицы в полный ноль
         document.body.style.transition = "opacity 0.6s ease-in-out";
         document.body.style.opacity = '0';
 
+        // Улетаем в зал строго в момент пика темноты и тишины
         setTimeout(() => {
             location.href = 'tables.html';
         }, 600);
     }
-</script>
+</script>.
 </body>
 </html>
