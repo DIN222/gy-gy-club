@@ -549,24 +549,33 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-// АВТОЗАПУСК И ОСТАНОВКА МИГАНИЯ МАТРИЦЫ
+// АВТОЗАПУСК: ВСЕГДА ЧЕРЕЗ ПАРАДНУЮ ДВЕРЬ, ЕСЛИ НЕ БЫЛО ВОЗВРАТА ИЗ ЗАЛА СТОЛОВ
     window.onload = () => { 
         renderLangList(); 
         
-        // Сначала принудительно гасим экран, чтобы скрыть подготовку сцены
+        // Временная темнота для бесшовного переключения сцен
         document.body.style.opacity = "0";
         document.body.style.transition = "opacity 0.3s ease-in-out";
 
-        const savedID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+        // Проверяем, прилетел ли юзер со столиков по одинарной стрелке назад
+        const isReturning = sessionStorage.getItem('return_to_bar');
         
-        if (savedID) {
-            currentID = savedID;
-            // Переключаем внутренние слои на Бар в полной темноте ДО того, как пользователь что-то увидит
+        // СТРАХОВКА: Сразу стираем маркер, чтобы обычное обновление страницы (F5) не кидало в бар
+        sessionStorage.removeItem('return_to_bar');
+
+        if (isReturning === 'true') {
+            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
             portalTransition('block-bar');
         } else {
+            // Во всех остальных случаях (первый заход, F5, ручной ввод адреса) — только парадный вход к Чарли!
             portalTransition('block-entrance');
         }
 
+        // Включаем свет
+        setTimeout(() => {
+            document.body.style.opacity = "1";
+        }, 50);
+    };
         // Даем браузеру 50 миллисекунд переварить слои и плавно зажигаем свет
         setTimeout(() => {
             document.body.style.opacity = "1";
