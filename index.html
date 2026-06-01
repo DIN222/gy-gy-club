@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.91 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.92| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -162,10 +162,16 @@
         /* Глушим системные плашки Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         
-        /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Плавность добавлена, но родные свойства body не затираются */
+      /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Защита от сдвигов Гугла + правильное плавное проявление */
         body { 
             top: 0 !important; 
-            transition: opacity 0.5s ease-in-out !important;
+            background-color: #000 !important;
+            opacity: 0; /* На старте всегда глухая темнота */
+            transition: opacity 0.4s ease-in-out !important;
+        }
+        
+        /* Свет загорается ТОЛЬКО когда скрипт добавит этот класс */
+        body.page-loaded {
             opacity: 1 !important;
         }
     </style>
@@ -551,21 +557,17 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-// АВТОЗАПУСК КЛУБА: ПОЛНАЯ МАСКИРОВКА МИГАНИЯ ПРИ ПЕРЕХОДАХ
+// АВТОЗАПУСК КЛУБА: СИНХРОНИЗАЦИЯ С КЛАССОМ КОРРЕКЦИИ СВЕТА
     window.onload = () => { 
         renderLangList(); 
         
-        // Держим экран в абсолютной темноте
-        document.body.style.opacity = "0";
-        document.body.style.transition = "opacity 0.3s ease-in-out";
-
         // Читаем маркер возврата со столиков
         const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
         
         // Стираем маркер, чтобы обычный F5 не кидал к Коню повторно
         sessionStorage.removeItem('return_to_bar');
 
-        // Сначала гасим абсолютно все блоки, чтобы исключить любой блик
+        // Сначала гасим абсолютно все блоки в темноте, исключая блики верстки
         const entBlock = document.getElementById('block-entrance');
         const barBlock = document.getElementById('block-bar');
         if (entBlock) entBlock.style.display = 'none';
@@ -574,21 +576,20 @@
         if (isReturning === 'true') {
             currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
             
-            // Включаем Бар в темноте
+            // Монтируем Бар под покровом тьмы
             if (barBlock) barBlock.style.display = 'flex';
             portalTransition('block-bar');
         } else {
-            // Включаем Парадную дверь в темноте
+            // Монтируем Парадную дверь под покровом тьмы
             if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
         }
 
-        // И только теперь, когда сцена полностью готова, плавно зажигаем свет
+        // Зажигаем свет через добавление класса готовности (железобетонный приоритет в CSS)
         setTimeout(() => {
-            document.body.style.opacity = "1";
-        }, 100); // Чуть увеличили задержку до 100мс для гарантированной сборки кадров браузером
+            document.body.classList.add('page-loaded');
+        }, 50); 
     };
-        
 </script>.
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
