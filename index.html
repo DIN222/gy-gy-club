@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.88 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.89 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -549,7 +549,7 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-// АВТОЗАПУСК: ВСЕГДА ЧЕРЕЗ ПАРАДНУЮ ДВЕРЬ, ЕСЛИ НЕ БЫЛО ВОЗВРАТА ИЗ ЗАЛА СТОЛОВ
+// АВТОЗАПУСК: ВСЕГДА ЧЕРЕЗ ПАРАДНУЮ ДВЕРЬ С ЗАЩИТОЙ ОТ ПУСТЫХ ЗНАЧЕНИЙ
     window.onload = () => { 
         renderLangList(); 
         
@@ -557,26 +557,21 @@
         document.body.style.opacity = "0";
         document.body.style.transition = "opacity 0.3s ease-in-out";
 
-        // Проверяем, прилетел ли юзер со столиков по одинарной стрелке назад
-        const isReturning = sessionStorage.getItem('return_to_bar');
+        // Проверяем маркер возврата с защитой: если там null или пусто, запишется 'false'
+        const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
         
-        // СТРАХОВКА: Сразу стираем маркер, чтобы обычное обновление страницы (F5) не кидало в бар
+        // Сразу стираем маркер, чтобы обычное обновление страницы (F5) не кидало в бар
         sessionStorage.removeItem('return_to_bar');
 
         if (isReturning === 'true') {
             currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
             portalTransition('block-bar');
         } else {
-            // Во всех остальных случаях (первый заход, F5, ручной ввод адреса) — только парадный вход к Чарли!
+            // Во всех остальных случаях — строго парадный вход к Чарли!
             portalTransition('block-entrance');
         }
 
-        // Включаем свет
-        setTimeout(() => {
-            document.body.style.opacity = "1";
-        }, 50);
-    };
-        // Даем браузеру 50 миллисекунд переварить слои и плавно зажигаем свет
+        // Зажигаем свет!
         setTimeout(() => {
             document.body.style.opacity = "1";
         }, 50);
