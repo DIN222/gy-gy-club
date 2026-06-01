@@ -154,26 +154,25 @@
                     location.href = url;
                 }, 500);
             },
-            // ХИТРЫЙ ВОЗВРАТ НАПРЯМУЮ К КОНЮ
+          // ОДИНАРНАЯ СТРЕЛА (<) — ВОЗВРАТ К КОНЮ С УМНЫМ МАРКЕРОМ
             backToBar() {
                 document.body.style.opacity = '0';
-                // Перед уходом жестко проверяем, что ID на месте, чтобы главная открыла бар
-                if (!localStorage.getItem('gygy_id')) {
-                    localStorage.setItem('gygy_id', 'GY-RECOVERY-' + Math.floor(100 + Math.random() * 899));
-                }
+                // Говорим главной странице: «Это возврат из зала, пропусти в бар!»
+                sessionStorage.setItem('return_to_bar', 'true');
                 setTimeout(() => {
-                    location.href = 'index.html';
+                    location.href = 'index.html'; 
                 }, 500);
             },
-            // Выход наружу к приветствию со сбросом сессии (двойная стрелка)
+            
+            // ДВОЙНАЯ СТРЕЛА (<<) — ВЫХОД С ПОЛНЫМ СБРОСОМ К ЗАКРЫТЫМ ДВЕРЯМ
             exitToEntrance() {
                 document.body.style.opacity = '0';
+                sessionStorage.removeItem('return_to_bar');
                 setTimeout(() => {
-                    localStorage.removeItem('gygy_id');
-                    location.href = 'index.html';
+                    localStorage.removeItem('gygy_id'); 
+                    location.href = 'index.html'; 
                 }, 500);
             }
-        };
 
         window.onload = () => { Core.init(); };
         function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
