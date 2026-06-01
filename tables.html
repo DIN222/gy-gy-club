@@ -18,11 +18,16 @@
         body.page-loaded { opacity: 1; }
 
         /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
+       /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
             cursor: pointer; color: var(--gold); user-select: none; line-height: 1;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            
+            /* ЖЕСТКАЯ МАСКИРОВКА МИГАНИЯ СТАРТА */
+            opacity: 0; 
+            transition: opacity 0.3s ease-in-out;
         }
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
@@ -148,9 +153,15 @@
 
     <script>
         const Core = {
-       init() {
+      init() {
                 // Включаем плавное проявление страницы столиков
                 document.body.classList.add('page-loaded');
+
+                // Проявляем стрелки навигации строго после старта, чтобы убрать желтые точки
+                const navArrows = document.getElementById('global-nav');
+                if (navArrows) {
+                    setTimeout(() => { navArrows.style.opacity = "1"; }, 150);
+                }
 
                 const amb = document.getElementById('snd-ambient');
                 if (amb) {
@@ -167,15 +178,13 @@
                     document.getElementById('hud').style.display = 'block';
                 }
 
-                // КРЕПИМ ФЛАГ: Считываем сохраненный код флага или ставим дефолтный gb (английский)
-                // Проверяем локальное хранилище главной страницы
+                // Крепим флаг
                 const savedFlag = localStorage.getItem('gygy_flag') || 'gb';
                 const flagImg = document.getElementById('badge-flag-img');
                 if (flagImg) {
                     flagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
                 }
             },
-
             // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
                 document.body.classList.remove('page-loaded');
