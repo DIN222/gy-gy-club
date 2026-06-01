@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.10</title>
+    <title>GY-GY Club | Tables v1.5.11</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -90,21 +90,23 @@
         }
         .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
-       /* HUD АВАТАРА — СТРОГО ПО ЦЕНТРУ ЭКРАНА */
+   /* HUD АВАТАРА — СТРОГО ПО ЦЕНТРУ ЭКРАНА С ПРАВИЛЬНЫМ МАСШТАБОМ */
         #hud { 
             position: fixed; 
             top: 15px; 
             left: 50%; 
             transform: translateX(-50%); 
             z-index: 7000; 
+            line-height: 0; /* Убирает микро-отступы инлайновых элементов */
         }
         .user-mini { 
-            width: 32px; 
-            height: 32px; 
+            width: 40px; 
+            height: 40px; 
             border-radius: 50%; 
             border: 2px solid var(--gold); 
             background: #fff; 
             object-fit: cover;
+            box-sizing: border-box; /* Рамка больше не уменьшает размер аватарки */
             box-shadow: 0 0 10px var(--neon-glow);
         }
 
