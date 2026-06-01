@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.90 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.91 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -208,7 +208,7 @@
     <audio id="snd-server" loop><source src="server_room.mp3"></audio>
     <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
 
-   <div id="block-entrance" class="block" style="display: flex;">
+  <div id="block-entrance" class="block" style="display: none;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
@@ -551,32 +551,42 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-// АВТОЗАПУСК: ВСЕГДА ЧЕРЕЗ ПАРАДНУЮ ДВЕРЬ С ЗАЩИТОЙ ОТ ПУСТЫХ ЗНАЧЕНИЙ
+// АВТОЗАПУСК КЛУБА: ПОЛНАЯ МАСКИРОВКА МИГАНИЯ ПРИ ПЕРЕХОДАХ
     window.onload = () => { 
         renderLangList(); 
         
-        // Временная темнота для бесшовного переключения сцен
+        // Держим экран в абсолютной темноте
         document.body.style.opacity = "0";
         document.body.style.transition = "opacity 0.3s ease-in-out";
 
-        // Проверяем маркер возврата с защитой: если там null или пусто, запишется 'false'
+        // Читаем маркер возврата со столиков
         const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
         
-        // Сразу стираем маркер, чтобы обычное обновление страницы (F5) не кидало в бар
+        // Стираем маркер, чтобы обычный F5 не кидал к Коню повторно
         sessionStorage.removeItem('return_to_bar');
+
+        // Сначала гасим абсолютно все блоки, чтобы исключить любой блик
+        const entBlock = document.getElementById('block-entrance');
+        const barBlock = document.getElementById('block-bar');
+        if (entBlock) entBlock.style.display = 'none';
+        if (barBlock) barBlock.style.display = 'none';
 
         if (isReturning === 'true') {
             currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+            
+            // Включаем Бар в темноте
+            if (barBlock) barBlock.style.display = 'flex';
             portalTransition('block-bar');
         } else {
-            // Во всех остальных случаях — строго парадный вход к Чарли!
+            // Включаем Парадную дверь в темноте
+            if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
         }
 
-        // Зажигаем свет!
+        // И только теперь, когда сцена полностью готова, плавно зажигаем свет
         setTimeout(() => {
             document.body.style.opacity = "1";
-        }, 50);
+        }, 100); // Чуть увеличили задержку до 100мс для гарантированной сборки кадров браузером
     };
         
 </script>.
