@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.8</title>
+    <title>GY-GY Club | Tables v1.5.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -90,9 +90,23 @@
         }
         .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
-        /* HUD АВАТАРА */
-        #hud { position: fixed; top: 15px; left: 110px; z-index: 5500; }
-        .user-mini { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; object-fit: cover; }
+       /* HUD АВАТАРА — СТРОГО ПО ЦЕНТРУ ЭКРАНА */
+        #hud { 
+            position: fixed; 
+            top: 15px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 7000; 
+        }
+        .user-mini { 
+            width: 32px; 
+            height: 32px; 
+            border-radius: 50%; 
+            border: 2px solid var(--gold); 
+            background: #fff; 
+            object-fit: cover;
+            box-shadow: 0 0 10px var(--neon-glow);
+        }
 
         #google_translate_element { display: none !important; }
     </style>
@@ -108,13 +122,13 @@
         <div class="arrow-item" onclick="Core.exitToEntrance()">&lt;&lt;</div>
     </div>
     
-    <div id="ui-logo" class="notranslate">GY-GY</div>
+   <div id="ui-logo" class="notranslate">GY-GY</div>
+
+    <div id="hud" style="display: none;">
+        <img id="user-avatar" class="user-mini" src="">
+    </div>
 
     <div id="hall-layer">
-        <div id="hud" style="display: none;">
-            <img id="user-avatar" class="user-mini" src="">
-        </div>
-
         <div class="table-scene">
             <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Core.loadZone('risk.html')"></div>
             <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Core.loadZone('battle.html')"></div>
