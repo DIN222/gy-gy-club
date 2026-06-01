@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.6</title>
+    <title>GY-GY Club | Tables v1.5.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -127,7 +127,7 @@
         </div>
     </div>
 
-  <script>
+    <script>
         const Core = {
             init() {
                 // Включаем плавное проявление страницы столиков
@@ -147,16 +147,18 @@
                     document.getElementById('hud').style.display = 'block';
                 }
             },
+
             // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
-                document.body.style.opacity = '0';
+                document.body.classList.remove('page-loaded');
                 setTimeout(() => {
                     location.href = url;
                 }, 500);
             },
-          // ОДИНАРНАЯ СТРЕЛА (<) — ВОЗВРАТ К КОНЮ С УМНЫМ МАРКЕРОМ
+
+            // ОДИНАРНАЯ СТРЕЛА (<) — ВОЗВРАТ К КОНЮ С УМНЫМ МАРКЕРОМ
             backToBar() {
-                document.body.style.opacity = '0';
+                document.body.classList.remove('page-loaded');
                 // Говорим главной странице: «Это возврат из зала, пропусти в бар!»
                 sessionStorage.setItem('return_to_bar', 'true');
                 setTimeout(() => {
@@ -166,22 +168,21 @@
             
             // ДВОЙНАЯ СТРЕЛА (<<) — ВЫХОД С ПОЛНЫМ СБРОСОМ К ЗАКРЫТЫМ ДВЕРЯМ
             exitToEntrance() {
-                document.body.style.opacity = '0';
+                document.body.classList.remove('page-loaded');
                 sessionStorage.removeItem('return_to_bar');
                 setTimeout(() => {
                     localStorage.removeItem('gygy_id'); 
                     location.href = 'index.html'; 
                 }, 500);
             }
+        }; // КРИТИЧЕСКИЙ МАРКЕР СКРИПТА СТОЛОВ ДОБАВЛЕН .
 
         window.onload = () => { Core.init(); };
-        function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); }
-      // Автоматически зажигаем свет в зале столиков при загрузке страницы
-document.addEventListener("DOMContentLoaded", function() {
-    document.body.style.transition = "opacity 0.5s ease-in-out";
-    document.body.style.opacity = "1";
-});
+        
+        function googleTranslateElementInit() { 
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); 
+        }
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
-</html>.
+</html>
