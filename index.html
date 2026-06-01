@@ -557,35 +557,49 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-// АВТОЗАПУСК КЛУБА: СИНХРОНИЗАЦИЯ С КЛАССОМ КОРРЕКЦИИ СВЕТА
+// ПУЛЕНЕПРОБИВАЕМЫЙ АВТОЗАПУСК: СОХРАНЕНИЕ ID ПРИ ЛЮБЫХ ПЕРЕХОДАХ
     window.onload = () => { 
         renderLangList(); 
         
-        // Читаем маркер возврата со столиков
         const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
+        const forceEntrance = sessionStorage.getItem('force_entrance') || 'false';
         
-        // Стираем маркер, чтобы обычный F5 не кидал к Коню повторно
+        // Очищаем временные маркеры переходов
         sessionStorage.removeItem('return_to_bar');
+        sessionStorage.removeItem('force_entrance');
 
-        // Сначала гасим абсолютно все блоки в темноте, исключая блики верстки
         const entBlock = document.getElementById('block-entrance');
         const barBlock = document.getElementById('block-bar');
         if (entBlock) entBlock.style.display = 'none';
         if (barBlock) barBlock.style.display = 'none';
 
-        if (isReturning === 'true') {
-            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
-            
-            // Монтируем Бар под покровом тьмы
+        // Проверяем, существует ли пользователь в памяти
+        currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+
+        if (isReturning === 'true' && currentID) {
+            // Если пришли из зала и авторизованы — сразу в бар
             if (barBlock) barBlock.style.display = 'flex';
             portalTransition('block-bar');
+        } else if (forceEntrance === 'true' && currentID) {
+            // Если вышли по кнопке << — открываем регистрацию, но НЕ теряем данные!
+            if (entBlock) entBlock.style.display = 'flex';
+            portalTransition('block-entrance');
+            
+            // Восстанавливаем отображение ID и QR-кода на экране регистрации
+            const idDisplay = document.getElementById('user-id-display'); // Проверь ID этого элемента у себя
+            if (idDisplay) idDisplay.innerText = currentID;
+            
+            // Вызываем твою родную функцию генерации QR-кода (если она называется по-другому, подставь имя)
+            if (typeof generateQRCode === 'function') {
+                generateQRCode(currentID);
+            }
         } else {
-            // Монтируем Парадную дверь под покровом тьмы
+            // Обычный первый вход или сброшенный кэш
             if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
         }
 
-        // Зажигаем свет через добавление класса готовности (железобетонный приоритет в CSS)
+        // Зажигаем интерфейс без микро-зависаний скриптов
         setTimeout(() => {
             document.body.classList.add('page-loaded');
         }, 50); 
