@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.11</title>
+    <title>GY-GY Club | Tables v1.5.12</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -126,8 +126,11 @@
     
  <div id="ui-logo" class="notranslate">GY-GY</div>
 
-    <div id="hud" style="display: none;">
-        <img id="user-avatar" class="user-mini" src="">
+    <div id="hud" style="display: none; position: fixed;">
+        <div style="position: relative; display: inline-block;">
+            <img id="user-avatar" class="user-mini" src="">
+            <img id="badge-flag-img" src="" style="position: absolute; bottom: 0; right: 0; width: 14px; height: 10px; border: 1px solid #000; border-radius: 2px; object-fit: cover; z-index: 7100;">
+        </div>
     </div>
 
     <div id="hall-layer">
@@ -145,7 +148,7 @@
 
     <script>
         const Core = {
-            init() {
+       init() {
                 // Включаем плавное проявление страницы столиков
                 document.body.classList.add('page-loaded');
 
@@ -157,10 +160,19 @@
                     });
                 }
 
+                // Подтягиваем аватар
                 const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                 if (savedAvatar) {
                     document.getElementById('user-avatar').src = savedAvatar;
                     document.getElementById('hud').style.display = 'block';
+                }
+
+                // КРЕПИМ ФЛАГ: Считываем сохраненный код флага или ставим дефолтный gb (английский)
+                // Проверяем локальное хранилище главной страницы
+                const savedFlag = localStorage.getItem('gygy_flag') || 'gb';
+                const flagImg = document.getElementById('badge-flag-img');
+                if (flagImg) {
+                    flagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
                 }
             },
 
