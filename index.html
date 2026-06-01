@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.89 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.90 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -360,9 +360,12 @@
         });
     }
 
-    function applyLanguage(lang) {
+   function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
+        
+        // ЗАПИСЫВАЕМ ФЛАГ В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
+        localStorage.setItem('gygy_flag', lang.c);
         
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
@@ -371,7 +374,6 @@
         document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
-
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
