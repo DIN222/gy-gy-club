@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.97| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.98| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -354,7 +354,7 @@
     let currentUserImage = "";
     let currentFlagCode = 'gb';
 
-    // Наш закрытый пул из 12 языков интерфейса
+    // Наш закрытый пул из 12 языков интерфейса (Точка в PORTUGUÊS заблокирована)
     const allLangs = [
         {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -378,20 +378,40 @@
         });
     }
 
-   function applyLanguage(lang) {
+    function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
         
-        // ЗАПИСЫВАЕМ ФЛАГ В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
+        // 1. ЗАПИСЫВАЕМ ФЛАГ И КОД В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
         localStorage.setItem('gygy_flag', lang.c);
+        localStorage.setItem('gy_lang', lang.code);
+        localStorage.setItem('googTrans', `/en/${lang.code}`);
         
-        document.getElementById('active-lang-display').innerHTML = `
-            <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
-            <span>${lang.n}</span>
-        `;
-        document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
-        document.getElementById('lang-list-container').style.display = 'none';
+        // 2. ЖЕЛЕЗНАЯ КУКА ДЛЯ СКВОЗНОГО ПЕРЕВОДА ВСЕХ ОБНОВЛЕНИЙ И СЛЕДУЮЩИХ СТРАНИЦ (ТАБЛИЦ)
+        document.cookie = `googtrans=/en/${lang.code}; path=/; domain=${window.location.hostname};`;
+        document.cookie = `googtrans=/en/${lang.code}; path=/;`;
+        
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) {
+            activeDisplay.innerHTML = `
+                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
+                <span>${lang.n}</span>
+            `;
+        }
+        
+        const badgeFlag = document.getElementById('badge-flag-img');
+        if (badgeFlag) {
+            badgeFlag.src = `https://flagcdn.com/w20/${lang.c}.png`;
+        }
+
+        const langContainer = document.getElementById('lang-list-container');
+        if (langContainer) {
+            langContainer.style.display = 'none';
+        }
+
         renderLangList();
+
+        // 3. СИНХРОНИЗАЦИЯ С ЯДРОМ GOOGLE TRANSLATE ДЛЯ ДИНАМИЧЕСКИХ БЛОКОВ
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -400,13 +420,19 @@
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
                 clearInterval(selectTimer);
             }
-            if (++attempts > 50) clearInterval(selectTimer);
+            if (++attempts > 50) {
+                clearInterval(selectTimer);
+                // Если виджет перевода завис при первом входе — жестко обновляем страницу, кука переведет её сама
+                window.location.reload();
+            }
         }, 150);
     }
 
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
-        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        if (list) {
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        }
     }
 
     function toggleManifest(boxId) {
@@ -425,7 +451,6 @@
             }
         });
     }
-
 function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
