@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.95| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.96| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -414,7 +414,7 @@
         });
     }
 
-  function handleDoor() {
+function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
         d.style.transform = "scale(5)"; 
@@ -454,6 +454,47 @@
         }
     }
 
+    // ПРОВЕРКА И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ ПРИ ВОЗВРАТЕ
+    function checkAndFillRegistrationForm() {
+        const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+        currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+        
+        if (currentID) {
+            renderUserPassports(currentID); // Рисуем ID и QR-коды
+        }
+        
+        if (savedAvatar) {
+            currentUserImage = savedAvatar;
+            
+            // Если это сгенерированный SVG-аватар
+            if (savedAvatar.startsWith('data:image/svg+xml')) {
+                const avatarImg = document.getElementById('avatar-img');
+                if (avatarImg) {
+                    avatarImg.src = savedAvatar;
+                    avatarImg.style.display = "block";
+                }
+                const txtAvatar = document.getElementById('txt-avatar');
+                if (txtAvatar) txtAvatar.style.display = "none";
+            } else { 
+                // Если это загруженное фото (base64)
+                const ppImg = document.getElementById('pp');
+                if (ppImg) {
+                    ppImg.src = savedAvatar;
+                    ppImg.style.display = "block";
+                }
+                const txtPhoto = document.getElementById('txt-photo');
+                if (txtPhoto) txtPhoto.style.display = "none";
+            }
+            
+            // Активируем кнопки перехода вперед — юзер уже зарегистрирован!
+            const btnWHall = document.getElementById('btn-w-hall');
+            if(btnWHall) btnWHall.classList.remove('btn-sleep');
+            
+            const btnPass = document.getElementById('btn-pass');
+            if(btnPass) btnPass.classList.remove('btn-sleep');
+        }
+    }
+
     function portalTransition(nextId) {
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
@@ -489,7 +530,10 @@
                 if (langPanel) langPanel.style.display = 'none';
                 
                 if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
+                if (nextId === 'block-identity') { 
+                    document.getElementById('nav-identity').style.display = "flex"; 
+                    checkAndFillRegistrationForm(); // Наполняем форму данными из памяти при откате стрелками
+                }
                 if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
                 if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
                 if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
@@ -500,6 +544,16 @@
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
                         badge.style.display = "block";
+                    }
+
+                    // СИНХРОНИЗАЦИЯ ФЛАГА С ЯЗЫКОМ КЛУБА В АВАТАРЕ
+                    const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
+                    const badgeFlag = document.getElementById('badge-flag-img');
+                    if (badgeFlag && savedLang) {
+                        if (savedLang.includes('ru')) badgeFlag.src = "https://flagcdn.com/w20/ru.png";
+                        else if (savedLang.includes('fr')) badgeFlag.src = "https://flagcdn.com/w20/fr.png";
+                        else if (savedLang.includes('de')) badgeFlag.src = "https://flagcdn.com/w20/de.png";
+                        else badgeFlag.src = "https://flagcdn.com/w20/gb.png";
                     }
                 }
             }
@@ -576,7 +630,7 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-    // ОЧИЩЕННЫЙ ОБНОВЛЕННЫЙ АВТОЗАПУСК С АВТОВОССТАНОВЛЕНИЕМ ДАННЫХ ПАСПОРТА
+    // АВТОЗАПУСК С ПРОВЕРКОЙ ХРАНИЛИЩ И СИНХРОНИЗАЦИЕЙ СВЕТА КЛУБА
     window.onload = () => { 
         renderLangList(); 
         
@@ -597,19 +651,14 @@
             if (barBlock) barBlock.style.display = 'flex';
             portalTransition('block-bar');
         } else if (forceEntrance === 'true' && currentID) {
-            // Если вернулись из холла или по кнопке << — активируем вход без потери данных
             if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
-            
-            // Восстанавливаем QR и ID по правильным селекторам разметки
-            renderUserPassports(currentID);
+            checkAndFillRegistrationForm();
         } else {
             if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
-            
-            // Если юзер уже заходил ранее, но это чистый перезапуск — пре-рендерим его старый ID
             if (currentID) {
-                renderUserPassports(currentID);
+                checkAndFillRegistrationForm();
             }
         }
 
