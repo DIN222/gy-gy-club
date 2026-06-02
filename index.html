@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.98| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.99| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -411,7 +411,7 @@
 
         renderLangList();
 
-        // 3. СИНХРОНИЗАЦИЯ С ЯДРОМ GOOGLE TRANSLATE ДЛЯ ДИНАМИЧЕСКИХ БЛОКОВ
+        // 3. БЕЗОПАСНАЯ СИНХРОНИЗАЦИЯ С ЯДРОМ GOOGLE TRANSLATE (БЕЗ ПЕРЕЗАГРУЗОК)
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -420,14 +420,13 @@
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
                 clearInterval(selectTimer);
             }
-            if (++attempts > 50) {
+            
+            // Если сделали 40 попыток (около 6 секунд) и виджет не вышел на связь
+            if (++attempts > 40) {
                 clearInterval(selectTimer);
-                // Если виджет перевода завис при первом входе — жестко обновляем страницу, кука переведет её сама
-                window.location.reload();
+                console.log("GY-GY Клуб: Гугл-комбобокс спит, но кука сохранена. Перевод подхватится при следующем шаге.");
             }
         }, 150);
-    }
-
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
         if (list) {
