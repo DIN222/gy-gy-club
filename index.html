@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.103| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.104| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -409,40 +409,62 @@
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
         
-        // Записываем данные в память Клуба
+        // 1. Записываем данные в память Клуба
         localStorage.setItem('gygy_flag', lang.c);
         localStorage.setItem('gy_lang', lang.code);
         localStorage.setItem('googTrans', `/en/${lang.code}`);
         
-        // Прописываем куки для сквозного перевода на других страницах
-        document.cookie = `googtrans=/en/${lang.code}; path=/; domain=${window.location.hostname};`;
+        // 2. Пишем куки (с защитой от пустых доменов локальных файлов)
+        if (window.location.hostname && window.location.hostname !== 'localhost') {
+            document.cookie = `googtrans=/en/${lang.code}; path=/; domain=${window.location.hostname};`;
+        }
         document.cookie = `googtrans=/en/${lang.code}; path=/;`;
         
-        // Меняем флаг в шапке на аватаре
+        // Визуальное обновление панели
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) {
+            activeDisplay.innerHTML = `
+                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
+                <span>${lang.n}</span>
+            `;
+        }
+        
         const badgeFlag = document.getElementById('badge-flag-img');
         if (badgeFlag) {
             badgeFlag.src = `https://flagcdn.com/w20/${lang.c}.png`;
         }
 
         const langContainer = document.getElementById('lang-list-container');
-        if (langContainer) {
-            langContainer.style.display = 'none';
-        }
+        if (langContainer) langContainer.style.display = 'none';
 
-        // Перерисовываем список (теперь выбранный язык уйдет внутрь кнопки, а старый вернется в список)
         renderLangList();
 
-        // Синхронизация с Гуглом
+        // 3. ЖЕСТКАЯ АКТИВАЦИЯ ПЕРЕВОДА ЧЕРЕЗ ЭМУЛЯЦИЮ КЛИКА
         let attempts = 0;
         const selectTimer = setInterval(() => {
+            // Ищем оригинальный выпадающий список Гугла (он прячется в разметке)
             const selectEl = document.querySelector('.goog-te-combo');
+            
             if (selectEl) {
+                // Принудительно выставляем ему значение нужного языка
                 selectEl.value = lang.code;
+                
+                // Генерируем полный набор событий, чтобы скрипт Гугла проснулся
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                // Дополнительный пинок для старых версий движка
+                if (typeof(Event) === 'function') {
+                    const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+                    selectEl.dispatchEvent(changeEvent);
+                }
+                
+                console.log("GY-GY Клуб: Перевод успешно вызван для ядра: " + lang.code);
                 clearInterval(selectTimer);
             }
+            
             if (++attempts > 40) {
                 clearInterval(selectTimer);
+                console.log("GY-GY Клуб: Не удалось достучаться до комбобокса Гугла напрямую.");
             }
         }, 150);
     }
