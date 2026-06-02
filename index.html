@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.106| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.107| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -731,8 +731,15 @@ function handleDoor() {
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-    // АВТОЗАПУСК С ПРОВЕРКОЙ ХРАНИЛИЩ И СИНХРОНИЗАЦИЕЙ СВЕТА КЛУБА
+   // АВТОЗАПУСК С ПРОВЕРКОЙ ХРАНИЛИЩ И СИНХРОНИЗАЦИЕЙ СВЕТА КЛУБА
     window.onload = () => { 
+        // СИНХРОНИЗАЦИЯ ФЛАГА АВАТАРА С ПАМЯТЬЮ КЛУБА ПРИ ЗАПУСКЕ (Защита от сброса на gb)
+        const savedFlag = localStorage.getItem('gygy_flag') || 'gb';
+        const badgeFlag = document.getElementById('badge-flag-img');
+        if (badgeFlag) {
+            badgeFlag.src = `https://flagcdn.com/w20/${savedFlag}.png`;
+        }
+
         renderLangList(); 
         
         const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
