@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.99| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.100| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -355,6 +355,11 @@
     let currentFlagCode = 'gb';
 
     // Наш закрытый пул из 12 языков интерфейса (Точка в PORTUGUÊS заблокирована)
+  // 1. ИНИЦИАЛИЗАЦИЯ ДЕФОЛТНЫХ ПЕРЕМЕННЫХ (Защита от ReferenceError при первом входе)
+    let currentActiveCode = localStorage.getItem('gy_lang') || 'en';
+    let currentFlagCode = localStorage.getItem('gygy_flag') || 'gb';
+
+    // Наш закрытый пул из 12 языков интерфейса (Точка в PORTUGUÊS заблокирована)
     const allLangs = [
         {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -368,8 +373,11 @@
         const container = document.getElementById('lang-list-container');
         if (!container) return;
         container.innerHTML = ''; 
+        
         allLangs.forEach(lang => {
+            // Безопасное сравнение — переменная гарантированно существует
             if(lang.code === currentActiveCode) return; 
+            
             const div = document.createElement('div');
             div.className = 'lang-item notranslate'; 
             div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
@@ -382,12 +390,12 @@
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
         
-        // 1. ЗАПИСЫВАЕМ ФЛАГ И КОД В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
+        // ЗАПИСЫВАЕМ ФЛАГ И КОД В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
         localStorage.setItem('gygy_flag', lang.c);
         localStorage.setItem('gy_lang', lang.code);
         localStorage.setItem('googTrans', `/en/${lang.code}`);
         
-        // 2. ЖЕЛЕЗНАЯ КУКА ДЛЯ СКВОЗНОГО ПЕРЕВОДА ВСЕХ ОБНОВЛЕНИЙ И СЛЕДУЮЩИХ СТРАНИЦ (ТАБЛИЦ)
+        // ЖЕЛЕЗНАЯ КУКА ДЛЯ СКВОЗНОГО ПЕРЕВОДА ВСЕХ ОБНОВЛЕНИЙ И СЛЕДУЮЩИХ СТРАНИЦ (ТАБЛИЦ)
         document.cookie = `googtrans=/en/${lang.code}; path=/; domain=${window.location.hostname};`;
         document.cookie = `googtrans=/en/${lang.code}; path=/;`;
         
@@ -411,7 +419,7 @@
 
         renderLangList();
 
-        // 3. БЕЗОПАСНАЯ СИНХРОНИЗАЦИЯ С ЯДРОМ GOOGLE TRANSLATE (БЕЗ ПЕРЕЗАГРУЗОК)
+        // БЕЗОПАСНАЯ СИНХРОНИЗАЦИЯ С ЯДРОМ GOOGLE TRANSLATE (БЕЗ ПЕРЕЗАГРУЗОК)
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -421,12 +429,36 @@
                 clearInterval(selectTimer);
             }
             
-            // Если сделали 40 попыток (около 6 секунд) и виджет не вышел на связь
             if (++attempts > 40) {
                 clearInterval(selectTimer);
-                console.log("GY-GY Клуб: Гугл-комбобокс спит, но кука сохранена. Перевод подхватится при следующем шаге.");
+                console.log("GY-GY Клуб: Гугл-комбобокс спит, но кука сохранена.");
             }
         }, 150);
+    }
+
+    function toggleLangList() {
+        const list = document.getElementById('lang-list-container');
+        if (list) {
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    function toggleManifest(boxId) {
+        document.querySelectorAll('.manifest-btn-box').forEach(box => {
+            if(box.id === boxId) {
+                const isOpened = box.getAttribute('data-opened') === "true";
+                box.style.opacity = isOpened ? "0" : "1";
+                box.style.pointerEvents = isOpened ? "none" : "auto";
+                box.setAttribute('data-opened', isOpened ? "false" : "true");
+                box.style.bottom = isOpened ? "-50px" : "-35px";
+            } else {
+                box.style.opacity = "0";
+                box.style.pointerEvents = "none";
+                box.setAttribute('data-opened', "false");
+                box.style.bottom = "-50px";
+            }
+        });
+    }
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
         if (list) {
