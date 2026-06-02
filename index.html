@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.101| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.102| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -357,17 +357,24 @@
     // Наш закрытый пул из 12 языков интерфейса (Точка в PORTUGUÊS заблокирована)
   // 1. ИНИЦИАЛИЗАЦИЯ ДЕФОЛТНЫХ ПЕРЕМЕННЫХ (Защита от ReferenceError при первом входе)
     // СТАЛО (Убрали let, чтобы не было ошибки повторного объявления):
+    // Подтягиваем сохраненные значения из памяти Клуба
     currentActiveCode = localStorage.getItem('gy_lang') || 'en';
     currentFlagCode = localStorage.getItem('gygy_flag') || 'gb';
 
-    // Наш закрытый пул из 12 языков интерфейса (Точка в PORTUGUÊS заблокирована)
+    // Наш закрытый пул из 12 языков интерфейса
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊS .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+        {n:'ENGLISH', c:'gb', code:'en'}, 
+        {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, 
+        {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, 
+        {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'PORTUGUÊS .', c:'pt', code:'pt'}, // Точка заблокирована от изменений
+        {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
+        {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, // c: 'ua' для флага, code: 'uk' для Гугла
+        {n:'中文', c:'cn', code:'zh-CN'}, 
+        {n:'日本語', c:'jp', code:'ja'}
     ];
 
     function renderLangList() {
@@ -375,8 +382,18 @@
         if (!container) return;
         container.innerHTML = ''; 
         
+        // 1. Сначала жестко обновляем главную кнопку панели под текущий язык
+        const currentLang = allLangs.find(l => l.code === currentActiveCode) || allLangs[0];
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) {
+            activeDisplay.innerHTML = `
+                <img src="https://flagcdn.com/w40/${currentLang.c}.png" class="flag-icon"> 
+                <span>${currentLang.n}</span>
+            `;
+        }
+
+        // 2. Выводим в выпадающий список ВСЕ ОСТАЛЬНЫЕ языки, кроме активного
         allLangs.forEach(lang => {
-            // Безопасное сравнение — переменная гарантированно существует
             if(lang.code === currentActiveCode) return; 
             
             const div = document.createElement('div');
@@ -391,23 +408,16 @@
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
         
-        // ЗАПИСЫВАЕМ ФЛАГ И КОД В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
+        // Записываем данные в память Клуба
         localStorage.setItem('gygy_flag', lang.c);
         localStorage.setItem('gy_lang', lang.code);
         localStorage.setItem('googTrans', `/en/${lang.code}`);
         
-        // ЖЕЛЕЗНАЯ КУКА ДЛЯ СКВОЗНОГО ПЕРЕВОДА ВСЕХ ОБНОВЛЕНИЙ И СЛЕДУЮЩИХ СТРАНИЦ (ТАБЛИЦ)
+        // Прописываем куки для сквозного перевода на других страницах
         document.cookie = `googtrans=/en/${lang.code}; path=/; domain=${window.location.hostname};`;
         document.cookie = `googtrans=/en/${lang.code}; path=/;`;
         
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) {
-            activeDisplay.innerHTML = `
-                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
-                <span>${lang.n}</span>
-            `;
-        }
-        
+        // Меняем флаг в шапке на аватаре
         const badgeFlag = document.getElementById('badge-flag-img');
         if (badgeFlag) {
             badgeFlag.src = `https://flagcdn.com/w20/${lang.c}.png`;
@@ -418,9 +428,10 @@
             langContainer.style.display = 'none';
         }
 
+        // Перерисовываем список (теперь выбранный язык уйдет внутрь кнопки, а старый вернется в список)
         renderLangList();
 
-        // БЕЗОПАСНАЯ СИНХРОНИЗАЦИЯ С ЯДРОМ GOOGLE TRANSLATE (БЕЗ ПЕРЕЗАГРУЗОК)
+        // Синхронизация с Гуглом
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -429,14 +440,11 @@
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
                 clearInterval(selectTimer);
             }
-            
             if (++attempts > 40) {
                 clearInterval(selectTimer);
-                console.log("GY-GY Клуб: Гугл-комбобокс спит, но кука сохранена.");
             }
         }, 150);
     }
-
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
         if (list) {
