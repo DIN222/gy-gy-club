@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.108| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.109| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -186,24 +186,47 @@
             visibility: hidden !important;
             pointer-events: none !important;
         }
-        /* Полное уничтожение белой подсветки и контуров у текста на кнопках */
-button, 
-.btn, 
-.manifest-btn-box button, 
-.lang-item span {
-    text-shadow: none !important;
-    -webkit-text-stroke: 0px transparent !important;
-}
+       /* Полное уничтожение белой подсветки и контуров у текста на кнопках */
+        button, 
+        .btn, 
+        .manifest-btn-box button, 
+        .lang-item span {
+            text-shadow: none !important;
+            -webkit-text-stroke: 0px transparent !important;
+        }
 
-/* Защита от побеления текста при наведении мышки */
-button:hover, 
-.btn:hover,
-button:focus,
-.btn:focus {
-    text-shadow: none !important;
-    box-shadow: none !important; /* Убирает внешнее белое свечение самой кнопки, если оно есть */
-    outline: none !important;   /* Убирает дефолтную браузерную рамку фокуса */
-}
+        /* Защита от побеления текста при наведении мышки */
+        button:hover, 
+        .btn:hover,
+        button:focus,
+        .btn:focus {
+            text-shadow: none !important;
+            box-shadow: none !important; 
+            outline: none !important;   
+        }
+
+        /* Полное уничтожение верхней полосы и фреймов Гугл-переводчика */
+        .goog-te-banner-frame,
+        .goog-te-banner,
+        .goog-te-balloon-frame,
+        #goog-gt-tt,
+        .skiptranslate {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            height: 0 !important;
+            width: 0 !important;
+        }
+
+        body {
+            top: 0 !important;
+            position: static !important;
+        }
+
+        iframe.goog-te-banner-frame {
+            display: none !important;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -213,7 +236,6 @@ button:focus,
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
     </div>
-
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
