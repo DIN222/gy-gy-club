@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.15</title>
+    <title>GY-GY Club | Tables v1.5.16</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -143,17 +143,7 @@ body {
             box-shadow: none !important;
             -webkit-text-stroke: 0px transparent !important;
         }
-
-        /* Защита от побеления и рамок при наведении/клике */
-        button:hover, .btn:hover, .table-btn:hover,
-        button:focus, .btn:focus, .table-btn:focus,
-        button:active, .btn:active {
-            text-shadow: none !important;
-            box-shadow: none !important;
-            outline: none !important;
-        }
-
-        /* Намертво глушим панель Гугла, если она попытается вылезти */
+/* Намертво глушим панель Гугла, если она попытается вылезти */
         .goog-te-banner-frame,
         .goog-te-banner,
         .goog-te-balloon-frame,
@@ -171,6 +161,30 @@ body {
         body {
             top: 0 !important;
             position: static !important;
+        }
+
+        /* Полная зачистка вообще всех возможных белых подсветок в Клубе */
+        button, 
+        .btn, 
+        .table-btn, 
+        .arrow-item, 
+        [onclick], 
+        button *, 
+        .btn * {
+            text-shadow: none !important;
+            box-shadow: none !important;
+            -webkit-text-stroke: 0px transparent !important;
+            outline: none !important;
+        }
+
+        /* Фиксация матового состояния при любых действиях мыши */
+        button:hover, .btn:hover, .table-btn:hover, .arrow-item:hover,
+        button:focus, .btn:focus, .table-btn:focus, .arrow-item:focus,
+        button:active, .btn:active, .table-btn:active, .arrow-item:active {
+            text-shadow: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            background-image: none !important; /* Убирает дефолтные глянцевые градиенты */
         }
     </style>
 </head>
