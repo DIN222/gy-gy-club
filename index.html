@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.111| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.97| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -186,56 +186,15 @@
             visibility: hidden !important;
             pointer-events: none !important;
         }
-       /* Полное уничтожение белой подсветки и контуров у текста на кнопках */
-        button, 
-        .btn, 
-        .manifest-btn-box button, 
-        .lang-item span {
-            text-shadow: none !important;
-            -webkit-text-stroke: 0px transparent !important;
-        }
-
-        /* Защита от побеления текста при наведении мышки */
-        button:hover, 
-        .btn:hover,
-        button:focus,
-        .btn:focus {
-            text-shadow: none !important;
-            box-shadow: none !important; 
-            outline: none !important;   
-        }
-
-        /* Полное уничтожение верхней полосы и фреймов Гугл-переводчика */
-        .goog-te-banner-frame,
-        .goog-te-banner,
-        .goog-te-balloon-frame,
-        #goog-gt-tt,
-        .skiptranslate {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            height: 0 !important;
-            width: 0 !important;
-        }
-
-        body {
-            top: 0 !important;
-            position: static !important;
-        }
-
-        iframe.goog-te-banner-frame {
-            display: none !important;
-        }
     </style>
 </head>
 <body oncontextmenu="return false;">
-    <div id="google_translate_element" class="notranslate" style="display:none !important; visibility:hidden !important; position:absolute; top:-9999px; left:-9999px; width:0; height:0; overflow:hidden;"></div>
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
     </div>
+
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -378,7 +337,7 @@
         <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
         <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
     </div>
-  <script type="text/javascript">
+    <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
@@ -388,46 +347,29 @@
         }, 'google_translate_element');
     }
 
+    // ЗЛОПАТНЫЙ LOCALSTORAGE.CLEAR() УБРАН НАВСЕГДА! СЕССИЯ БОЛЬШЕ НЕ СЛЕТАЕТ.
+
     let currentID = "";
-    let currentActiveCode = localStorage.getItem('gy_lang') || 'en';
+    let currentActiveCode = 'en';
     let currentUserImage = "";
-    let currentFlagCode = localStorage.getItem('gygy_flag') || 'gb';
+    let currentFlagCode = 'gb';
 
     // Наш закрытый пул из 12 языков интерфейса
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, 
-        {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, 
-        {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, 
-        {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊS .', c:'pt', code:'pt'}, // Маркер-точка заблокирован от изменений
-        {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
-        {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, 
-        {n:'日本語', c:'jp', code:'ja'}
+        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'PORTUGUÊS .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
 
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
         if (!container) return;
         container.innerHTML = ''; 
-        
-        // 1. Сначала жестко обновляем главную кнопку панели под текущий язык
-        const currentLang = allLangs.find(l => l.code === currentActiveCode) || allLangs[0];
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) {
-            activeDisplay.innerHTML = `
-                <img src="https://flagcdn.com/w40/${currentLang.c}.png" class="flag-icon"> 
-                <span>${currentLang.n}</span>
-            `;
-        }
-
-        // 2. Выводим в выпадающий список ВСЕ ОСТАЛЬНЫЕ языки, кроме активного
         allLangs.forEach(lang => {
             if(lang.code === currentActiveCode) return; 
-            
             const div = document.createElement('div');
             div.className = 'lang-item notranslate'; 
             div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
@@ -437,71 +379,34 @@
     }
 
    function applyLanguage(lang) {
-    currentActiveCode = lang.code;
-    currentFlagCode = lang.c; 
-    
-    // 1. Пишем в localStorage Клуба (это локально и безопасно)
-    try {
+        currentActiveCode = lang.code;
+        currentFlagCode = lang.c; 
+        
+        // ЗАПИСЫВАЕМ ФЛАГ В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
         localStorage.setItem('gygy_flag', lang.c);
-        localStorage.setItem('gy_lang', lang.code);
-        localStorage.setItem('googTrans', `/en/${lang.code}`);
-    } catch(e) {
-        console.log("Клуб: LocalStorage заблокирован защитой браузера, работаем в оперативной памяти.");
-    }
-    
-    // 2. Пишем куки БЕЗОПАСНО, чтобы Tracking Prevention не ругался
-    const secureCookieSuffix = "; path=/; SameSite=Strict; Secure;";
-    if (window.location.hostname && window.location.hostname !== 'localhost') {
-        document.cookie = `googtrans=/en/${lang.code}; domain=${window.location.hostname}${secureCookieSuffix}`;
-    }
-    document.cookie = `googtrans=/en/${lang.code}${secureCookieSuffix}`;
-    
-    // Визуальное обновление панели
-    const activeDisplay = document.getElementById('active-lang-display');
-    if (activeDisplay) {
-        activeDisplay.innerHTML = `
+        
+        document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
             <span>${lang.n}</span>
         `;
-    }
-    
-    const badgeFlag = document.getElementById('badge-flag-img');
-    if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${lang.c}.png`;
-
-    const langContainer = document.getElementById('lang-list-container');
-    if (langContainer) langContainer.style.display = 'none';
-
-    renderLangList();
-
-    // 3. АКТИВАЦИЯ ПЕРЕВОДА
-    let attempts = 0;
-    const selectTimer = setInterval(() => {
-        try {
+        document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
+        document.getElementById('lang-list-container').style.display = 'none';
+        renderLangList();
+        let attempts = 0;
+        const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
             if (selectEl) {
                 selectEl.value = lang.code;
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                
-                // Выжигаем хайлайты на случай, если Гугл всё же частично прогрузился
-                const styleSheet = document.createElement("style");
-                styleSheet.innerText = ".goog-text-highlight { background-color: transparent !important; box-shadow: none !important; text-shadow: none !important; color: inherit !important; }";
-                document.head.appendChild(styleSheet);
-
                 clearInterval(selectTimer);
             }
-        } catch(err) {
-            console.log("Клуб: Ошибка обращения к комбобоксу из-за Tracking Prevention.");
-        }
-        
-        if (++attempts > 40) clearInterval(selectTimer);
-    }, 150);
-}
+            if (++attempts > 50) clearInterval(selectTimer);
+        }, 150);
+    }
 
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
-        if (list) {
-            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-        }
+        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
     }
 
     function toggleManifest(boxId) {
@@ -521,7 +426,7 @@
         });
     }
 
-    function handleDoor() {
+function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
         d.style.transform = "scale(5)"; 
@@ -530,8 +435,9 @@
         document.getElementById('lang-switcher').style.opacity = "0";
         
         currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        localStorage.setItem('gygy_id', currentID);
+        localStorage.setItem('gygy_id', currentID); // Железно пишем в сессию
         
+        // Отрисовка данных
         renderUserPassports(currentID);
         
         setTimeout(() => { 
@@ -540,6 +446,7 @@
         }, 1000);
     }
 
+    // ИЗОЛИРОВАННАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ID И ГЕНЕРАЦИИ QR-КОДОВ БЕЗ ОШИБОК
     function renderUserPassports(targetID) {
         const idLabel = document.getElementById('id-label');
         const passIdVal = document.getElementById('pass-id-val');
@@ -559,17 +466,19 @@
         }
     }
 
+    // ПРОВЕРКА И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ ПРИ ВОЗВРАТЕ
     function checkAndFillRegistrationForm() {
         const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
         currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
         
         if (currentID) {
-            renderUserPassports(currentID);
+            renderUserPassports(currentID); // Рисуем ID и QR-коды
         }
         
         if (savedAvatar) {
             currentUserImage = savedAvatar;
             
+            // Если это сгенерированный SVG-аватар
             if (savedAvatar.startsWith('data:image/svg+xml')) {
                 const avatarImg = document.getElementById('avatar-img');
                 if (avatarImg) {
@@ -579,6 +488,7 @@
                 const txtAvatar = document.getElementById('txt-avatar');
                 if (txtAvatar) txtAvatar.style.display = "none";
             } else { 
+                // Если это загруженное фото (base64)
                 const ppImg = document.getElementById('pp');
                 if (ppImg) {
                     ppImg.src = savedAvatar;
@@ -588,6 +498,7 @@
                 if (txtPhoto) txtPhoto.style.display = "none";
             }
             
+            // Активируем кнопки перехода вперед — юзер уже зарегистрирован!
             const btnWHall = document.getElementById('btn-w-hall');
             if(btnWHall) btnWHall.classList.remove('btn-sleep');
             
@@ -618,6 +529,7 @@
             next.style.display = "flex";
             const langPanel = document.getElementById('lang-switcher');
             
+            // Гасим все навигационные стрелки перед включением нужной комнаты, убирая "грязь"
             const allArrows = document.querySelectorAll('.ui-nav-arrows');
             allArrows.forEach(arrow => arrow.style.display = 'none');
 
@@ -625,14 +537,14 @@
                 const door = document.getElementById('main-door');
                 door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
                 if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
-                if (badge) badge.style.display = "none";
+                badge.style.display = "none";
             } else {
                 if (langPanel) langPanel.style.display = 'none';
                 
                 if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
                 if (nextId === 'block-identity') { 
                     document.getElementById('nav-identity').style.display = "flex"; 
-                    checkAndFillRegistrationForm();
+                    checkAndFillRegistrationForm(); // Наполняем форму данными из памяти при откате стрелками
                 }
                 if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
                 if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
@@ -640,12 +552,13 @@
                 
                 if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
                     currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-                    if (currentUserImage && badge) {
+                    if (currentUserImage) {
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
                         badge.style.display = "block";
                     }
 
+                    // СИНХРОНИЗАЦИЯ ФЛАГА С ЯЗЫКОМ КЛУБА В АВАТАРЕ
                     const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
                     const badgeFlag = document.getElementById('badge-flag-img');
                     if (badgeFlag && savedLang) {
@@ -729,13 +642,8 @@
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
+    // АВТОЗАПУСК С ПРОВЕРКОЙ ХРАНИЛИЩ И СИНХРОНИЗАЦИЕЙ СВЕТА КЛУБА
     window.onload = () => { 
-        const savedFlag = localStorage.getItem('gygy_flag') || 'gb';
-        const badgeFlag = document.getElementById('badge-flag-img');
-        if (badgeFlag) {
-            badgeFlag.src = `https://flagcdn.com/w20/${savedFlag}.png`;
-        }
-
         renderLangList(); 
         
         const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
@@ -761,10 +669,14 @@
         } else {
             if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
-            if (currentID) { checkAndFillRegistrationForm(); }
+            if (currentID) {
+                checkAndFillRegistrationForm();
+            }
         }
 
-        setTimeout(() => { document.body.classList.add('page-loaded'); }, 50); 
+        setTimeout(() => {
+            document.body.classList.add('page-loaded');
+        }, 50); 
     };
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -803,6 +715,7 @@
 
     function smoothTransitionToTables() {
         let vol = 10;
+        
         if (barAmbient) barAmbient.volume = 0.5;
         if (horseCough) horseCough.volume = 0.7;
 
@@ -814,6 +727,7 @@
             if (horseCough && horseCough.volume > 0.05) {
                 horseCough.volume = Math.max(0, Math.min(0.7, vol / 14));
             }
+            
             if (vol <= 0) {
                 clearInterval(fadeInterval);
                 stopBarSound();
@@ -823,6 +737,10 @@
         document.body.style.transition = "opacity 0.6s ease-in-out";
         document.body.style.opacity = '0';
 
-        setTimeout(() => { location.href = 'tables.html'; }, 600);
+        setTimeout(() => {
+            location.href = 'tables.html';
+        }, 600);
     }
 </script>
+</body>
+</html>
