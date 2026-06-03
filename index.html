@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.89 | HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.74 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -150,7 +150,7 @@
         }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
 
-     /* СЕРВЕРНАЯ */
+       /* СЕРВЕРНАЯ */
         .server-leds { display: flex; gap: 8px; margin-top: 15px; }
         .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
         .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
@@ -162,13 +162,13 @@
         /* Глушим системные плашки Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         
-        /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Плавность добавлена, но родные свойства body не затираются */
+        /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ НА СТАРТЕ */
         body { 
             top: 0 !important; 
-            transition: opacity 0.5s ease-in-out !important;
-            opacity: 1 !important;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
-    </style>
+    </style> 
 </head>
 <body oncontextmenu="return false;">
 
@@ -208,7 +208,7 @@
     <audio id="snd-server" loop><source src="server_room.mp3"></audio>
     <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
 
-   <div id="block-entrance" class="block" style="display: flex;">
+    <div id="block-entrance" class="block active" style="display: flex; opacity: 1; pointer-events: auto !important;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
@@ -289,8 +289,9 @@
         </div>
         <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
     </div>
-<div id="block-bar" class="block">
-    <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
+
+   <div id="block-bar" class="block">
+       <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
 
     <div class="notranslate ui-nav-arrows" id="nav-bar" style="display: flex; z-index: 10;">
         <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
@@ -301,12 +302,13 @@
     <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
     <div class="bar-ui-container" style="z-index: 10;">
         <div style="display:flex; justify-content: space-between; width:100%;">
-             <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="smoothTransitionToTables()">come to the tables</button>
-             <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
+             <button class="btn-gy" style="min-width:145px; font-size:12px;('tables.html')">come to the tables</button>
+            <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
         </div>
     </div>
 </div>
-      <div id="block-tables" class="block">
+
+    <div id="block-tables" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-tables">
             <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
@@ -319,7 +321,7 @@
         <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
         <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
     </div>
-    <script type="text/javascript">
+<script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
@@ -329,7 +331,7 @@
         }, 'google_translate_element');
     }
 
-    // ЗЛОПАТНЫЙ LOCALSTORAGE.CLEAR() УБРАН НАВСЕГДА! СЕССИЯ БОЛЬШЕ НЕ СЛЕТАЕТ.
+    localStorage.clear(); 
 
     let currentID = "";
     let currentActiveCode = 'en';
@@ -360,9 +362,10 @@
         });
     }
 
+    // Синхронизация: Запись флага в след + пинок Google Translate
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
-        currentFlagCode = lang.c; 
+        currentFlagCode = lang.c; // Этот маркер улетит в Паспорт
         
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
@@ -372,6 +375,7 @@
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
 
+        // Скрытая передача команды в Google движок
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -414,8 +418,7 @@
         d.style.pointerEvents = "none";
         document.getElementById('lang-switcher').style.opacity = "0";
         
-        currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        localStorage.setItem('gygy_id', currentID); // Железно пишем в сессию
+        currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
         document.getElementById('id-label').innerText = currentID;
         document.getElementById('pass-id-val').innerText = currentID;
         
@@ -433,14 +436,16 @@
     function portalTransition(nextId) {
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
+        const amb = document.getElementById('snd-ambient');
         const srvSnd = document.getElementById('snd-server');
         const badge = document.getElementById('global-user-badge');
         
         if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
         if (backBtn) backBtn.style.opacity = "0";
 
+        // НЕ глушим амбиент бара при переходах между баром и столиками
         if (nextId === 'block-entrance') {
-            stopBarSound();
+            if (amb) { amb.pause(); amb.currentTime = 0; }
             if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
         }
 
@@ -467,8 +472,6 @@
                 if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
                 
                 if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
-                    // Подтягиваем аватар из любого хранилища
-                    currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                     if (currentUserImage) {
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
@@ -479,8 +482,9 @@
 
             setTimeout(() => { 
                 next.classList.add('active'); next.style.pointerEvents = "auto";
-                if (nextId === 'block-bar') { playBarSound(); }
-                if (nextId === 'block-server') { if(srvSnd) srvSnd.play(); }
+                // Запускаем звук, только если он до этого не играл
+                if (nextId === 'block-bar' && amb && amb.paused) { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
+                if (nextId === 'block-server') { srvSnd.play(); }
             }, 50);
         }, 400); 
     }
@@ -494,7 +498,6 @@
                 document.getElementById('pp').style.display = "block";
                 document.getElementById('txt-photo').style.display = "none";
                 currentUserImage = e.target.result;
-                localStorage.setItem('gygy_avatar', currentUserImage);
 
                 const btnPass = document.getElementById('btn-pass');
                 if(btnPass) btnPass.classList.add('btn-sleep');
@@ -510,7 +513,6 @@
         const randomColor = Math.floor(Math.random()*16777215).toString(16);
         const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
-        localStorage.setItem('gygy_avatar', currentUserImage);
         
         document.getElementById('avatar-img').src = currentUserImage; 
         document.getElementById('avatar-img').style.display = "block";
@@ -525,6 +527,7 @@
             alert("Генерируй аватар или загрузи фото!"); 
             return; 
         }
+        
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
@@ -545,40 +548,19 @@
         setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
     }
     
-    function goToTables() { portalTransition('block-tables'); }
+    // Плавный бесшовный переход к столикам внутри текущей разметки без сброса звука
+    function goToTables() {
+        portalTransition('block-tables'); 
+    }
+
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-// АВТОЗАПУСК: ВСЕГДА ЧЕРЕЗ ПАРАДНУЮ ДВЕРЬ С ЗАЩИТОЙ ОТ ПУСТЫХ ЗНАЧЕНИЙ
-    window.onload = () => { 
-        renderLangList(); 
-        
-        // Временная темнота для бесшовного переключения сцен
-        document.body.style.opacity = "0";
-        document.body.style.transition = "opacity 0.3s ease-in-out";
-
-        // Проверяем маркер возврата с защитой: если там null или пусто, запишется 'false'
-        const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
-        
-        // Сразу стираем маркер, чтобы обычное обновление страницы (F5) не кидало в бар
-        sessionStorage.removeItem('return_to_bar');
-
-        if (isReturning === 'true') {
-            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
-            portalTransition('block-bar');
-        } else {
-            // Во всех остальных случаях — строго парадный вход к Чарли!
-            portalTransition('block-entrance');
-        }
-
-        // Зажигаем свет!
-        setTimeout(() => {
-            document.body.style.opacity = "1";
-        }, 50);
-    };
-        
-</script>.
+    window.onload = () => { renderLangList(); };
+    
+</script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</div> 
 
 <script>
     // 1. АУДИОФАЙЛЫ БАРА
@@ -613,41 +595,36 @@
         }
     }
 
-    // 2. СИНХРОНИЗАЦИЯ ПЛАВНОГО УХОДА НА СТОЛИКИ И ИЗМЕНЕНИЯ ЗВУКА
-    function smoothTransitionToTables() {
-        let vol = 10;
-        
-        // Перед уходом принудительно фиксируем стартовую громкость для безопасного шага вниз
-        if (barAmbient) barAmbient.volume = 0.5;
-        if (horseCough) horseCough.volume = 0.7;
+    // 2. ЭКРАНЫ И НАВИГАЦИЯ
+    const barScreen = document.getElementById('screen-bar');
+    const tablesScreen = document.getElementById('screen-tables');
 
-        const fadeInterval = setInterval(() => {
-            vol--;
-            
-            // Безопасный декремент громкости (не прыгает выше 1.0 и не падает ниже 0)
-            if (barAmbient && barAmbient.volume > 0.05) {
-                barAmbient.volume = Math.max(0, Math.min(0.5, vol / 20));
-            }
-            if (horseCough && horseCough.volume > 0.05) {
-                horseCough.volume = Math.max(0, Math.min(0.7, vol / 14));
-            }
-            
-            if (vol <= 0) {
-                clearInterval(fadeInterval);
-                stopBarSound();
-            }
-        }, 30);
+    const toTablesBtn = document.getElementById('go-to-tables-btn');
+    const toBarBtn = document.getElementById('back-to-bar-btn'); 
+    const arrowLeft = document.getElementById('nav-arrow-left');
+    const arrowRight = document.getElementById('nav-arrow-right');
 
-        // Гасим экран матрицы в полный ноль
-        document.body.style.transition = "opacity 0.6s ease-in-out";
-        document.body.style.opacity = '0';
-
-        // Улетаем в зал строго в момент пика темноты и тишины
-        setTimeout(() => {
-            location.href = 'tables.html';
-        }, 600);
+    function showTables() {
+        if (barScreen && tablesScreen) {
+            barScreen.classList.remove('active');
+            tablesScreen.classList.add('active');
+        }
     }
-</script>.
+</script>
+    <script>
+        // Принудительно включаем плавное проявление при заходе на главную
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.style.transition = "opacity 0.5s ease-in-out";
+            document.body.style.opacity = "1";
+        });
+
+        // Функция плавного ухода
+        function fadeOutAndGo(url) {
+            document.body.style.opacity = '0';
+            setTimeout(function() {
+                location.href = url;
+            }, 500);
+        }
+    </script>
 </body>
 </html>
-
