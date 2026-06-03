@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.14</title>
+    <title>GY-GY Club | Tables v1.5.15</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -134,11 +134,49 @@ body {
     top: 0 !important;
     position: static !important;
 }
+  /* Выжигаем белую подсветку, тени и контуры у кнопок */
+        button, 
+        .btn, 
+        .table-btn, 
+        .lang-item span {
+            text-shadow: none !important;
+            box-shadow: none !important;
+            -webkit-text-stroke: 0px transparent !important;
+        }
+
+        /* Защита от побеления и рамок при наведении/клике */
+        button:hover, .btn:hover, .table-btn:hover,
+        button:focus, .btn:focus, .table-btn:focus,
+        button:active, .btn:active {
+            text-shadow: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        /* Намертво глушим панель Гугла, если она попытается вылезти */
+        .goog-te-banner-frame,
+        .goog-te-banner,
+        .goog-te-balloon-frame,
+        #goog-gt-tt,
+        .skiptranslate,
+        iframe[id*="translate"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            height: 0 !important;
+            width: 0 !important;
+        }
+
+        body {
+            top: 0 !important;
+            position: static !important;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="google_translate_element"></div>
+    <div id="google_translate_element" class="notranslate" style="display:none !important; visibility:hidden !important; position:absolute; top:-9999px; left:-9999px; width:0; height:0; overflow:hidden;"></div>
     
     <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
     
@@ -147,7 +185,7 @@ body {
         <div class="arrow-item" onclick="Core.exitToEntrance()">&lt;&lt;</div>
     </div>
     
- <div id="ui-logo" class="notranslate">GY-GY</div>
+    <div id="ui-logo" class="notranslate">GY-GY</div>
 
     <div id="hud" style="display: none; position: fixed;">
         <div style="position: relative; display: inline-block;">
