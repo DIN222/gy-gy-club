@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.107| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.108| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -186,9 +186,28 @@
             visibility: hidden !important;
             pointer-events: none !important;
         }
+        /* Полное уничтожение белой подсветки и контуров у текста на кнопках */
+button, 
+.btn, 
+.manifest-btn-box button, 
+.lang-item span {
+    text-shadow: none !important;
+    -webkit-text-stroke: 0px transparent !important;
+}
+
+/* Защита от побеления текста при наведении мышки */
+button:hover, 
+.btn:hover,
+button:focus,
+.btn:focus {
+    text-shadow: none !important;
+    box-shadow: none !important; /* Убирает внешнее белое свечение самой кнопки, если оно есть */
+    outline: none !important;   /* Убирает дефолтную браузерную рамку фокуса */
+}
     </style>
 </head>
 <body oncontextmenu="return false;">
+    <div id="google_translate_element" class="notranslate" style="display:none !important; visibility:hidden !important; position:absolute; top:-9999px; left:-9999px; width:0; height:0; overflow:hidden;"></div>
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
