@@ -2,629 +2,841 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.74 | HYBRID TRANSLATION ENGINE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club — Entrance3.0</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
-        :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
-        
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        body, button, input, div, img, span { pointer-events: auto !important; }
-        img { -webkit-user-drag: none !important; }
-
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
-        
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Слева, по феншую клуба) */
-        .lang-frame-locked {
-            position: fixed; top: 15px; left: 15px; z-index: 9999999; 
-            width: 180px; height: 40px; border: 2px solid var(--gold); 
-            background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 12px;
-        }
-        .lang-dropdown-adaptive {
-            display: none; position: absolute; top: 44px; left: -2px; 
-            width: 180px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
-            max-height: 70vh; overflow-y: auto;
-        }
-        .lang-item { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; line-height: 1; }
-        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
-        .flag-icon { width: 22px; margin-right: 12px; }
-
-        /* ЛОГОТИП GY-GY (Справа, как заказывали) */
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
-        }
-        
-        /* СКВОЗНОЙ АВАТАР */
-        .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer; display: none;
-        }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
-        .ui-user-badge .badge-flag {
-            position: absolute; bottom: -2px; right: -4px;
-            width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+        /* Базовые стили винтажного нуара Клуба */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #d4af37; /* Золото */
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
         }
 
-        /* ПАСПОРТ */
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
-
-        .ui-back-to-bar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold); padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s; }
-
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; }
-        .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
-
-        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 1.2s ease-in, opacity 1s; z-index: 9999999 !important; }
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
-        .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
-        
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-
-        #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
-        .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
-        .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
-
-        body { top: 0 !important; }
-        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
-        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
-        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
-        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
-
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
-        .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
-            pointer-events: auto !important; user-select: none; display: none;
+        h1, h2, h3, .club-title {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 2px;
         }
-        .arrow-item { transition: opacity 0.2s; }
-        .arrow-item:hover { opacity: 0.8; }
 
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
-        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-        .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
+        /* Шапка страницы */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            box-sizing: border-box;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Распределяет лево / право */
+            z-index: 1000;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
 
-        .hall-door-target {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
+        /* Языковая панель — СЛЕВА */
+        #lang-switcher {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+
+        #active-lang-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #d4af37;
+            padding: 5px 15px;
+            background: #000;
+            transition: all 0.3s ease;
+        }
+
+        #active-lang-display:hover {
+            background: #d4af37;
+            color: #000;
+        }
+
+        #lang-list-container {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #000;
+            border: 1px solid #d4af37;
+            width: 160px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1001;
+        }
+
+        .lang-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .lang-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .flag-icon {
+            width: 24px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Логотип GY-GY — СПРАВА */
+        .logo-container {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: #d4af37;
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        /* Скрытый контейнер для системного гугл-комбобокса */
+        #google_translate_element {
+            display: none !important;
+        }
+
+        /* Основные интерактивные блоки (Зоны) */
+        .block {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            box-sizing: border-box;
+            padding-top: 70px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .block.active {
+            opacity: 1;
+        }
+
+        /* Элементы интерьера Клуба */
+        .door-frame {
+            border: 2px solid #d4af37;
+            padding: 40px;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 1s ease, opacity 1s ease;
+            background: rgba(20, 20, 20, 0.6);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-club {
             background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 12px 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
         }
 
-        /* Интерактивные зоны стрелок в Холле */
-        .painting-zone {
-            position: absolute; 
-            top: 25vh; 
-            width: 6vw; 
-            height: 12vh; 
-            cursor: pointer; 
-            z-index: 6; 
-            background: transparent;
+        .btn-club:hover {
+            background: #d4af37;
+            color: #000;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-sleep {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Паспорт / Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .passport-card {
+            background: #111;
+            border: 2px dashed #d4af37;
+            padding: 30px;
+            width: 320px;
+            text-align: center;
+            position: relative;
+        }
+
+        .avatar-box {
+            width: 120px;
+            height: 120px;
+            border: 1px dashed #d4af37;
+            margin: 15px auto;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            background: #000;
         }
-        .painting-left { left: 23vw; }
-        .painting-right { right: 23vw; }
 
-        /* Изящный единый стиль для всех навигационных стрелок Холла */
-        .cue-arrow-hall { 
-            color: var(--violet); 
-            font-size: 38px; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
-            pointer-events: none; 
-            user-select: none;
-            z-index: 10;
-            transition: opacity 0.2s;
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
 
-        /* Выплывающие подменю для стрелок Холла */
-        .manifest-btn-box { 
-            position: absolute; 
-            bottom: -50px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 140px; 
-            display: flex; 
-            justify-content: center; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.4s, bottom 0.4s; 
-            z-index: 10; 
+        .qr-wrapper {
+            margin: 20px auto;
+            display: inline-block;
+            background: #fff;
+            padding: 5px;
         }
-        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
 
-       /* СЕРВЕРНАЯ */
-        .server-leds { display: flex; gap: 8px; margin-top: 15px; }
-        .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
-        .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
-        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
-
-        .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
-        .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
-        
-        /* Глушим системные плашки Google */
-        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        
-        /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ НА СТАРТЕ */
-        body { 
-            top: 0 !important; 
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+        /* Глобальный бейдж пользователя в углу экрана */
+        #global-user-badge {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(17, 17, 17, 0.9);
+            border: 1px solid #d4af37;
+            padding: 10px;
+            z-index: 999;
         }
-    </style> 
+
+        .badge-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #badge-avatar-img {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #d4af37;
+        }
+
+        /* Нижнее меню навигации (Стрелки возврата) */
+        .ui-nav-arrows {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            gap: 20px;
+        }
+    </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
-        <img id="badge-avatar-img" class="badge-img" src="">
-        <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
-    </div>
+    <div id="google_translate_element"></div>
 
-    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
-        <div class="passport-card" onclick="event.stopPropagation()">
-            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+    <header class="notranslate">
+        <div id="lang-switcher" onclick="toggleLangList()">
+            <div id="active-lang-display">
+                <img src="https://flagcdn.com/w40/gb.png" class="flag-icon"> 
+                <span>ENGLISH</span>
+            </div>
+            <div id="lang-list-container"></div>
         </div>
-    </div>
 
-    <div id="lang-switcher" class="lang-frame-locked notranslate">
-        <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
-            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
-            <span>ENGLISH</span>
+        <a href="#" class="logo-container" onclick="portalTransition('block-entrance')">GY-GY</a>
+    </header>
+
+    <div id="block-entrance" class="block">
+        <div id="main-door" class="door-frame" onclick="handleDoor()">
+            <h1 style="font-size: 3rem; margin: 0 0 10px 0;">GY-GY CLUB</h1>
+            <p style="font-style: italic; color: #888;">Клацни, чтобы войти в обитель юмора и нуара...</p>
         </div>
-        <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
-    </div>
-
-    <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
-    
-    <div class="ui-header-right notranslate">GY-GY</div>
-    <button class="ui-back-to-bar" id="btn-global-back" onclick="portalTransition('block-bar')">BACK TO BAR</button>
-
-    <audio id="snd-door"><source src="door_open.mp3"></audio>
-    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
-    <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
-    <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
-    <audio id="snd-server" loop><source src="server_room.mp3"></audio>
-    <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
-
-    <div id="block-entrance" class="block active" style="display: flex; opacity: 1; pointer-events: auto !important;">
-        <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-welcome">
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
-        <div class="quote-text">I'M CHARLIE</div>
-        <div class="quote-text">In every joke there is a share of whisky</div>
-        <img src="horse_welcome.png">
-        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
-        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
-    </div>  
+        <h2 class="club-title">Вас встречает старина Чарли</h2>
+        <p style="max-width: 500px; text-align: center;">"Рад видеть новые лица в нашем заведении! Но правила есть правила — без цифровой метки и паспорта мы не наливаем. Пройдемте на регистрацию..."</p>
+        <button class="btn-club" onclick="portalTransition('block-identity')">Создать Личность</button>
+    </div>
 
     <div id="block-identity" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-identity">
-            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        <h2 class="club-title">Цифровая Идентификация</h2>
+        <p>Ваш уникальный trace ID: <span id="id-label" style="font-weight: bold; color: #fff;">Генерация...</span></p>
+        
+        <div class="avatar-box">
+            <img id="avatar-img" style="display:none;">
+            <img id="pp" style="display:none;">
+            <div id="txt-avatar" style="font-size:12px; color:#555; text-align:center; padding:10px;">Аватар не создан</div>
+            <div id="txt-photo" style="display:none; font-size:12px; color:#555; text-align:center;">SVG сгенерирован</div>
         </div>
-        <div class="quote-text">There is never too much champagne</div>
-        <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
-            
-           <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
+
+        <div style="margin-bottom: 20px;">
+            <button class="btn-club" onclick="generateAvatar()">Сгенерировать Магический Ключ</button>
+            <label class="btn-club" style="display: inline-block;">
+                Загрузить фото <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
+            </label>
+        </div>
+
+        <div id="qr-box-reg" class="qr-wrapper" style="background:#fff; padding:5px; margin-bottom:20px;"></div>
+
+        <div>
+            <button class="btn-club" onclick="saveUserProfile()">Утвердить Личность</button>
+            <button id="btn-pass" class="btn-club btn-sleep" onclick="openPassport()">Показать Паспорт</button>
+            <button id="btn-w-hall" class="btn-club btn-sleep" onclick="portalTransition('block-hall')">Шагнуть в Холл</button>
+        </div>
+    </div>
+
+    <div id="block-hall" class="block">
+        <h2 class="club-title">Главный Холл Клуба</h2>
+        <p>Куда держим путь, уважаемый?</p>
+        <div style="display: flex; gap: 20px;">
+            <button class="btn-club" onclick="deepDive()">Спуститься в Бар к Лошади</button>
+            <button class="btn-club" onclick="smoothTransitionToTables()">Перейти к Столикам (tables.html)</button>
+            <button class="btn-club" onclick="enterStudio()">Заглянуть в Печатную Студию</button>
+        </div>
+    </div>
+
+    <div id="block-bar" class="block">
+        <h2 class="club-title">Бар "Сонная Лошадь"</h2>
+        <p style="color: #888;">За стойкой меланхолично протирает бокалы Бармен-Лошадь...</p>
+        <p style="max-width: 400px; text-align: center; font-style: italic;">"Слушаю вас внимательно. Налить чего-нибудь крепкого или сразу подсказать дорогу к столикам?"</p>
+        <button class="btn-club" onclick="smoothTransitionToTables()">Выйти из-за стойки к столам</button>
+    </div>
+
+    <div id="nav-welcome" class="ui-nav-arrows"><button class="btn-club" onclick="portalTransition('block-entrance')">↩ Выйти на улицу</button></div>
+    <div id="nav-identity" class="ui-nav-arrows"><button class="btn-club" onclick="portalTransition('block-welcome')">↩ К Чарли</button></div>
+    <div id="nav-hall" class="ui-nav-arrows"><button class="btn-club" onclick="portalTransition('block-identity')">↩ К терминалу ID</button></div>
+    <div id="nav-tables" class="ui-nav-arrows"><button class="btn-club" onclick="portalTransition('block-hall')">↩ В Холл</button></div>
+    <div id="nav-bar" class="ui-nav-arrows"><button class="btn-club" onclick="portalTransition('block-hall')">↩ Вернуться в Холл</button></div>
+
+    <div id="global-user-badge" class="notranslate" onclick="openPassport()">
+        <div class="badge-content">
+            <img id="badge-avatar-img" src="" alt="avatar">
+            <img id="badge-flag-img" src="https://flagcdn.com/w20/gb.png" alt="flag" style="width:20px; height:auto;">
+        </div>
+    </div>
+
+    <div id="modal-passport" class="modal" onclick="closePassport()">
+        <div class="passport-card" onclick="e => e.stopPropagation()">
+            <h3 class="club-title" style="margin-top:0;">GY-GY CLUB PASSPORT</h3>
+            <div class="avatar-box">
+                <img id="pass-avatar-img" src="" alt="passport-avatar">
             </div>
-            
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
-                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
-            </div>
-        </div>
-        <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
-    </div>
-
-<div id="block-hall" class="block">
-    <div class="notranslate ui-nav-arrows" id="nav-hall">
-        <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
-        <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
-    </div>
-
-    <div class="hall-interior">
-        <div class="quote-text">In every joke there is a share of whisky</div>
-        
-        <div class="painting-zone painting-left" onclick="toggleManifest('manifest-left')">
-            <span class="cue-arrow-hall">→</span>
-            <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                <button class="btn-gy btn-manifest" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
-            </div>
-        </div>
-        
-        <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
-            <span class="cue-arrow-hall">←</span>
-            <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                <button class="btn-gy btn-manifest" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
-            </div>
-        </div>
-        
-        <div class="hall-doors-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0;">
-            <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
-            <div style="position: absolute; bottom: 12vh; cursor: pointer;" onclick="portalTransition('block-bar')">
-                <span class="cue-arrow-hall">↑</span>
-            </div>
+            <p style="font-size:14px; margin: 5px 0;">ID: <span id="pass-id-val" style="color:#fff;"></span></p>
+            <div id="pass-qr-box" class="qr-wrapper"></div>
+            <p style="font-size:11px; color:#666; margin-bottom:0;">Кликните в любом месте, чтобы убрать в карман</p>
         </div>
     </div>
-</div>
 
-    <div id="block-server" class="block">
-        <div class="quote-text">AI SERVER HUB</div>
-        <div class="server-leds">
-            <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
-        </div>
-        <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
-    </div>
+    <audio id="snd-door" src="door_creak.mp3" preload="auto"></audio>
+    <audio id="snd-ambient" src="entrance_ambient.mp3" preload="auto" loop></audio>
 
-   <div id="block-bar" class="block">
-       <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
-
-    <div class="notranslate ui-nav-arrows" id="nav-bar" style="display: flex; z-index: 10;">
-        <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
-        <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-    </div>
-    
-    <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
-    <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
-    <div class="bar-ui-container" style="z-index: 10;">
-        <div style="display:flex; justify-content: space-between; width:100%;">
-             <button class="btn-gy" style="min-width:145px; font-size:12px;('tables.html')">come to the tables</button>
-            <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="portalTransition('block-server')">???</button>
-        </div>
-    </div>
-</div>
-
-    <div id="block-tables" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-tables">
-            <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
-        <div class="mic-zone" style="bottom: 58%; left: 50%;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
-       <div class="lamp-zone" style="bottom: 48%; left: 25%;" onclick="alert('Table 1 selected')"></div>
-        <div class="lamp-zone" style="bottom: 48%; left: 75%;" onclick="alert('Table 2 selected')"></div>
-        <div class="lamp-zone" style="bottom: 32%; left: 18%;" onclick="alert('Table 3 selected')"></div>
-        <div class="lamp-zone" style="bottom: 32%; left: 82%;" onclick="alert('Table 4 selected')"></div>
-        <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
-        <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
-    </div>
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
-
-    localStorage.clear(); 
-
-    let currentID = "";
-    let currentActiveCode = 'en';
-    let currentUserImage = "";
-    let currentFlagCode = 'gb';
-
-    // Наш закрытый пул из 12 языков интерфейса
-    const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊS .', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-    ];
-
-    function renderLangList() {
-        const container = document.getElementById('lang-list-container');
-        if (!container) return;
-        container.innerHTML = ''; 
-        allLangs.forEach(lang => {
-            if(lang.code === currentActiveCode) return; 
-            const div = document.createElement('div');
-            div.className = 'lang-item notranslate'; 
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
-            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-            container.appendChild(div);
-        });
-    }
-
-    // Синхронизация: Запись флага в след + пинок Google Translate
-    function applyLanguage(lang) {
-        currentActiveCode = lang.code;
-        currentFlagCode = lang.c; // Этот маркер улетит в Паспорт
-        
-        document.getElementById('active-lang-display').innerHTML = `
-            <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
-            <span>${lang.n}</span>
-        `;
-        document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
-        document.getElementById('lang-list-container').style.display = 'none';
-        renderLangList();
-
-        // Скрытая передача команды в Google движок
-        let attempts = 0;
-        const selectTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                selectEl.value = lang.code;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                clearInterval(selectTimer);
-            }
-            if (++attempts > 50) clearInterval(selectTimer);
-        }, 150);
-    }
-
-    function toggleLangList() {
-        const list = document.getElementById('lang-list-container');
-        list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-    }
-
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-50px" : "-35px";
-            } else {
-                box.style.opacity = "0";
-                box.style.pointerEvents = "none";
-                box.setAttribute('data-opened', "false");
-                box.style.bottom = "-50px";
-            }
-        });
-    }
-
-    function handleDoor() {
-        document.getElementById('snd-door').play();
-        const d = document.getElementById('main-door');
-        d.style.transform = "scale(5)"; 
-        d.style.opacity = "0"; 
-        d.style.pointerEvents = "none";
-        document.getElementById('lang-switcher').style.opacity = "0";
-        
-        currentID = `#GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        document.getElementById('id-label').innerText = currentID;
-        document.getElementById('pass-id-val').innerText = currentID;
-        
-        document.getElementById('qr-box-reg').innerHTML = "";
-        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
-        document.getElementById('pass-qr-box').innerHTML = "";
-        new QRCode(document.getElementById("pass-qr-box"), { text: currentID, width: 100, height: 100 });
-        
-        setTimeout(() => { 
-            portalTransition('block-welcome'); 
-            const a = document.getElementById('snd-ambient'); a.volume = 1; a.play();
-        }, 1000);
-    }
-
-    function portalTransition(nextId) {
-        const current = document.querySelector('.block.active');
-        const backBtn = document.getElementById('btn-global-back');
-        const amb = document.getElementById('snd-ambient');
-        const srvSnd = document.getElementById('snd-server');
-        const badge = document.getElementById('global-user-badge');
-        
-        if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
-        if (backBtn) backBtn.style.opacity = "0";
-
-        // НЕ глушим амбиент бара при переходах между баром и столиками
-        if (nextId === 'block-entrance') {
-            if (amb) { amb.pause(); amb.currentTime = 0; }
-            if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
         }
 
-        setTimeout(() => {
-            if (current) { current.classList.remove('active'); current.style.display = "none"; }
-            const next = document.getElementById(nextId);
-            if (!next) return;
+        let currentID = "";
+        let currentActiveCode = localStorage.getItem('gy_lang') || 'en';
+        let currentUserImage = "";
+        let currentFlagCode = localStorage.getItem('gygy_flag') || 'gb';
+
+        const allLangs = [
+            {n:'ENGLISH', c:'gb', code:'en'}, 
+            {n:'DEUTSCH', c:'de', code:'de'}, 
+            {n:'ESPAÑOL', c:'es', code:'es'}, 
+            {n:'FRANÇAIS', c:'fr', code:'fr'},
+            {n:'ITALIANO', c:'it', code:'it'}, 
+            {n:'POLSKI', c:'pl', code:'pl'}, 
+            {n:'PORTUGUÊS .', c:'pt', code:'pt'}, 
+            {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+            {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
+            {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+            {n:'中文', c:'cn', code:'zh-CN'}, 
+            {n:'日本語', c:'jp', code:'ja'}
+        ];
+
+        function renderLangList() {
+            const container = document.getElementById('lang-list-container');
+            if (!container) return;
+            container.innerHTML = ''; 
             
-            next.style.display = "flex";
-            const langPanel = document.getElementById('lang-switcher');
+            const currentLang = allLangs.find(l => l.code === currentActiveCode) || allLangs[0];
+            const activeDisplay = document.getElementById('active-lang-display');
+            if (activeDisplay) {
+                activeDisplay.innerHTML = `
+                    <img src="https://flagcdn.com/w40/${currentLang.c}.png" class="flag-icon"> 
+                    <span>${currentLang.n}</span>
+                `;
+            }
+
+            allLangs.forEach(lang => {
+                if(lang.code === currentActiveCode) return; 
+                
+                const div = document.createElement('div');
+                div.className = 'lang-item notranslate'; 
+                div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
+                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+                container.appendChild(div);
+            });
+        }
+
+        function applyLanguage(lang) {
+            currentActiveCode = lang.code;
+            currentFlagCode = lang.c; 
             
+            try {
+                localStorage.setItem('gygy_flag', lang.c);
+                localStorage.setItem('gy_lang', lang.code);
+                localStorage.setItem('googTrans', `/en/${lang.code}`);
+            } catch(e) {
+                console.log("Клуб: Storage временно недоступен.");
+            }
+            
+            const cookieSecure = "; path=/; SameSite=Strict; Secure;";
+            if (window.location.hostname && window.location.hostname !== 'localhost') {
+                document.cookie = `googtrans=/en/${lang.code}; domain=${window.location.hostname}${cookieSecure}`;
+            }
+            document.cookie = `googtrans=/en/${lang.code}${cookieSecure}`;
+            
+            const activeDisplay = document.getElementById('active-lang-display');
+            if (activeDisplay) {
+                activeDisplay.innerHTML = `
+                    <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
+                    <span>${lang.n}</span>
+                `;
+            }
+            
+            const badgeFlag = document.getElementById('badge-flag-img');
+            if (badgeFlag) {
+                badgeFlag.src = `https://flagcdn.com/w20/${lang.c}.png`;
+            }
+
+            const langContainer = document.getElementById('lang-list-container');
+            if (langContainer) langContainer.style.display = 'none';
+
+            renderLangList();
+
+            let attempts = 0;
+            const selectTimer = setInterval(() => {
+                try {
+                    const selectEl = document.querySelector('.goog-te-combo');
+                    
+                    if (selectEl) {
+                        selectEl.value = lang.code;
+                        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                        
+                        if (typeof(Event) === 'function') {
+                            const changeEvent = new Event('change', { bubbles: true, cancelable: true });
+                            selectEl.dispatchEvent(changeEvent);
+                        }
+                        
+                        const styleSheet = document.createElement("style");
+                        styleSheet.innerText = ".goog-text-highlight { background-color: transparent !important; box-shadow: none !important; text-shadow: none !important; color: inherit !important; }";
+                        document.head.appendChild(styleSheet);
+
+                        console.log("GY-GY Клуб: Перевод успешно вызван для ядра: " + lang.code);
+                        clearInterval(selectTimer);
+                    }
+                } catch(err) {
+                    console.log("GY-GY Клуб: Попытка обойти блокировку безопасности при обращении к комбобоксу.");
+                }
+                
+                if (++attempts > 40) {
+                    clearInterval(selectTimer);
+                    console.log("GY-GY Клуб: Не удалось достучаться до комбобоксу Гугла напрямую.");
+                }
+            }, 150);
+        }
+
+        function toggleLangList() {
+            const list = document.getElementById('lang-list-container');
+            if (list) {
+                list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+            }
+        }
+
+        function toggleManifest(boxId) {
+            document.querySelectorAll('.manifest-btn-box').forEach(box => {
+                if(box.id === boxId) {
+                    const isOpened = box.getAttribute('data-opened') === "true";
+                    box.style.opacity = isOpened ? "0" : "1";
+                    box.style.pointerEvents = isOpened ? "none" : "auto";
+                    box.setAttribute('data-opened', isOpened ? "false" : "true");
+                    box.style.bottom = isOpened ? "-50px" : "-35px";
+                } else {
+                    box.style.opacity = "0";
+                    box.style.pointerEvents = "none";
+                    box.setAttribute('data-opened', "false");
+                    box.style.bottom = "-50px";
+                }
+            });
+        }
+
+        function handleDoor() {
+            const doorSound = document.getElementById('snd-door');
+            if (doorSound) doorSound.play().catch(e => console.log("Звук двери ждет взаимодействия"));
+
+            const d = document.getElementById('main-door');
+            if (d) {
+                d.style.transform = "scale(5)"; 
+                d.style.opacity = "0"; 
+                d.style.pointerEvents = "none";
+            }
+            
+            const langSwitch = document.getElementById('lang-switcher');
+            if (langSwitch) langSwitch.style.opacity = "0";
+            
+            currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            try {
+                localStorage.setItem('gygy_id', currentID);
+            } catch(e) {}
+            
+            renderUserPassports(currentID);
+            
+            setTimeout(() => { 
+                portalTransition('block-welcome'); 
+                const a = document.getElementById('snd-ambient'); 
+                if (a) { a.volume = 1; a.play().catch(e => console.log("Эмбиент ждет клика")); }
+            }, 1000);
+        }
+
+        function renderUserPassports(targetID) {
+            const idLabel = document.getElementById('id-label');
+            const passIdVal = document.getElementById('pass-id-val');
+            const qrBoxReg = document.getElementById('qr-box-reg');
+            const passQrBox = document.getElementById('pass-qr-box');
+
+            if (idLabel) idLabel.innerText = targetID;
+            if (passIdVal) passIdVal.innerText = targetID;
+            
+            if (qrBoxReg && typeof QRCode !== 'undefined') {
+                qrBoxReg.innerHTML = "";
+                new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
+            }
+            if (passQrBox && typeof QRCode !== 'undefined') {
+                passQrBox.innerHTML = "";
+                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
+            }
+        }
+
+        function checkAndFillRegistrationForm() {
+            let savedAvatar = null;
+            try {
+                savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+            } catch(e) {}
+            
+            if (currentID) {
+                renderUserPassports(currentID);
+            }
+            
+            if (savedAvatar) {
+                currentUserImage = savedAvatar;
+                
+                if (savedAvatar.startsWith('data:image/svg+xml')) {
+                    const avatarImg = document.getElementById('avatar-img');
+                    if (avatarImg) {
+                        avatarImg.src = savedAvatar;
+                        avatarImg.style.display = "block";
+                    }
+                    const txtAvatar = document.getElementById('txt-avatar');
+                    if (txtAvatar) txtAvatar.style.display = "none";
+                } else { 
+                    const ppImg = document.getElementById('pp');
+                    if (ppImg) {
+                        ppImg.src = savedAvatar;
+                        ppImg.style.display = "block";
+                    }
+                    const txtPhoto = document.getElementById('txt-photo');
+                    if (txtPhoto) txtPhoto.style.display = "none";
+                }
+                
+                const btnWHall = document.getElementById('btn-w-hall');
+                if(btnWHall) btnWHall.classList.remove('btn-sleep');
+                
+                const btnPass = document.getElementById('btn-pass');
+                if(btnPass) btnPass.classList.remove('btn-sleep');
+            }
+        }
+
+        function portalTransition(nextId) {
+            const current = document.querySelector('.block.active');
+            const backBtn = document.getElementById('btn-global-back');
+            const srvSnd = document.getElementById('snd-server');
+            const badge = document.getElementById('global-user-badge');
+            
+            if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
+            if (backBtn) backBtn.style.opacity = "0";
+
             if (nextId === 'block-entrance') {
-                const door = document.getElementById('main-door');
-                door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
-                if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
-                badge.style.display = "none";
-            } else {
-                if (langPanel) langPanel.style.display = 'none';
+                stopBarSound();
+                if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+            }
+
+            setTimeout(() => {
+                if (current) { current.classList.remove('active'); current.style.display = "none"; }
+                const next = document.getElementById(nextId);
+                if (!next) return;
                 
-                if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
-                if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
-                if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
-                if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
+                next.style.display = "flex";
+                const langPanel = document.getElementById('lang-switcher');
                 
-                if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
-                    if (currentUserImage) {
-                        document.getElementById('badge-avatar-img').src = currentUserImage;
-                        document.getElementById('pass-avatar-img').src = currentUserImage;
-                        badge.style.display = "block";
+                const allArrows = document.querySelectorAll('.ui-nav-arrows');
+                allArrows.forEach(arrow => arrow.style.display = 'none');
+
+                if (nextId === 'block-entrance') {
+                    const door = document.getElementById('main-door');
+                    if (door) { door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto"; }
+                    if (langPanel) { langPanel.style.display = 'flex'; langPanel.style.opacity = '1'; }
+                    if (badge) badge.style.display = "none";
+                } else {
+                    if (langPanel) langPanel.style.display = 'none';
+                    
+                    if (nextId === 'block-welcome') { const wNav = document.getElementById('nav-welcome'); if(wNav) wNav.style.display = "flex"; }
+                    if (nextId === 'block-identity') { 
+                        const idNav = document.getElementById('nav-identity'); if(idNav) idNav.style.display = "flex"; 
+                        checkAndFillRegistrationForm();
+                    }
+                    if (nextId === 'block-hall') { const hNav = document.getElementById('nav-hall'); if(hNav) hNav.style.display = "flex"; }
+                    if (nextId === 'block-tables') { const tNav = document.getElementById('nav-tables'); if(tNav) tNav.style.display = "flex"; }
+                    if (nextId === 'block-bar') { const bNav = document.getElementById('nav-bar'); if(bNav) bNav.style.display = "flex"; }
+                    
+                    if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                        try {
+                            currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                        } catch(e) {}
+                        
+                        if (currentUserImage && badge) {
+                            const badgeAv = document.getElementById('badge-avatar-img');
+                            const passAv = document.getElementById('pass-avatar-img');
+                            if (badgeAv) badgeAv.src = currentUserImage;
+                            if (passAv) passAv.src = currentUserImage;
+                            badge.style.display = "block";
+                        }
+
+                        let savedLang = null;
+                        try { savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang'); } catch(e) {}
+                        
+                        const badgeFlag = document.getElementById('badge-flag-img');
+                        if (badgeFlag && savedLang) {
+                            if (savedLang.includes('ru')) badgeFlag.src = "https://flagcdn.com/w20/ru.png";
+                            else if (savedLang.includes('fr')) badgeFlag.src = "https://flagcdn.com/w20/fr.png";
+                            else if (savedLang.includes('de')) badgeFlag.src = "https://flagcdn.com/w20/de.png";
+                            else badgeFlag.src = "https://flagcdn.com/w20/gb.png";
+                        }
                     }
                 }
+
+                setTimeout(() => { 
+                    next.classList.add('active'); next.style.pointerEvents = "auto";
+                    if (nextId === 'block-bar') { playBarSound(); }
+                    if (nextId === 'block-server') { if(srvSnd) srvSnd.play().catch(e => console.log("Серверная ждет клика")); }
+                }, 50);
+            }, 400); 
+        }
+
+        function preview(i) {
+            if(i.files && i.files[0]) {
+                const r = new FileReader();
+                r.onload = (e) => { 
+                    document.getElementById('avatar-img').style.display = "none";
+                    document.getElementById('pp').src = e.target.result; 
+                    document.getElementById('pp').style.display = "block";
+                    document.getElementById('txt-photo').style.display = "none";
+                    currentUserImage = e.target.result;
+                    try { localStorage.setItem('gygy_avatar', currentUserImage); } catch(err) {}
+
+                    const btnPass = document.getElementById('btn-pass');
+                    if(btnPass) btnPass.classList.add('btn-sleep');
+                };
+                r.readAsDataURL(i.files[0]);
+            }
+        }
+
+        function generateAvatar() {
+            document.getElementById('pp').style.display = "none"; 
+            document.getElementById('txt-photo').style.display = "block";
+            
+            const randomColor = Math.floor(Math.random()*16777215).toString(16);
+            const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
+            currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
+            try { localStorage.setItem('gygy_avatar', currentUserImage); } catch(e) {}
+            
+            document.getElementById('avatar-img').src = currentUserImage; 
+            document.getElementById('avatar-img').style.display = "block";
+            document.getElementById('txt-avatar').style.display = "none";
+
+            const btnPass = document.getElementById('btn-pass');
+            if(btnPass) btnPass.classList.add('btn-sleep');
+        }
+
+        function saveUserProfile() {
+            if(!currentUserImage) { 
+                alert("Генерируй аватар или загрузи фото!"); 
+                return; 
+            }
+            try {
+                localStorage.setItem('gy_user_id', currentID);
+                localStorage.setItem('gy_user_img', currentUserImage);
+            } catch(e) {}
+            
+            const btnWHall = document.getElementById('btn-w-hall');
+            if(btnWHall) { btnWHall.classList.remove('btn-sleep'); }
+            
+            const btnPass = document.getElementById('btn-pass');
+            if(btnPass) { btnPass.classList.remove('btn-sleep'); }
+        }
+
+        function openPassport() { 
+            document.getElementById('modal-passport').style.display = "flex"; 
+            setTimeout(() => { document.getElementById('modal-passport').style.opacity = "1"; }, 10);
+        }
+
+        function closePassport() { 
+            document.getElementById('modal-passport').style.opacity = "0";
+            setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
+        }
+        
+        function goToTables() { portalTransition('block-tables'); }
+        function deepDive() { portalTransition('block-bar'); } 
+        function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
+            
+        window.onload = () => { 
+            let savedFlag = 'gb';
+            try {
+                savedFlag = localStorage.getItem('gygy_flag') || 'gb';
+                currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
+            } catch(e) {}
+
+            const badgeFlag = document.getElementById('badge-flag-img');
+            if (badgeFlag) {
+                badgeFlag.src = `https://flagcdn.com/w20/${savedFlag}.png`;
             }
 
-            setTimeout(() => { 
-                next.classList.add('active'); next.style.pointerEvents = "auto";
-                // Запускаем звук, только если он до этого не играл
-                if (nextId === 'block-bar' && amb && amb.paused) { amb.play(); setTimeout(() => document.getElementById('snd-khe').play(), 800); }
-                if (nextId === 'block-server') { srvSnd.play(); }
-            }, 50);
-        }, 400); 
-    }
+            renderLangList(); 
+            
+            const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
+            const forceEntrance = sessionStorage.getItem('force_entrance') || 'false';
+            
+            sessionStorage.removeItem('return_to_bar');
+            sessionStorage.removeItem('force_entrance');
 
-    function preview(i) {
-        if(i.files && i.files[0]) {
-            const r = new FileReader();
-            r.onload = (e) => { 
-                document.getElementById('avatar-img').style.display = "none";
-                document.getElementById('pp').src = e.target.result; 
-                document.getElementById('pp').style.display = "block";
-                document.getElementById('txt-photo').style.display = "none";
-                currentUserImage = e.target.result;
+            const entBlock = document.getElementById('block-entrance');
+            const barBlock = document.getElementById('block-bar');
+            if (entBlock) entBlock.style.display = 'none';
+            if (barBlock) barBlock.style.display = 'none';
 
-                const btnPass = document.getElementById('btn-pass');
-                if(btnPass) btnPass.classList.add('btn-sleep');
-            };
-            r.readAsDataURL(i.files[0]);
-        }
-    }
-
-    function generateAvatar() {
-        document.getElementById('pp').style.display = "none"; 
-        document.getElementById('txt-photo').style.display = "block";
-        
-        const randomColor = Math.floor(Math.random()*16777215).toString(16);
-        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${randomColor}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 Q50,50 80,90 Z" fill="#000"/></svg>`;
-        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svgString);
-        
-        document.getElementById('avatar-img').src = currentUserImage; 
-        document.getElementById('avatar-img').style.display = "block";
-        document.getElementById('txt-avatar').style.display = "none";
-
-        const btnPass = document.getElementById('btn-pass');
-        if(btnPass) btnPass.classList.add('btn-sleep');
-    }
-
-    function saveUserProfile() {
-        if(!currentUserImage) { 
-            alert("Генерируй аватар или загрузи фото!"); 
-            return; 
-        }
-        
-        localStorage.setItem('gy_user_id', currentID);
-        localStorage.setItem('gy_user_img', currentUserImage);
-        
-        const btnWHall = document.getElementById('btn-w-hall');
-        if(btnWHall) { btnWHall.classList.remove('btn-sleep'); }
-        
-        const btnPass = document.getElementById('btn-pass');
-        if(btnPass) { btnPass.classList.remove('btn-sleep'); }
-    }
-
-    function openPassport() { 
-        document.getElementById('modal-passport').style.display = "flex"; 
-        setTimeout(() => { document.getElementById('modal-passport').style.opacity = "1"; }, 10);
-    }
-
-    function closePassport() { 
-        document.getElementById('modal-passport').style.opacity = "0";
-        setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
-    }
-    
-    // Плавный бесшовный переход к столикам внутри текущей разметки без сброса звука
-    function goToTables() {
-        portalTransition('block-tables'); 
-    }
-
-    function deepDive() { portalTransition('block-bar'); } 
-    function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
-        
-    window.onload = () => { renderLangList(); };
-    
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</div> 
-
-<script>
-    // 1. АУДИОФАЙЛЫ БАРА
-    const barAmbient = new Audio('bar_ambient.mp3');   
-    const horseCough = new Audio('charlie_bar_fx.mp3'); 
-
-    barAmbient.loop = true;
-    barAmbient.volume = 0.5;
-    horseCough.volume = 0.7; 
-
-    let coughInterval = null; 
-
-    function playBarSound() {
-        barAmbient.play().then(() => {
-            if (!coughInterval) {
-                coughInterval = setInterval(() => {
-                    if (!barAmbient.paused) {
-                        horseCough.currentTime = 0; 
-                        horseCough.play();
-                    }
-                }, 15000); 
+            if (isReturning === 'true' && currentID) {
+                if (barBlock) barBlock.style.display = 'flex';
+                portalTransition('block-bar');
+            } else if (forceEntrance === 'true' && currentID) {
+                if (entBlock) entBlock.style.display = 'flex';
+                portalTransition('block-entrance');
+                checkAndFillRegistrationForm();
+            } else {
+                if (entBlock) entBlock.style.display = 'flex';
+                portalTransition('block-entrance');
+                if (currentID) { checkAndFillRegistrationForm(); }
             }
-        }).catch(error => console.log("Браузер ждет клика"));
-    }
 
-    function stopBarSound() {
-        barAmbient.pause();
-        horseCough.pause();
-        if (coughInterval) {
-            clearInterval(coughInterval); 
-            coughInterval = null;
-        }
-    }
+            setTimeout(() => { document.body.classList.add('page-loaded'); }, 50); 
+        };
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    // 2. ЭКРАНЫ И НАВИГАЦИЯ
-    const barScreen = document.getElementById('screen-bar');
-    const tablesScreen = document.getElementById('screen-tables');
-
-    const toTablesBtn = document.getElementById('go-to-tables-btn');
-    const toBarBtn = document.getElementById('back-to-bar-btn'); 
-    const arrowLeft = document.getElementById('nav-arrow-left');
-    const arrowRight = document.getElementById('nav-arrow-right');
-
-    function showTables() {
-        if (barScreen && tablesScreen) {
-            barScreen.classList.remove('active');
-            tablesScreen.classList.add('active');
-        }
-    }
-</script>
     <script>
-        // Принудительно включаем плавное проявление при заходе на главную
-        document.addEventListener("DOMContentLoaded", function() {
-            document.body.style.transition = "opacity 0.5s ease-in-out";
-            document.body.style.opacity = "1";
-        });
+        const barAmbient = new Audio('bar_ambient.mp3');   
+        const horseCough = new Audio('charlie_bar_fx.mp3'); 
 
-        // Функция плавного ухода
-        function fadeOutAndGo(url) {
+        barAmbient.loop = true;
+        barAmbient.volume = 0.5;
+        horseCough.volume = 0.7; 
+
+        let coughInterval = null; 
+
+        function playBarSound() {
+            barAmbient.play().then(() => {
+                if (!coughInterval) {
+                    coughInterval = setInterval(() => {
+                        if (!barAmbient.paused) {
+                            horseCough.currentTime = 0; 
+                            horseCough.play().catch(e => console.log("Кашель Чарли заблокирован"));
+                        }
+                    }, 15000); 
+                }
+            }).catch(error => console.log("Браузер ожидает клика пользователя для запуска звуков"));
+        }
+
+        function stopBarSound() {
+            if (barAmbient) barAmbient.pause();
+            if (horseCough) horseCough.pause();
+            if (coughInterval) {
+                clearInterval(coughInterval); 
+                coughInterval = null;
+            }
+        }
+
+        function smoothTransitionToTables() {
+            let vol = 10;
+            if (barAmbient) barAmbient.volume = 0.5;
+            if (horseCough) horseCough.volume = 0.7;
+
+            const fadeInterval = setInterval(() => {
+                vol--;
+                if (barAmbient && barAmbient.volume > 0.05) {
+                    barAmbient.volume = Math.max(0, Math.min(0.5, vol / 20));
+                }
+                if (horseCough && horseCough.volume > 0.05) {
+                    horseCough.volume = Math.max(0, Math.min(0.7, vol / 14));
+                }
+                if (vol <= 0) {
+                    clearInterval(fadeInterval);
+                    stopBarSound();
+                }
+            }, 30);
+
+            document.body.style.transition = "opacity 0.6s ease-in-out";
             document.body.style.opacity = '0';
-            setTimeout(function() {
-                location.href = url;
-            }, 500);
+
+            setTimeout(() => { location.href = 'tables.html'; }, 600);
         }
     </script>
+
+    <style>
+        * { -webkit-tap-highlight-color: transparent !important; }
+        .goog-text-highlight, font[style*="background-color"], span[style*="background-color"] {
+            background-color: transparent !important; background: transparent !important; box-shadow: none !important; text-shadow: none !important; color: inherit !important;
+        }
+        .goog-te-banner-frame, .goog-te-banner, .skiptranslate, iframe[id*="translate"] { display: none !important; visibility: hidden !important; }
+        body { top: 0 !important; position: static !important; background-color: #000000 !important; }
+    </style>
 </body>
 </html>
