@@ -3,190 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.16</title>
+    <title>GY-GY Club | Tables v1.5.17</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+:root { 
+        --gold: #d4af37; 
+        --violet: #8A2BE2; 
+    }
+    * { 
+        -webkit-tap-highlight-color: transparent !important; 
+        box-sizing: border-box; 
+    }
         
-        /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ */
-        body { 
-            margin: 0; padding: 0; width: 100%; height: 100%; background: #000; 
-            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; 
-            opacity: 0; transition: opacity 0.5s ease-in-out;
-        }
-        body.page-loaded { opacity: 1; }
+    /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ */
+    body { 
+        margin: 0; padding: 0; width: 100%; height: 100%; 
+        background: #000000 !important; 
+        font-family: 'Share Tech Mono', monospace; 
+        overflow: hidden; position: fixed; 
+        opacity: 0; transition: opacity 0.5s ease-in-out;
+        top: 0 !important;
+    }
+    body.page-loaded { opacity: 1; }
 
-       /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
-        .ui-nav-arrows {
-            position: fixed; top: 15px; left: 20px; z-index: 6000; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
-            cursor: pointer; color: var(--gold); user-select: none; line-height: 1;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            
-            /* ЖЕСТКАЯ МАСКИРОВКА МИГАНИЯ СТАРТА */
-            opacity: 0; 
-            transition: opacity 0.3s ease-in-out;
-        }
-        .arrow-item { transition: opacity 0.2s; }
-        .arrow-item:hover { opacity: 0.8; }
+    /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА (СТРОГОЕ ЗОЛОТО) */
+    .ui-nav-arrows {
+        position: fixed; top: 15px; left: 20px; z-index: 6000; 
+        display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
+        cursor: pointer; color: var(--gold) !important; user-select: none; line-height: 1;
+        text-shadow: none !important; /* Полностью убрали контур */
+        opacity: 0; 
+        transition: opacity 0.3s ease-in-out;
+    }
+    .arrow-item { transition: opacity 0.2s; color: var(--gold) !important; text-shadow: none !important; }
+    .arrow-item:hover { opacity: 0.8; text-shadow: none !important; box-shadow: none !important; }
 
-        /* КЛУБНЫЙ ЛОГОТИП GY-GY */
-        #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
+    /* КЛУБНЫЙ ЛОГОТИП GY-GY */
+    #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold) !important; font-size: 24px; font-weight: bold; letter-spacing: 5px; text-shadow: none !important; }
 
-        /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
-        #hall-layer { 
-            width: 100vw; height: 100vh; 
-            position: relative; 
-            display: flex; justify-content: center; align-items: center; 
-            overflow: hidden;
-        }
+    /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
+    #hall-layer { 
+        width: 100vw; height: 100vh; 
+        position: relative; 
+        display: flex; justify-content: center; align-items: center; 
+        overflow: hidden;
+    }
         
-        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА (МАСШТАБИРУЕТСЯ ЦЕЛИКОМ С КОЛЬЦАМИ) */
-        .table-scene {
-            position: relative;
-            width: 1000px; 
-            height: 562.5px; 
-            background: url('lounge.jpg') no-repeat center center / contain;
-            z-index: 10;
-            flex-shrink: 0;
-            transform: scale(min(100vw / 1000, 100vh / 562.5));
-            transform-origin: center center;
-        }
+    /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА */
+    .table-scene {
+        position: relative;
+        width: 1000px; 
+        height: 562.5px; 
+        background: url('lounge.jpg') no-repeat center center / contain;
+        z-index: 10;
+        flex-shrink: 0;
+        transform: scale(min(100vw / 1000, 100vh / 562.5));
+        transform-origin: center center;
+    }
         
-        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ КОЛЬЦА С КЛИКОМ ПО ОДНОМУ ТАПУ */
-        .lamp-zone { 
-            position: absolute; 
-            width: 44px; height: 44px; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            z-index: 100; 
-            background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); 
-            border: 1px solid var(--violet); 
-            box-shadow: 0 0 18px var(--neon-glow);
-            transition: 0.3s;
-            transform: translate(-50%, -50%); 
-        }
-        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
+    /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ КОЛЬЦА */
+    .lamp-zone { 
+        position: absolute; 
+        width: 44px; height: 44px; 
+        border-radius: 50%; 
+        cursor: pointer; 
+        z-index: 100; 
+        background: transparent !important; /* Убрали мутный внутренний градиент */
+        border: 1px solid var(--violet); 
+        box-shadow: 0 0 10px var(--violet); /* Снизили интенсивность, чтобы не белило */
+        transition: 0.3s;
+        transform: translate(-50%, -50%); 
+    }
+    .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 15px var(--violet); z-index: 500; }
 
-        /* ЮВЕЛИРНЫЕ НАСТРОЕННЫЕ КООРДИНАТЫ АБАЖУРОВ СТОЛОВ И СЦЕНЫ */
-        #table-1 { top: 396px; left: 330px; }   
-        #table-2 { top: 344px; left: 419px; }   
-        #table-3 { top: 303px; left: 438px; }   
-        #table-4 { top: 303px; left: 575px; }   
-        #table-5 { top: 341px; left: 603px; }   
-        #table-6 { top: 396px; left: 659px; }   
-        #mic-zone { top: 234px; left: 503px; } 
+    /* ЮВЕЛИРНЫЕ НАСТРОЕННЫЕ КООРДИНАТЫ АБАЖУРОВ СТОЛОВ И СЦЕНЫ */
+    #table-1 { top: 396px; left: 330px; }   
+    #table-2 { top: 344px; left: 419px; }   
+    #table-3 { top: 303px; left: 438px; }   
+    #table-4 { top: 303px; left: 575px; }   
+    #table-5 { top: 341px; left: 603px; }   
+    #table-6 { top: 396px; left: 659px; }   
+    #mic-zone { top: 234px; left: 503px; } 
 
-        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
-        .lamp-zone::after {
-            content: attr(data-label);
-            position: absolute; bottom: 100%; left: 50%; 
-            transform: translateX(-50%) translateY(-14px); 
-            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
-            padding: 6px 12px; font-size: 13px; white-space: nowrap; border-radius: 4px;
-            opacity: 0; 
-            pointer-events: none; /* Текст полностью прозрачен для тапов */
-            transition: opacity 0.2s ease, transform 0.2s ease; 
-            font-family: 'Share Tech Mono', monospace;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
-            z-index: 999999;
-        }
-        .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
+    /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
+    .lamp-zone::after {
+        content: attr(data-label);
+        position: absolute; bottom: 100%; left: 50%; 
+        transform: translateX(-50%) translateY(-14px); 
+        background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
+        padding: 6px 12px; font-size: 13px; white-space: nowrap; border-radius: 4px;
+        opacity: 0; 
+        pointer-events: none; 
+        transition: opacity 0.2s ease, transform 0.2s ease; 
+        font-family: 'Share Tech Mono', monospace;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
+        z-index: 999999;
+        text-shadow: none !important;
+    }
+    .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
 
-   /* HUD АВАТАРА — СТРОГО ПО ЦЕНТРУ ЭКРАНА С ПРАВИЛЬНЫМ МАСШТАБОМ */
-        #hud { 
-            position: fixed; 
-            top: 15px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 7000; 
-            line-height: 0; /* Убирает микро-отступы инлайновых элементов */
-        }
-        .user-mini { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            border: 2px solid var(--gold); 
-            background: #fff; 
-            object-fit: cover;
-            box-sizing: border-box; /* Рамка больше не уменьшает размер аватарки */
-            box-shadow: 0 0 10px var(--neon-glow);
-        }
+    /* HUD АВАТАРА — СТРОГО ПО ЦЕНТРУ ЭКРАНА С ПРАВИЛЬНЫМ МАСШТАБОМ */
+    #hud { 
+        position: fixed; 
+        top: 15px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        z-index: 7000; 
+        line-height: 0; 
+    }
+    .user-mini { 
+        width: 40px; 
+        height: 40px; 
+        border-radius: 50%; 
+        border: 2px solid var(--gold); 
+        background: #000000; 
+        object-fit: cover;
+        box-sizing: border-box; 
+        box-shadow: none !important; /* Выжгли неоновое свечение вокруг аватарки */
+    }
 
-        #google_translate_element { display: none !important; }
-        /* Полное уничтожение верхней полосы и фреймов Гугл-переводчика на столиках */
-.goog-te-banner-frame,
-.goog-te-banner,
-.goog-te-balloon-frame,
-#goog-gt-tt,
-.skiptranslate,
-iframe[id[id*="translate"]] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    height: 0 !important;
-    width: 0 !important;
-}
+    /* МАКСИМАЛЬНЫЙ УЛЬТИМАТУМ ПРОТИВ ПОДСВЕТОК И КУСКОВ ГУГЛА */
+    #google_translate_element,
+    .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-balloon-frame,
+    #goog-gt-tt,
+    .skiptranslate,
+    iframe[id*="translate"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        width: 0 !important;
+    }
 
-body {
-    top: 0 !important;
-    position: static !important;
-}
-  /* Выжигаем белую подсветку, тени и контуры у кнопок */
-        button, 
-        .btn, 
-        .table-btn, 
-        .lang-item span {
-            text-shadow: none !important;
-            box-shadow: none !important;
-            -webkit-text-stroke: 0px transparent !important;
-        }
-/* Намертво глушим панель Гугла, если она попытается вылезти */
-        .goog-te-banner-frame,
-        .goog-te-banner,
-        .goog-te-balloon-frame,
-        #goog-gt-tt,
-        .skiptranslate,
-        iframe[id*="translate"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            height: 0 !important;
-            width: 0 !important;
-        }
+    /* ТОТАЛЬНАЯ МАТОВОСТЬ ДЛЯ ВСЕХ КНОПОК И ЭЛЕМЕНТОВ С КЛИКОМ */
+    button, .btn, .table-btn, .arrow-item, [onclick], 
+    button *, .btn *, .table-btn *, .arrow-item *, [onclick] * {
+        text-shadow: none !important;
+        box-shadow: none !important;
+        -webkit-text-stroke: 0px transparent !important;
+        outline: none !important;
+        background-image: none !important;
+    }
 
-        body {
-            top: 0 !important;
-            position: static !important;
-        }
-
-        /* Полная зачистка вообще всех возможных белых подсветок в Клубе */
-        button, 
-        .btn, 
-        .table-btn, 
-        .arrow-item, 
-        [onclick], 
-        button *, 
-        .btn * {
-            text-shadow: none !important;
-            box-shadow: none !important;
-            -webkit-text-stroke: 0px transparent !important;
-            outline: none !important;
-        }
-
-        /* Фиксация матового состояния при любых действиях мыши */
-        button:hover, .btn:hover, .table-btn:hover, .arrow-item:hover,
-        button:focus, .btn:focus, .table-btn:focus, .arrow-item:focus,
-        button:active, .btn:active, .table-btn:active, .arrow-item:active {
-            text-shadow: none !important;
-            box-shadow: none !important;
-            outline: none !important;
-            background-image: none !important; /* Убирает дефолтные глянцевые градиенты */
-        }
-    </style>
+    button:hover, .btn:hover, .table-btn:hover, .arrow-item:hover, [onclick]:hover,
+    button:focus, .btn:focus, .table-btn:focus, .arrow-item:focus, [onclick]:focus,
+    button:active, .btn:active, .table-btn:active, .arrow-item:active, [onclick]:active {
+        text-shadow: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        background-image: none !important;
+        background-color: transparent !important;
+    }
+</style>
 </head>
 <body oncontextmenu="return false;">
 
