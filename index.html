@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.97| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.89 | HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -162,29 +162,11 @@
         /* Глушим системные плашки Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         
-      /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Защита от сдвигов Гугла + правильное плавное проявление */
+        /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Плавность добавлена, но родные свойства body не затираются */
         body { 
             top: 0 !important; 
-            background-color: #000 !important;
-            opacity: 0; /* На старте всегда глухая темнота */
-            transition: opacity 0.4s ease-in-out !important;
-        }
-        
-        /* Свет загорается ТОЛЬКО когда скрипт добавит этот класс */
-        body.page-loaded {
+            transition: opacity 0.5s ease-in-out !important;
             opacity: 1 !important;
-        }
-        /* Железная заглушка против мигания Гугл-переводчика */
-        body:has(#block-welcome.active) #lang-switcher,
-        body:has(#block-identity.active) #lang-switcher,
-        body:has(#block-hall.active) #lang-switcher,
-        body:has(#block-tables.active) #lang-switcher,
-        body:has(#block-bar.active) #lang-switcher,
-        body:has(#block-server.active) #lang-switcher {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
         }
     </style>
 </head>
@@ -226,7 +208,7 @@
     <audio id="snd-server" loop><source src="server_room.mp3"></audio>
     <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
 
-  <div id="block-entrance" class="block" style="display: none;">
+   <div id="block-entrance" class="block" style="display: flex;">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
@@ -378,12 +360,9 @@
         });
     }
 
-   function applyLanguage(lang) {
+    function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
-        
-        // ЗАПИСЫВАЕМ ФЛАГ В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
-        localStorage.setItem('gygy_flag', lang.c);
         
         document.getElementById('active-lang-display').innerHTML = `
             <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
@@ -392,6 +371,7 @@
         document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
         document.getElementById('lang-list-container').style.display = 'none';
         renderLangList();
+
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
@@ -426,7 +406,7 @@
         });
     }
 
-function handleDoor() {
+    function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
         d.style.transform = "scale(5)"; 
@@ -436,75 +416,18 @@ function handleDoor() {
         
         currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
         localStorage.setItem('gygy_id', currentID); // Железно пишем в сессию
+        document.getElementById('id-label').innerText = currentID;
+        document.getElementById('pass-id-val').innerText = currentID;
         
-        // Отрисовка данных
-        renderUserPassports(currentID);
+        document.getElementById('qr-box-reg').innerHTML = "";
+        new QRCode(document.getElementById("qr-box-reg"), { text: currentID, width: 85, height: 85 });
+        document.getElementById('pass-qr-box').innerHTML = "";
+        new QRCode(document.getElementById("pass-qr-box"), { text: currentID, width: 100, height: 100 });
         
         setTimeout(() => { 
             portalTransition('block-welcome'); 
             const a = document.getElementById('snd-ambient'); a.volume = 1; a.play();
         }, 1000);
-    }
-
-    // ИЗОЛИРОВАННАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ID И ГЕНЕРАЦИИ QR-КОДОВ БЕЗ ОШИБОК
-    function renderUserPassports(targetID) {
-        const idLabel = document.getElementById('id-label');
-        const passIdVal = document.getElementById('pass-id-val');
-        const qrBoxReg = document.getElementById('qr-box-reg');
-        const passQrBox = document.getElementById('pass-qr-box');
-
-        if (idLabel) idLabel.innerText = targetID;
-        if (passIdVal) passIdVal.innerText = targetID;
-        
-        if (qrBoxReg) {
-            qrBoxReg.innerHTML = "";
-            new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
-        }
-        if (passQrBox) {
-            passQrBox.innerHTML = "";
-            new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
-        }
-    }
-
-    // ПРОВЕРКА И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ ПРИ ВОЗВРАТЕ
-    function checkAndFillRegistrationForm() {
-        const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-        currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
-        
-        if (currentID) {
-            renderUserPassports(currentID); // Рисуем ID и QR-коды
-        }
-        
-        if (savedAvatar) {
-            currentUserImage = savedAvatar;
-            
-            // Если это сгенерированный SVG-аватар
-            if (savedAvatar.startsWith('data:image/svg+xml')) {
-                const avatarImg = document.getElementById('avatar-img');
-                if (avatarImg) {
-                    avatarImg.src = savedAvatar;
-                    avatarImg.style.display = "block";
-                }
-                const txtAvatar = document.getElementById('txt-avatar');
-                if (txtAvatar) txtAvatar.style.display = "none";
-            } else { 
-                // Если это загруженное фото (base64)
-                const ppImg = document.getElementById('pp');
-                if (ppImg) {
-                    ppImg.src = savedAvatar;
-                    ppImg.style.display = "block";
-                }
-                const txtPhoto = document.getElementById('txt-photo');
-                if (txtPhoto) txtPhoto.style.display = "none";
-            }
-            
-            // Активируем кнопки перехода вперед — юзер уже зарегистрирован!
-            const btnWHall = document.getElementById('btn-w-hall');
-            if(btnWHall) btnWHall.classList.remove('btn-sleep');
-            
-            const btnPass = document.getElementById('btn-pass');
-            if(btnPass) btnPass.classList.remove('btn-sleep');
-        }
     }
 
     function portalTransition(nextId) {
@@ -529,10 +452,6 @@ function handleDoor() {
             next.style.display = "flex";
             const langPanel = document.getElementById('lang-switcher');
             
-            // Гасим все навигационные стрелки перед включением нужной комнаты, убирая "грязь"
-            const allArrows = document.querySelectorAll('.ui-nav-arrows');
-            allArrows.forEach(arrow => arrow.style.display = 'none');
-
             if (nextId === 'block-entrance') {
                 const door = document.getElementById('main-door');
                 door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
@@ -542,30 +461,18 @@ function handleDoor() {
                 if (langPanel) langPanel.style.display = 'none';
                 
                 if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-                if (nextId === 'block-identity') { 
-                    document.getElementById('nav-identity').style.display = "flex"; 
-                    checkAndFillRegistrationForm(); // Наполняем форму данными из памяти при откате стрелками
-                }
+                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
                 if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
                 if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
                 if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
                 
                 if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                    // Подтягиваем аватар из любого хранилища
                     currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                     if (currentUserImage) {
                         document.getElementById('badge-avatar-img').src = currentUserImage;
                         document.getElementById('pass-avatar-img').src = currentUserImage;
                         badge.style.display = "block";
-                    }
-
-                    // СИНХРОНИЗАЦИЯ ФЛАГА С ЯЗЫКОМ КЛУБА В АВАТАРЕ
-                    const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
-                    const badgeFlag = document.getElementById('badge-flag-img');
-                    if (badgeFlag && savedLang) {
-                        if (savedLang.includes('ru')) badgeFlag.src = "https://flagcdn.com/w20/ru.png";
-                        else if (savedLang.includes('fr')) badgeFlag.src = "https://flagcdn.com/w20/fr.png";
-                        else if (savedLang.includes('de')) badgeFlag.src = "https://flagcdn.com/w20/de.png";
-                        else badgeFlag.src = "https://flagcdn.com/w20/gb.png";
                     }
                 }
             }
@@ -642,46 +549,39 @@ function handleDoor() {
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
         
-    // АВТОЗАПУСК С ПРОВЕРКОЙ ХРАНИЛИЩ И СИНХРОНИЗАЦИЕЙ СВЕТА КЛУБА
+// АВТОЗАПУСК: ВСЕГДА ЧЕРЕЗ ПАРАДНУЮ ДВЕРЬ С ЗАЩИТОЙ ОТ ПУСТЫХ ЗНАЧЕНИЙ
     window.onload = () => { 
         renderLangList(); 
         
+        // Временная темнота для бесшовного переключения сцен
+        document.body.style.opacity = "0";
+        document.body.style.transition = "opacity 0.3s ease-in-out";
+
+        // Проверяем маркер возврата с защитой: если там null или пусто, запишется 'false'
         const isReturning = sessionStorage.getItem('return_to_bar') || 'false';
-        const forceEntrance = sessionStorage.getItem('force_entrance') || 'false';
         
+        // Сразу стираем маркер, чтобы обычное обновление страницы (F5) не кидало в бар
         sessionStorage.removeItem('return_to_bar');
-        sessionStorage.removeItem('force_entrance');
 
-        const entBlock = document.getElementById('block-entrance');
-        const barBlock = document.getElementById('block-bar');
-        if (entBlock) entBlock.style.display = 'none';
-        if (barBlock) barBlock.style.display = 'none';
-
-        currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
-
-        if (isReturning === 'true' && currentID) {
-            if (barBlock) barBlock.style.display = 'flex';
+        if (isReturning === 'true') {
+            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
             portalTransition('block-bar');
-        } else if (forceEntrance === 'true' && currentID) {
-            if (entBlock) entBlock.style.display = 'flex';
-            portalTransition('block-entrance');
-            checkAndFillRegistrationForm();
         } else {
-            if (entBlock) entBlock.style.display = 'flex';
+            // Во всех остальных случаях — строго парадный вход к Чарли!
             portalTransition('block-entrance');
-            if (currentID) {
-                checkAndFillRegistrationForm();
-            }
         }
 
+        // Зажигаем свет!
         setTimeout(() => {
-            document.body.classList.add('page-loaded');
-        }, 50); 
+            document.body.style.opacity = "1";
+        }, 50);
     };
-</script>
+        
+</script>.
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
+    // 1. АУДИОФАЙЛЫ БАРА
     const barAmbient = new Audio('bar_ambient.mp3');   
     const horseCough = new Audio('charlie_bar_fx.mp3'); 
 
@@ -713,14 +613,18 @@ function handleDoor() {
         }
     }
 
+    // 2. СИНХРОНИЗАЦИЯ ПЛАВНОГО УХОДА НА СТОЛИКИ И ИЗМЕНЕНИЯ ЗВУКА
     function smoothTransitionToTables() {
         let vol = 10;
         
+        // Перед уходом принудительно фиксируем стартовую громкость для безопасного шага вниз
         if (barAmbient) barAmbient.volume = 0.5;
         if (horseCough) horseCough.volume = 0.7;
 
         const fadeInterval = setInterval(() => {
             vol--;
+            
+            // Безопасный декремент громкости (не прыгает выше 1.0 и не падает ниже 0)
             if (barAmbient && barAmbient.volume > 0.05) {
                 barAmbient.volume = Math.max(0, Math.min(0.5, vol / 20));
             }
@@ -734,13 +638,16 @@ function handleDoor() {
             }
         }, 30);
 
+        // Гасим экран матрицы в полный ноль
         document.body.style.transition = "opacity 0.6s ease-in-out";
         document.body.style.opacity = '0';
 
+        // Улетаем в зал строго в момент пика темноты и тишины
         setTimeout(() => {
             location.href = 'tables.html';
         }, 600);
     }
-</script>
+</script>.
 </body>
 </html>
+
