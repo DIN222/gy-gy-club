@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.104| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.105| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -162,29 +162,17 @@
         /* Глушим системные плашки Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         
-      /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Защита от сдвигов Гугла + правильное плавное проявление */
+    
+/* ЖЕЛЕЗНЫЙ ВАРИАНТ: Защита от сдвигов Гугла + CSS-проявление без участия JS */
         body { 
             top: 0 !important; 
             background-color: #000 !important;
-            opacity: 0; /* На старте всегда глухая темнота */
-            transition: opacity 0.4s ease-in-out !important;
+            animation: clubFadeIn 0.4s ease-in-out forwards;
         }
-        
-        /* Свет загорается ТОЛЬКО когда скрипт добавит этот класс */
-        body.page-loaded {
-            opacity: 1 !important;
-        }
- /* Железная заглушка против мигания Гугл-переводчика */
-        body:has(#block-welcome.active) #lang-switcher,
-        body:has(#block-identity.active) #lang-switcher,
-        body:has(#block-hall.active) #lang-switcher,
-        body:has(#block-tables.active) #lang-switcher,
-        body:has(#block-bar.active) #lang-switcher,
-        body:has(#block-server.active) #lang-switcher {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
+
+        @keyframes clubFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* УЛЬТИМАТИВНЫЙ ТОТАЛЬНЫЙ ВЫЖИГАТЕЛЬ ЛЮБЫХ БЛИКОВ ГУГЛА (ВХОД/УХОД КУРСОРА) */
