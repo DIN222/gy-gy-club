@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.109| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.110| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -852,5 +852,55 @@ function stopBarSound() {
         }, 600);
     }
 </script>
+    <script>
+        // 1. Сначала у тебя идут глобальные переменные
+        const barAmbient = document.getElementById('snd-ambient');   
+        const horseCough = document.getElementById('snd-khe'); 
+        const srvSnd = document.getElementById('snd-server');
+        let coughInterval = null; 
+
+        // 2. Потом лежит наша большая функция переходов (закрывается своей фигурной скобкой)
+        function portalTransition(nextId) {
+            // ... тут весь код функции, который мы правили ...
+        } // <--- ВОТ ТУТ ОНА ОКОНЧАТЕЛЬНО ЗАВЕРШИЛАСЬ
+
+        // 3. Чуть ниже лежит функция кашля Чарли
+        function playBarSound() {
+            // ... код Чарли ...
+        }
+
+        function stopBarSound() {
+            // ... код остановки ...
+        }
+
+        // ====================================================
+        // ВОТ СЮДА, ПРЯМО НА СВОБОДНОЕ МЕСТО, ВСТАВЛЯЙ ЕЁ:
+        // ====================================================
+        function fadeInAudio(audioElement, targetVolume, duration) {
+            let currentVolume = 0;
+            const intervalTime = 50; 
+            const steps = duration / intervalTime;
+            const volumeStep = targetVolume / steps;
+
+            const timer = setInterval(() => {
+                currentVolume += volumeStep;
+                if (currentVolume >= targetVolume) {
+                    audioElement.volume = targetVolume;
+                    clearInterval(timer);
+                } else {
+                    audioElement.volume = currentVolume;
+                }
+            }, intervalTime);
+        }
+        // ====================================================
+
+        // Тут может быть код разборщика URL для возврата из ИИ, если ты его добавил:
+        window.addEventListener('DOMContentLoaded', () => {
+            // ...
+        });
+
+    </script>
+</body>
+</html>
 </body>
 </html>
