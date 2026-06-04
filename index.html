@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.105| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.106| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -561,27 +561,41 @@ function portalTransition(nextId) {
     const badge = document.getElementById('global-user-badge');
     const langPanel = document.getElementById('lang-switcher');
     
-    // Получаем ID блока, из которого уходим прямо сейчас
-    const currentId = current ? current.id : '';
-
-    // Если мы ФИЗИЧЕСКИ БЫЛИ в баре и уходим из него КУДА УГОДНО — вот тогда тушим Чарли
-    if (currentId === 'block-bar' && nextId !== 'block-bar') {
-        stopBarSound();
-    }
+    // Ссылки на наши барные звуки
+    const barAmbient = document.getElementById('snd-ambient');
     
-    // Если уходим на самый первый экран входа
-    if (nextId === 'block-entrance') {
-        stopBarSound(); // на всякий случай
-        if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
-    }
+    // === УМНЫЙ АУДИОМИКШЕР (Эффект приближения/удаления) ===
+    if (barAmbient) {
+        // Определяем громкость для комнаты, в которую ИДЕМ
+        let targetVolume = 0;
+        if (nextId === 'block-welcome') targetVolume = 0.1;
+        else if (nextId === 'block-identity' || nextId === 'block-hall') targetVolume = 0.25;
+        else if (nextId === 'block-tables') targetVolume = 0.4;
+        else if (nextId === 'block-bar') targetVolume = 0.6;
 
-    // Твой скрыватель языковой рамки
+        if (targetVolume > 0) {
+            // Если звук стоял на паузе (например, только вошли на Welcome), запускаем его
+            if (barAmbient.paused) {
+                barAmbient.volume = 0;
+                barAmbient.play().catch(e => console.log("Аудио ждет жеста"));
+            }
+            // Меняем громкость под текущую комнату
+            barAmbient.volume = targetVolume;
+        } else if (nextId === 'block-entrance') {
+            // Если вышли на самый вход — вот тут тушим бар совсем
+            stopBarSound();
+        }
+    }
+    // ======================================================
+
     if (langPanel) { langPanel.classList.add('force-hide'); }
     
     if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
     if (backBtn) backBtn.style.opacity = "0";
-    
-    // ... дальше без изменений идет твой setTimeout ...
+
+    if (nextId === 'block-entrance') {
+        if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+    }
 
     setTimeout(() => {
         if (current) { current.classList.remove('active'); current.style.display = "none"; }
@@ -596,19 +610,13 @@ function portalTransition(nextId) {
         if (nextId === 'block-entrance') {
             const door = document.getElementById('main-door');
             door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto";
-            
-            // И ТОЛЬКО ТУТ, у главного входа, снимаем блокировку с рамки
             if (langPanel) { langPanel.classList.remove('force-hide'); }
             badge.style.display = "none";
         } else {
-            // Гарантия для всех остальных комнат (бар, столики и т.д.)
             if (langPanel) langPanel.classList.add('force-hide');
             
             if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-            if (nextId === 'block-identity') { 
-                document.getElementById('nav-identity').style.display = "flex"; 
-                checkAndFillRegistrationForm();
-            }
+            if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; checkAndFillRegistrationForm(); }
             if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
             if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
             if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
@@ -634,12 +642,12 @@ function portalTransition(nextId) {
 
         setTimeout(() => { 
             next.classList.add('active'); next.style.pointerEvents = "auto";
-            if (nextId === 'block-bar') { playBarSound(); }
+            // Запуск кашля и проверка специфических звуков комнат
+            if (nextId === 'block-bar') { playBarSound(); } 
             if (nextId === 'block-server') { if(srvSnd) srvSnd.play(); }
         }, 50);
     }, 400); 
 }
-
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
@@ -752,33 +760,26 @@ let coughInterval = null;
 function playBarSound() {
     const barBlock = document.getElementById('block-bar');
     
-    // Если мы НЕ в баре, даже не запускаем таймер
-    if (!barBlock || !barBlock.classList.contains('active')) {
-        stopBarSound();
-        return;
-    }
+    // Кашель запускаем ТОЛЬКО если мы зашли физически в бар
+    if (!barBlock || !barBlock.classList.contains('active')) return;
     
     if (barAmbient) {
-        barAmbient.volume = 0.5;
-        barAmbient.play().then(() => {
-            // Перед созданием нового таймера чистим старый, на всякий пожарный
-            if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+        // Устанавливаем барную громкость для эмбиента
+        barAmbient.volume = 0.6; 
+        
+        if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+        
+        coughInterval = setInterval(() => {
+            const stillInBar = document.getElementById('block-bar')?.classList.contains('active');
             
-            // Запускаем кашель каждые 15 секунд
-            coughInterval = setInterval(() => {
-                const stillInBar = document.getElementById('block-bar')?.classList.contains('active');
-                
-                // ЖЕСТКАЯ ПРОВЕРКА: кашлять только если мы физически внутри блока бар!
-                if (stillInBar && !barAmbient.paused && horseCough) {
-                    horseCough.currentTime = 0; 
-                    horseCough.volume = 0.7;
-                    horseCough.play().catch(e => console.log("Кашель Чарли: ждем клика."));
-                } else {
-                    // Если ушли из бара — немедленно ликвидируем таймер
-                    stopBarSound(); 
-                }
-            }, 15000); 
-        }).catch(e => console.log("Аудио-движок ждет действия пользователя"));
+            if (stillInBar && !barAmbient.paused && horseCough) {
+                horseCough.currentTime = 0; 
+                horseCough.volume = 0.7;
+                horseCough.play().catch(e => console.log("Чарли запершило"));
+            } else {
+                if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+            }
+        }, 15000);
     }
 }
 
