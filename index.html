@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.102| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.104| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -555,24 +555,30 @@ function handleDoor() {
         }
     }
 
-   function portalTransition(nextId) {
+ function portalTransition(nextId) {
     const current = document.querySelector('.block.active');
     const backBtn = document.getElementById('btn-global-back');
     const srvSnd = document.getElementById('snd-server');
     const badge = document.getElementById('global-user-badge');
     const langPanel = document.getElementById('lang-switcher');
     
-    // Вырубаем рамку мгновенно и безжалостно
+    // === ВОТ ЭТОТ КУСОК ОБЯЗАТЕЛЬНО ДОБАВЬ ===
+    // Если мы идем КУДА УГОДНО, кроме бара, превентивно душим кашель и амбиент
+    if (nextId !== 'block-bar') {
+        stopBarSound();
+    }
+    // =========================================
+
     if (langPanel) { langPanel.classList.add('force-hide'); }
     
     if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
     if (backBtn) backBtn.style.opacity = "0";
 
     if (nextId === 'block-entrance') {
-        stopBarSound();
         if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
     }
-
+    
+    // ... дальше идет твой стандартный setTimeout, его не трогай ...
     setTimeout(() => {
         if (current) { current.classList.remove('active'); current.style.display = "none"; }
         const next = document.getElementById(nextId);
@@ -734,37 +740,53 @@ function handleDoor() {
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
-    const barAmbient = new Audio('bar_ambient.mp3');   
-    const horseCough = new Audio('charlie_bar_fx.mp3'); 
+ // ЗВУКОВОЙ ДВИЖОК БАРА С АНТИ-КАШЛЕМ OUTSIDE
+const barAmbient = document.getElementById('snd-ambient');   
+const horseCough = document.getElementById('snd-khe'); 
+let coughInterval = null; 
 
-    barAmbient.loop = true;
-    barAmbient.volume = 0.5;
-    horseCough.volume = 0.7; 
-
-    let coughInterval = null; 
-
-    function playBarSound() {
+function playBarSound() {
+    const barBlock = document.getElementById('block-bar');
+    
+    // Если мы НЕ в баре, даже не запускаем таймер
+    if (!barBlock || !barBlock.classList.contains('active')) {
+        stopBarSound();
+        return;
+    }
+    
+    if (barAmbient) {
+        barAmbient.volume = 0.5;
         barAmbient.play().then(() => {
-            if (!coughInterval) {
-                coughInterval = setInterval(() => {
-                    if (!barAmbient.paused) {
-                        horseCough.currentTime = 0; 
-                        horseCough.play();
-                    }
-                }, 15000); 
-            }
-        }).catch(error => console.log("Браузер ждет клика"));
+            // Перед созданием нового таймера чистим старый, на всякий пожарный
+            if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+            
+            // Запускаем кашель каждые 15 секунд
+            coughInterval = setInterval(() => {
+                const stillInBar = document.getElementById('block-bar')?.classList.contains('active');
+                
+                // ЖЕСТКАЯ ПРОВЕРКА: кашлять только если мы физически внутри блока бар!
+                if (stillInBar && !barAmbient.paused && horseCough) {
+                    horseCough.currentTime = 0; 
+                    horseCough.volume = 0.7;
+                    horseCough.play().catch(e => console.log("Кашель Чарли: ждем клика."));
+                } else {
+                    // Если ушли из бара — немедленно ликвидируем таймер
+                    stopBarSound(); 
+                }
+            }, 15000); 
+        }).catch(e => console.log("Аудио-движок ждет действия пользователя"));
     }
+}
 
-    function stopBarSound() {
-        barAmbient.pause();
-        horseCough.pause();
-        if (coughInterval) {
-            clearInterval(coughInterval); 
-            coughInterval = null;
-        }
+function stopBarSound() {
+    if (barAmbient) barAmbient.pause();
+    if (horseCough) horseCough.pause();
+    // Полное уничтожение таймера кашля, чтобы не тикал в фоне
+    if (coughInterval) { 
+        clearInterval(coughInterval); 
+        coughInterval = null; 
     }
-
+}
     function smoothTransitionToTables() {
         let vol = 10;
         
