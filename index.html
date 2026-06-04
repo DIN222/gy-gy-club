@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.107| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.108| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -348,13 +348,20 @@ font {
     </div>
 </div>
 
-    <div id="block-server" class="block">
-        <div class="quote-text">AI SERVER HUB</div>
-        <div class="server-leds">
-            <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
-        </div>
-        <button class="corridor-door-btn" onclick="deepDive()">AI ROOM</button>
+ <div id="block-server" class="block" style="background-image: url('banana_server_room.jpg'); background-size: cover; background-position: center; position: relative;">
+    
+    <div class="quote-text" style="position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; color: var(--gold) !important; font-size: 28px; font-weight: 700; text-shadow: 0 0 8px rgba(214, 175, 55, 0.9), 0 0 15px rgba(214, 175, 55, 0.4), 0 0 25px #000000, 0 0 40px #000000 !important;">
+        AI SERVER HUB
     </div>
+    
+    <button class="btn-gy" style="border-color: #9333ea; box-shadow: 0 0 15px rgba(147, 51, 234, 0.6); font-size: 24px; padding: 15px 40px;" onclick="window.location.href='verses.html'">
+        AI ROOM
+    </button>
+    
+    <button id="btn-global-back" class="btn-gy" style="position: absolute; bottom: 40px;" onclick="portalTransition('block-hall')">
+        ← Вернуться в Холл
+    </button>
+</div> 
 <div id="block-bar" class="block">
     <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
 
@@ -654,13 +661,60 @@ function handleDoor() {
         }
 
         setTimeout(() => { 
-            next.classList.add('active'); next.style.pointerEvents = "auto";
-            // Запуск кашля и проверка специфических звуков комнат
-            if (nextId === 'block-bar') { playBarSound(); } 
-            if (nextId === 'block-server') { if(srvSnd) srvSnd.play(); }
+            next.classList.add('active'); 
+            next.style.pointerEvents = "auto";
+            
+            // Скрываем вообще все стрелки перед включением нужных
+            const allArrows = document.querySelectorAll('.ui-nav-arrows');
+            allArrows.forEach(arrow => arrow.style.display = 'none');
+
+            if (nextId === 'block-entrance') {
+                const door = document.getElementById('main-door');
+                if (door) { door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto"; }
+                if (langPanel) { langPanel.classList.remove('force-hide'); }
+                if (badge) badge.style.display = "none";
+            } else {
+                if (langPanel) langPanel.classList.add('force-hide');
+                
+                // ВКЛЮЧАЕМ СТРЕЛКИ НАВИГАЦИИ ДЛЯ СЕРВЕРНОЙ
+                if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
+                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
+                if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
+                if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
+                if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
+                if (nextId === 'block-server') { document.getElementById('nav-server').style.display = "flex"; } // Наш руль!
+                
+                // ЖЕЛЕЗНО ОТОБРАЖАЕМ АВАТАР И ФЛАГ В СЕРВЕРНОЙ (Добавлено 'block-server')
+                if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                    currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                    if (currentUserImage && document.getElementById('badge-avatar-img')) {
+                        document.getElementById('badge-avatar-img').src = currentUserImage;
+                        if (badge) badge.style.display = "block"; // Проявляем бэйдж с авой
+                    }
+
+                    // Подтягиваем флаг страны для сохраненного языка
+                    const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
+                    const badgeFlag = document.getElementById('badge-flag-img');
+                    if (badgeFlag && savedLang) {
+                        if (savedLang.includes('ru')) badgeFlag.src = "https://flagcdn.com/w20/ru.png";
+                        else if (savedLang.includes('fr')) badgeFlag.src = "https://flagcdn.com/w20/fr.png";
+                        else if (savedLang.includes('de')) badgeFlag.src = "https://flagcdn.com/w20/de.png";
+                        else badgeFlag.src = "https://flagcdn.com/w20/gb.png";
+                    }
+                }
+            }
+            
+            // Врубаем звук Серверной
+            if (nextId === 'block-server') { 
+                if (srvSnd) {
+                    srvSnd.volume = 0;
+                    srvSnd.play().then(() => {
+                        fadeInAudio(srvSnd, 0.7, 1500);
+                    }).catch(e => {});
+                } 
+            }
+            if (nextId === 'block-bar') { playBarSound(); }
         }, 50);
-    }, 400); 
-}
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
