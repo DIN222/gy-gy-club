@@ -465,24 +465,28 @@ function handleDoor() {
 
     // ИЗОЛИРОВАННАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ID И ГЕНЕРАЦИИ QR-КОДОВ БЕЗ ОШИБОК
     function renderUserPassports(targetID) {
-        const idLabel = document.getElementById('id-label');
-        const passIdVal = document.getElementById('pass-id-val');
-        const qrBoxReg = document.getElementById('qr-box-reg');
-        const passQrBox = document.getElementById('pass-qr-box');
+            const idLabel = document.getElementById('id-label');
+            const passIdVal = document.getElementById('pass-id-val');
+            const qrBoxReg = document.getElementById('qr-box-reg');
+            const passQrBox = document.getElementById('pass-qr-box');
 
-        if (idLabel) idLabel.innerText = targetID;
-        if (passIdVal) passIdVal.innerText = targetID;
-        
-        if (qrBoxReg) {
-            qrBoxReg.innerHTML = "";
-            new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
+            if (idLabel) idLabel.innerText = targetID;
+            if (passIdVal) passIdVal.innerText = targetID;
+            
+            // БРОНЕБОЙНАЯ ПРОВЕРКА: Если браузер забанил QR-библиотеку, Клуб не упадет
+            try {
+                if (qrBoxReg && typeof QRCode !== 'undefined') {
+                    qrBoxReg.innerHTML = "";
+                    new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
+                }
+                if (passQrBox && typeof QRCode !== 'undefined') {
+                    passQrBox.innerHTML = "";
+                    new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
+                }
+            } catch (qrError) {
+                console.log("Клубный фикс: Генерация QR заблокирована политикой приватности браузера.");
+            }
         }
-        if (passQrBox) {
-            passQrBox.innerHTML = "";
-            new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
-        }
-    }
-
     // ПРОВЕРКА И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ ПРИ ВОЗВРАТЕ
     function checkAndFillRegistrationForm() {
         const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
