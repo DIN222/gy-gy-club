@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.110| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.111| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -392,7 +392,7 @@ font {
         <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
         <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
     </div>
-    <script type="text/javascript">
+  <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
@@ -402,12 +402,16 @@ font {
         }, 'google_translate_element');
     }
 
-    // ЗЛОПАТНЫЙ LOCALSTORAGE.CLEAR() УБРАН НАВСЕГДА! СЕССИЯ БОЛЬШЕ НЕ СЛЕТАЕТ.
-
+    // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ СОСТОЯНИЯ И ЗВУКА ===
     let currentID = "";
     let currentActiveCode = 'en';
     let currentUserImage = "";
     let currentFlagCode = 'gb';
+
+    const barAmbient = document.getElementById('snd-ambient');   
+    const horseCough = document.getElementById('snd-khe'); 
+    const srvSnd = document.getElementById('snd-server');
+    let coughInterval = null; 
 
     // Наш закрытый пул из 12 языков интерфейса
     const allLangs = [
@@ -419,6 +423,7 @@ font {
         {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
 
+    // === СИСТЕМА ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ===
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
         if (!container) return;
@@ -433,11 +438,10 @@ font {
         });
     }
 
-   function applyLanguage(lang) {
+    function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
         
-        // ЗАПИСЫВАЕМ ФЛАГ В ПАМЯТЬ КЛУБА ДЛЯ ВСЕХ ОСТАЛЬНЫХ СТРАНИЦ
         localStorage.setItem('gygy_flag', lang.c);
         
         document.getElementById('active-lang-display').innerHTML = `
@@ -481,7 +485,8 @@ font {
         });
     }
 
-function handleDoor() {
+    // === ВХОД ЧЕРЕЗ ГЛАВНУЮ ДВЕРЬ ===
+    function handleDoor() {
         document.getElementById('snd-door').play();
         const d = document.getElementById('main-door');
         d.style.transform = "scale(5)"; 
@@ -490,18 +495,16 @@ function handleDoor() {
         document.getElementById('lang-switcher').style.opacity = "0";
         
         currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        localStorage.setItem('gygy_id', currentID); // Железно пишем в сессию
+        localStorage.setItem('gygy_id', currentID);
         
-        // Отрисовка данных
         renderUserPassports(currentID);
         
         setTimeout(() => { 
             portalTransition('block-welcome'); 
-            const a = document.getElementById('snd-ambient'); a.volume = 1; a.play();
+            if (barAmbient) { barAmbient.volume = 0.1; barAmbient.play().catch(e => {}); }
         }, 1000);
     }
 
-    // ИЗОЛИРОВАННАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ID И ГЕНЕРАЦИИ QR-КОДОВ БЕЗ ОШИБОК
     function renderUserPassports(targetID) {
         const idLabel = document.getElementById('id-label');
         const passIdVal = document.getElementById('pass-id-val');
@@ -521,162 +524,157 @@ function handleDoor() {
         }
     }
 
-    // ПРОВЕРКА И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ ПРИ ВОЗВРАТЕ
     function checkAndFillRegistrationForm() {
         const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
         currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
         
         if (currentID) {
-            renderUserPassports(currentID); // Рисуем ID и QR-коды
+            renderUserPassports(currentID);
         }
         
         if (savedAvatar) {
             currentUserImage = savedAvatar;
             
-            // Если это сгенерированный SVG-аватар
             if (savedAvatar.startsWith('data:image/svg+xml')) {
                 const avatarImg = document.getElementById('avatar-img');
-                if (avatarImg) {
-                    avatarImg.src = savedAvatar;
-                    avatarImg.style.display = "block";
-                }
+                if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
                 const txtAvatar = document.getElementById('txt-avatar');
                 if (txtAvatar) txtAvatar.style.display = "none";
             } else { 
-                // Если это загруженное фото (base64)
                 const ppImg = document.getElementById('pp');
-                if (ppImg) {
-                    ppImg.src = savedAvatar;
-                    ppImg.style.display = "block";
-                }
+                if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
                 const txtPhoto = document.getElementById('txt-photo');
                 if (txtPhoto) txtPhoto.style.display = "none";
             }
             
-            // Активируем кнопки перехода вперед — юзер уже зарегистрирован!
             const btnWHall = document.getElementById('btn-w-hall');
             if(btnWHall) btnWHall.classList.remove('btn-sleep');
             
             const btnPass = document.getElementById('btn-pass');
             if(btnPass) btnPass.classList.remove('btn-sleep');
         }
-function portalTransition(nextId) {
-    const current = document.querySelector('.block.active');
-    const backBtn = document.getElementById('btn-global-back');
-    const srvSnd = document.getElementById('snd-server');
-    const badge = document.getElementById('global-user-badge');
-    const langPanel = document.getElementById('lang-switcher');
-    const barAmbient = document.getElementById('snd-ambient');
-    
-    // === ЗВУКОВОЙ МИКШЕР БАРА ===
-    if (barAmbient) {
-        let targetVolume = 0;
+    }
 
-        if (nextId === 'block-welcome') {
-            targetVolume = 0.1; 
-        } else if (nextId === 'block-identity' || nextId === 'block-hall') {
-            targetVolume = 0.25; 
-        } else if (nextId === 'block-tables') {
-            targetVolume = 0.4; 
-        } else if (nextId === 'block-bar') {
-            targetVolume = 0.6; 
-        }
+    // === ГЛАВНЫЙ КИНЕМАТОГРАФИЧНЫЙ КОНТРОЛЛЕР ПЕРЕХОДОВ ===
+    function portalTransition(nextId) {
+        const current = document.querySelector('.block.active');
+        const backBtn = document.getElementById('btn-global-back');
+        const badge = document.getElementById('global-user-badge');
+        const langPanel = document.getElementById('lang-switcher');
+        
+        // Звуковой микшер комнат Клуба
+        if (barAmbient) {
+            let targetVolume = 0;
+            if (nextId === 'block-welcome') targetVolume = 0.1;
+            else if (nextId === 'block-identity' || nextId === 'block-hall') targetVolume = 0.25;
+            else if (nextId === 'block-tables') targetVolume = 0.4;
+            else if (nextId === 'block-bar') targetVolume = 0.6;
 
-        if (targetVolume > 0) {
-            barAmbient.volume = targetVolume;
-            if (barAmbient.paused) {
-                barAmbient.play().catch(e => console.log("Audio waiting for gesture."));
+            if (targetVolume > 0) {
+                barAmbient.volume = targetVolume;
+                if (barAmbient.paused) barAmbient.play().catch(e => {});
+            } else {
+                stopBarSound(); 
             }
-        } else {
-            stopBarSound(); 
         }
-    }
 
-    // Глушим сервера при уходе из Серверной
-    if (srvSnd && nextId !== 'block-server') {
-        srvSnd.pause();
-        srvSnd.currentTime = 0;
-    }
-
-    // Прячем языковую панель
-    if (langPanel) { langPanel.classList.add('force-hide'); }
-    
-    // Гасим текущий экран
-    if (current) { 
-        current.style.opacity = "0"; 
-        current.style.pointerEvents = "none"; 
-    }
-    if (backBtn) backBtn.style.opacity = "0";
-
-    // Главный таймаут смены экранов
-    setTimeout(() => {
-        if (current) { 
-            current.classList.remove('active'); 
-            current.style.display = "none"; 
+        // Глушим сервера при физическом уходе из Серверной в другие блоки
+        if (srvSnd && nextId !== 'block-server') {
+            srvSnd.pause();
+            srvSnd.currentTime = 0;
         }
-        
-        const next = document.getElementById(nextId);
-        if (!next) return;
-        
-        next.style.display = "flex";
-        
-        // Сбрасываем стрелки навигации
-        const allArrows = document.querySelectorAll('.ui-nav-arrows');
-        allArrows.forEach(arrow => arrow.style.display = 'none');
 
-        if (nextId === 'block-entrance') {
-            const door = document.getElementById('main-door');
-            if (door) { door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto"; }
-            if (langPanel) { langPanel.classList.remove('force-hide'); }
-            if (badge) badge.style.display = "none";
-        } else {
-            if (langPanel) langPanel.classList.add('force-hide');
-            
-            // Включаем нужные стрелки
-            if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
-            if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
-            if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
-            if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
-            if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
-            if (nextId === 'block-server') { document.getElementById('nav-server').style.display = "flex"; }
-            
-            // Проверяем бэйдж, аватар и флаг гостя
-            if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
-                let currentUserImage = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-                if (currentUserImage && document.getElementById('badge-avatar-img')) {
-                    document.getElementById('badge-avatar-img').src = currentUserImage;
-                    if (badge) badge.style.display = "block";
-                }
+        if (langPanel) { langPanel.classList.add('force-hide'); }
+        
+        // Плавно тушим текущий экран
+        if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
+        if (backBtn) backBtn.style.opacity = "0";
 
-                const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
-                const badgeFlag = document.getElementById('badge-flag-img');
-                if (badgeFlag && savedLang) {
-                    if (savedLang.includes('ru')) badgeFlag.src = "https://flagcdn.com/w20/ru.png";
-                    else if (savedLang.includes('fr')) badgeFlag.src = "https://flagcdn.com/w20/fr.png";
-                    else if (savedLang.includes('de')) badgeFlag.src = "https://flagcdn.com/w20/de.png";
-                    else badgeFlag.src = "https://flagcdn.com/w20/gb.png";
+        // Кроссфейд таймаут
+        setTimeout(() => {
+            if (current) { current.classList.remove('active'); current.style.display = "none"; }
+            
+            const next = document.getElementById(nextId);
+            if (!next) return;
+            
+            next.style.display = "flex";
+            
+            const allArrows = document.querySelectorAll('.ui-nav-arrows');
+            allArrows.forEach(arrow => arrow.style.display = 'none');
+
+            if (nextId === 'block-entrance') {
+                const door = document.getElementById('main-door');
+                if (door) { door.style.transform = "scale(1)"; door.style.opacity = "1"; door.style.pointerEvents = "auto"; }
+                if (langPanel) { langPanel.classList.remove('force-hide'); }
+                if (badge) badge.style.display = "none";
+            } else {
+                if (langPanel) langPanel.classList.add('force-hide');
+                
+                // Включаем стрелки под нужную комнату
+                if (nextId === 'block-welcome') { document.getElementById('nav-welcome').style.display = "flex"; }
+                if (nextId === 'block-identity') { document.getElementById('nav-identity').style.display = "flex"; }
+                if (nextId === 'block-hall') { document.getElementById('nav-hall').style.display = "flex"; }
+                if (nextId === 'block-tables') { document.getElementById('nav-tables').style.display = "flex"; }
+                if (nextId === 'block-bar') { document.getElementById('nav-bar').style.display = "flex"; }
+                if (nextId === 'block-server') { document.getElementById('nav-server').style.display = "flex"; }
+                
+                // Проверяем бэйдж, уникальный аватар и флаг гостя
+                if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
+                    let savedImg = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                    if (savedImg && document.getElementById('badge-avatar-img')) {
+                        document.getElementById('badge-avatar-img').src = savedImg;
+                        if (badge) badge.style.display = "block";
+                    }
+
+                    const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
+                    const badgeFlag = document.getElementById('badge-flag-img');
+                    if (badgeFlag && savedLang) {
+                        if (savedLang.includes('ru')) badgeFlag.src = "https://flagcdn.com/w20/ru.png";
+                        else if (savedLang.includes('fr')) badgeFlag.src = "https://flagcdn.com/w20/fr.png";
+                        else if (savedLang.includes('de')) badgeFlag.src = "https://flagcdn.com/w20/de.png";
+                        else badgeFlag.src = "https://flagcdn.com/w20/gb.png";
+                    }
                 }
             }
-        }
 
-        // Проявляем новый экран
-        setTimeout(() => { 
-            next.classList.add('active'); 
-            next.style.pointerEvents = "auto";
-            
-            if (nextId === 'block-bar') { playBarSound(); } 
-            
-            if (nextId === 'block-server') { 
-                if (srvSnd) {
-                    srvSnd.volume = 0;
-                    srvSnd.play().then(() => {
-                        fadeInAudio(srvSnd, 0.7, 1500);
-                    }).catch(e => console.log("Sound context waiting..."));
-                } 
+            // Плавное проявление нового экрана из темноты
+            setTimeout(() => { 
+                next.classList.add('active'); 
+                next.style.pointerEvents = "auto";
+                
+                if (nextId === 'block-bar') { playBarSound(); } 
+                
+                if (nextId === 'block-server') { 
+                    if (srvSnd) {
+                        srvSnd.volume = 0;
+                        srvSnd.play().then(() => {
+                            fadeInAudio(srvSnd, 0.7, 1500); // Плавно врубаем сервера
+                        }).catch(e => {});
+                    } 
+                }
+            }, 50);
+        }, 400); 
+    }
+
+    // === ПЛАВНОЕ НАРАСТАНИЯ ЗВУКА СЕРВЕРОВ ===
+    function fadeInAudio(audioElement, targetVolume, duration) {
+        let currentVolume = 0;
+        const intervalTime = 50; 
+        const steps = duration / intervalTime;
+        const volumeStep = targetVolume / steps;
+
+        const timer = setInterval(() => {
+            currentVolume += volumeStep;
+            if (currentVolume >= targetVolume) {
+                audioElement.volume = targetVolume;
+                clearInterval(timer);
+            } else {
+                audioElement.volume = currentVolume;
             }
-        }, 50);
-    }, 400); 
-}
+        }, intervalTime);
+    }
+
+    // === ПРОФИЛЬ, АВАТАРЫ И ПАСПОРТ ===
     function preview(i) {
         if(i.files && i.files[0]) {
             const r = new FileReader();
@@ -713,10 +711,7 @@ function portalTransition(nextId) {
     }
 
     function saveUserProfile() {
-        if(!currentUserImage) { 
-            alert("Генерируй аватар или загрузи фото!"); 
-            return; 
-        }
+        if(!currentUserImage) { alert("Генерируй аватар или загрузи фото!"); return; }
         localStorage.setItem('gy_user_id', currentID);
         localStorage.setItem('gy_user_img', currentUserImage);
         
@@ -740,8 +735,57 @@ function portalTransition(nextId) {
     function goToTables() { portalTransition('block-tables'); }
     function deepDive() { portalTransition('block-bar'); } 
     function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
+
+    // === УПРАВЛЕНИЕ АВТОМАТОМ КАШЛЯ ЧАРЛИ ===
+    function playBarSound() {
+        const barBlock = document.getElementById('block-bar');
+        if (!barBlock || !barBlock.classList.contains('active')) return;
         
-    // АВТОЗАПУСК С ПРОВЕРКОЙ ХРАНИЛИЩ И СИНХРОНИЗАЦИЕЙ СВЕТА КЛУБА
+        if (barAmbient) {
+            barAmbient.volume = 0.6; 
+            if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+            
+            coughInterval = setInterval(() => {
+                const stillInBar = document.getElementById('block-bar')?.classList.contains('active');
+                if (stillInBar && !barAmbient.paused && horseCough) {
+                    horseCough.currentTime = 0; 
+                    horseCough.volume = 0.7;
+                    horseCough.play().catch(e => {});
+                } else {
+                    if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+                }
+            }, 15000);
+        }
+    }
+
+    function stopBarSound() {
+        if (barAmbient && !barAmbient.paused) barAmbient.pause();
+        if (horseCough && !horseCough.paused) horseCough.pause();
+        if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
+    }
+
+    function smoothTransitionToTables() {
+        let vol = 10;
+        if (barAmbient) barAmbient.volume = 0.5;
+        if (horseCough) horseCough.volume = 0.7;
+
+        const fadeInterval = setInterval(() => {
+            vol--;
+            if (barAmbient && barAmbient.volume > 0.05) {
+                barAmbient.volume = Math.max(0, Math.min(0.5, vol / 20));
+            }
+            if (horseCough && horseCough.volume > 0.05) {
+                body.volume = Math.max(0, Math.min(0.7, vol / 14));
+            }
+            if (vol <= 0) { clearInterval(fadeInterval); stopBarSound(); }
+        }, 30);
+
+        document.body.style.transition = "opacity 0.6s ease-in-out";
+        document.body.style.opacity = '0';
+        setTimeout(() => { location.href = 'tables.html'; }, 600);
+    }
+        
+    // === АВТОЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ===
     window.onload = () => { 
         renderLangList(); 
         
@@ -758,7 +802,13 @@ function portalTransition(nextId) {
 
         currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
 
-        if (isReturning === 'true' && currentID) {
+        // Проверка возврата из внешней AI Room (verses.html)
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetRoom = urlParams.get('room');
+
+        if (targetRoom === 'server') {
+            portalTransition('block-server');
+        } else if (isReturning === 'true' && currentID) {
             if (barBlock) barBlock.style.display = 'flex';
             portalTransition('block-bar');
         } else if (forceEntrance === 'true' && currentID) {
@@ -768,139 +818,12 @@ function portalTransition(nextId) {
         } else {
             if (entBlock) entBlock.style.display = 'flex';
             portalTransition('block-entrance');
-            if (currentID) {
-                checkAndFillRegistrationForm();
-            }
+            if (currentID) { checkAndFillRegistrationForm(); }
         }
 
-        setTimeout(() => {
-            document.body.classList.add('page-loaded');
-        }, 50); 
+        setTimeout(() => { document.body.classList.add('page-loaded'); }, 50); 
     };
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-<script>
- // ЗВУКОВОЙ ДВИЖОК БАРА С АНТИ-КАШЛЕМ OUTSIDE
-const barAmbient = document.getElementById('snd-ambient');   
-const horseCough = document.getElementById('snd-khe'); 
-let coughInterval = null; 
-
-function playBarSound() {
-    const barBlock = document.getElementById('block-bar');
-    
-    // Кашель запускаем ТОЛЬКО если мы зашли физически в бар
-    if (!barBlock || !barBlock.classList.contains('active')) return;
-    
-    if (barAmbient) {
-        // Устанавливаем барную громкость для эмбиента
-        barAmbient.volume = 0.6; 
-        
-        if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
-        
-        coughInterval = setInterval(() => {
-            const stillInBar = document.getElementById('block-bar')?.classList.contains('active');
-            
-            if (stillInBar && !barAmbient.paused && horseCough) {
-                horseCough.currentTime = 0; 
-                horseCough.volume = 0.7;
-                horseCough.play().catch(e => console.log("Чарли запершило"));
-            } else {
-                if (coughInterval) { clearInterval(coughInterval); coughInterval = null; }
-            }
-        }, 15000);
-    }
-}
-
-function stopBarSound() {
-    // Гасим строго барные треки, если они существуют
-    if (barAmbient && !barAmbient.paused) barAmbient.pause();
-    if (horseCough && !horseCough.paused) horseCough.pause();
-    
-    // Ликвидируем только таймер кашля Чарли
-    if (coughInterval) { 
-        clearInterval(coughInterval); 
-        coughInterval = null; 
-    }
-}
-    function smoothTransitionToTables() {
-        let vol = 10;
-        
-        if (barAmbient) barAmbient.volume = 0.5;
-        if (horseCough) horseCough.volume = 0.7;
-
-        const fadeInterval = setInterval(() => {
-            vol--;
-            if (barAmbient && barAmbient.volume > 0.05) {
-                barAmbient.volume = Math.max(0, Math.min(0.5, vol / 20));
-            }
-            if (horseCough && horseCough.volume > 0.05) {
-                horseCough.volume = Math.max(0, Math.min(0.7, vol / 14));
-            }
-            
-            if (vol <= 0) {
-                clearInterval(fadeInterval);
-                stopBarSound();
-            }
-        }, 30);
-
-        document.body.style.transition = "opacity 0.6s ease-in-out";
-        document.body.style.opacity = '0';
-
-        setTimeout(() => {
-            location.href = 'tables.html';
-        }, 600);
-    }
-</script>
-    <script>
-        // 1. Сначала у тебя идут глобальные переменные
-        const barAmbient = document.getElementById('snd-ambient');   
-        const horseCough = document.getElementById('snd-khe'); 
-        const srvSnd = document.getElementById('snd-server');
-        let coughInterval = null; 
-
-        // 2. Потом лежит наша большая функция переходов (закрывается своей фигурной скобкой)
-        function portalTransition(nextId) {
-            // ... тут весь код функции, который мы правили ...
-        } // <--- ВОТ ТУТ ОНА ОКОНЧАТЕЛЬНО ЗАВЕРШИЛАСЬ
-
-        // 3. Чуть ниже лежит функция кашля Чарли
-        function playBarSound() {
-            // ... код Чарли ...
-        }
-
-        function stopBarSound() {
-            // ... код остановки ...
-        }
-
-        // ====================================================
-        // ВОТ СЮДА, ПРЯМО НА СВОБОДНОЕ МЕСТО, ВСТАВЛЯЙ ЕЁ:
-        // ====================================================
-        function fadeInAudio(audioElement, targetVolume, duration) {
-            let currentVolume = 0;
-            const intervalTime = 50; 
-            const steps = duration / intervalTime;
-            const volumeStep = targetVolume / steps;
-
-            const timer = setInterval(() => {
-                currentVolume += volumeStep;
-                if (currentVolume >= targetVolume) {
-                    audioElement.volume = targetVolume;
-                    clearInterval(timer);
-                } else {
-                    audioElement.volume = currentVolume;
-                }
-            }, intervalTime);
-        }
-        // ====================================================
-
-        // Тут может быть код разборщика URL для возврата из ИИ, если ты его добавил:
-        window.addEventListener('DOMContentLoaded', () => {
-            // ...
-        });
-
-    </script>
-</body>
-</html>
 </body>
 </html>
