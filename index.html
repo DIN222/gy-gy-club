@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.104| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.105| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -554,31 +554,35 @@ function handleDoor() {
             if(btnPass) btnPass.classList.remove('btn-sleep');
         }
     }
-
- function portalTransition(nextId) {
+function portalTransition(nextId) {
     const current = document.querySelector('.block.active');
     const backBtn = document.getElementById('btn-global-back');
     const srvSnd = document.getElementById('snd-server');
     const badge = document.getElementById('global-user-badge');
     const langPanel = document.getElementById('lang-switcher');
     
-    // === ВОТ ЭТОТ КУСОК ОБЯЗАТЕЛЬНО ДОБАВЬ ===
-    // Если мы идем КУДА УГОДНО, кроме бара, превентивно душим кашель и амбиент
-    if (nextId !== 'block-bar') {
+    // Получаем ID блока, из которого уходим прямо сейчас
+    const currentId = current ? current.id : '';
+
+    // Если мы ФИЗИЧЕСКИ БЫЛИ в баре и уходим из него КУДА УГОДНО — вот тогда тушим Чарли
+    if (currentId === 'block-bar' && nextId !== 'block-bar') {
         stopBarSound();
     }
-    // =========================================
+    
+    // Если уходим на самый первый экран входа
+    if (nextId === 'block-entrance') {
+        stopBarSound(); // на всякий случай
+        if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
+    }
 
+    // Твой скрыватель языковой рамки
     if (langPanel) { langPanel.classList.add('force-hide'); }
     
     if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
     if (backBtn) backBtn.style.opacity = "0";
-
-    if (nextId === 'block-entrance') {
-        if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
-    }
     
-    // ... дальше идет твой стандартный setTimeout, его не трогай ...
+    // ... дальше без изменений идет твой setTimeout ...
+
     setTimeout(() => {
         if (current) { current.classList.remove('active'); current.style.display = "none"; }
         const next = document.getElementById(nextId);
@@ -779,9 +783,11 @@ function playBarSound() {
 }
 
 function stopBarSound() {
-    if (barAmbient) barAmbient.pause();
-    if (horseCough) horseCough.pause();
-    // Полное уничтожение таймера кашля, чтобы не тикал в фоне
+    // Гасим строго барные треки, если они существуют
+    if (barAmbient && !barAmbient.paused) barAmbient.pause();
+    if (horseCough && !horseCough.paused) horseCough.pause();
+    
+    // Ликвидируем только таймер кашля Чарли
     if (coughInterval) { 
         clearInterval(coughInterval); 
         coughInterval = null; 
