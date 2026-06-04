@@ -3,6 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club v4.5.1.103| HYBRID TRANSLATION ENGINE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
+        
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        body, button, input, div, img, span { pointer-events: auto !important; }
+        img { -webkit-user-drag: none !important; }
+
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
+        
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Слева, по феншую клуба) */
+        .lang-frame-locked {
+            position: fixed; top: 15px; left: 15px; z-index: 9999999; 
+            width: 180px; height: 40px; border: 2px solid var(--gold); 
+            background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 12px;
+        }
+        .lang-dropdown-adaptive {
+            display: none; position: absolute; top: 44px; left: -2px; 
+            width: 180px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
+            max-height: 70vh; overflow-y: auto;
+        }
+        .lang-item { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; line-height: 1; }
+        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
+        .flag-icon { width: 22px; margin-right: 12px; }
+
+        /* ЛОГОТИП GY-GY (Справа, как заказывали) */
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+        }
+        
+        /* СКВОЗНОЙ АВАТАР */
+        .ui-user-badge {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 2px solid var(--gold); background: #111;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            z-index: 1000000; cursor: pointer; display: none;
+        }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
+        .ui-user-badge .badge-flag {
+            position: absolute; bottom: -2px; right: -4px;
+            width: 17px; height: 12px; object-fit: cover;
+            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+        }
+
+        /* ПАСПОРТ */
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card .box-final { margin: 15px auto; border-color: #000; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
+
+        .ui-back-to-bar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold); padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s; }
+
+        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
+
+        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 1.2s ease-in, opacity 1s; z-index: 9999999 !important; }
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+        .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
+        
+        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+
+        #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
+        .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
+        .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
+
+        body { top: 0 !important; }
+        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
+        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
+        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
+        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
+
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
+        .ui-nav-arrows {
+            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
+            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
+            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            pointer-events: auto !important; user-select: none; display: none;
+        }
+        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item:hover { opacity: 0.8; }
+
+        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
+        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+        .hall-interior .quote-text { position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 80%; margin: 0; text-align: center; }
+
+        .hall-door-target {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
+            background: transparent;
+        }
+
+        /* Интерактивные зоны стрелок в Холле */
+        .painting-zone {
+            position: absolute; 
+            top: 25vh; 
+            width: 6vw; 
+            height: 12vh; 
+            cursor: pointer; 
+            z-index: 6; 
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .painting-left { left: 23vw; }
+        .painting-right { right: 23vw; }
+
+        /* Изящный единый стиль для всех навигационных стрелок Холла */
+        .cue-arrow-hall { 
+            color: var(--violet); 
+            font-size: 38px; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
+            pointer-events: none; 
+            user-select: none;
+            z-index: 10;
+            transition: opacity 0.2s;
+        }
+        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
+
+        /* Выплывающие подменю для стрелок Холла */
+        .manifest-btn-box { 
+            position: absolute; 
+            bottom: -50px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 140px; 
+            display: flex; 
+            justify-content: center; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.4s, bottom 0.4s; 
+            z-index: 10; 
+        }
+        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
+
+     /* СЕРВЕРНАЯ */
+        .server-leds { display: flex; gap: 8px; margin-top: 15px; }
+        .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
+        .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
+        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
+
+        .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
+        .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
+        
+        /* Глушим системные плашки Google */
+        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
+        
+      /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Защита от сдвигов Гугла + правильное плавное проявление */
+        body { 
+            top: 0 !important; 
+            background-color: #000 !important;
+            opacity: 0; /* На старте всегда глухая темнота */
+            transition: opacity 0.4s ease-in-out !important;
+        }
+        
+        /* Свет загорается ТОЛЬКО когда скрипт добавит этот класс */
+        body.page-loaded {
+            opacity: 1 !important;
+        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>GY-GY Club v4.5.1.102| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
