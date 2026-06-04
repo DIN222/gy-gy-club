@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.106| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.107| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -553,51 +553,64 @@ function handleDoor() {
             const btnPass = document.getElementById('btn-pass');
             if(btnPass) btnPass.classList.remove('btn-sleep');
         }
-    }
-function portalTransition(nextId) {
+    }function portalTransition(nextId) {
     const current = document.querySelector('.block.active');
     const backBtn = document.getElementById('btn-global-back');
     const srvSnd = document.getElementById('snd-server');
     const badge = document.getElementById('global-user-badge');
     const langPanel = document.getElementById('lang-switcher');
     
-    // Ссылки на наши барные звуки
+    // Получаем прямые ссылки на аудио-элементы
     const barAmbient = document.getElementById('snd-ambient');
     
-    // === УМНЫЙ АУДИОМИКШЕР (Эффект приближения/удаления) ===
+    // === ЕДИНЫЙ ЗВУКОВОЙ МИКШЕР КЛУБА ===
     if (barAmbient) {
-        // Определяем громкость для комнаты, в которую ИДЕМ
         let targetVolume = 0;
-        if (nextId === 'block-welcome') targetVolume = 0.1;
-        else if (nextId === 'block-identity' || nextId === 'block-hall') targetVolume = 0.25;
-        else if (nextId === 'block-tables') targetVolume = 0.4;
-        else if (nextId === 'block-bar') targetVolume = 0.6;
 
+        // Распределяем громкость БАРА по комнатам
+        if (nextId === 'block-welcome') {
+            targetVolume = 0.1; // Едва слышно в Приветствии
+        } else if (nextId === 'block-identity' || nextId === 'block-hall') {
+            targetVolume = 0.25; // Чуть громче в Холле / Регистрации
+        } else if (nextId === 'block-tables') {
+            targetVolume = 0.4; // Хорошо слышно у Столиков
+        } else if (nextId === 'block-bar') {
+            targetVolume = 0.6; // Максимум у стойки
+        }
+
+        // Управляем воспроизведением БАРА
         if (targetVolume > 0) {
-            // Если звук стоял на паузе (например, только вошли на Welcome), запускаем его
-            if (barAmbient.paused) {
-                barAmbient.volume = 0;
-                barAmbient.play().catch(e => console.log("Аудио ждет жеста"));
-            }
-            // Меняем громкость под текущую комнату
+            // Если шли обратно и звук был активен, просто меняем уровень
             barAmbient.volume = targetVolume;
-        } else if (nextId === 'block-entrance') {
-            // Если вышли на самый вход — вот тут тушим бар совсем
-            stopBarSound();
+            if (barAmbient.paused) {
+                barAmbient.play().catch(e => console.log("Аудио ждет клика"));
+            }
+        } else {
+            // Если ушли на Вход (entrance), в Серверную или в AI Room — бар затыкается
+            stopBarSound(); 
         }
     }
-    // ======================================================
 
+    // Управляем СЕРВЕРНЫМ звуком на опережение (при уходе из серверной)
+    if (srvSnd && nextId !== 'block-server' && nextId !== 'block-ai-room') {
+        srvSnd.pause();
+        srvSnd.currentTime = 0;
+    }
+    // ===================================
+
+    // Прячем языковую панель, чтобы не мелькала
     if (langPanel) { langPanel.classList.add('force-hide'); }
     
     if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
     if (backBtn) backBtn.style.opacity = "0";
 
+    // Оставляем только базовый сброс для самого первого входа
     if (nextId === 'block-entrance') {
         if (srvSnd) { srvSnd.pause(); srvSnd.currentTime = 0; }
     }
 
     setTimeout(() => {
+        // ... ТУТ НАЧИНАЕТСЯ ТВОЙ СТАНДАРТНЫЙ ТАЙМАУТ, ЕГО НЕ ТРОГАЙ ...
         if (current) { current.classList.remove('active'); current.style.display = "none"; }
         const next = document.getElementById(nextId);
         if (!next) return;
