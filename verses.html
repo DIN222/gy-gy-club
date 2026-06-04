@@ -1,194 +1,245 @@
-
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY CLUB | VERSES v.3.5.17</title>
+    <title>GY-GY Club - AI Room (Verses)</title>
     <style>
-        :root { --gold: #ffd700; --black: #000; --h-unit: 55px; }
-        body { background: var(--black); color: var(--gold); font-family: monospace; margin: 0; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
-        
-        header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 10px 15px; border-bottom: 2px solid var(--gold); background: #000; z-index: 10; }
-        .header-left { display: flex; gap: 10px; align-items: center; }
-        .header-right { display: flex; justify-content: flex-end; }
-        .ui-box { height: var(--h-unit); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; padding: 0 15px; background: transparent; color: var(--gold); cursor: pointer; box-sizing: border-box; font-size: 18px; font-weight: bold; transition: 0.3s; text-decoration: none; }
-        .ui-box:hover { background: rgba(255,215,0,0.1); box-shadow: 0 0 15px var(--gold); }
-        .arrow { font-size: 32px; width: 60px; font-family: sans-serif; }
-        .logo { font-size: 30px; font-weight: bold; letter-spacing: 6px; padding: 0 10px; text-shadow: 0 0 10px var(--gold); }
-
-        #wall { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; position: relative; }
-        #wall-placeholder { padding: 40px; text-align: center; color: rgba(255,215,0,0.4); font-size: 18px; line-height: 1.6; border: 1px dashed rgba(255,215,0,0.2); margin: 20px; border-radius: 15px; }
-        
-        .card { border: 1px solid #333; padding: 20px; background: #050505; max-width: 800px; margin: 0 auto; width: 95%; transition: 0.4s; position: relative; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .card.loading { border-color: var(--gold); opacity: 0.7; border-style: dashed; }
-        .content { color: #fff; min-height: 80px; outline: none; margin-bottom: 15px; white-space: pre-line; font-size: 20px; line-height: 1.4; }
-        
-        .remote { display: flex; gap: 20px; border-top: 1px solid #222; padding-top: 15px; font-size: 13px; }
-        .remote-btn { cursor: pointer; color: #777; text-transform: uppercase; font-weight: bold; }
-        .remote-btn:hover { color: var(--gold); }
-
-        footer { padding: 15px; border-top: 2px solid var(--gold); background: #000; }
-        .input-row { display: flex; gap: 10px; width: 100%; height: var(--h-unit); margin-bottom: 10px; }
-        input, select { background: #000; border: 1px solid var(--gold); color: #fff; padding: 0 15px; font-family: inherit; font-size: 18px; outline: none; }
-        input { flex: 1; }
-        input::placeholder { color: rgba(255,215,0,0.3); }
-        select { width: 150px; cursor: pointer; }
-        
-        .render-pulse { animation: pulse 2s infinite; color: #ff4500; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        .gygy-btn {
-            width: 100%; background: #000; border: 1px solid var(--gold); color: var(--gold);
-            padding: 15px; font-family: inherit; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; transition: 0.3s; font-size: 16px;
+        /* === ПЕРЕМЕННЫЕ И БАЗОВЫЕ СТИЛИ КЛУБА === */
+        :root {
+            --gold: #d6af37;
+            --purple: #1a0f2e;
+            --dark-bg: #0a0a0a;
+            --neon-glow: 0 0 10px rgba(214, 175, 55, 0.8);
+            --neon-purple: 0 0 15px rgba(147, 51, 234, 0.6);
         }
-        .gygy-btn:hover:not(:disabled) { background: rgba(255, 215, 0, 0.1); box-shadow: 0 0 15px var(--gold); }
-        .gygy-btn:disabled { opacity: 0.6; cursor: wait; }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        /* ПОСТОЯННЫЕ АТРИБУТЫ ЛЕЙАУТА */
+        .ui-header-left {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ui-header-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            font-weight: 900;
+            font-size: 24px;
+            color: var(--gold);
+            text-shadow: var(--neon-glow);
+            cursor: default;
+            user-select: none;
+        }
+
+        /* КЛУБНЫЕ КНОПКИ */
+        .btn-gy {
+            background: rgba(26, 15, 46, 0.8);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+        }
+
+        .btn-gy:hover {
+            background: var(--gold);
+            color: var(--purple);
+            box-shadow: 0 0 20px var(--gold);
+            transform: scale(1.05);
+        }
+
+        /* ИНТЕРФЕЙС AI ROOM (МАТРИЦА) */
+        .ai-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 100px 20px 40px 20px;
+            box-sizing: border-box;
+            background: radial-gradient(circle at center, #150b24 0%, #050308 100%);
+        }
+
+        /* ЭКРАН СТИХОВ / ОТВЕТОВ ИИ */
+        .terminal-screen {
+            width: 100%;
+            max-width: 800px;
+            flex-grow: 1;
+            background: rgba(10, 5, 20, 0.8);
+            border: 1px solid rgba(147, 51, 234, 0.4);
+            box-shadow: var(--neon-purple);
+            border-radius: 8px;
+            padding: 25px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .ai-speech-bubble {
+            color: var(--gold);
+            font-size: 18px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-shadow: 0 0 5px rgba(214, 175, 55, 0.3);
+        }
+
+        /* СЕТКА СИСТЕМЫ ВВОДА (ДЛЯ ОБЩЕНИЯ С НЕЙРОСЕТЬЮ) */
+        .input-area {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .ai-input {
+            flex-grow: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(147, 51, 234, 0.6);
+            padding: 15px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 16px;
+            border-radius: 4px;
+            outline: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .ai-input:focus {
+            border-color: var(--gold);
+            box-shadow: var(--neon-glow);
+        }
+
+        /* КЛУБНЫЙ АНТИВИРУС ПРОТИВ ПОДСВЕТКИ ГУГЛА */
+        font {
+            background-color: transparent !important;
+            background: transparent !important;
+            color: inherit !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        .goog-text-highlight {
+            background-color: transparent !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            color: inherit !important;
+        }
+
+        .btn-gy font, .ai-speech-bubble font, .ui-header-right font {
+            color: inherit !important;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-left">
-        <button class="ui-box arrow" onclick="location.href='index_FIX.html'">«</button>
-        <div class="ui-box" style="border:none">RU</div>
-        <button class="ui-box" style="width: auto; padding: 0 20px;" onclick="quickGen()">ГЕНЕРАТОР</button>
-    </div>
-    <div class="logo">GY-GY</div>
-    <div class="header-right">
-        <button class="ui-box arrow" onclick="location.href='clip.html'">»</button>
-    </div>
-</header>
+    <audio id="snd-server-echo" src="sbridge_ambient.mp3" loop prefetch></audio>
 
-<main id="wall">
-    <div id="wall-placeholder">
-        Выберите тему (кнопка внизу), <br>
-        напишите 4 любых слова, нажмите <b>ОК</b> и кнопку <b>ГЕНЕРАТОР</b>, <br>
-        или после выбора темы сразу нажмите <b>ГЕНЕРАТОР</b>. <br><br>
-        <span style="color: var(--gold); opacity: 0.8;">Далее ориентируйтесь по навигации на странице.</span>
+    <div class="ui-header-left">
+        <button class="btn-gy" style="border-color: #9333ea; box-shadow: var(--neon-purple);" onclick="leaveAIRoom()">
+            🔮 Назад в Серверную
+        </button>
+        
+        <div id="lang-switcher">
+            <button class="btn-gy" style="padding: 5px 10px; font-size:12px;">RU/FR</button>
+        </div>
     </div>
-</main>
-
-<footer>
-    <div class="input-row">
-        <select id="style">
-            <option value="absurd">АБСУРД</option>
-            <option value="cyber">КИБЕР-КОНЬ</option>
-            <option value="luxury">ЗОЛОТО</option>
-            <option value="hardcore">ХАРДКОР</option>
-            <option value="minimal">МИНИМАЛ</option>
-        </select>
-        <input type="text" id="words" placeholder="Напиши любые 4 слова...">
-        <button class="ui-box" style="width: 80px;" onclick="quickGen()">OK</button>
-    </div>
-    <button onclick="startGyGyGen()" class="gygy-btn">Запустить ИИ-генераторы (VEO & LYRIA)</button>
-</footer>
-
-<script>
-function checkWall() {
-    const wall = document.getElementById('wall');
-    const placeholder = document.getElementById('wall-placeholder');
-    const cards = wall.querySelectorAll('.card');
-    if (placeholder) placeholder.style.display = (cards.length > 0) ? 'none' : 'block';
-}
-
-async function quickGen() {
-    console.log("🚀 Поехали!");
-    const input = document.getElementById('words');
-    const style = document.getElementById('style').value;
-    const wall = document.getElementById('wall');
     
-    let userWords = input.value.trim();
-    let finalTopic = userWords || ({
-        absurd: "Пьяный кактус поет караоке в открытом космосе",
-        cyber: "Нейро-конь взламывает терминал за порцию овса",
-        luxury: "Алмазные слезы на золотом капоте лимузина",
-        hardcore: "Разрыв шаблона в ритме отбойного молотка",
-        minimal: "Точка. Тишина. Взрыв."
-    }[style]);
+    <div class="ui-header-right">GY-GY CLUB</div>
 
-    const id = 'v' + Date.now();
-    const card = document.createElement('div');
-    card.className = 'card loading';
-    card.id = id;
-    card.innerHTML = `<div class="content">[ОЖИДАНИЕ] ✂️ Ткань режется... \n Тема: ${finalTopic}</div>`;
-    
-    wall.insertBefore(card, wall.firstChild);
-    input.value = '';
-    checkWall();
+    <div class="ai-container">
+        
+        <div class="terminal-screen">
+            <div class="ai-speech-bubble" id="ai-output">Приветствуем тебя, путник цифрового города. Из зазоров серверных стоек сочится чистый смысл. О чем спросишь Великий Вычислитель GY-GY Клуба сегодня?</div>
+        </div>
 
-    try {
-        const response = await fetch('./chat', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: finalTopic, mode: style.toUpperCase() })
+        <div class="input-area">
+            <input type="text" id="user-msg" class="ai-input" placeholder="Напиши что-нибудь гениальное или глупое..." onkeydown="if(event.key === 'Enter') sendToAI()">
+            <button class="btn-gy" onclick="sendToAI()">Спросить</button>
+        </div>
+
+    </div>
+
+    <script>
+        const srvEcho = document.getElementById('snd-server-echo');
+
+        // Автоматический запуск звука при загрузке страницы ИИ-комнаты
+        window.addEventListener('DOMContentLoaded', () => {
+            if (srvEcho) {
+                srvEcho.volume = 0.2; // Эхо серверов за стеной играет негромко
+                srvEcho.play().catch(e => console.log("Аудио ждет фокуса пользователя."));
+            }
         });
 
-        if (!response.ok) throw new Error(`Status: ${response.status}`);
-        const data = await response.json();
-        finalizeCard(id, data.text || "🎷 Облако выдало тишину...");
+        // Функция плавного ухода из AI-комнаты назад в основной интерфейс (индексный файл)
+        function leaveAIRoom() {
+            if (srvEcho) {
+                // Плавно глушим звук перед уходом
+                let currentVol = srvEcho.volume;
+                const fadeTimer = setInterval(() => {
+                    currentVol -= 0.02;
+                    if (currentVol <= 0) {
+                        srvEcho.volume = 0;
+                        srvEcho.pause();
+                        clearInterval(fadeTimer);
+                        // Редирект обратно на главную страницу с параметром, чтобы сразу открыть серверную
+                        window.location.href = 'index.html?room=server';
+                    } else {
+                        srvEcho.volume = currentVol;
+                    }
+                }, 30);
+            } else {
+                window.location.href = 'index.html?room=server';
+            }
+        }
 
-    } catch (err) {
-        console.error("ОШИБКА:", err);
-        finalizeCard(id, `🧨 [ОШИБКА СВЯЗИ]\n${err.message}`);
-    }
-}
+        // ШЛЮЗ ДЛЯ ОБЩЕНИЯ С НЕЙРОСЕТЬЮ (Твоя заготовка под n8n / Vercel Edge API)
+        function sendToAI() {
+            const input = document.getElementById('user-msg');
+            const output = document.getElementById('ai-output');
+            const userText = input.value.trim();
 
-function finalizeCard(id, text) {
-    const card = document.getElementById(id);
-    if (!card) return;
-    card.classList.remove('loading');
-    
-    if (!text.includes("ОШИБКА")) localStorage.setItem('currentVerse', text);
+            if (!userText) return;
 
-    card.innerHTML = `
-        <div class="content" contenteditable="true">${text}</div>
-        <div class="remote">
-            <span class="remote-btn" onclick="bridge('CLIP', '${id}')">🎬 CLIP</span>
-            <span class="remote-btn" onclick="bridge('TG', '${id}')">✉ TG</span>
-            <span class="remote-btn" onclick="deleteCard('${id}')" style="color:#aa0000">❌ DEL</span>
-        </div>`;
-}
+            // Локальный юмор для пустых или тестовых запросов
+            if(userText.toLowerCase() === 'тест') {
+                output.innerText = "Тест пройден. Нейроны Чарли сыты и довольны.";
+                input.value = "";
+                return;
+            }
 
-function deleteCard(id) {
-    const card = document.getElementById(id);
-    if (card) card.remove();
-    checkWall();
-}
+            output.innerText = "Думаю... (Провода серверной банановой комнаты накаляются)...";
+            input.value = "";
 
-function bridge(action, id) {
-    const card = document.getElementById(id);
-    if (!card) return;
-    const text = card.querySelector('.content').innerText;
-    
-    if(action === 'CLIP') { 
-        localStorage.setItem('currentVerse', text); 
-        location.href = 'clip.html'; 
-    }
-    if(action === 'TG') alert("✉️ Пакет уходит в Telegram...");
-}
-
-function startGyGyGen() {
-    const btn = document.querySelector('.gygy-btn');
-    btn.disabled = true;
-    btn.innerHTML = "<span class='render-pulse'>СИНХРОНИЗАЦИЯ С ОБЛАКОМ...</span>";
-    
-    setTimeout(() => {
-        btn.innerHTML = "ГЕНЕРАТОРЫ ONLINE ✅";
-        btn.style.borderColor = "#00ff00";
-        btn.style.boxShadow = "0 0 20px rgba(0,255,0,0.4)";
-        const wall = document.getElementById('wall');
-        wall.style.boxShadow = "inset 0 0 50px rgba(0, 255, 0, 0.05)";
-        setTimeout(() => wall.style.boxShadow = "none", 500);
-    }, 2500);
-}
-
-window.onload = () => {
-    checkWall();
-    console.log("🪐 GY-GY VERSES v.3.5.16: READY.");
-};
-</script>
-</body>
-</html>
+            /* ПРИМЕР ПОДКЛЮЧЕНИЯ ТВОЕГО РАБОЧЕГО СКРИПТА ПРОКСИ:
+               
+               fetch('/api/vercel-edge-proxy', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ message: userText })
+               })
+               .then(res => res.json())
+               .then(data => {
