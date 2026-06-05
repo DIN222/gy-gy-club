@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.118| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.119| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -278,11 +278,40 @@ font {
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
-    <div id="block-welcome" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-welcome">
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
+   <!-- === ЗОНА ПРИВЕТСТВИЯ (WELCOME ZONE) === -->
+<div id="block-welcome" class="block" style="background: url('welcome_bg_jpg.jpg') center/cover no-repeat #000; position: relative; width: 100vw; height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 1 !important;">
+    
+    <!-- Интерьерная часть (всё, что под верхней панелью) -->
+    <div class="welcome-interior" style="text-align: center; z-index: 5; margin-top: 80px;">
+        
+        <!-- Главный приветственный заголовок Клуба -->
+        <h1 class="welcome-title" style="color: #fff; font-size: 48px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 15px var(--violet);">
+            WELCOME TO GY-GY CLUB
+        </h1>
+        
+        <!-- Интригующий подзаголовок -->
+        <p class="welcome-subtitle" style="color: var(--text-gray); font-size: 16px; letter-spacing: 2px; margin-bottom: 40px;">
+            The only place where AI has a sense of humor.
+        </p>
+
+        <!-- ГЛАВНАЯ КНОПКА ВХОДА (ВЕДЕТ В ХОЛЛ) -->
+        <button class="btn-gy" onclick="portalTransition('block-hall')" style="
+            font-size: 18px; 
+            padding: 15px 40px; 
+            color: var(--gold); 
+            border: 2px solid var(--gold); 
+            background: transparent; 
+            cursor: pointer; 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        " onmouseover="this.style.background='var(--gold)'; this.style.color='#000'; this.style.boxShadow='0 0 25px var(--gold)';" onmouseout="this.style.background='transparent'; this.style.color='var(--gold)'; this.style.boxShadow='0 0 15px rgba(245, 158, 11, 0.2)';">
+            ENTER THE CLUB
+        </button>
+
+    </div>
+</div>
         <!-- Фирменный слоган Клуба с мягкой серой дымкой по форме букв -->
 <div class="quote-text" style="
     color: var(--gold) !important; 
