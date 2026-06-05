@@ -1,1 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY CLUB — Книга жалоб 001</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #050505;
+            --violet: #8A2BE2;
+            --gold: #f59e0b;
+            --text-gray: #9ca3af;
+        }
 
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #110c18 0%, var(--bg-black) 100%);
+            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ======================================================== */
+        /* === ГЛОБАЛЬНАЯ ВЕРХНЯЯ ПАНЕЛЬ (СТРОГИЙ КАНОН КЛУБА) === */
+        /* ======================================================== */
+        .global-top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+
+        /* ЛЕВАЯ ЧАСТЬ: Только стрелки возврата (как в Холле) */
+        .bar-left-zone {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-weight: 900;
+            user-select: none;
+        }
+        .arrow-item-nav {
+            font-size: 24px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+        .arrow-item-nav:hover {
+            color: var(--violet);
+            text-shadow: 0 0 12px var(--violet);
+        }
+
+        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Аватар игрока */
+        .bar-center-zone {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .user-avatar-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--violet);
+            background: url('avatar_placeholder.jpg') center/cover no-repeat #111;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .user-avatar-circle:hover {
+            transform: scale(1.05);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        /* ПРАВАЯ ЧАСТЬ: Логотип */
+        .bar-right-zone {
+            font-size: 26px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 3px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s;
+        }
+        .bar-right-zone:hover {
+            transform: skewX(-10deg);
+        }
+
+        /* ======================================================== */
+        /* === ТЕРМИНАЛ КНИГИ ЖАЛОБ === */
+        /* ======================================================== */
+        .terminal-box {
+            width: 90%;
+            max-width: 650px;
+            background: rgba(10, 10, 10, 0.85);
+            border: 2px solid var(--violet);
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.4);
+            border-radius: 8px;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .terminal-header {
+            color: var(--gold);
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .terminal-subtitle {
+            color: var(--text-gray);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .complaint-textarea {
+            width: 100%;
+            height: 150px;
+            background: #000;
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            border-radius: 4px;
+            color: #34d399;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            padding: 15px;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        .complaint-textarea:focus {
+            border-color: var(--violet);
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .submit-btn {
+            margin-top: 25px;
+            background: transparent;
+            border: 2px solid var(--violet);
+            color: var(--violet);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 30px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--violet);
+            color: #000;
+            box-shadow: 0 0 20px var(--violet);
+        }
+
+        .status-message {
+            margin-top: 15px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ИДЕАЛЬНАЯ ВЕРХНЯЯ ПАНЕЛЬ СЛЕДУЕТ КАНОНУ -->
+<div class="global-top-bar notranslate">
+    
+    <!-- СЛЕВА: Только технические стрелки возврата -->
+    <div class="bar-left-zone">
+        <div class="arrow-item-nav" onclick="goBackToBar()" title="Назад в Бар">&lt;</div>
+        <div class="arrow-item-nav" onclick="goToWelcome()" title="На главный экран (Welcome)">&lt;&lt;</div>
+    </div>
+
+    <!-- ПО ЦЕНТРУ: Священный Аватар -->
+    <div class="bar-center-zone">
+        <div class="user-avatar-circle" onclick="alert('Ваш цифровой профиль. Данные синхронизированы.')"></div>
+    </div>
+
+    <!-- СПРАВА: Логотип -->
+    <div class="bar-right-zone" onclick="alert('GY-GY Клуб — Место свободных мыслей.')">
+        GY-GY
+    </div>
+    
+</div>
+
+<!-- ЦЕНТРАЛЬНЫЙ БЛОК -->
+<div class="terminal-box">
+    <div class="terminal-header">Книга Жалоб и Оскорблений</div>
+    <div class="terminal-subtitle">
+        Чарли налил тёплый виски? Или ИИ в Холле косо на вас посмотрел? Вылейте желчь или гениальную мысль сюда. Разраб поплачет, но код перепишет.
+    </div>
+
+    <textarea class="complaint-textarea" id="textInput" placeholder="Писать тут... Смелее, бумага стерпит, нейросеть запомнит."></textarea>
+    
+    <br>
+    <button class="submit-btn" onclick="sendManifest()">Излить душу</button>
+
+    <div class="status-message" id="statusMessage"></div>
+</div>
+
+<script>
+    // 1. Возврат на один уровень назад (В Бар)
+    function goBackToBar() {
+        document.body.style.transition = "opacity 0.4s ease-in-out";
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            window.location.href = 'index.html#bar'; 
+        }, 400);
+    }
+
+    // 2. Глобальный откат на самый первый экран Клуба (Welcome)
+    function goToWelcome() {
+        document.body.style.transition = "opacity 0.4s ease-in-out";
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            window.location.href = 'index.html#welcome'; 
+        }, 400);
+    }
+
+    // Логика кнопки отправки
+    function sendManifest() {
+        const text = document.getElementById('textInput').value.trim();
+        const status = document.getElementById('statusMessage');
+
+        if(!text) {
+            status.style.color = 'var(--gold)';
+            status.innerText = "Пустой бланк? Напишите хотя бы 'Разработчик — дурак', нам уже будет с чем работать.";
+            return;
+        }
+
+        status.style.color = '#34d399';
+        status.innerText = "Оскорбление принято. Лошадь-бармен довольно заржал под стойкой и убрал его в базу.";
+        document.getElementById('textInput').value = '';
+
+        console.log("Инсайт сохранен в систему Клуба: ", text);
+    }
+</script>
+
+</body>
+</html>
