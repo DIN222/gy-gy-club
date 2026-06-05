@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.112| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.113| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -316,35 +316,36 @@ font {
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-<div id="block-hall" class="block" style="background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; position: relative;">
+<div id="block-hall" class="block" style="background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; position: relative; width: 100vw; height: 100vh; overflow: hidden;">
     
-    <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none;">
+    <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
         <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
         <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
     </div>
 
-    <div class="hall-interior">
+    <div class="hall-interior" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2;">
+        
         <div class="quote-text">In every joke there is a share of whisky</div>
         
-        <div class="painting-zone painting-left" onclick="toggleManifest('manifest-left')">
+        <div class="painting-zone painting-left" onclick="toggleManifest('manifest-left')" style="z-index: 6;">
             <span class="cue-arrow-hall">→</span>
             <div id="manifest-left" class="manifest-btn-box" data-opened="false">
                 <button class="btn-gy btn-manifest" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
             </div>
         </div>
         
-        <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
+        <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')" style="z-index: 6;">
             <span class="cue-arrow-hall">←</span>
             <div id="manifest-right" class="manifest-btn-box" data-opened="false">
                 <button class="btn-gy btn-manifest" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
             </div>
         </div>
         
-        <div class="hall-doors-container" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
+        <div class="hall-doors-container" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5; pointer-events: none;">
             
-            <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')" style="width: 100%; height: 100%; cursor: pointer;"></div>
+            <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')" style="width: 100%; height: 100%; cursor: pointer; pointer-events: auto;"></div>
             
-            <div class="bar-entrance-marker" style="position: absolute; bottom: 12vh; cursor: pointer; display: flex; flex-direction: column; align-items: center;" onclick="portalTransition('block-bar')">
+            <div class="bar-entrance-marker" style="position: absolute; bottom: 12vh; cursor: pointer; display: flex; flex-direction: column; align-items: center; pointer-events: auto;" onclick="portalTransition('block-bar')">
                 <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1;">↑</span>
                 <span class="cue-arrow-hall" style="font-size: 11px; font-weight: 400; letter-spacing: 3px; margin-top: 5px;">БАР</span>
             </div>
