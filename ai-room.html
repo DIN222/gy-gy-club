@@ -25,7 +25,7 @@
             min-height: 100vh; 
             overflow: hidden; 
             position: relative;
-            opacity: 0; /* Для плавного старта из скрипта */
+            opacity: 0; /* Плавный старт */
         }
         
         /* ВЕРХНЯЯ ПАНЕЛЬ (КАНОН) */
@@ -89,15 +89,43 @@
             <div class="arrow-item-nav" onclick="goToWelcome()" title="To Welcome Screen">&lt;&lt;</div>
         </div>
         <div class="bar-center-zone">
-            <div class="user-avatar-circle" id="user-avatar"></div>
+            <div class="user-avatar-circle" id="user-avatar" onclick="goToVerses()" title="Enter Verses Room"></div>
         </div>
         <div class="bar-right-zone">GY-GY</div>
+    </div>
+
+    <div class="server-interface-container" style="position: relative; width: 80vw; height: 60vh; display: flex; justify-content: center; align-items: center; z-index: 10; perspective: 1000px;">
+        
+        <div class="server-screen-card" id="screen-1" style="position: absolute; width: 300px; height: 400px; background: rgba(10, 5, 20, 0.75); border: 1px solid var(--violet); border-radius: 12px; padding: 20px; box-sizing: border-box; transform: translateX(-320px) rotateY(15deg); box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); transition: all 0.4s ease;">
+            <h3 style="color: var(--gold); margin-top: 0; font-size: 18px; letter-spacing: 1px; border-bottom: 1px dashed var(--violet); padding-bottom: 8px;">[01] PSY-RESPONSE</h3>
+            <p style="color: var(--text-gray); font-size: 13px; line-height: 1.5;">7 уровней психологического отклика ИИ зафиксированы. Анализ эмоционального следа активен.</p>
+            <div style="margin-top: 40px; color: #34d399; font-size: 12px; font-family: monospace;">STATUS: SYNCHRONIZED</div>
+        </div>
+
+        <div class="server-screen-card" id="screen-2" style="position: absolute; width: 340px; height: 440px; background: rgba(15, 10, 25, 0.85); border: 2px solid var(--gold); border-radius: 12px; padding: 25px; box-sizing: border-box; transform: translateX(0); z-index: 2; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); text-align: center; transition: all 0.4s ease;">
+            <div style="color: #34d399; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">● CORE CORE OVERRIDE</div>
+            <h2 style="color: #fff; margin: 0 0 20px 0; font-size: 24px; font-weight: 900; letter-spacing: 2px;">AI MAINFRAME</h2>
+            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 40px;">Система готова к компиляции поэтических и визуальных кодов Клуба.</p>
+            
+            <button class="btn-gy" onclick="goToVerses()" style="background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 30px; font-family: 'Share Tech Mono', monospace; font-size: 16px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.3s;" onmouseover="this.style.background='var(--gold)'; this.style.color='#000';" onmouseout="this.style.background='transparent'; this.style.color='var(--gold)';">
+                LAUNCH VERSES
+            </button>
+        </div>
+
+        <div class="server-screen-card" id="screen-3" style="position: absolute; width: 300px; height: 400px; background: rgba(10, 5, 20, 0.75); border: 1px solid var(--violet); border-radius: 12px; padding: 20px; box-sizing: border-box; transform: translateX(320px) rotateY(-15deg); box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); transition: all 0.4s ease;">
+            <h3 style="color: var(--gold); margin-top: 0; font-size: 18px; letter-spacing: 1px; border-bottom: 1px dashed var(--violet); padding-bottom: 8px;">[03] DIGITAL TRACE</h3>
+            <p style="color: var(--text-gray); font-size: 13px; line-height: 1.5;">Cookie-recognition и Telegram ID синхронизированы. ...</p>
+            <div style="margin-top: 40px; color: var(--violet); font-size: 12px;">SECURE SESSION: ACTIVE</div>
+        </div>
     </div>
 
     <div id="server-exit-door" onclick="goBackToHall()" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 5;" title="Exit AI Room"></div>
 
     <audio id="serverSound" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 
+    ```
+
+Накатывай эту чистую верстку, а снизу у тебя аккуратненько пристыкуется наш прошлый блок `<script>`, который мы настроили.
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // 1. Плавное появление комнаты при входе
