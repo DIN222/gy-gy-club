@@ -4,159 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY CLUB — AI ROOM 008</title>
+    <title>GY-GY CLUB — AI ROOM 006</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --bg-black: #050505; 
-            --violet: #8A2BE2; 
-            --gold: #f59e0b; 
-            --text-gray: #9ca3af; 
-        }
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background: url('banana_server_room.jpg') center/cover no-repeat #050505; 
-            color: #fff; 
-            font-family: 'Share Tech Mono', monospace; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            overflow: hidden; 
-            position: relative;
-            opacity: 0; /* Плавный старт */
-        }
-        
+        :root { --bg-black: #050505; --violet: #8A2BE2; --gold: #f59e0b; --text-gray: #9ca3af; }
+       body { 
+    margin: 0; 
+    padding: 0; 
+    background: url('banana_server_room.jpg') center/cover no-repeat #050505; 
+    color: #fff; 
+    font-family: 'Share Tech Mono', monospace; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    overflow: hidden; 
+    position: relative; 
+}
         /* ВЕРХНЯЯ ПАНЕЛЬ (КАНОН) */
-        .global-top-bar { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 80px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 0 40px; 
-            box-sizing: border-box; 
-            z-index: 100; 
-        }
-        .bar-left-zone { 
-            display: flex; 
-            align-items: center; 
-            gap: 20px; 
-            font-weight: 900; 
-            user-select: none; 
-        }
-        .arrow-item-nav { 
-            font-size: 24px; 
-            color: var(--text-gray); 
-            cursor: pointer; 
-            transition: color 0.2s; 
-        }
-        .arrow-item-nav:hover { 
-            color: var(--violet); 
-            text-shadow: 0 0 12px var(--violet); 
-        }
-        .bar-center-zone { 
-            position: absolute; 
-            left: 50%; 
-            transform: translateX(-50%); 
-        }
-        .user-avatar-circle { 
-            width: 50px; 
-            height: 50px; 
-            border-radius: 50%; 
-            border: 2px solid var(--violet); 
-            background: #111 center/cover no-repeat; 
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5); 
-            cursor: pointer; 
-        }
-        .bar-right-zone { 
-            font-size: 26px; 
-            font-weight: 900; 
-            color: #fff; 
-            letter-spacing: 3px; 
-        }
+        .global-top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 80px; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; box-sizing: border-box; z-index: 100; }
+        .bar-left-zone { display: flex; align-items: center; gap: 20px; font-weight: 900; user-select: none; }
+        .arrow-item-nav { font-size: 24px; color: var(--text-gray); cursor: pointer; transition: color 0.2s; }
+        .arrow-item-nav:hover { color: var(--violet); text-shadow: 0 0 12px var(--violet); }
+        .bar-center-zone { position: absolute; left: 50%; transform: translateX(-50%); }
+        .user-avatar-circle { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--violet); background: #111; box-shadow: 0 0 15px rgba(138, 43, 226, 0.5); cursor: pointer; }
+        .bar-right-zone { font-size: 26px; font-weight: 900; color: #fff; letter-spacing: 3px; }
+
+        /* СЕРВЕРНЫЙ БЛОК */
+        .server-box { text-align: center; border: 2px dashed var(--violet); padding: 40px; border-radius: 8px; background: rgba(10,10,10,0.8); box-shadow: 0 0 20px rgba(138, 43, 226, 0.2); }
+        .server-status { color: #34d399; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
+    <audio id="serverSound" src="sbridge_ambient.mp3" loop autoplay preload="auto"></audio>
 <body>
 
-    <div class="global-top-bar notranslate">
-        <div class="bar-left-zone">
-            <div class="arrow-item-nav" onclick="goBackToHall()" title="Back to Hall">&lt;</div>
-            <div class="arrow-item-nav" onclick="goToWelcome()" title="To Welcome Screen">&lt;&lt;</div>
-        </div>
-        <div class="bar-center-zone">
-            <div class="user-avatar-circle" id="user-avatar" onclick="goToVerses()" title="Enter Verses Room"></div>
-        </div>
-        <div class="bar-right-zone">GY-GY</div>
+<div class="global-top-bar notranslate">
+    <div class="bar-left-zone">
+        <div class="arrow-item-nav" onclick="goBackToHall()" title="Back to Hall">&lt;</div>
+        <div class="arrow-item-nav" onclick="goToWelcome()" title="To Welcome Screen">&lt;&lt;</div>
     </div>
-
-    <div class="server-interface-container" style="position: relative; width: 80vw; height: 60vh; display: flex; justify-content: center; align-items: center; z-index: 10; perspective: 1000px;">
-        
-        <div class="server-screen-card" id="screen-1" style="position: absolute; width: 300px; height: 400px; background: rgba(10, 5, 20, 0.75); border: 1px solid var(--violet); border-radius: 12px; padding: 20px; box-sizing: border-box; transform: translateX(-320px) rotateY(15deg); box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); transition: all 0.4s ease;">
-            <h3 style="color: var(--gold); margin-top: 0; font-size: 18px; letter-spacing: 1px; border-bottom: 1px dashed var(--violet); padding-bottom: 8px;">[01] PSY-RESPONSE</h3>
-            <p style="color: var(--text-gray); font-size: 13px; line-height: 1.5;">7 уровней психологического отклика ИИ зафиксированы. Анализ эмоционального следа активен.</p>
-            <div style="margin-top: 40px; color: #34d399; font-size: 12px; font-family: monospace;">STATUS: SYNCHRONIZED</div>
-        </div>
-
-        <div class="server-screen-card" id="screen-2" style="position: absolute; width: 340px; height: 440px; background: rgba(15, 10, 25, 0.85); border: 2px solid var(--gold); border-radius: 12px; padding: 25px; box-sizing: border-box; transform: translateX(0); z-index: 2; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4); text-align: center; transition: all 0.4s ease;">
-            <div style="color: #34d399; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">● CORE CORE OVERRIDE</div>
-            <h2 style="color: #fff; margin: 0 0 20px 0; font-size: 24px; font-weight: 900; letter-spacing: 2px;">AI MAINFRAME</h2>
-            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 40px;">Система готова к компиляции поэтических и визуальных кодов Клуба.</p>
-            
-            <button class="btn-gy" onclick="goToVerses()" style="background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 12px 30px; font-family: 'Share Tech Mono', monospace; font-size: 16px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; transition: all 0.3s;" onmouseover="this.style.background='var(--gold)'; this.style.color='#000';" onmouseout="this.style.background='transparent'; this.style.color='var(--gold)';">
-                LAUNCH VERSES
-            </button>
-        </div>
-
-        <div class="server-screen-card" id="screen-3" style="position: absolute; width: 300px; height: 400px; background: rgba(10, 5, 20, 0.75); border: 1px solid var(--violet); border-radius: 12px; padding: 20px; box-sizing: border-box; transform: translateX(320px) rotateY(-15deg); box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); transition: all 0.4s ease;">
-            <h3 style="color: var(--gold); margin-top: 0; font-size: 18px; letter-spacing: 1px; border-bottom: 1px dashed var(--violet); padding-bottom: 8px;">[03] DIGITAL TRACE</h3>
-            <p style="color: var(--text-gray); font-size: 13px; line-height: 1.5;">Cookie-recognition и Telegram ID синхронизированы. ...</p>
-            <div style="margin-top: 40px; color: var(--violet); font-size: 12px;">SECURE SESSION: ACTIVE</div>
-        </div>
+    <div class="bar-center-zone">
+        <div class="user-avatar-circle" id="user-avatar" onclick="alert('Your digital trace profile.')"></div>
+        <div class="user-avatar-circle"></div>
     </div>
+    <div class="bar-right-zone">GY-GY</div>
+</div>
 
-    <div id="server-exit-door" onclick="goBackToHall()" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 5;" title="Exit AI Room"></div>
-
-    <audio id="serverSound" src="sbridge_ambient.mp3" loop preload="auto"></audio>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Плавное появление комнаты при входе
-            document.body.style.transition = "opacity 0.5s ease-in-out";
-            setTimeout(() => { document.body.style.opacity = '1'; }, 50);
-
-            // 2. Автоматически цепляем аватар юзера по его цифровому следу
-            const currentAvatar = localStorage.getItem('user_avatar_id'); 
-            const avatarContainer = document.getElementById('user-avatar');
-            if (currentAvatar && avatarContainer) {
-                avatarContainer.style.backgroundImage = `url('${currentAvatar}')`;
-            }
-
-            // 3. Активация звука по первому клику в пространстве серверной
-            document.addEventListener('click', () => {
-                const audio = document.getElementById('serverSound');
-                if (audio && audio.paused) {
-                    audio.play().catch(err => console.log("Audio play blocked:", err));
-                }
-            }, { once: true });
-        });
-
-        // Функции возврата обратно в модульный index.html
-        function goBackToHall() {
-            document.body.style.transition = "opacity 0.4s";
-            document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'index.html'; }, 400); 
-        }
-
-        function goToWelcome() {
-            document.body.style.transition = "opacity 0.4s";
-            document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = 'index.html'; }, 400); 
-        }
-    </script>
+<script>
+    function goBackToHall() {
+        document.body.style.transition = "opacity 0.4s"; document.body.style.opacity = '0';
+        setTimeout(() => { window.location.href = 'index.html#hall'; }, 400);
+    }
+    function goToWelcome() {
+        document.body.style.transition = "opacity 0.4s"; document.body.style.opacity = '0';
+        setTimeout(() => { window.location.href = 'index.html#welcome'; }, 400);
+    }
+</script>
+    <div id="server-exit-door" onclick="goBackToHall()" style="
+    position: absolute; 
+    bottom: 0; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 25vw; 
+    height: 70vh; 
+    cursor: pointer; 
+    z-index: 5;
+" title="Exit AI Room"></div>
+    <audio id="serverSound" src="sbridge_ambient.mp3" loop autoplay preload="auto"></audio>
 </body>
 </html>
