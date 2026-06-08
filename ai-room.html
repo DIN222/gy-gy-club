@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY CLUB — AI ROOM 006</title>
+    <title>GY-GY CLUB — AI ROOM 007</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --bg-black: #050505; --violet: #8A2BE2; --gold: #f59e0b; --text-gray: #9ca3af; }
@@ -60,16 +60,41 @@
         setTimeout(() => { window.location.href = 'index.html#welcome'; }, 400);
     }
 </script>
-    <div id="server-exit-door" onclick="goBackToHall()" style="
-    position: absolute; 
-    bottom: 0; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 25vw; 
-    height: 70vh; 
-    cursor: pointer; 
-    z-index: 5;
-" title="Exit AI Room"></div>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Плавное появление комнаты при входе
+    document.body.style.opacity = '0';
+    document.body.style.transition = "opacity 0.5s ease-in-out";
+    setTimeout(() => { document.body.style.opacity = '1'; }, 50);
+
+    // 2. Автоматически цепляем аватар юзера по его цифровому следу
+    // (Замени 'user_avatar_id', если у тебя в index.html другой ключ в localStorage)
+    const currentAvatar = localStorage.getItem('user_avatar_id'); 
+    const avatarContainer = document.querySelector('.user-avatar-circle');
+    if (currentAvatar && avatarContainer) {
+        avatarContainer.style.backgroundImage = `url('${currentAvatar}')`;
+    }
+
+    // 3. Активация звука по первому клику в пространстве серверной
+    document.addEventListener('click', () => {
+        const audio = document.getElementById('serverSound');
+        if (audio && audio.paused) {
+            audio.play().catch(err => console.log("Audio play blocked:", err));
+        }
+    }, { once: true });
+});
+
+// Функции возврата обратно в модульный index.html
+function goBackToHall() {
+    document.body.style.transition = "opacity 0.4s";
+    document.body.style.opacity = '0';
+    setTimeout(() => { window.location.href = 'index.html'; }, 400); 
+}
+
+function goToWelcome() {
+    document.body.style.transition = "opacity 0.4s";
+    document.body.style.opacity = '0';
+    setTimeout(() => { window.location.href = 'index.html'; }, 400); // Или на стартовый роут
+}
     <audio id="serverSound" src="sbridge_ambient.mp3" loop autoplay preload="auto"></audio>
 </body>
 </html>
