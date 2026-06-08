@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.125| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.126| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -803,7 +803,7 @@ font {
         setTimeout(() => { location.href = 'tables.html'; }, 600);
     }
         
-    // === АВТОЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ===
+  // === АВТОЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ===
     window.onload = () => { 
         renderLangList(); 
         
@@ -820,7 +820,7 @@ font {
 
         currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
 
-        // Проверка возврата из внешней AI Room (verses.html)
+        // Проверка возврата из внешней AI Room (verses.html или редиректы)
         const urlParams = new URLSearchParams(window.location.search);
         const targetRoom = urlParams.get('room');
 
@@ -841,53 +841,29 @@ font {
 
         setTimeout(() => { document.body.classList.add('page-loaded'); }, 50); 
     };
-      function goToComplaints() {
-    document.body.style.transition = "opacity 0.5s ease-in-out";
-    document.body.style.opacity = '0';
-    setTimeout(() => { window.location.href = 'complaints.html'; }, 500);
-}
-    function goToAIRoom() {
-    document.body.style.transition = "opacity 0.5s ease-in-out";
-    document.body.style.opacity = '0';
-    setTimeout(() => { window.location.href = 'ai-room.html'; }, 500);
-}  function goToAIRoom() {
-    document.body.style.transition = "opacity 0.4s ease-in-out";
-    document.body.style.opacity = '0';
-    setTimeout(() => { 
-        window.location.href = 'ai-room.html'; 
-    }, 400);
-}
-      function startServerSound() {
-    const audio = document.getElementById('serverSound');
-    if (audio) {
-        audio.play().catch(err => console.log("Звук запустится после клика"));
+
+    function goToComplaints() {
+        document.body.style.transition = "opacity 0.5s ease-in-out";
+        document.body.style.opacity = '0';
+        setTimeout(() => { window.location.href = 'complaints.html'; }, 500);
     }
-}
+
+    function startServerSound() {
+        const audio = document.getElementById('serverSound');
+        if (audio) {
+            audio.play().catch(err => console.log("Звук запустится после клика"));
+        }
+    }
       
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <div id="block-server" class="block-zone" style="
-    display: none; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100vw; 
-    height: 100vh; 
-    background: url('banana_server_room.jpg') center/cover no-repeat #050505; 
-    z-index: 10;
-">
-    <div id="server-exit-door" onclick="portalTransition('block-hall')" style="
-        position: absolute; 
-        bottom: 0; 
-        left: 50%; 
-        transform: translateX(-50%); 
-        width: 25vw; 
-        height: 70vh; 
-        cursor: pointer; 
-        z-index: 11;
-    " title="Exit AI Room"></div>
+
+<div id="block-server" class="block" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('banana_server_room.jpg') center/cover no-repeat #050505; z-index: 9999;">
+    <div id="server-exit-door" onclick="portalTransition('block-hall')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 10000;" title="Exit AI Room"></div>
 
     <audio id="serverSound" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 </div>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
