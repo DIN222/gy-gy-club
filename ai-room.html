@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY CLUB — AI ROOM 007</title>
+    <title>GY-GY CLUB — AI ROOM 008</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --bg-black: #050505; --violet: #8A2BE2; --gold: #f59e0b; --text-gray: #9ca3af; }
@@ -74,12 +74,30 @@
         setTimeout(() => { window.location.href = 'verses.html'; }, 400);
     }
 
-    // Восстановление аватара по цифровому следу
+    // ВСЕЯДНЫЙ ПОДХВАТ АВАТАРА ПО ЦИФРОВОМУ СЛЕДУ
     document.addEventListener('DOMContentLoaded', () => {
-        const currentAvatar = localStorage.getItem('user_avatar_id') || localStorage.getItem('user_avatar_url');
+        // Проверяем все возможные ключи, под которыми index.html мог сохранить аватар
+        const currentAvatar = localStorage.getItem('user_avatar_id') 
+                           || localStorage.getItem('user_avatar_url')
+                           || sessionStorage.getItem('user_avatar');
+        
         const avatarContainer = document.getElementById('user-avatar');
-        if (currentAvatar && avatarContainer) {
-            avatarContainer.style.backgroundImage = `url('${currentAvatar}')`;
+        
+        if (avatarContainer) {
+            if (currentAvatar) {
+                // Если след найден — сажаем картинку в круг
+                avatarContainer.style.backgroundImage = `url('${currentAvatar}')`;
+            } else {
+                // Если следа нет (зашли напрямую) — стильная фиолетовая заглушка GY-GY
+                avatarContainer.style.backgroundColor = 'var(--violet)';
+                avatarContainer.style.display = 'flex';
+                avatarContainer.style.alignItems = 'center';
+                avatarContainer.style.justifyContent = 'center';
+                avatarContainer.style.fontWeight = '900';
+                avatarContainer.style.color = '#fff';
+                avatarContainer.style.fontSize = '16px';
+                avatarContainer.innerText = 'GY';
+            }
         }
     });
 </script>
