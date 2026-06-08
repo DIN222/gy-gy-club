@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.128| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.129| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -572,13 +572,15 @@ font {
         }
     }
 
-   // === ГЛАВНЫЙ КИНЕМАТОГРАФИЧНЫЙ КОНТРОЛЛЕР ПЕРЕХОДОВ ===
+  
+      // === ГЛАВНЫЙ КИНЕМАТОГРАФИЧНЫЙ КОНТРОЛЛЕР ПЕРЕХОДОВ ===
     function portalTransition(nextId) {
-        const current = document.querySelector('.block.active');
+        const current = document.querySelector('.block.active') || document.getElementById('block-server');
         const backBtn = document.getElementById('btn-global-back');
         const badge = document.getElementById('global-user-badge');
         const langPanel = document.getElementById('lang-switcher');
         const srvSnd = document.getElementById('serverSound');
+        const serverBlock = document.getElementById('block-server');
         
         // Звуковой микшер комнат Клуба
         if (barAmbient) {
@@ -596,7 +598,7 @@ font {
             }
         }
 
-        // Глушим сервера при физическом уходе из Серверной в другие блоки
+        // Глушим сервера при уходе из Серверной
         if (srvSnd && nextId !== 'block-server') {
             srvSnd.pause();
             srvSnd.currentTime = 0;
@@ -605,17 +607,28 @@ font {
         if (langPanel) { langPanel.classList.add('force-hide'); }
         
         // Плавно тушим текущий экран
-        if (current) { current.style.opacity = "0"; current.style.pointerEvents = "none"; }
+        if (current) { 
+            current.style.opacity = "0"; 
+            current.style.pointerEvents = "none"; 
+        }
+        // Если уходим ИЗ серверной — тушим её принудительно
+        if (serverBlock && nextId !== 'block-server') {
+            serverBlock.style.opacity = "0";
+            serverBlock.style.display = "none";
+        }
         if (backBtn) backBtn.style.opacity = "0";
 
         // Кроссфейд таймаут
         setTimeout(() => {
-            if (current) { current.classList.remove('active'); current.style.display = "none"; }
+            if (current && current.classList.contains('block')) { 
+                current.classList.remove('active'); 
+                current.style.display = "none"; 
+            }
             
             const next = document.getElementById(nextId);
             if (!next) return;
             
-            // Если открываем серверную — даем ей абсолютный приоритет отображения
+            // Жесткое переключение дисплея
             if (nextId === 'block-server') {
                 next.style.setProperty('display', 'flex', 'important');
             } else {
@@ -633,20 +646,18 @@ font {
             } else {
                 if (langPanel) langPanel.classList.add('force-hide');
                 
-                // Включаем стрелки под нужную комнату (с защитой от отсутствия элементов)
+                // Включаем стрелки под нужную комнату
                 const navWelcome = document.getElementById('nav-welcome'); if (navWelcome && nextId === 'block-welcome') navWelcome.style.display = "flex";
                 const navIdentity = document.getElementById('nav-identity'); if (navIdentity && nextId === 'block-identity') navIdentity.style.display = "flex";
                 const navHall = document.getElementById('nav-hall'); if (navHall && nextId === 'block-hall') navHall.style.display = "flex";
                 const navTables = document.getElementById('nav-tables'); if (navTables && nextId === 'block-tables') navTables.style.display = "flex";
                 const navBar = document.getElementById('nav-bar'); if (navBar && nextId === 'block-bar') navBar.style.display = "flex";
-                const navServer = document.getElementById('nav-server'); if (navServer && nextId === 'block-server') navServer.style.display = "flex";
                 
-                // Проверяем бэйдж, уникальный аватар и флаг гостя
+                // Проверяем бэйдж гостя (Полностью Скрываем его в Серверной, чтобы не мусорил!)
                 if(['block-hall', 'block-bar', 'block-tables', 'block-server'].includes(nextId)) {
                     let savedImg = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                     if (savedImg && document.getElementById('badge-avatar-img')) {
                         document.getElementById('badge-avatar-img').src = savedImg;
-                        // Скрываем бэйдж в серверной, чтобы не наползал на экран
                         if (badge) badge.style.display = (nextId === 'block-server') ? "none" : "block";
                     }
 
@@ -661,10 +672,13 @@ font {
                 }
             }
 
-            // Плавное проявление нового экрана из темноты
+            // Плавное проявление нового экрана
             setTimeout(() => { 
-                next.classList.add('active'); 
-                next.style.opacity = "1";
+                if (next.classList.contains('block')) {
+                    next.classList.add('active'); 
+                }
+                // Пробиваем прозрачность напрямую через стиль, игнорируя CSS шаблона
+                next.style.setProperty('opacity', '1', 'important');
                 next.style.pointerEvents = "auto";
                 
                 if (nextId === 'block-bar') { playBarSound(); } 
@@ -846,16 +860,12 @@ font {
     }
 </script>
 
-<!-- === АВТОНОМНЫЙ БЛОК: СЕРВЕРНАЯ (AI ROOM) ВНУТРИ SPA === -->
-<div id="block-server" class="block" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('banana_server_room.jpg') center/cover no-repeat #050505; z-index: 999999 !important; opacity: 0; transition: opacity 0.5s ease-in-out;">
-    <!-- АКТИВНАЯ ЗОНА ДВЕРИ (Клик плавно возвращает в Холл) -->
-    <div id="server-exit-door" onclick="portalTransition('block-hall')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 1000000;" title="Exit AI Room"></div>
+<div id="block-server" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('banana_server_room.jpg') center/cover no-repeat #050505; z-index: 99999999 !important; opacity: 0; transition: opacity 0.5s ease-in-out;">
+    <div id="server-exit-door" onclick="portalTransition('block-hall')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 100000000;" title="Exit AI Room"></div>
 
-    <!-- ФОНОВЫЙ ЗВУК СЕРВЕРНОЙ -->
     <audio id="serverSound" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 </div>
 
-<!-- СКРИПТ ПЕРЕВОДЧИКА GOOGLE (НА САМОМ ДНЕ) -->
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
