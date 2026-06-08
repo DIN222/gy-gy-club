@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.127| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.128| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -572,13 +572,13 @@ font {
         }
     }
 
-    // === ГЛАВНЫЙ КИНЕМАТОГРАФИЧНЫЙ КОНТРОЛЛЕР ПЕРЕХОДОВ ===
+   // === ГЛАВНЫЙ КИНЕМАТОГРАФИЧНЫЙ КОНТРОЛЛЕР ПЕРЕХОДОВ ===
     function portalTransition(nextId) {
         const current = document.querySelector('.block.active');
         const backBtn = document.getElementById('btn-global-back');
         const badge = document.getElementById('global-user-badge');
         const langPanel = document.getElementById('lang-switcher');
-        const srvSnd = document.getElementById('serverSound'); // Связали с ID тега в HTML
+        const srvSnd = document.getElementById('serverSound');
         
         // Звуковой микшер комнат Клуба
         if (barAmbient) {
@@ -615,7 +615,12 @@ font {
             const next = document.getElementById(nextId);
             if (!next) return;
             
-            next.style.display = "flex";
+            // Если открываем серверную — даем ей абсолютный приоритет отображения
+            if (nextId === 'block-server') {
+                next.style.setProperty('display', 'flex', 'important');
+            } else {
+                next.style.display = "flex";
+            }
             
             const allArrows = document.querySelectorAll('.ui-nav-arrows');
             allArrows.forEach(arrow => arrow.style.display = 'none');
@@ -641,7 +646,8 @@ font {
                     let savedImg = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                     if (savedImg && document.getElementById('badge-avatar-img')) {
                         document.getElementById('badge-avatar-img').src = savedImg;
-                        if (badge) badge.style.display = "block";
+                        // Скрываем бэйдж в серверной, чтобы не наползал на экран
+                        if (badge) badge.style.display = (nextId === 'block-server') ? "none" : "block";
                     }
 
                     const savedLang = localStorage.getItem('googTrans') || localStorage.getItem('gy_lang');
@@ -667,7 +673,7 @@ font {
                     if (srvSnd) {
                         srvSnd.volume = 0;
                         srvSnd.play().then(() => {
-                            fadeInAudio(srvSnd, 0.7, 1500); // Плавно врубаем сервера
+                            fadeInAudio(srvSnd, 0.7, 1500); 
                         }).catch(e => {});
                     } 
                 }
@@ -746,15 +752,6 @@ font {
         setTimeout(() => { document.getElementById('modal-passport').style.opacity = "1"; }, 10);
     }
 
-    function closePassport() { 
-        document.getElementById('modal-passport').style.opacity = "0";
-        setTimeout(() => { document.getElementById('modal-passport').style.display = "none"; }, 300);
-    }
-    
-    function goToTables() { portalTransition('block-tables'); }
-    function deepDive() { portalTransition('block-bar'); } 
-    function enterStudio() { alert("Entering Studio... Печатные станки прогреваются!"); }
-
     // === УПРАВЛЕНИЕ АВТОМАТОМ КАШЛЯ ЧАРЛИ ===
     function playBarSound() {
         const barBlock = document.getElementById('block-bar');
@@ -821,7 +818,6 @@ font {
 
         currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id');
 
-        // Проверка возврата из внешней AI Room (verses.html или редиректы)
         const urlParams = new URLSearchParams(window.location.search);
         const targetRoom = urlParams.get('room');
 
@@ -848,22 +844,18 @@ font {
         document.body.style.opacity = '0';
         setTimeout(() => { window.location.href = 'complaints.html'; }, 500);
     }
-
-    function startServerSound() {
-        const audio = document.getElementById('serverSound');
-        if (audio) {
-            audio.play().catch(err => console.log("Звук запустится после клика"));
-        }
-    }
-      
 </script>
 
-<div id="block-server" class="block" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('banana_server_room.jpg') center/cover no-repeat #050505; z-index: 9999; opacity: 0; transition: opacity 0.4s ease-in-out;">
-    <div id="server-exit-door" onclick="portalTransition('block-hall')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 10000;" title="Exit AI Room"></div>
+<!-- === АВТОНОМНЫЙ БЛОК: СЕРВЕРНАЯ (AI ROOM) ВНУТРИ SPA === -->
+<div id="block-server" class="block" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: url('banana_server_room.jpg') center/cover no-repeat #050505; z-index: 999999 !important; opacity: 0; transition: opacity 0.5s ease-in-out;">
+    <!-- АКТИВНАЯ ЗОНА ДВЕРИ (Клик плавно возвращает в Холл) -->
+    <div id="server-exit-door" onclick="portalTransition('block-hall')" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 25vw; height: 70vh; cursor: pointer; z-index: 1000000;" title="Exit AI Room"></div>
 
+    <!-- ФОНОВЫЙ ЗВУК СЕРВЕРНОЙ -->
     <audio id="serverSound" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 </div>
 
+<!-- СКРИПТ ПЕРЕВОДЧИКА GOOGLE (НА САМОМ ДНЕ) -->
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
