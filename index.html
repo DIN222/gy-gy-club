@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.128| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.129| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -210,10 +210,10 @@
 
     <!-- СЕЛЕКТОР ЯЗЫКА -->
     <div id="lang-switcher" class="lang-frame-locked notranslate">
-        <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
-            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
-            <span>ENGLISH</span>
-        </div>
+        <div id="active-lang-display" class="notranslate" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
+            </div>
+        <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
+    </div>
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate"></div>
     </div>
 
@@ -383,10 +383,16 @@
             if (!container) return;
             container.innerHTML = ''; 
             allLangs.forEach(lang => {
-                if(lang.code === currentActiveCode) return; // Возвращено на место!
+                if(lang.code === currentActiveCode) return; 
                 const div = document.createElement('div');
+                // Добавляем class="notranslate" самому элементу списка
                 div.className = 'lang-item notranslate'; 
-                div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
+                
+                // И оборачиваем текст в тег <span class="notranslate">, чтобы Гугл даже не пытался его переводить
+                div.innerHTML = `
+                    <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate">
+                    <span class="notranslate">${lang.n}</span>
+                `;
                 div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
                 container.appendChild(div);
             });
