@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.125| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.126| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -310,18 +310,7 @@
   
     <!-- БЛОК 5: СЕРВЕРНАЯ (ЧИСТЫЙ СТИЛЬ С ПРАВИЛЬНЫМ ФОНОМ И ПРОГРАММНЫМ ИСКЛЮЧЕНИЕМ МУСОРА) -->
     <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0;">
-        <div class="quote-text" style="position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; color: var(--gold) !important; font-size: 28px; font-weight: 700; text-shadow: 0 0 10px #000, 0 0 20px #000;">
-            AI SERVER HUB
         </div>
-        
-        <button class="btn-gy" style="border-color: #8A2BE2; box-shadow: 0 0 15px var(--neon-glow); font-size: 20px; padding: 15px 40px; z-index: 10;" onclick="window.location.href='verses.html'">
-            AI ROOM
-        </button>
-        
-        <button class="btn-gy" style="position: absolute; bottom: 12vh; left: 50%; transform: translateX(-50%); min-width: 200px; font-size: 14px;" onclick="portalTransition('block-hall')">
-            ← BACK TO HALL
-        </button>
-    </div> 
 
     <!-- БЛОК 6: БАР -->
     <div id="block-bar" class="block">
@@ -384,12 +373,12 @@
             {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
         ];
 
-        function renderLangList() {
+       function renderLangList() {
             const container = document.getElementById('lang-list-container');
             if (!container) return;
             container.innerHTML = ''; 
             allLangs.forEach(lang => {
-                if(lang.code === currentActiveCode) return; 
+                // ПРОВЕРКА УДАЛЕНА: теперь показываются вообще все языки, включая английский
                 const div = document.createElement('div');
                 div.className = 'lang-item notranslate'; 
                 div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
