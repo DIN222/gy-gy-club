@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.133| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.134| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -213,7 +213,7 @@
    <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
-            <span class="notranslate" translate="no">E<span>N</span>G<span>L</span>I<span>S</span>H</span>
+            <span class="notranslate" translate="no">ENGLISH</span>
         </div>
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate" translate="no"></div>
     </div>
@@ -379,10 +379,8 @@
         const barAmbient = document.getElementById('snd-ambient');   
         const srvSnd = document.getElementById('snd-server');
         let coughInterval = null; 
-
-       const allLangs = [
           const allLangs = [
-            {n:'E<span>N</span>G<span>L</span>I<span>S</span>H', c:'gb', code:'en'}, // Ломаем слово для робота Гугла
+            {n:'ENGLISH', c:'gb', code:'en'}, 
             {n:'DEUTSCH', c:'de', code:'de'}, 
             {n:'ESPAÑOL', c:'es', code:'es'}, 
             {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -395,15 +393,17 @@
             {n:'中文', c:'cn', code:'zh-CN'}, 
             {n:'日本語', c:'jp', code:'ja'}
         ];
-   function renderLangList() {
+  function renderLangList() {
             const container = document.getElementById('lang-list-container');
             if (!container) return;
             container.innerHTML = ''; 
             allLangs.forEach(lang => {
                 if(lang.code === currentActiveCode) return; 
                 const div = document.createElement('div');
-                div.className = 'lang-item notranslate'; 
-                div.setAttribute('translate', 'no'); // Дополнительный атрибут против современных плагинов
+                div.className = 'lang-item notranslate';
+                
+                // Жестко запрещаем перевод на уровне стандартов HTML5
+                div.setAttribute('translate', 'no'); 
                 
                 div.innerHTML = `
                     <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
