@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.126| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.127| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -373,12 +373,12 @@
             {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
         ];
 
-       function renderLangList() {
+     function renderLangList() {
             const container = document.getElementById('lang-list-container');
             if (!container) return;
             container.innerHTML = ''; 
             allLangs.forEach(lang => {
-                // ПРОВЕРКА УДАЛЕНА: теперь показываются вообще все языки, включая английский
+                if(lang.code === currentActiveCode) return; // Возвращено на место!
                 const div = document.createElement('div');
                 div.className = 'lang-item notranslate'; 
                 div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
@@ -386,7 +386,6 @@
                 container.appendChild(div);
             });
         }
-
         function safeStorageGet(key, fallback = "") {
             try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
         }
