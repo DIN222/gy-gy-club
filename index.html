@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.123| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.124| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ (Слева, по феншую клуба) */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -31,7 +31,7 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY (Справа, как заказывали) */
+        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -94,8 +94,9 @@
         .arrow-item:hover { opacity: 0.8; }
 
         /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; display: none; }
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+        
         .hall-interior .quote-text { 
             position: absolute; 
             top: 8vh; 
@@ -109,7 +110,6 @@
             color: var(--gold) !important;       
             font-size: 28px;
             font-weight: 700;
-            
             text-shadow: 
                 0 0 8px rgba(20, 20, 20, 1),
                 0 0 15px rgba(15, 15, 15, 1),
@@ -140,7 +140,6 @@
         .painting-left { left: 23vw; }
         .painting-right { right: 23vw; }
 
-        /* Изящный единый стиль для всех навигационных стрелок Холла */
         .cue-arrow-hall { 
             color: var(--violet); 
             font-size: 38px; 
@@ -169,31 +168,11 @@
             z-index: 10; 
         }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-
-        /* СЕРВЕРНАЯ */
-        .server-leds { display: flex; gap: 8px; margin-top: 15px; }
-        .led { width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 8px #0f0; animation: blink 0.4s infinite alternate; }
-        .led:nth-child(even) { animation-delay: 0.2s; background: #f00; box-shadow: 0 0 8px #f00; }
-        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
-
-        .corridor-door-btn { margin-top: 45px; min-width: 240px; padding: 20px; background: #111; border: 2px solid var(--violet); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 4px; box-shadow: 0 0 20px var(--neon-glow); cursor: pointer; text-transform: uppercase; text-align: center; transition: background 0.3s, transform 0.2s; }
-        .corridor-door-btn:hover { background: #1a0033; transform: scale(1.02); }
         
-        /* Глушим системные плашки Google */
+        /* Защита от сдвигов перевода Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        
-        /* ЖЕЛЕЗНЫЙ ВАРИАНТ: Защита от сдвигов Гугла + правильное плавное проявление */
-        body { 
-            top: 0 !important; 
-            background-color: #000 !important;
-            opacity: 0; 
-            transition: opacity 0.4s ease-in-out !important;
-        }
-        
-        /* Свет загорается ТОЛЬКО когда скрипт добавит этот класс */
-        body.page-loaded {
-            opacity: 1 !important;
-        }
+        body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
+        body.page-loaded { opacity: 1 !important; }
         
         body:has(#block-welcome.active) #lang-switcher,
         body:has(#block-identity.active) #lang-switcher,
@@ -201,41 +180,18 @@
         body:has(#block-tables.active) #lang-switcher,
         body:has(#block-bar.active) #lang-switcher,
         body:has(#block-server.active) #lang-switcher {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
+            display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
         }
         
-        font {
-            background-color: transparent !important;
-            background: transparent !important;
-            color: inherit !important;
-            box-shadow: none !important;
-            text-shadow: none !important;
-        }
-
-        .goog-text-highlight {
-            background-color: transparent !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            color: inherit !important;
-        }
-
-        .btn-gy font, .quote-text font, .ui-header-right font {
-            color: inherit !important;
-        }
-        
-        #lang-switcher.force-hide {
-            display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: none !important;
-        }
+        font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
+        .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
+        .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
+        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
+    <!-- СИСТЕМА СКВОЗНОГО АВАТАРА И ПАСПОРТА -->
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
@@ -252,6 +208,7 @@
         </div>
     </div>
 
+    <!-- СЕЛЕКТОР ЯЗЫКА -->
     <div id="lang-switcher" class="lang-frame-locked notranslate">
         <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
@@ -265,17 +222,19 @@
     <div class="ui-header-right notranslate">GY-GY</div>
     <button class="ui-back-to-bar" id="btn-global-back" onclick="portalTransition('block-bar')">BACK TO BAR</button>
 
+    <!-- ПУЛ АУДИОРЕСУРСОВ -->
     <audio id="snd-door"><source src="door_open.mp3"></audio>
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
     <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
     <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
     <audio id="snd-server" loop preload="auto"><source src="server_room.mp3"></audio>
-    <audio id="snd-charlie-fx" loop><source src="charlie_bar_fx.mp3"></audio>
 
-    <div id="block-entrance" class="block" style="display: none;">
+    <!-- БЛОК 1: ДВЕРЬ -->
+    <div id="block-entrance" class="block">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
+    <!-- БЛОК 2: ПРИВЕТСТВИЕ -->
     <div id="block-welcome" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-welcome">
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
@@ -289,6 +248,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
+    <!-- БЛОК 3: РЕГИСТРАЦИЯ И ПАСПОРТ -->
     <div id="block-identity" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-identity">
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
@@ -299,7 +259,7 @@
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
             
-           <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
@@ -314,6 +274,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
+    <!-- БЛОК 4: ХОЛЛ -->
     <div id="block-hall" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
@@ -321,9 +282,7 @@
         </div>
 
         <div class="hall-interior">
-            <div class="quote-text">
-                In every joke there is a share of whisky
-            </div>
+            <div class="quote-text">In every joke there is a share of whisky</div>
             
             <div class="painting-zone painting-left" onclick="toggleManifest('manifest-left')">
                 <span class="cue-arrow-hall">→</span>
@@ -348,20 +307,22 @@
         </div>
     </div>
 
-    <div id="block-server" class="block" style="background: url('server_room_bg.jpg') center/cover no-repeat #000; position: relative;">
-        <div class="quote-text" style="position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; color: var(--gold) !important; font-size: 28px; font-weight: 700; text-shadow: 0 0 8px rgba(214, 175, 55, 0.9), 0 0 15px rgba(214, 175, 55, 0.4), 0 0 25px #000000, 0 0 40px #000000 !important;">
+    <!-- БЛОК 5: СЕРВЕРНАЯ (ЧИСТЫЙ СТИЛЬ С ПРАВИЛЬНЫМ ФОНОМ И ПРОГРАММНЫМ ИСКЛЮЧЕНИЕМ МУСОРА) -->
+    <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0;">
+        <div class="quote-text" style="position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; color: var(--gold) !important; font-size: 28px; font-weight: 700; text-shadow: 0 0 10px #000, 0 0 20px #000;">
             AI SERVER HUB
         </div>
         
-        <button class="btn-gy" style="border-color: #9333ea; box-shadow: 0 0 15px rgba(147, 51, 234, 0.6); font-size: 24px; padding: 15px 40px;" onclick="window.location.href='verses.html'">
+        <button class="btn-gy" style="border-color: #8A2BE2; box-shadow: 0 0 15px var(--neon-glow); font-size: 20px; padding: 15px 40px; z-index: 10;" onclick="window.location.href='verses.html'">
             AI ROOM
         </button>
         
-        <button class="btn-gy" style="position: absolute; bottom: 40px;" onclick="portalTransition('block-hall')">
-            ← Вернуться в Холл
+        <button class="btn-gy" style="position: absolute; bottom: 12vh; left: 50%; transform: translateX(-50%); min-width: 200px; font-size: 14px;" onclick="portalTransition('block-hall')">
+            ← BACK TO HALL
         </button>
     </div> 
 
+    <!-- БЛОК 6: БАР -->
     <div id="block-bar" class="block">
         <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
 
@@ -371,7 +332,6 @@
         </div>
         
         <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
-        <audio id="snd-khe-new"><source src="charlie_bar_fx.mp3"></audio>
         <div class="bar-ui-container" style="z-index: 10;">
             <div style="display:flex; justify-content: space-between; width:100%;">
                  <button class="btn-gy" style="min-width:145px; font-size:12px;" onclick="smoothTransitionToTables()">come to the tables</button>
@@ -380,6 +340,7 @@
         </div>
     </div>
 
+    <!-- БЛОК 7: СТОЛЫ -->
     <div id="block-tables" class="block">
         <div class="notranslate ui-nav-arrows" id="nav-tables">
             <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
@@ -404,18 +365,15 @@
             }, 'google_translate_element');
         }
 
-        // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ СОСТОЯНИЯ И ЗВУКА ===
         let currentID = "";
         let currentActiveCode = 'en';
         let currentUserImage = "";
         let currentFlagCode = 'gb';
 
         const barAmbient = document.getElementById('snd-ambient');   
-        const horseCough = document.getElementById('snd-khe'); 
         const srvSnd = document.getElementById('snd-server');
         let coughInterval = null; 
 
-        // Наш закрытый пул из 12 языков интерфейса
         const allLangs = [
             {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
             {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -425,7 +383,6 @@
             {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
         ];
 
-        // === СИСТЕМА ПЕРЕКЛЮЧЕНИЯ ЯЗЫКОВ ===
         function renderLangList() {
             const container = document.getElementById('lang-list-container');
             if (!container) return;
@@ -441,26 +398,17 @@
         }
 
         function safeStorageGet(key, fallback = "") {
-            try {
-                return localStorage.getItem(key) || fallback;
-            } catch (e) {
-                console.warn(`Storage access blocked for key "${key}". Tracking Prevention alert workaround.`);
-                return fallback;
-            }
+            try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
         }
 
+        // Заменено на сессионный режим для исключения авто-прыжков при перезагрузке жесткого старта двери
         function safeStorageSet(key, value) {
-            try {
-                localStorage.setItem(key, value);
-            } catch (e) {
-                console.warn(`Storage set blocked for "${key}". Operating in isolated RAM session.`);
-            }
+            try { localStorage.setItem(key, value); } catch (e) {}
         }
 
         function applyLanguage(lang) {
             currentActiveCode = lang.code;
             currentFlagCode = lang.c; 
-            
             safeStorageSet('gygy_flag', lang.c);
             
             document.getElementById('active-lang-display').innerHTML = `
@@ -504,7 +452,6 @@
             });
         }
 
-        // === ВХОД ЧЕРЕЗ ГЛАВНУЮ ДВЕРЬ ===
         function handleDoor() {
             safePlaySound('snd-door');
             const d = document.getElementById('main-door');
@@ -513,8 +460,10 @@
             d.style.pointerEvents = "none";
             document.getElementById('lang-switcher').style.opacity = "0";
             
-            currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            safeStorageSet('gygy_id', currentID);
+            if(!currentID) {
+                currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+                safeStorageSet('gygy_id', currentID);
+            }
             
             renderUserPassports(currentID);
             
@@ -522,7 +471,7 @@
                 portalTransition('block-welcome'); 
                 if (barAmbient) { 
                     barAmbient.volume = 0.1; 
-                    barAmbient.play().catch(e => console.log("Ambient audio playback deferred until user interaction.")); 
+                    barAmbient.play().catch(e => {}); 
                 }
             }, 1000);
         }
@@ -550,13 +499,9 @@
             const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
             currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id');
             
-            if (currentID) {
-                renderUserPassports(currentID);
-            }
-            
+            if (currentID) { renderUserPassports(currentID); }
             if (savedAvatar) {
                 currentUserImage = savedAvatar;
-                
                 if (savedAvatar.startsWith('data:image/svg+xml')) {
                     const avatarImg = document.getElementById('avatar-img');
                     if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
@@ -568,16 +513,13 @@
                     const txtPhoto = document.getElementById('txt-photo');
                     if (txtPhoto) txtPhoto.style.display = "none";
                 }
-                
                 const btnWHall = document.getElementById('btn-w-hall');
                 if(btnWHall) btnWHall.classList.remove('btn-sleep');
-                
                 const btnPass = document.getElementById('btn-pass');
                 if(btnPass) btnPass.classList.remove('btn-sleep');
             }
         }
 
-        // === ИЗОЛИРОВАННЫЙ КИНЕМАТОГРАФИЧНЫЙ КОНТРОЛЛЕР ПЕРЕХОДОВ ===
         function portalTransition(nextId) {
             const currentActiveBlock = document.querySelector('.block.active');
             const targetBlock = document.getElementById(nextId);
@@ -585,7 +527,6 @@
             const badge = document.getElementById('global-user-badge');
             const langSwitcher = document.getElementById('lang-switcher');
 
-            // Управление эмбиентом серверной
             if (nextId === 'block-server') {
                 safePlaySound('snd-server', 0.25);
                 if (barAmbient) barAmbient.volume = 0.02;
@@ -594,7 +535,6 @@
                 if (barAmbient && currentActiveBlock?.id === 'block-server') barAmbient.volume = 0.1;
             }
 
-            // Рендеринг служебных плашек
             if (nextId === 'block-entrance') {
                 if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
                 if (badge) badge.style.display = 'none';
@@ -609,41 +549,29 @@
                 if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
             }
 
-            // Смена видимости блоков
-            if (currentActiveBlock) {
-                currentActiveBlock.classList.remove('active');
-            }
-
+            if (currentActiveBlock) { currentActiveBlock.classList.remove('active'); currentActiveBlock.style.display = 'none'; }
             if (targetBlock) {
-                targetBlock.classList.add('active');
+                targetBlock.style.display = 'flex';
+                setTimeout(() => { targetBlock.classList.add('active'); }, 20);
                 const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
                 if (embeddedArrows) embeddedArrows.style.display = 'flex';
             }
         }
 
-        // === СИСТЕМА БЕЗОПАСНОГО ВОСПРОИЗВЕДЕНИЯ АУДИО (Изоляция 404 ошибок) ===
         function safePlaySound(audioId, volume = 1.0) {
             const audio = document.getElementById(audioId);
             if (!audio) return;
             try {
                 audio.volume = volume;
                 const playPromise = audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log(`Audio notification: Asset "${audioId}" deferred or payload missing (404/Interrupted).`);
-                    });
-                }
-            } catch (e) {
-                console.warn(`Audio system failure on target "${audioId}":`, e);
-            }
+                if (playPromise !== undefined) { playPromise.catch(e => {}); }
+            } catch (e) {}
         }
 
         function safeFadeSound(audioId) {
             const audio = document.getElementById(audioId);
             if (!audio) return;
-            try {
-                audio.pause();
-            } catch (e) {}
+            try { audio.pause(); } catch (e) {}
         }
 
         function preview(input) {
@@ -660,8 +588,6 @@
                     if (avatarImg) avatarImg.style.display = 'none';
                     const txtAvatar = document.getElementById('txt-avatar');
                     if (txtAvatar) txtAvatar.style.display = 'block';
-
-                    document.getElementById('btn-save').classList.remove('btn-sleep');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -681,8 +607,6 @@
             if (pp) pp.style.display = 'none';
             const txtPhoto = document.getElementById('txt-photo');
             if (txtPhoto) txtPhoto.style.display = 'block';
-
-            document.getElementById('btn-save').classList.remove('btn-sleep');
         }
 
         function saveUserProfile() {
@@ -703,30 +627,15 @@
             portalTransition('block-hall');
         }
 
-        function smoothTransitionToTables() {
-            safePlaySound('snd-pour');
-            portalTransition('block-tables');
-        }
+        function smoothTransitionToTables() { safePlaySound('snd-pour'); portalTransition('block-tables'); }
+        function enterStudio() { alert('STUDIO module initializing... Connecting printing matrix.'); }
+        function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
+        function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
-        function enterStudio() {
-            alert('STUDIO module initializing... Connecting printing matrix.');
-        }
-
-        function openPassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
-        }
-
-        function closePassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
-        }
-
-        // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ ===
+        // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (СТРОГИЙ СТАРТ С ЗАКРЫТОЙ ДВЕРИ) ===
         document.addEventListener("DOMContentLoaded", () => {
             renderLangList();
             
-            // Восстановление флага
             const savedFlag = safeStorageGet('gygy_flag', 'gb');
             const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
             currentActiveCode = matchingLang.code;
@@ -740,25 +649,28 @@
 
             checkAndFillRegistrationForm();
 
-            // Проверка существующей сессии
-            const sessionActiveId = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id');
-            if (sessionActiveId && currentUserImage) {
+            if (currentUserImage) {
                 const badgeImg = document.getElementById('badge-avatar-img');
                 const passImg = document.getElementById('pass-avatar-img');
                 if (badgeImg) badgeImg.src = currentUserImage;
                 if (passImg) passImg.src = currentUserImage;
-                
-                portalTransition('block-hall');
-            } else {
-                const entrance = document.getElementById('block-entrance');
-                if (entrance) entrance.style.display = 'flex';
-                portalTransition('block-entrance');
             }
 
-            // Плавное включение экрана без белых вспышек Гугла
+            // Намертво глушим все блоки при загрузке
+            document.querySelectorAll('.block').forEach(b => {
+                b.classList.remove('active');
+                b.style.display = 'none';
+            });
+
+            // Активируем исключительно Дверь
+            const entrance = document.getElementById('block-entrance');
+            if (entrance) {
+                entrance.style.display = 'flex';
+                entrance.classList.add('active');
+            }
+
             document.body.classList.add('page-loaded');
 
-            // Запуск кашля Чарли
             coughInterval = setInterval(() => {
                 const currentBlock = document.querySelector('.block.active');
                 if (currentBlock && (currentBlock.id === 'block-bar' || currentBlock.id === 'block-welcome')) {
@@ -767,7 +679,6 @@
             }, 25000);
         });
 
-        // Скрипт перевода Google
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
