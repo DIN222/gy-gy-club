@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROOM CORE | v8.1.18 (Internal 4.4)</title>
+    <title>AI ROOM CORE | v8.1.19 (Internal 4.4)</title>
     <style>
         :root {
             --orange-neon: #ff8c00;
@@ -24,7 +24,7 @@
             justify-content: center;
         }
 
-        /* ГЛАВНЫЙ КОНТЕЙНЕР: Фиксирует пропорции кадра и не дает зонам съезжать */
+        /* ЖЕСТКИЙ КОНТЕЙНЕР 16:9 */
         .viewport {
             position: absolute;
             top: 50%;
@@ -32,12 +32,12 @@
             transform: translate(-50%, -50%);
             width: 100vw;
             height: 100vh;
-            max-width: 177.78vh; /* Идеальные 16:9 */
+            max-width: 177.78vh;
             max-height: 56.25vw;
             overflow: hidden;
         }
 
-        /* ФОНОВАЯ КАРТИНКА КАК ОБЪЕКТ */
+        /* КАРТИНКА С ТРЕМЯ ЭКРАНАМИ */
         .bg-room {
             position: absolute;
             inset: 0;
@@ -48,7 +48,7 @@
             z-index: 1;
         }
 
-        /* ИНТЕРФЕЙС ПОВЕРХ КАДРА */
+        /* СЛОЙ ИНТЕРФЕЙСА */
         .ui-layer {
             position: absolute;
             inset: 0;
@@ -93,10 +93,10 @@
             transition: all 0.3s ease;
             text-transform: lowercase;
             text-align: center;
-            transform: translate(-50%, -50%); /* Центрирование по координатам */
+            transform: translate(-50%, -50%);
         }
 
-        /* АБСОЛЮТНЫЕ ТЕЛЕВИЗИОННЫЕ ЗОНЫ (ПРИВЯЗАНЫ К ЦЕНТРАМ СВОИХ ЭКРАНОВ) */
+        /* ПРИВЯЗКА НАДПИСЕЙ К СТАРЫМ ЭКРАНАМ */
         #studio-zone {
             top: 30%; 
             left: 27.5%; 
@@ -155,18 +155,13 @@
         }
 
         #digital-trace { color: var(--orange-neon); }
-        
-        /* Скрытие контейнера гугла, чтобы не портил винтаж */
         #google_translate_element { display: none; }
     </style>
 </head>
 <body>
 
 <div class="viewport">
-    <img src="OIG2_vintage_tv_room_v2.png" 
-         onerror="this.src='https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=1200';" 
-         class="bg-room" 
-         alt="Vintage TV Hub">
+    <img src="OIG2_vintage_tv_room_v2 (1).png" class="bg-room" alt="Three Screens Hub">
 
     <div class="ui-layer">
         <div class="top-bar interactive">
@@ -188,9 +183,10 @@
     </div>
 </div>
 
+<audio id="snd-server-isolated" src="server_room.mp3" loop preload="auto"></audio>
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
-        // Установили базовый английский по умолчанию, как в главном меню клуба
         new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
     }
 </script>
@@ -198,10 +194,23 @@
 
 <script>
     (function() {
-        // Уникальный цифровой след скрытый в браузере
+        // Установка цифрового следа
         let id = localStorage.getItem('gy_trace') || 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         localStorage.setItem('gy_trace', id);
-        document.getElementById('digital-trace').innerText = id;
+        const traceEl = document.getElementById('digital-trace');
+        if (traceEl) traceEl.innerText = id;
+
+        // Принудительный запуск звука при первом же взаимодействии с комнатой
+        const launchAudio = () => {
+            const audio = document.getElementById('snd-server-isolated');
+            if (audio && audio.paused) {
+                audio.volume = 0.25;
+                audio.play().catch(e => console.log("Ждем клика..."));
+            }
+        };
+
+        document.addEventListener('click', launchAudio, { once: true });
+        document.addEventListener('touchstart', launchAudio, { once: true });
     })();
 </script>
 
