@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.135| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.136| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -309,21 +309,19 @@
     </div>
   
     <!-- БЛОК 5: СЕРВЕРНАЯ (ЧИСТЫЙ СТИЛЬ С ПРАВИЛЬНЫМ ФОНОМ И ПРОГРАММНЫМ ИСКЛЮЧЕНИЕМ МУСОРА) -->
-    <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0; display: none;">
+   <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0; display: none;">
         
-        <div class="notranslate ui-nav-arrows" id="nav-server" style="display: flex; z-index: 1000002;">
+        <div class="notranslate ui-nav-arrows" id="nav-server" style="display: flex; z-index: 1000005; pointer-events: auto !important;">
             <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
 
-        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000002;">GY-GY</div>
+        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000005;">GY-GY</div>
 
-        <div id="three-screens-zone" style="position: absolute; top: 30vh; left: 50%; transform: translateX(-50%); width: 60vw; height: 35vh; cursor: pointer; background: transparent; z-index: 1000000;" onclick="window.location.href='verses.html'">
-            <span class="cue-arrow-hall" style="font-size: 20px; opacity: 0; transition: opacity 0.3s; color: var(--violet); text-shadow: 0 0 10px var(--violet); display: block; text-align: center; margin-top: 15vh;">ENTER AI ROOM</span>
+        <div id="three-screens-zone" style="position: absolute; top: 20vh; left: 10vw; width: 80vw; height: 50vh; cursor: pointer; background: rgba(255, 0, 0, 0); z-index: 1000010; pointer-events: auto !important;" onclick="console.log('Клик по экранам сработал!'); window.location.href='verses.html'">
         </div>
 
     </div>
-
     <!-- БЛОК 6: БАР -->
     <div id="block-bar" class="block">
         <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
@@ -375,8 +373,8 @@
         const barAmbient = document.getElementById('snd-ambient');   
         const srvSnd = document.getElementById('snd-server');
         let coughInterval = null; 
-          const allLangs = [
-            {n:'ENGLISH', c:'gb', code:'en'}, 
+         const allLangs = [
+            {n:'<span class="notranslate" translate="no">English</span>', c:'gb', code:'en'}, 
             {n:'DEUTSCH', c:'de', code:'de'}, 
             {n:'ESPAÑOL', c:'es', code:'es'}, 
             {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -397,9 +395,7 @@
                 if(lang.code === currentActiveCode) return; 
                 const div = document.createElement('div');
                 div.className = 'lang-item notranslate';
-                
-                // Жестко запрещаем перевод на уровне стандартов HTML5
-                div.setAttribute('translate', 'no'); 
+                div.setAttribute('translate', 'no');
                 
                 div.innerHTML = `
                     <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
@@ -409,7 +405,7 @@
                 container.appendChild(div);
             });
         }
-        function safeStorageGet(key, fallback = "") {
+                 function safeStorageGet(key, fallback = "") {
             try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
         }
 
