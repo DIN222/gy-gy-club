@@ -539,24 +539,43 @@ function renderLangList() {
             }
         }
 
-        function portalTransition(nextId) {
+      function portalTransition(nextId) {
             const currentActiveBlock = document.querySelector('.block.active');
             const targetBlock = document.getElementById(nextId);
             const globalBackBtn = document.getElementById('btn-global-back');
             const badge = document.getElementById('global-user-badge');
             const langSwitcher = document.getElementById('lang-switcher');
 
-            // --- ЖЕСТКИЙ КОНТРОЛЬ ЗВУКА ДЛЯ СЕРВЕРНОЙ ---
+            // ТОЧНОЕ ПОПАДАНИЕ В ВАШИ ID:
+            const sndServer = document.getElementById('snd-server');
+            const sndAmbient = document.getElementById('snd-ambient');
+
+            // --- ЖЕСТКИЙ КОНТРОЛЬ ЗВУКА ---
             if (nextId === 'block-server') {
-                safePlaySound('snd-server', 0.4); // Включаем серверный гул
-                if (barAmbient) barAmbient.volume = 0.01; // Глушим бар до минимума
+                // Входим в Серверную: глушим фоновый бар почти в ноль, запускаем гул серверов
+                if (sndAmbient) { 
+                    sndAmbient.volume = 0.02; 
+                }
+                if (sndServer) {
+                    sndServer.volume = 0.35;
+                    sndServer.play().catch(err => {
+                        console.log("Автоплей заблокирован, ждем клика.", err);
+                        document.familyPlaySound = () => { sndServer.play(); };
+                    });
+                }
             } else {
-                safeFadeSound('snd-server'); // Выключаем сервер, если ушли из нее
-                if (barAmbient && currentActiveBlock?.id === 'block-server') {
-                    barAmbient.volume = 0.1; // Возвращаем громкость бара
+                // Уходим из Серверной: полностью тушим серверный гул, возвращаем бар на базу
+                if (sndServer) {
+                    sndServer.pause();
+                    sndServer.currentTime = 0;
+                }
+                if (sndAmbient && currentActiveBlock?.id === 'block-server') {
+                    sndAmbient.volume = 0.15;
+                    sndAmbient.play().catch(() => {});
                 }
             }
 
+            // --- НАВИГАЦИЯ И ИНТЕРФЕЙС ---
             if (nextId === 'block-entrance') {
                 if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
                 if (badge) badge.style.display = 'none';
@@ -571,6 +590,7 @@ function renderLangList() {
                 if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
             }
 
+            // Переключение экранов
             if (currentActiveBlock) { 
                 currentActiveBlock.classList.remove('active'); 
                 currentActiveBlock.style.display = 'none'; 
@@ -716,13 +736,14 @@ function renderLangList() {
             document.body.classList.add('page-loaded');
 
             // Интервальный кашель Чарли
+        // Кашель Чарли раз в 25 секунд (использует ваш id "snd-khe")
             coughInterval = setInterval(() => {
                 const currentBlock = document.querySelector('.block.active');
                 if (currentBlock && (currentBlock.id === 'block-bar' || currentBlock.id === 'block-welcome')) {
-                    safePlaySound('snd-khe', 0.15);
+                    const khe = document.getElementById('snd-khe');
+                    if (khe) { khe.volume = 0.15; khe.play().catch(() => {}); }
                 }
             }, 25000);
-        });
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
