@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.142| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.143| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -366,7 +366,7 @@
             
         </div>
     </div>
-    <script type="text/javascript">
+  <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
@@ -381,9 +381,6 @@
         let currentUserImage = "";
         let currentFlagCode = 'gb';
 
-        const barAmbient = document.getElementById('snd-ambient');   
-        const srvSnd = document.getElementById('snd-server');
-        let coughInterval = null; 
         const allLangs = [
             {n:'ENGLISH', c:'gb', code:'en'}, 
             {n:'DEUTSCH', c:'de', code:'de'}, 
@@ -398,7 +395,8 @@
             {n:'中文', c:'cn', code:'zh-CN'}, 
             {n:'日本語', c:'jp', code:'ja'}
         ];
-function renderLangList() {
+
+        function renderLangList() {
             const container = document.getElementById('lang-list-container');
             if (!container) return;
             container.innerHTML = ''; 
@@ -416,11 +414,11 @@ function renderLangList() {
                 container.appendChild(div);
             });
         }
-                 function safeStorageGet(key, fallback = "") {
+
+        function safeStorageGet(key, fallback = "") {
             try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
         }
 
-        // Заменено на сессионный режим для исключения авто-прыжков при перезагрузке жесткого старта двери
         function safeStorageSet(key, value) {
             try { localStorage.setItem(key, value); } catch (e) {}
         }
@@ -488,10 +486,8 @@ function renderLangList() {
             
             setTimeout(() => { 
                 portalTransition('block-welcome'); 
-                if (barAmbient) { 
-                    barAmbient.volume = 0.1; 
-                    barAmbient.play().catch(e => {}); 
-                }
+                // Запуск плавного нарастания звука Бара при входе
+                window.GY_AUDIO_ENGINE.fadeBarAmbient(0.12, 1500);
             }, 1000);
         }
 
@@ -539,39 +535,33 @@ function renderLangList() {
             }
         }
 
-      function portalTransition(nextId) {
+        function portalTransition(nextId) {
             const currentActiveBlock = document.querySelector('.block.active');
             const targetBlock = document.getElementById(nextId);
             const globalBackBtn = document.getElementById('btn-global-back');
             const badge = document.getElementById('global-user-badge');
             const langSwitcher = document.getElementById('lang-switcher');
 
-            // ТОЧНОЕ ПОПАДАНИЕ В ВАШИ ID:
             const sndServer = document.getElementById('snd-server');
-            const sndAmbient = document.getElementById('snd-ambient');
 
-            // --- ЖЕСТКИЙ КОНТРОЛЬ ЗВУКА ---
+            // --- УПРАВЛЕНИЕ АУДИОПОТОКАМИ ЧЕРЕЗ ИЗОЛИРОВАННЫЙ ДВИЖОК ---
             if (nextId === 'block-server') {
-                // Входим в Серверную: глушим фоновый бар почти в ноль, запускаем гул серверов
-                if (sndAmbient) { 
-                    sndAmbient.volume = 0.02; 
-                }
+                // Серверная: плавно уводим бар в минимум, включаем сервера
+                window.GY_AUDIO_ENGINE.fadeBarAmbient(0.02, 800);
                 if (sndServer) {
                     sndServer.volume = 0.35;
                     sndServer.play().catch(err => {
-                        console.log("Автоплей заблокирован, ждем клика.", err);
-                        document.familyPlaySound = () => { sndServer.play(); };
+                        console.log("Audio contextual lock", err);
                     });
                 }
             } else {
-                // Уходим из Серверной: полностью тушим серверный гул, возвращаем бар на базу
+                // Выход из серверной: тушим сервера, плавно возвращаем бар
                 if (sndServer) {
                     sndServer.pause();
                     sndServer.currentTime = 0;
                 }
-                if (sndAmbient && currentActiveBlock?.id === 'block-server') {
-                    sndAmbient.volume = 0.15;
-                    sndAmbient.play().catch(() => {});
+                if (currentActiveBlock?.id === 'block-server') {
+                    window.GY_AUDIO_ENGINE.fadeBarAmbient(0.15, 1200);
                 }
             }
 
@@ -590,7 +580,6 @@ function renderLangList() {
                 if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
             }
 
-            // Переключение экранов
             if (currentActiveBlock) { 
                 currentActiveBlock.classList.remove('active'); 
                 currentActiveBlock.style.display = 'none'; 
@@ -602,6 +591,7 @@ function renderLangList() {
                 if (embeddedArrows) embeddedArrows.style.display = 'flex';
             }
         }
+
         function safePlaySound(audioId, volume = 1.0) {
             const audio = document.getElementById(audioId);
             if (!audio) return;
@@ -676,17 +666,83 @@ function renderLangList() {
         function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
         function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
- // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (ИСПРАВЛЕННАЯ ДЛЯ ПЕРЕВОДА) ===
+        // ==========================================
+        // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА И КАШЛЯ
+        // ==========================================
+        (function() {
+            let fadeTimer = null;
+            let coughTimer = null;
+
+            window.GY_AUDIO_ENGINE = {
+                // Гладкое линейное изменение громкости без ступенек и рывков
+                fadeBarAmbient: function(targetVolume, durationMs) {
+                    const barAmbient = document.getElementById('snd-ambient');
+                    if (!barAmbient) return;
+
+                    if (barAmbient.paused) {
+                        barAmbient.volume = 0;
+                        barAmbient.play().catch(() => {});
+                    }
+
+                    if (fadeTimer) clearInterval(fadeTimer);
+
+                    const startVolume = barAmbient.volume;
+                    const volumeDifference = targetVolume - startVolume;
+                    const stepTime = 30; // Интервал обновления в мс
+                    const totalSteps = durationMs / stepTime;
+                    const volumeStep = volumeDifference / totalSteps;
+                    let currentStep = 0;
+
+                    fadeTimer = setInterval(() => {
+                        currentStep++;
+                        let nextVol = startVolume + (volumeStep * currentStep);
+                        
+                        // Защита границ диапазона
+                        if (nextVol < 0) nextVol = 0;
+                        if (nextVol > 1) nextVol = 1;
+                        
+                        barAmbient.volume = nextVol;
+
+                        if (currentStep >= totalSteps) {
+                            barAmbient.volume = targetVolume;
+                            clearInterval(fadeTimer);
+                        }
+                    }, stepTime);
+                }
+            };
+
+            // Полностью изолированный интервал кашля Чарли (вызывается авто-запуском в фоне)
+            function initIsolatedCough() {
+                if (coughTimer) clearInterval(coughTimer);
+                
+                coughTimer = setInterval(() => {
+                    const currentBlock = document.querySelector('.block.active');
+                    const barAmbient = document.getElementById('snd-ambient');
+                    
+                    // Жесткое условие: ТОЛЬКО в Баре и ТОЛЬКО если фоновый звук играет
+                    if (currentBlock && currentBlock.id === 'block-bar' && barAmbient && !barAmbient.paused) {
+                        const khe = document.getElementById('snd-khe');
+                        if (khe) { 
+                            khe.volume = 0.15; 
+                            khe.play().catch(() => {}); 
+                        }
+                    }
+                }, 25000); // Строго каждые 25 секунд
+            }
+
+            // Запускаем контроль кашля сразу при чтении скрипта
+            initIsolatedCough();
+        })();
+
+        // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ DOM ===
         document.addEventListener("DOMContentLoaded", () => {
             
-            // Читаем сохраненный флаг ИЛИ ставим английский ('gb') по умолчанию
             const savedFlag = safeStorageGet('gygy_flag', 'gb');
             const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
             
             currentActiveCode = matchingLang.code;
             currentFlagCode = matchingLang.c;
             
-            // Отрисовка шапки языка
             const activeDisplay = document.getElementById('active-lang-display');
             if (activeDisplay) {
                 activeDisplay.innerHTML = `
@@ -698,10 +754,8 @@ function renderLangList() {
             const badgeFlag = document.getElementById('badge-flag-img');
             if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
 
-            // Рендерим список остальных языков
             renderLangList();
 
-            // Запуск перевода Google под текущий выбранный язык
             setTimeout(() => {
                 const selectEl = document.querySelector('.goog-te-combo');
                 if (selectEl) {
@@ -710,7 +764,6 @@ function renderLangList() {
                 }
             }, 1000);
 
-            // Загрузка профиля пользователя
             checkAndFillRegistrationForm();
 
             if (currentUserImage) {
@@ -719,10 +772,11 @@ function renderLangList() {
                 if (badgeImg) badgeImg.src = currentUserImage;
                 if (passImg) passImg.src = currentUserImage;
             }
-// === ПРЯЧЕМ ВСЕ КОМНАТЫ ===
+
+            // === ПРЯЧЕМ ВСЕ КОМНАТЫ ===
             document.querySelectorAll('.block').forEach(b => {
                 b.classList.remove('active');
-                b.style.display = 'none'; // Опечатка исправлена (было style.style)
+                b.style.display = 'none';
             });
 
             // === ПОКАЗЫВАЕМ ТОЛЬКО ДВЕРЬ ===
@@ -732,31 +786,12 @@ function renderLangList() {
                 entrance.classList.add('active');
             }
 
-            // === ИНТЕРВАЛЬНЫЙ КАШЕЛЬ ЧАРЛИ ===
-            if (typeof coughInterval !== 'undefined') clearInterval(coughInterval);
-            
-            coughInterval = setInterval(() => {
-                const currentBlock = document.querySelector('.block.active');
-                if (currentBlock && (currentBlock.id === 'block-bar' || currentBlock.id === 'block-welcome')) {
-                    const khe = document.getElementById('snd-khe');
-                    if (khe) { 
-                        khe.volume = 0.15; 
-                        khe.play().catch(() => {}); 
-                    }
-                }
-            }, 25000);
-
             // === ДИНАМИЧЕСКОЕ ПОДКЛЮЧЕНИЕ GOOGLE TRANSLATE ===
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
             document.head.appendChild(script);
 
-            // Окончательное проявление страницы
             document.body.classList.add('page-loaded');
-
-        }); // Железный замок DOMContentLoaded
-        
+        });
     </script>
-</body>
-</html>
