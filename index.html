@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.140| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.141| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -720,34 +720,44 @@ function renderLangList() {
                 if (passImg) passImg.src = currentUserImage;
             }
 
-            // Прячем все комнаты
+         // === ПРЯЧЕМ ВСЕ КОМНАТЫ ===
             document.querySelectorAll('.block').forEach(b => {
                 b.classList.remove('active');
-                b.style.display = 'none';
+                b.style.style.display = 'none';
             });
 
-            // Показываем только Дверь
+            // === ПОКАЗЫВАЕМ ТОЛЬКО ДВЕРЬ ===
             const entrance = document.getElementById('block-entrance');
             if (entrance) {
                 entrance.style.display = 'flex';
                 entrance.classList.add('active');
             }
 
-            document.body.classList.add('page-loaded');
-
-            // Интервальный кашель Чарли
-        // Кашель Чарли раз в 25 секунд (использует ваш id "snd-khe")
+            // === ИНТЕРВАЛЬНЫЙ КАШЕЛЬ ЧАРЛИ ===
+            if (typeof coughInterval !== 'undefined') clearInterval(coughInterval);
+            
             coughInterval = setInterval(() => {
                 const currentBlock = document.querySelector('.block.active');
                 if (currentBlock && (currentBlock.id === 'block-bar' || currentBlock.id === 'block-welcome')) {
                     const khe = document.getElementById('snd-khe');
-                    if (khe) { khe.volume = 0.15; khe.play().catch(() => {}); }
+                    if (khe) { 
+                        khe.volume = 0.15; 
+                        khe.play().catch(() => {}); 
+                    }
                 }
             }, 25000);
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        document.head.appendChild(script);
+
+            // === ДИНАМИЧЕСКОЕ ПОДКЛЮЧЕНИЕ GOOGLE TRANSLATE ===
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.head.appendChild(script);
+
+            // Окончательное проявление страницы
+            document.body.classList.add('page-loaded');
+
+        }); // ЗДЕСЬ МЫ НАМЕРТВО ЗАКРЫВАЕМ DOMContentLoaded!
+        
     </script>
 </body>
 </html>
