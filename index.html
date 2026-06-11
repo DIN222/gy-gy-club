@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.138| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.139| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -71,7 +71,7 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
+        #block-tables { background: url('lounge.jpg') no-repeat center bottom / cover #000; }
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
@@ -340,21 +340,26 @@
         </div>
     </div>
 
-    <!-- БЛОК 7: СТОЛЫ -->
-    <div id="block-tables" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-tables">
+  <div id="block-tables" class="block" style="position: fixed; inset: 0; display: none;">
+        
+        <div class="notranslate ui-nav-arrows" id="nav-tables" style="display: flex; z-index: 10;">
             <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-        <div class="mic-zone" style="bottom: 58%; left: 50%;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
-        <div class="lamp-zone" style="bottom: 48%; left: 25%;" onclick="alert('Table 1 selected')"></div>
-        <div class="lamp-zone" style="bottom: 48%; left: 75%;" onclick="alert('Table 2 selected')"></div>
-        <div class="lamp-zone" style="bottom: 32%; left: 18%;" onclick="alert('Table 3 selected')"></div>
-        <div class="lamp-zone" style="bottom: 32%; left: 82%;" onclick="alert('Table 4 selected')"></div>
-        <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
-        <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
-    </div>
+        
+        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 10;">GY-GY</div>
 
+        <div class="mic-zone" style="position: absolute; bottom: 58%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; cursor: pointer; z-index: 5;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
+        
+        <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 28%;" onclick="alert('Table 1 selected')"></div>
+        <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 72%;" onclick="alert('Table 2 selected')"></div>
+        
+        <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 20%;" onclick="alert('Table 3 selected')"></div>
+        <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 80%;" onclick="alert('Table 4 selected')"></div>
+        
+        <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 32%;" onclick="alert('Table 5 selected')"></div>
+        <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 68%;" onclick="alert('Table 6 selected')"></div>
+    </div>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -640,7 +645,7 @@ function renderLangList() {
         function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
         function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
-    // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (ИСПРАВЛЕННАЯ ДЛЯ ПЕРЕВОДА) ===
+ // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (ИСПРАВЛЕННАЯ ДЛЯ ПЕРЕВОДА) ===
         document.addEventListener("DOMContentLoaded", () => {
             
             // Читаем сохраненный флаг ИЛИ ставим английский ('gb') по умолчанию
