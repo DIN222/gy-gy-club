@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.136| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.137| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -640,21 +640,29 @@ function renderLangList() {
         function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
         function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
-        // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (СТРОГИЙ СТАРТ С ЗАКРЫТОЙ ДВЕРИ) ===
+      // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (ЖЕСТКИЙ АНГЛИЙСКИЙ ДЕФОЛТ) ===
         document.addEventListener("DOMContentLoaded", () => {
+            
+            // Принудительно ставим английский старт на уровне переменных, очищая старые следы
+            currentActiveCode = 'en';
+            currentFlagCode = 'gb';
+            
+            // Рендерим список стран
             renderLangList();
             
-            const savedFlag = safeStorageGet('gygy_flag', 'gb');
-            const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
-            currentActiveCode = matchingLang.code;
-            currentFlagCode = matchingLang.c;
+            // Принудительно отрисовываем Англию в шапке панели
+            const activeDisplay = document.getElementById('active-lang-display');
+            if (activeDisplay) {
+                activeDisplay.innerHTML = `
+                    <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no"> 
+                    <span class="notranslate" translate="no">ENGLISH</span>
+                `;
+            }
             
-            document.getElementById('active-lang-display').innerHTML = `
-                <img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon"> 
-                <span>${matchingLang.n}</span>
-            `;
-            document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
+            const badgeFlag = document.getElementById('badge-flag-img');
+            if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/gb.png`;
 
+            // Загрузка профиля без авто-переходов
             checkAndFillRegistrationForm();
 
             if (currentUserImage) {
@@ -664,21 +672,23 @@ function renderLangList() {
                 if (passImg) passImg.src = currentUserImage;
             }
 
-            // Намертво глушим все блоки при загрузке
+            // Наглухо гасим все блоки, кроме Двери при первой загрузке
             document.querySelectorAll('.block').forEach(b => {
                 b.classList.remove('active');
                 b.style.display = 'none';
             });
 
-            // Активируем исключительно Дверь
+            // Включаем только дверь
             const entrance = document.getElementById('block-entrance');
             if (entrance) {
                 entrance.style.display = 'flex';
                 entrance.classList.add('active');
             }
 
+            // Проявляем страницу
             document.body.classList.add('page-loaded');
 
+            // Интервальный кашель Чарли
             coughInterval = setInterval(() => {
                 const currentBlock = document.querySelector('.block.active');
                 if (currentBlock && (currentBlock.id === 'block-bar' || currentBlock.id === 'block-welcome')) {
@@ -686,7 +696,6 @@ function renderLangList() {
                 }
             }, 25000);
         });
-
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
