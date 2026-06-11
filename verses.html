@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROOM CORE | v8.1.19 (Internal 4.4)</title>
+    <title>GY-GY CLUB | AI ROOM CORE v8.1.22</title>
     <style>
         :root {
             --orange-neon: #ff8c00;
             --neon-glow: 0 0 20px rgba(255, 140, 0, 0.9), 0 0 40px rgba(255, 140, 0, 0.4);
             --gold: #ffd700;
+            --black: #000;
+            --h-unit: 55px;
         }
 
         body, html {
@@ -16,70 +18,123 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background: #000;
-            font-family: 'Segoe UI', sans-serif;
+            background: var(--black);
+            color: var(--gold);
+            font-family: monospace;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ТРЁХКОМПОНЕНТНАЯ СТАНДАРТНАЯ ШАПКА КЛУБА */
+        header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* Лево | Центр | Право */
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 2px solid var(--gold);
+            background: var(--black);
+            z-index: 100;
+            box-sizing: border-box;
+        }
+        
+        /* Левая зона: Стрелки */
+        .header-left { 
+            display: flex; 
+            justify-content: flex-start;
+            align-items: center; 
+        }
+        
+        /* Средняя зона: Аватар */
+        .header-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Правая зона: Логотип */
+        .header-right { 
+            display: flex; 
+            justify-content: flex-end; 
+            align-items: center;
+        }
+        
+        .ui-box { 
+            height: var(--h-unit); 
+            border: 1px solid var(--gold); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 0 15px; 
+            background: transparent; 
+            color: var(--gold); 
+            cursor: pointer; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            font-weight: bold; 
+            transition: 0.3s; 
+            text-decoration: none; 
+        }
+        
+        .ui-box:hover { 
+            background: rgba(255,215,0,0.1); 
+            box-shadow: 0 0 15px var(--gold); 
+        }
+        
+        .arrow { font-size: 28px; width: 55px; font-family: sans-serif; }
+        
+        .logo { 
+            font-size: 30px; 
+            font-weight: bold; 
+            letter-spacing: 6px; 
+            text-shadow: 0 0 10px var(--gold); 
+            user-select: none;
+        }
+
+        .user-avatar {
+            width: var(--h-unit);
+            height: var(--h-unit);
+            border: 1px solid var(--gold);
+            box-sizing: border-box;
+            background: #222;
+            object-fit: cover;
+        }
+
+        /* РАБОЧАЯ ОБЛАСТЬ ЭКРАНА */
+        main {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050505;
+        }
+
+        /* АДАПТИВНЫЙ КОНТЕЙНЕР БЕЗ ИСКАЖЕНИЙ */
+        .viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 177.78vh; /* 16:9 пропорции */
+            max-height: 56.25vw;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* ЖЕСТКИЙ КОНТЕЙНЕР 16:9 */
-        .viewport {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100vw;
-            height: 100vh;
-            max-width: 177.78vh;
-            max-height: 56.25vw;
-            overflow: hidden;
-        }
-
-        /* КАРТИНКА С ТРЕМЯ ЭКРАНАМИ */
         .bg-room {
-            position: absolute;
-            inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: fill;
+            object-fit: contain;
             pointer-events: none;
-            z-index: 1;
-        }
-
-        /* СЛОЙ ИНТЕРФЕЙСА */
-        .ui-layer {
             position: absolute;
-            inset: 0;
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        .interactive {
-            pointer-events: auto !important;
+            top: 0;
+            left: 0;
         }
 
-        .top-bar {
-            position: absolute;
-            top: 25px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 40px;
-            box-sizing: border-box;
-        }
-
-        .brand-logo {
-            color: var(--gold);
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 8px;
-            font-family: monospace;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-            text-transform: uppercase;
-        }
-
+        /* НЕОНОВЫЕ ССЫЛКИ НА КИНЕСКОПАХ */
         .screen-label {
             position: absolute;
             color: var(--orange-neon);
@@ -94,15 +149,16 @@
             text-transform: lowercase;
             text-align: center;
             transform: translate(-50%, -50%);
+            z-index: 20;
         }
 
-        /* ПРИВЯЗКА НАДПИСЕЙ К СТАРЫМ ЭКРАНАМ */
+        /* Координаты центров экранов телевизоров */
         #studio-zone {
             top: 30%; 
             left: 27.5%; 
             width: 25%;
             height: 20%;
-            font-size: clamp(30px, 4.0vw, 50px); 
+            font-size: clamp(24px, 3.5vw, 45px); 
         }
 
         #universe-zone {
@@ -110,7 +166,7 @@
             left: 72.5%;
             width: 30%;
             height: 20%;
-            font-size: clamp(20px, 3.5vw, 45px);
+            font-size: clamp(18px, 3.0vw, 40px);
         }
 
         #techpark-zone {
@@ -118,7 +174,7 @@
             left: 50%;
             width: 15%;
             height: 12%;
-            font-size: clamp(14px, 2.5vw, 40px);
+            font-size: clamp(12px, 2.0vw, 30px);
         }
 
         .screen-label:hover {
@@ -127,85 +183,74 @@
             text-shadow: 0 0 30px var(--orange-neon);
         }
 
-        .bottom-nav {
-            position: absolute;
-            bottom: 30px;
-            width: 100%;
+        footer {
+            padding: 5px 20px;
+            background: var(--black);
             display: flex;
-            justify-content: space-between;
-            padding: 0 40px;
+            justify-content: flex-end;
+            align-items: center;
             box-sizing: border-box;
-            align-items: flex-end;
+            font-size: 11px;
+            color: rgba(255,255,255,0.2);
+            height: 30px;
+            border-top: 1px solid #111;
         }
 
-        .btn-back {
-            background: none;
-            border: 1px solid rgba(255,255,255,0.6);
-            color: #fff;
-            padding: 10px 25px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        .meta-data {
-            text-align: right;
-            color: rgba(255,255,255,0.3);
-            font-size: 0.7rem;
-        }
-
-        #digital-trace { color: var(--orange-neon); }
-        #google_translate_element { display: none; }
+        #digital-trace { color: var(--orange-neon); margin-left: 5px; }
     </style>
 </head>
 <body>
 
-<div class="viewport">
-    <img src="OIG2_vintage_tv_room_v2 (1).png" class="bg-room" alt="Three Screens Hub">
-
-    <div class="ui-layer">
-        <div class="top-bar interactive">
-            <div id="google_translate_element"></div>
-            <div class="brand-logo notranslate">GY-GY</div>
-        </div>
-
-        <a href="studio.html" class="screen-label interactive" id="studio-zone">studio</a>
-        <a href="techpark.html" class="screen-label interactive" id="techpark-zone">techpark</a>
-        <a href="universe.html" class="screen-label interactive" id="universe-zone">Hello Universe</a>
-
-        <div class="bottom-nav interactive">
-            <button class="btn-back" onclick="location.href='index.html'">← RETURN</button>
-            <div class="meta-data">
-                CORE_VER: 4.4 (Build 8.1.18)<br>
-                TRACE_ID: <span id="digital-trace">...</span>
-            </div>
-        </div>
+<header>
+    <div class="header-left">
+        <a href="index.html" class="ui-box arrow">«</a>
     </div>
-</div>
+    
+    <div class="header-center">
+        <img src="about:blank" id="user-header-avatar" class="user-avatar" alt="Avatar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'55\' viewBox=\'0 0 55 55\'><rect width=\'55\' height=\'55\' fill=\'%23333\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23ffd700\' font-family=\'monospace\' font-size=\'20\'>GY</text></svg>';">
+    </div>
+    
+    <div class="header-right">
+        <div class="logo notranslate">GY-GY</div>
+    </div>
+</header>
+
+<main>
+    <div class="viewport">
+        <img src="OIG2_vintage_tv_room_v2 (1).png" class="bg-room" alt="Three Screens Hub">
+
+        <a href="studio.html" class="screen-label" id="studio-zone">studio</a>
+        <a href="techpark.html" class="screen-label" id="techpark-zone">techpark</a>
+        <a href="universe.html" class="screen-label" id="universe-zone">Hello Universe</a>
+    </div>
+</main>
+
+<footer>
+    <div>CORE_VER: 4.4 (Build 8.1.21) | TRACE_ID: <span id="digital-trace">...</span></div>
+</footer>
 
 <audio id="snd-server-isolated" src="server_room.mp3" loop preload="auto"></audio>
 
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 <script>
     (function() {
-        // Установка цифрового следа
+        // Инициализация цифрового следа
         let id = localStorage.getItem('gy_trace') || 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         localStorage.setItem('gy_trace', id);
         const traceEl = document.getElementById('digital-trace');
         if (traceEl) traceEl.innerText = id;
 
-        // Принудительный запуск звука при первом же взаимодействии с комнатой
+        // Автоматический запуск аватара пользователя из локального хранилища клуба
+        const savedAvatar = localStorage.getItem('gy_user_avatar');
+        if (savedAvatar) {
+            document.getElementById('user-header-avatar').src = savedAvatar;
+        }
+
+        // Запуск серверного гула по первому клику
         const launchAudio = () => {
             const audio = document.getElementById('snd-server-isolated');
             if (audio && audio.paused) {
                 audio.volume = 0.25;
-                audio.play().catch(e => console.log("Ждем клика..."));
+                audio.play().catch(e => console.log("Звуковой движок ждет фокуса..."));
             }
         };
 
