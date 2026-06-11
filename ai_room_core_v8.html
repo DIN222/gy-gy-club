@@ -1,1 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ROOM CORE | v8.1.18 (Internal 4.4)</title>
+    <style>
+       :root {
+            --orange-neon: #ff8c00;
+            --neon-glow: 0 0 20px rgba(255, 140, 0, 0.9), 0 0 40px rgba(255, 140, 0, 0.4);
+            --gold: #ffd700;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: url('OIG2_vintage_tv_room_v2.png') no-repeat center center;
+            background-size: contain; 
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 25px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        /* ИСПРАВЛЕННЫЙ ЛОГОТИП */
+        .brand-logo {
+            color: var(--gold);
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            font-family: monospace;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            text-transform: uppercase;
+        }
+
+       .screen-label {
+            position: absolute;
+            color: var(--orange-neon);
+            text-shadow: var(--neon-glow);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
+            text-align: center;
+        }
+
+        /* ЛЕВАЯ ЗОНА */
+        #studio-zone {
+            top: 20%; 
+            left: 15%; 
+            width: 25%;
+            height: 20%;
+            font-size: clamp(30px, 4.0vw, 50px); 
+        }
+
+        /* ПРАВАЯ ЗОНА - ВЫРОВНЯЛИ ПО ВЫСОТЕ СО СТУДИЕЙ */
+        #universe-zone {
+            top: 20%; 
+            right: 15%;
+            width: 30%;
+            height: 20%;
+            font-size: clamp(20px, 3.5vw, 45px);
+        }
+
+        /* ЦЕНТРАЛЬНАЯ НИЖНЯЯ ЗОНА */
+        #techpark-zone {
+            top: 45%; 
+            left: 42.5%;
+            width: 15%;
+            height: 12%;
+            font-size: clamp(14px, 2.5vw, 40px);
+        }
+
+        .screen-label:hover {
+            filter: brightness(1.5);
+            transform: scale(1.05);
+            text-shadow: 0 0 30px var(--orange-neon);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-sizing: border-box;
+            align-items: flex-end;
+        }
+
+        .btn-back {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.6);
+            color: #fff;
+            padding: 10px 25px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .meta-data {
+            text-align: right;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+        }
+
+       #digital-trace { color: var(--orange-neon); }
+    </style>
+</head>
+<body>
+
+<div class="viewport">
+    <div class="top-bar">
+        <div id="google_translate_element"></div>
+        <div class="brand-logo">GY-GY</div>
+    </div>
+
+    <a href="studio.html" class="screen-label" id="studio-zone">studio</a>
+    <a href="techpark.html" class="screen-label" id="techpark-zone">techpark</a>
+    <a href="universe.html" class="screen-label" id="universe-zone">Hello Universe</a>
+
+    <div class="bottom-nav">
+        <button class="btn-back" onclick="history.back()">← RETURN</button>
+        <div class="meta-data">
+            CORE_VER: 4.4 (Build 8.1.16)<br>
+            TRACE_ID: <span id="digital-trace">...</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'ru'}, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+    (function() {
+        let id = localStorage.getItem('gy_trace') || 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        localStorage.setItem('gy_trace', id);
+        document.getElementById('digital-trace').innerText = id;
+    })();
+</script>
+
+</body>
+</html>
 
