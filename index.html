@@ -373,8 +373,8 @@
         const barAmbient = document.getElementById('snd-ambient');   
         const srvSnd = document.getElementById('snd-server');
         let coughInterval = null; 
-         const allLangs = [
-            {n:'<span class="notranslate" translate="no">English</span>', c:'gb', code:'en'}, 
+        const allLangs = [
+            {n:'ENGLISH', c:'gb', code:'en'}, 
             {n:'DEUTSCH', c:'de', code:'de'}, 
             {n:'ESPAÑOL', c:'es', code:'es'}, 
             {n:'FRANÇAIS', c:'fr', code:'fr'},
@@ -640,29 +640,41 @@ function renderLangList() {
         function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
         function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
-      // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (ЖЕСТКИЙ АНГЛИЙСКИЙ ДЕФОЛТ) ===
+    // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (ИСПРАВЛЕННАЯ ДЛЯ ПЕРЕВОДА) ===
         document.addEventListener("DOMContentLoaded", () => {
             
-            // Принудительно ставим английский старт на уровне переменных, очищая старые следы
-            currentActiveCode = 'en';
-            currentFlagCode = 'gb';
+            // Читаем сохраненный флаг ИЛИ ставим английский ('gb') по умолчанию
+            const savedFlag = safeStorageGet('gygy_flag', 'gb');
+            const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
             
-            // Рендерим список стран
-            renderLangList();
+            currentActiveCode = matchingLang.code;
+            currentFlagCode = matchingLang.c;
             
-            // Принудительно отрисовываем Англию в шапке панели
+            // Отрисовка шапки языка
             const activeDisplay = document.getElementById('active-lang-display');
             if (activeDisplay) {
                 activeDisplay.innerHTML = `
-                    <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no"> 
-                    <span class="notranslate" translate="no">ENGLISH</span>
+                    <img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon notranslate" translate="no"> 
+                    <span class="notranslate" translate="no">${matchingLang.n}</span>
                 `;
             }
             
             const badgeFlag = document.getElementById('badge-flag-img');
-            if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/gb.png`;
+            if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
 
-            // Загрузка профиля без авто-переходов
+            // Рендерим список остальных языков
+            renderLangList();
+
+            // Запуск перевода Google под текущий выбранный язык
+            setTimeout(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) {
+                    selectEl.value = currentActiveCode;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }, 1000);
+
+            // Загрузка профиля пользователя
             checkAndFillRegistrationForm();
 
             if (currentUserImage) {
@@ -672,20 +684,19 @@ function renderLangList() {
                 if (passImg) passImg.src = currentUserImage;
             }
 
-            // Наглухо гасим все блоки, кроме Двери при первой загрузке
+            // Прячем все комнаты
             document.querySelectorAll('.block').forEach(b => {
                 b.classList.remove('active');
                 b.style.display = 'none';
             });
 
-            // Включаем только дверь
+            // Показываем только Дверь
             const entrance = document.getElementById('block-entrance');
             if (entrance) {
                 entrance.style.display = 'flex';
                 entrance.classList.add('active');
             }
 
-            // Проявляем страницу
             document.body.classList.add('page-loaded');
 
             // Интервальный кашель Чарли
