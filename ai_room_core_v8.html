@@ -26,10 +26,10 @@
             flex-direction: column;
         }
 
-        /* КЛУБНЫЙ СТАНДАРТ: ВЕРХНЯЯ ПАНЕЛЬ НА ВСЮ ШИРИНУ ЭКРАНА */
+        /* КЛУБНЫЙ СТАНДАРТ: ВЕРХНЯЯ ПАНЕЛЬ С ОБЯЗАТЕЛЬНЫМИ АТРИБУТАМИ */
         header {
             display: grid;
-            grid-template-columns: 1fr auto 1fr; /* Лево | Центр | Право */
+            grid-template-columns: 1fr auto 1fr; /* Лево (Кнопка возврата) | Центр (Аватар) | Право (Язык + Лого) */
             align-items: center;
             padding: 10px 20px;
             border-bottom: 2px solid var(--gold);
@@ -40,29 +40,29 @@
             width: 100%;
         }
 
-        /* Навигация слева */
+        /* Левая часть: Кнопка возврата на предыдущий уровень */
         .header-left {
             display: flex;
-            gap: 10px;
             justify-content: flex-start;
             align-items: center;
         }
 
-        /* Аватар строго по центру */
+        /* Центр: Идентификация (Аватар) */
         .header-center {
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Логотип справа */
+        /* Правая часть: Системные атрибуты (Языковая панель + Логотип GY-GY) */
         .header-right {
             display: flex;
+            gap: 20px;
             justify-content: flex-end;
             align-items: center;
         }
 
-        /* Кнопки управления навигацией */
+        /* Стандартная кнопка возврата (Квадрат) */
         .nav-btn {
             height: var(--h-unit);
             width: var(--h-unit);
@@ -74,7 +74,7 @@
             color: var(--gold);
             cursor: pointer;
             box-sizing: border-box;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             transition: 0.3s;
             text-decoration: none;
@@ -86,7 +86,36 @@
             box-shadow: 0 0 15px var(--gold);
         }
 
-        /* Текстовый логотип */
+        /* Постоянный атрибут: Языковая панель */
+        .lang-panel {
+            display: flex;
+            gap: 5px;
+            border: 1px solid var(--gold);
+            padding: 2px;
+            box-sizing: border-box;
+            height: 35px;
+            align-items: center;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 215, 0, 0.4);
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            height: 100%;
+            transition: 0.2s;
+        }
+
+        .lang-btn.active, .lang-btn:hover {
+            color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Постоянный атрибут: Логотип GY-GY */
         .logo-gy {
             color: var(--gold);
             font-size: 24px;
@@ -97,7 +126,7 @@
             text-transform: uppercase;
         }
 
-        /* Аватар */
+        /* Аватар пользователя */
         .user-avatar {
             width: var(--h-unit);
             height: var(--h-unit);
@@ -209,13 +238,19 @@
 
 <header>
     <div class="header-left">
-        <div class="nav-btn" onclick="location.href='index.html'">&#10094;</div> <div class="nav-btn" onclick="location.href='index.html'">«</div>       </div>
+        <div class="nav-btn" onclick="location.href='index.html'">&#10094;</div>
+    </div>
     
     <div class="header-center">
         <img src="about:blank" id="user-header-avatar" class="user-avatar" alt="Avatar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'55\' height=\'55\' viewBox=\'0 0 55 55\'><rect width=\'55\' height=\'55\' fill=\'%23333\'/><text x=\'50%\' y=\'55%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23ffd700\' font-family=\'monospace\' font-size=\'18\'>GY</text></svg>';">
     </div>
     
     <div class="header-right">
+        <div class="lang-panel" id="lang-switcher">
+            <button class="lang-btn active" onclick="setLang('EN')">EN</button>
+            <button class="lang-btn" onclick="setLang('FR')">FR</button>
+            <button class="lang-btn" onclick="setLang('UA')">UA</button>
+        </div>
         <div class="logo-gy notranslate">GY-GY CLUB</div>
     </div>
 </header>
@@ -237,6 +272,16 @@
 <audio id="snd-server-isolated" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 
 <script>
+    // Переключение языков (заготовка под логику)
+    function setLang(lang) {
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.innerText === lang) btn.classList.add('active');
+        });
+        localStorage.setItem('gy_lang', lang);
+        console.log("Language switched to: " + lang);
+    }
+
     (function() {
         // Установка ID сессии
         let id = localStorage.getItem('gy_trace') || 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
@@ -250,9 +295,14 @@
             document.getElementById('user-header-avatar').src = savedAvatar;
         }
 
-        // Плавный запуск sbridge_ambient.mp3 при первом взаимодействии
-        const launchAudio = () => {
-            const audio = document.getElementById('snd-server-isolated');
+        // Синхронизация сохраненного языка
+        const savedLang = localStorage.getItem('gy_lang') || 'EN';
+        setLang(savedLang);
+
+        // БЕСШОВНЫЙ ФОЛЛБЕК ЗВУКА ПРИ ПРЯМОМ ЗАХОДЕ НЕ ИЗ ХОЛЛА
+        const audio = document.getElementById('snd-server-isolated');
+        
+        const launchAudioFallback = () => {
             if (audio && audio.paused) {
                 audio.volume = 0;
                 audio.play().then(() => {
@@ -265,12 +315,16 @@
                             clearInterval(fadeIn);
                         }
                     }, 40);
-                }).catch(e => console.log("Audio lock context waiting..."));
+                }).catch(e => console.log("Audio fallback context locked. Waiting user interaction..."));
             }
         };
 
-        document.addEventListener('click', launchAudio, { once: true });
-        document.addEventListener('touchstart', launchAudio, { once: true });
+        // Если Холл уже запустил звук — изолированный тег молчит.
+        // Если зашли напрямую — вешаем старт на первое взаимодействие.
+        if (audio && audio.paused) {
+            document.addEventListener('click', launchAudioFallback, { once: true });
+            document.addEventListener('touchstart', launchAudioFallback, { once: true });
+        }
     })();
 </script>
 
