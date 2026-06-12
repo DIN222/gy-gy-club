@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.147 HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.149 HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -228,11 +228,12 @@
     <div class="ui-header-right notranslate">GY-GY</div>
 
     <!-- ПУЛ АУДИОРЕСУРСОВ -->
-    <audio id="snd-door"><source src="door_open.mp3"></audio>
-    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
-    <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
-    <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
-    <audio id="snd-server" loop preload="auto"><source src="server_room.mp3"></audio>
+    <!-- СИСТЕМНЫЕ АУДИОПОТОКИ ХОЛЛА И БАРА -->
+<audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
+<audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
+<audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
+<audio id="snd-khe" src="charlie_cough.mp3" preload="auto"></audio>
+<audio id="snd-server" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 
     <!-- БЛОК 1: ДВЕРЬ -->
     <div id="block-entrance" class="block">
@@ -740,8 +741,8 @@
     function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
     function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
-    // ==========================================
-    // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА И КАШЛЯ CHARLIE
+// ==========================================
+    // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА (ОПТИМИЗАЦИЯ ГРОМКОСТИ)
     // ==========================================
     (function() {
         let fadeTimer = null;
@@ -752,9 +753,14 @@
                 const barAmbient = document.getElementById('snd-ambient');
                 if (!barAmbient) return;
 
+                // Если это вход в бар, форсируем сочную клубную громкость вместо тишины
+                if (targetVolume === 0.12) targetVolume = 0.55; 
+
                 if (barAmbient.paused) {
                     barAmbient.volume = 0;
-                    barAmbient.play().catch(() => {});
+                    barAmbient.play().catch((err) => {
+                        console.log("Браузер заблокировал автоплей. Требуется первый клик пользователя.", err);
+                    });
                 }
 
                 if (fadeTimer) clearInterval(fadeTimer);
@@ -766,7 +772,7 @@
                 const volumeStep = volumeDifference / totalSteps;
                 let currentStep = 0;
 
-            	fadeTimer = setInterval(() => {
+                fadeTimer = setInterval(() => {
                     currentStep++;
                     let nextVol = startVolume + (volumeStep * currentStep);
                     
@@ -790,10 +796,11 @@
                 const currentBlock = document.querySelector('.block.active');
                 const barAmbient = document.getElementById('snd-ambient');
                 
+                // Кашель срабатывает только если мы физически находимся в Баре
                 if (currentBlock && currentBlock.id === 'block-bar' && barAmbient && !barAmbient.paused) {
                     const khe = document.getElementById('snd-khe');
                     if (khe) { 
-                        khe.volume = 0.15; 
+                        khe.volume = 0.60; // Подняли громкость кашля Чарли, чтобы его было слышно через эмбиент
                         khe.play().catch(() => {}); 
                     }
                 }
