@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.149 HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.150 HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -656,23 +656,61 @@
         }
     }
 
-    // СИСТЕМНОЕ ВОСПРОИЗВЕДЕНИЕ ОДИНОЧНЫХ АУДИОЭФФЕКТОВ
-    function safePlaySound(audioId, volume = 1.5) {
-        const audio = document.getElementById(audioId);
-        if (!audio) return;
-        try {
-            audio.volume = volume;
-            const playPromise = audio.play();
-            if (playPromise !== undefined) { playPromise.catch(e => {}); }
-        } catch (e) {}
+   // ЖЕЛЕЗОБЕТОННОЕ ВОСПРОИЗВЕДЕНИЕ ОДИНОЧНЫХ ЗВУКОВ
+function safePlaySound(audioId, volume = 1.0) {
+    const audio = document.getElementById(audioId);
+    if (!audio) {
+        console.error(`[GY-AUDIO]: Тег с id "${audioId}" не найден в DOM!`);
+        return;
     }
+    try {
+        audio.currentTime = 0; // Сбрасываем дорожку в начало перед каждым щелчком
+        audio.volume = volume;  // Выставляем честный уровень без обрезаний
+        
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(err => {
+                console.warn(`[GY-AUDIO]: Браузер заблокировал щелчок двери до клика:`, err);
+                // Микро-хак: если заблокировано, вешаем триггер на следующий любой клик по телу страницы
+                document.body.addEventListener('click', () => { audio.play().catch(e=>{}); }, { once: true });
+            });
+        }
+    } catch (e) {
+        console.error(`[GY-AUDIO]: Сбой звуковой карты или занят поток:`, e);
+    }
+}
 
-    // МГНОВЕННЫЙ ОСТАНОВ ЗВУКА
-    function safeFadeSound(audioId) {
-        const audio = document.getElementById(audioId);
-        if (!audio) return;
-        try { audio.pause(); } catch (e) {}
+// ОБРАБОТКА НАЖАТИЯ НА ВХОДНУЮ ДВЕРЬ
+function handleDoor() {
+    // Врубаем щелчок двери на полную громкость (1.0) до начала всех анимаций
+    safePlaySound('snd-door', 1.0);
+    
+    const d = document.getElementById('main-door');
+    if (d) {
+        d.style.transform = "scale(5)"; 
+        d.style.opacity = "0"; 
+        d.style.pointerEvents = "none";
     }
+    
+    const langSwitcher = document.getElementById('lang-switcher');
+    if (langSwitcher) langSwitcher.style.opacity = "0";
+    
+    if(!currentID) {
+        currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+        safeStorageSet('gygy_id', currentID);
+        safeStorageSet('gy_trace', currentID);
+    }
+    
+    renderUserPassports(currentID);
+    
+    setTimeout(() => { 
+        portalTransition('block-welcome'); 
+        if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
+            // Включаем сочный гул бара
+            window.GY_AUDIO_ENGINE.fadeBarAmbient(0.55, 1500);
+        }
+    }, 1000);
+}
 
     // ОБРАБОТКА ЗАГРУЖЕННОГО ПОЛЬЗОВАТЕЛЬСКОГО ИЗОБРАЖЕНИЯ
     function preview(input) {
