@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.144| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.145| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -366,200 +366,226 @@
             
         </div>
     </div>
-  <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
-        }
+ <script type="text/javascript">
+    // === ИНИЦИАЛИЗАЦИЯ И НАСТРОЙКА GOOGLE TRANSLATE ===
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
 
-        let currentID = "";
-        let currentActiveCode = 'en';
-        let currentUserImage = "";
-        let currentFlagCode = 'gb';
+    // ГЛОБАЛЬНЫЕ СИСТЕМНЫЕ ПЕРЕМЕННЫЕ ХОЛЛА
+    let currentID = "";
+    let currentActiveCode = 'en';
+    let currentUserImage = "";
+    let currentFlagCode = 'gb';
 
-        const allLangs = [
-            {n:'ENGLISH', c:'gb', code:'en'}, 
-            {n:'DEUTSCH', c:'de', code:'de'}, 
-            {n:'ESPAÑOL', c:'es', code:'es'}, 
-            {n:'FRANÇAIS', c:'fr', code:'fr'},
-            {n:'ITALIANO', c:'it', code:'it'}, 
-            {n:'POLSKI', c:'pl', code:'pl'}, 
-            {n:'PORTUGUÊS .', c:'pt', code:'pt'}, 
-            {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-            {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
-            {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-            {n:'中文', c:'cn', code:'zh-CN'}, 
-            {n:'日本語', c:'jp', code:'ja'}
-        ];
+    // СПИСОК ДОСТУПНЫХ ЯЗЫКОВ
+    const allLangs = [
+        {n:'ENGLISH', c:'gb', code:'en'}, 
+        {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, 
+        {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, 
+        {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
+        {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
+        {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, 
+        {n:'日本語', c:'jp', code:'ja'}
+    ];
 
-        function renderLangList() {
-            const container = document.getElementById('lang-list-container');
-            if (!container) return;
-            container.innerHTML = ''; 
-            allLangs.forEach(lang => {
-                if(lang.code === currentActiveCode) return; 
-                const div = document.createElement('div');
-                div.className = 'lang-item notranslate';
-                div.setAttribute('translate', 'no');
-                
-                div.innerHTML = `
-                    <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
-                    <span class="notranslate" translate="no">${lang.n}</span>
-                `;
-                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-                container.appendChild(div);
-            });
-        }
-
-        function safeStorageGet(key, fallback = "") {
-            try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
-        }
-
-        function safeStorageSet(key, value) {
-            try { localStorage.setItem(key, value); } catch (e) {}
-        }
-
-        function applyLanguage(lang) {
-            currentActiveCode = lang.code;
-            currentFlagCode = lang.c; 
-            safeStorageSet('gygy_flag', lang.c);
+    // РЕНДЕРИНГ ЯЗЫКОВОГО ВЫПАДАЮЩЕГО СПИСКА
+    function renderLangList() {
+        const container = document.getElementById('lang-list-container');
+        if (!container) return;
+        container.innerHTML = ''; 
+        allLangs.forEach(lang => {
+            if(lang.code === currentActiveCode) return; 
+            const div = document.createElement('div');
+            div.className = 'lang-item notranslate';
+            div.setAttribute('translate', 'no');
             
-            document.getElementById('active-lang-display').innerHTML = `
+            div.innerHTML = `
+                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
+                <span class="notranslate" translate="no">${lang.n}</span>
+            `;
+            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+            container.appendChild(div);
+        });
+    }
+
+    // БЕЗОПАСНАЯ РАБОТА С LOCALSTORAGE
+    function safeStorageGet(key, fallback = "") {
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+    }
+
+    function safeStorageSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) {}
+    }
+
+    // ПРИМЕНЕНИЕ ВЫБРАННОГО ЯЗЫКА И ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+    function applyLanguage(lang) {
+        currentActiveCode = lang.code;
+        currentFlagCode = lang.c; 
+        safeStorageSet('gygy_flag', lang.c);
+        safeStorageSet('gy_lang', lang.code.toUpperCase() === 'UK' ? 'UA' : lang.code.toUpperCase());
+        
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) {
+            activeDisplay.innerHTML = `
                 <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
                 <span>${lang.n}</span>
             `;
-            document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
-            document.getElementById('lang-list-container').style.display = 'none';
-            renderLangList();
-            let attempts = 0;
-            const selectTimer = setInterval(() => {
-                const selectEl = document.querySelector('.goog-te-combo');
-                if (selectEl) {
-                    selectEl.value = lang.code;
-                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                    clearInterval(selectTimer);
-                }
-                if (++attempts > 50) clearInterval(selectTimer);
-            }, 150);
         }
+        
+        const badgeFlagImg = document.getElementById('badge-flag-img');
+        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
+        
+        const langListContainer = document.getElementById('lang-list-container');
+        if (langListContainer) langListContainer.style.display = 'none';
+        
+        renderLangList();
+        
+        let attempts = 0;
+        const selectTimer = setInterval(() => {
+            const selectEl = document.querySelector('.goog-te-combo');
+            if (selectEl) {
+                selectEl.value = lang.code;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                clearInterval(selectTimer);
+            }
+            if (++attempts > 50) clearInterval(selectTimer);
+        }, 150);
+    }
 
-        function toggleLangList() {
-            const list = document.getElementById('lang-list-container');
-            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-        }
+    // ПЕРЕКЛЮЧЕНИЕ ВИДИМОСТИ СПИСКА ЯЗЫКОВ
+    function toggleLangList() {
+        const list = document.getElementById('lang-list-container');
+        if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+    }
 
-        function toggleManifest(boxId) {
-            document.querySelectorAll('.manifest-btn-box').forEach(box => {
-                if(box.id === boxId) {
-                    const isOpened = box.getAttribute('data-opened') === "true";
-                    box.style.opacity = isOpened ? "0" : "1";
-                    box.style.pointerEvents = isOpened ? "none" : "auto";
-                    box.setAttribute('data-opened', isOpened ? "false" : "true");
-                    box.style.bottom = isOpened ? "-50px" : "-35px";
-                } else {
-                    box.style.opacity = "0";
-                    box.style.pointerEvents = "none";
-                    box.setAttribute('data-opened', "false");
-                    box.style.bottom = "-50px";
-                }
-            });
-        }
+    // УПРАВЛЕНИЕ ОКНАМИ МАНИФЕСТОВ В ХОЛЛЕ
+    function toggleManifest(boxId) {
+        document.querySelectorAll('.manifest-btn-box').forEach(box => {
+            if(box.id === boxId) {
+                const isOpened = box.getAttribute('data-opened') === "true";
+                box.style.opacity = isOpened ? "0" : "1";
+                box.style.pointerEvents = isOpened ? "none" : "auto";
+                box.setAttribute('data-opened', isOpened ? "false" : "true");
+                box.style.bottom = isOpened ? "-50px" : "-35px";
+            } else {
+                box.style.opacity = "0";
+                box.style.pointerEvents = "none";
+                box.setAttribute('data-opened', "false");
+                box.style.bottom = "-50px";
+            }
+        });
+    }
 
-        function handleDoor() {
-            safePlaySound('snd-door');
-            const d = document.getElementById('main-door');
+    // ОБРАБОТКА НАЖАТИЯ НА ВХОДНУЮ ДВЕРЬ
+    function handleDoor() {
+        safePlaySound('snd-door');
+        const d = document.getElementById('main-door');
+        if (d) {
             d.style.transform = "scale(5)"; 
             d.style.opacity = "0"; 
             d.style.pointerEvents = "none";
-            document.getElementById('lang-switcher').style.opacity = "0";
-            
-            if(!currentID) {
-                currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-                safeStorageSet('gygy_id', currentID);
-            }
-            
-            renderUserPassports(currentID);
-            
-            setTimeout(() => { 
-                portalTransition('block-welcome'); 
-                // Запуск плавного нарастания звука Бара при входе
+        }
+        
+        const langSwitcher = document.getElementById('lang-switcher');
+        if (langSwitcher) langSwitcher.style.opacity = "0";
+        
+        if(!currentID) {
+            currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+            safeStorageSet('gygy_id', currentID);
+            safeStorageSet('gy_trace', currentID);
+        }
+        
+        renderUserPassports(currentID);
+        
+        setTimeout(() => { 
+            portalTransition('block-welcome'); 
+            if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
                 window.GY_AUDIO_ENGINE.fadeBarAmbient(0.12, 1500);
-            }, 1000);
-        }
-
-        function renderUserPassports(targetID) {
-            const idLabel = document.getElementById('id-label');
-            const passIdVal = document.getElementById('pass-id-val');
-            const qrBoxReg = document.getElementById('qr-box-reg');
-            const passQrBox = document.getElementById('pass-qr-box');
-
-            if (idLabel) idLabel.innerText = targetID;
-            if (passIdVal) passIdVal.innerText = targetID;
-            
-            if (qrBoxReg) {
-                qrBoxReg.innerHTML = "";
-                new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
             }
-            if (passQrBox) {
-                passQrBox.innerHTML = "";
-                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
-            }
+        }, 1000);
+    }
+
+    // ОБНОВЛЕНИЕ ID И ГЕНЕРАЦИЯ QR В ПАСПОРТАХ
+    function renderUserPassports(targetID) {
+        const idLabel = document.getElementById('id-label');
+        const passIdVal = document.getElementById('pass-id-val');
+        const qrBoxReg = document.getElementById('qr-box-reg');
+        const passQrBox = document.getElementById('pass-qr-box');
+
+        if (idLabel) idLabel.innerText = targetID;
+        if (passIdVal) passIdVal.innerText = targetID;
+        
+        if (qrBoxReg && typeof QRCode !== 'undefined') {
+            qrBoxReg.innerHTML = "";
+            new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
         }
-
-        function checkAndFillRegistrationForm() {
-            const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id');
-            
-            if (currentID) { renderUserPassports(currentID); }
-            if (savedAvatar) {
-                currentUserImage = savedAvatar;
-                if (savedAvatar.startsWith('data:image/svg+xml')) {
-                    const avatarImg = document.getElementById('avatar-img');
-                    if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                    const txtAvatar = document.getElementById('txt-avatar');
-                    if (txtAvatar) txtAvatar.style.display = "none";
-                } else { 
-                    const ppImg = document.getElementById('pp');
-                    if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                    const txtPhoto = document.getElementById('txt-photo');
-                    if (txtPhoto) txtPhoto.style.display = "none";
-                }
-                const btnWHall = document.getElementById('btn-w-hall');
-                if(btnWHall) btnWHall.classList.remove('btn-sleep');
-                const btnPass = document.getElementById('btn-pass');
-                if(btnPass) btnPass.classList.remove('btn-sleep');
-            }
+        if (passQrBox && typeof QRCode !== 'undefined') {
+            passQrBox.innerHTML = "";
+            new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
         }
+    }
 
-     function portalTransition(nextId) {
-            const currentActiveBlock = document.querySelector('.block.active');
-            const targetBlock = document.getElementById(nextId);
-            const globalBackBtn = document.getElementById('btn-global-back');
-            const badge = document.getElementById('global-user-badge');
-            const langSwitcher = document.getElementById('lang-switcher');
+    // ПРОВЕРКА ПРОФИЛЯ И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ (COOKIE-RECOGNITION EFFECT)
+    function checkAndFillRegistrationForm() {
+        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+        
+        if (currentID) { renderUserPassports(currentID); }
+        if (savedAvatar) {
+            currentUserImage = savedAvatar;
+            if (savedAvatar.startsWith('data:image/svg+xml')) {
+                const avatarImg = document.getElementById('avatar-img');
+                if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+                const txtAvatar = document.getElementById('txt-avatar');
+                if (txtAvatar) txtAvatar.style.display = "none";
+            } else { 
+                const ppImg = document.getElementById('pp');
+                if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                const txtPhoto = document.getElementById('txt-photo');
+                if (txtPhoto) txtPhoto.style.display = "none";
+            }
+            const btnWHall = document.getElementById('btn-w-hall');
+            if(btnWHall) btnWHall.classList.remove('btn-sleep');
+            const btnPass = document.getElementById('btn-pass');
+            if(btnPass) btnPass.classList.remove('btn-sleep');
+        }
+    }
 
-            const sndServer = document.getElementById('snd-server');
+    // КРИТИЧЕСКИЙ УЗЕЛ НАВИГАЦИИ: БЕЗОПАСНЫЙ ПЕРЕХОД МЕЖДУ СЕГМЕНТАМИ
+    function portalTransition(nextId) {
+        const currentActiveBlock = document.querySelector('.block.active');
+        const targetBlock = document.getElementById(nextId);
+        const globalBackBtn = document.getElementById('btn-global-back');
+        const badge = document.getElementById('global-user-badge');
+        const langSwitcher = document.getElementById('lang-switcher');
+        const sndServer = document.getElementById('snd-server');
 
-            // --- УПРАВЛЕНИЕ АУДИОПОТОКАМИ ЧЕРЕЗ ИЗОЛИРОВАННЫЙ ДВИЖОК ---
-            if (nextId === 'block-server') {
-                // Серверная: плавно уводим бар в минимум через наш движок
+        // --- БЕЗОПАСНОЕ УПРАВЛЕНИЕ АУДИОПОТОКАМИ ЧЕРЕЗ ИЗОЛИРОВАННЫЙ ДВИЖОК ---
+        if (nextId === 'block-server') {
+            if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
                 window.GY_AUDIO_ENGINE.fadeBarAmbient(0.02, 800);
-                
-                if (sndServer) {
-                    // Устанавливаем правильный файл серверного гула до загрузки нового документа
+            }
+            
+            if (sndServer) {
+                try {
                     sndServer.src = 'sbridge_ambient.mp3';
-                    sndServer.volume = 0; // Стартуем с нуля для идеальной плавности
+                    sndServer.volume = 0; 
                     
                     sndServer.play().then(() => {
-                        // Линейный микро-шаг нарастания (fade-in) звука серверов во время перехода
                         let srvVol = 0;
                         const srvTarget = 0.35;
                         
-                        // Удаляем старые таймеры на этом элементе, если они были
                         if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
                         
                         sndServer.fadeInterval = setInterval(() => {
@@ -569,277 +595,266 @@
                             } else {
                                 clearInterval(sndServer.fadeInterval);
                             }
-                        }, 40); // 40мс дают идеальный аналоговый разгон
+                        }, 40);
                     }).catch(err => {
-                        console.log("Audio contextual lock", err);
+                        console.log("Audio play blocked or interrupted", err);
                     });
+                } catch (audioErr) {
+                    console.error("Audio system busy, bypassing block down...", audioErr);
                 }
-            } else {
-                // Выход из серверной: тушим сервера, очищаем таймер, плавно возвращаем бар
-                if (sndServer) {
-                    if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
-                    sndServer.pause();
-                    sndServer.currentTime = 0;
-                }
-                if (currentActiveBlock?.id === 'block-server') {
+            }
+        } else {
+            if (sndServer) {
+                if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
+                try { sndServer.pause(); sndServer.currentTime = 0; } catch(e){}
+            }
+            if (currentActiveBlock?.id === 'block-server') {
+                if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
                     window.GY_AUDIO_ENGINE.fadeBarAmbient(0.15, 1200);
                 }
             }
-
-            // --- НАВИГАЦИЯ И ИНТЕРФЕЙС ---
-            if (nextId === 'block-entrance') {
-                if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
-                if (badge) badge.style.display = 'none';
-                if (globalBackBtn) globalBackBtn.style.display = 'none';
-            } else {
-                if (badge && currentUserImage) badge.style.display = 'block';
-            }
-
-            if (nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
-                if (globalBackBtn) { globalBackBtn.style.display = 'block'; globalBackBtn.style.opacity = '1'; }
-            } else {
-                if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
-            }
-
-            // Переключение экранов
-            if (currentActiveBlock) { 
-                currentActiveBlock.classList.remove('active'); 
-                currentActiveBlock.style.display = 'none'; 
-            }
-            if (targetBlock) {
-                targetBlock.style.display = 'flex';
-                setTimeout(() => { targetBlock.classList.add('active'); }, 20);
-                const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
-                if (embeddedArrows) embeddedArrows.style.display = 'flex';
-            }
-        }
-            // --- НАВИГАЦИЯ И ИНТЕРФЕЙС ---
-            if (nextId === 'block-entrance') {
-                if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
-                if (badge) badge.style.display = 'none';
-                if (globalBackBtn) globalBackBtn.style.display = 'none';
-            } else {
-                if (badge && currentUserImage) badge.style.display = 'block';
-            }
-
-            if (nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
-                if (globalBackBtn) { globalBackBtn.style.display = 'block'; globalBackBtn.style.opacity = '1'; }
-            } else {
-                if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
-            }
-
-            if (currentActiveBlock) { 
-                currentActiveBlock.classList.remove('active'); 
-                currentActiveBlock.style.display = 'none'; 
-            }
-            if (targetBlock) {
-                targetBlock.style.display = 'flex';
-                setTimeout(() => { targetBlock.classList.add('active'); }, 20);
-                const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
-                if (embeddedArrows) embeddedArrows.style.display = 'flex';
-            }
         }
 
-        function safePlaySound(audioId, volume = 1.5) {
-            const audio = document.getElementById(audioId);
-            if (!audio) return;
-            try {
-                audio.volume = volume;
-                const playPromise = audio.play();
-                if (playPromise !== undefined) { playPromise.catch(e => {}); }
-            } catch (e) {}
+        // --- УПРАВЛЕНИЕ ВИДИМОСТЬЮ ИНТЕРФЕЙСНЫХ ЭЛЕМЕНТОВ ---
+        if (nextId === 'block-entrance') {
+            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
+            if (badge) badge.style.display = 'none';
+            if (globalBackBtn) globalBackBtn.style.display = 'none';
+        } else {
+            if (badge && currentUserImage) badge.style.display = 'block';
         }
 
-        function safeFadeSound(audioId) {
-            const audio = document.getElementById(audioId);
-            if (!audio) return;
-            try { audio.pause(); } catch (e) {}
+        if (nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
+            if (globalBackBtn) { globalBackBtn.style.display = 'block'; globalBackBtn.style.opacity = '1'; }
+        } else {
+            if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
         }
 
-        function preview(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentUserImage = e.target.result;
-                    const pp = document.getElementById('pp');
-                    if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
-                    const txtPhoto = document.getElementById('txt-photo');
-                    if (txtPhoto) txtPhoto.style.display = 'none';
-                    
-                    const avatarImg = document.getElementById('avatar-img');
-                    if (avatarImg) avatarImg.style.display = 'none';
-                    const txtAvatar = document.getElementById('txt-avatar');
-                    if (txtAvatar) txtAvatar.style.display = 'block';
+        // --- ПЕРЕКЛЮЧЕНИЕ ОТОБРАЖЕНИЯ ЭКРАНОВ (ЗАЩИТА ОТ ТЕМНОТЫ) ---
+        if (currentActiveBlock) { 
+            currentActiveBlock.classList.remove('active'); 
+            currentActiveBlock.style.display = 'none'; 
+        }
+        
+        if (targetBlock) {
+            targetBlock.style.display = 'flex';
+            setTimeout(() => { targetBlock.classList.add('active'); }, 20);
+            const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
+            if (embeddedArrows) embeddedArrows.style.display = 'flex';
+        } else {
+            console.error(`Ошибка DOM: Целевой блок "${nextId}" отсутствует.`);
+            if (currentActiveBlock) {
+                currentActiveBlock.style.display = 'flex';
+                currentActiveBlock.classList.add('active');
+            }
+        }
+    }
+
+    // СИСТЕМНОЕ ВОСПРОИЗВЕДЕНИЕ ОДИНОЧНЫХ АУДИОЭФФЕКТОВ
+    function safePlaySound(audioId, volume = 1.5) {
+        const audio = document.getElementById(audioId);
+        if (!audio) return;
+        try {
+            audio.volume = volume;
+            const playPromise = audio.play();
+            if (playPromise !== undefined) { playPromise.catch(e => {}); }
+        } catch (e) {}
+    }
+
+    // МГНОВЕННЫЙ ОСТАНОВ ЗВУКА
+    function safeFadeSound(audioId) {
+        const audio = document.getElementById(audioId);
+        if (!audio) return;
+        try { audio.pause(); } catch (e) {}
+    }
+
+    // ОБРАБОТКА ЗАГРУЖЕННОГО ПОЛЬЗОВАТЕЛЬСКОГО ИЗОБРАЖЕНИЯ
+    function preview(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentUserImage = e.target.result;
+                const pp = document.getElementById('pp');
+                if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
+                const txtPhoto = document.getElementById('txt-photo');
+                if (txtPhoto) txtPhoto.style.display = 'none';
+                
+                const avatarImg = document.getElementById('avatar-img');
+                if (avatarImg) avatarImg.style.display = 'none';
+                const txtAvatar = document.getElementById('txt-avatar');
+                if (txtAvatar) txtAvatar.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // ГЕНЕРАЦИЯ УНИКАЛЬНОГО ЦВЕТНОГО СВГ-АВАТАРА ДЛЯ КЛУБА
+    function generateAvatar() {
+        const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
+        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        
+        const avatarImg = document.getElementById('avatar-img');
+        if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
+        const txtAvatar = document.getElementById('txt-avatar');
+        if (txtAvatar) txtAvatar.style.display = 'none';
+
+        const pp = document.getElementById('pp');
+        if (pp) pp.style.display = 'none';
+        const txtPhoto = document.getElementById('txt-photo');
+        if (txtPhoto) txtPhoto.style.display = 'block';
+    }
+
+    // СОХРАНЕНИЕ ПРОФИЛЯ
+    function saveUserProfile() {
+        if (!currentUserImage) return;
+        safeStorageSet('gygy_avatar', currentUserImage);
+        safeStorageSet('gy_user_img', currentUserImage);
+        safeStorageSet('gy_user_avatar', currentUserImage); 
+        safeStorageSet('gy_user_id', currentID);
+
+        const badgeImg = document.getElementById('badge-avatar-img');
+        const passImg = document.getElementById('pass-avatar-img');
+        const headerAvatar = document.getElementById('user-header-avatar'); 
+        
+        if (badgeImg) badgeImg.src = currentUserImage;
+        if (passImg) passImg.src = currentUserImage;
+        if (headerAvatar) headerAvatar.src = currentUserImage;
+
+        const btnWHall = document.getElementById('btn-w-hall');
+        if (btnWHall) btnWHall.classList.remove('btn-sleep');
+        const btnPass = document.getElementById('btn-pass');
+        if (btnPass) btnPass.classList.remove('btn-sleep');
+        
+        safePlaySound('snd-pour');
+        portalTransition('block-hall');
+    }
+
+    function smoothTransitionToTables() { safePlaySound('snd-pour'); portalTransition('block-tables'); }
+    function enterStudio() { alert('STUDIO module initializing... Connecting printing matrix.'); }
+    function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
+    function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
+
+    // ==========================================
+    // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА И КАШЛЯ CHARLIE
+    // ==========================================
+    (function() {
+        let fadeTimer = null;
+        let coughTimer = null;
+
+        window.GY_AUDIO_ENGINE = {
+            fadeBarAmbient: function(targetVolume, durationMs) {
+                const barAmbient = document.getElementById('snd-ambient');
+                if (!barAmbient) return;
+
+                if (barAmbient.paused) {
+                    barAmbient.volume = 0;
+                    barAmbient.play().catch(() => {});
                 }
-                reader.readAsDataURL(input.files[0]);
+
+                if (fadeTimer) clearInterval(fadeTimer);
+
+                const startVolume = barAmbient.volume;
+                const volumeDifference = targetVolume - startVolume;
+                const stepTime = 30; 
+                const totalSteps = durationMs / stepTime;
+                const volumeStep = volumeDifference / totalSteps;
+                let currentStep = 0;
+
+            	fadeTimer = setInterval(() => {
+                    currentStep++;
+                    let nextVol = startVolume + (volumeStep * currentStep);
+                    
+                    if (nextVol < 0) nextVol = 0;
+                    if (nextVol > 1) nextVol = 1;
+                    
+                    barAmbient.volume = nextVol;
+
+                    if (currentStep >= totalSteps) {
+                        barAmbient.volume = targetVolume;
+                        clearInterval(fadeTimer);
+                    }
+                }, stepTime);
             }
-        }
+        };
 
-        function generateAvatar() {
-            const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
-            currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        function initIsolatedCough() {
+            if (coughTimer) clearInterval(coughTimer);
             
-            const avatarImg = document.getElementById('avatar-img');
-            if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
-            const txtAvatar = document.getElementById('txt-avatar');
-            if (txtAvatar) txtAvatar.style.display = 'none';
-
-            const pp = document.getElementById('pp');
-            if (pp) pp.style.display = 'none';
-            const txtPhoto = document.getElementById('txt-photo');
-            if (txtPhoto) txtPhoto.style.display = 'block';
+            coughTimer = setInterval(() => {
+                const currentBlock = document.querySelector('.block.active');
+                const barAmbient = document.getElementById('snd-ambient');
+                
+                if (currentBlock && currentBlock.id === 'block-bar' && barAmbient && !barAmbient.paused) {
+                    const khe = document.getElementById('snd-khe');
+                    if (khe) { 
+                        khe.volume = 0.15; 
+                        khe.play().catch(() => {}); 
+                    }
+                }
+            }, 25000); 
         }
 
-        function saveUserProfile() {
-            if (!currentUserImage) return;
-            safeStorageSet('gygy_avatar', currentUserImage);
-            safeStorageSet('gy_user_img', currentUserImage);
-            safeStorageSet('gy_user_id', currentID);
+        initIsolatedCough();
+    })();
 
+    // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ DOM ===
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        const savedFlag = safeStorageGet('gygy_flag', 'gb');
+        const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
+        
+        currentActiveCode = matchingLang.code;
+        currentFlagCode = matchingLang.c;
+        
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) {
+            activeDisplay.innerHTML = `
+                <img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon notranslate" translate="no"> 
+                <span class="notranslate" translate="no">${matchingLang.n}</span>
+            `;
+        }
+        
+        const badgeFlag = document.getElementById('badge-flag-img');
+        if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
+
+        renderLangList();
+
+        setTimeout(() => {
+            const selectEl = document.querySelector('.goog-te-combo');
+            if (selectEl) {
+                selectEl.value = currentActiveCode;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }, 1000);
+
+        checkAndFillRegistrationForm();
+
+        if (currentUserImage) {
             const badgeImg = document.getElementById('badge-avatar-img');
             const passImg = document.getElementById('pass-avatar-img');
             if (badgeImg) badgeImg.src = currentUserImage;
             if (passImg) passImg.src = currentUserImage;
-
-            document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-            document.getElementById('btn-pass').classList.remove('btn-sleep');
-            
-            safePlaySound('snd-pour');
-            portalTransition('block-hall');
         }
 
-        function smoothTransitionToTables() { safePlaySound('snd-pour'); portalTransition('block-tables'); }
-        function enterStudio() { alert('STUDIO module initializing... Connecting printing matrix.'); }
-        function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
-        function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
-
-        // ==========================================
-        // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА И КАШЛЯ
-        // ==========================================
-        (function() {
-            let fadeTimer = null;
-            let coughTimer = null;
-
-            window.GY_AUDIO_ENGINE = {
-                // Гладкое линейное изменение громкости без ступенек и рывков
-                fadeBarAmbient: function(targetVolume, durationMs) {
-                    const barAmbient = document.getElementById('snd-ambient');
-                    if (!barAmbient) return;
-
-                    if (barAmbient.paused) {
-                        barAmbient.volume = 0;
-                        barAmbient.play().catch(() => {});
-                    }
-
-                    if (fadeTimer) clearInterval(fadeTimer);
-
-                    const startVolume = barAmbient.volume;
-                    const volumeDifference = targetVolume - startVolume;
-                    const stepTime = 30; // Интервал обновления в мс
-                    const totalSteps = durationMs / stepTime;
-                    const volumeStep = volumeDifference / totalSteps;
-                    let currentStep = 0;
-
-                    fadeTimer = setInterval(() => {
-                        currentStep++;
-                        let nextVol = startVolume + (volumeStep * currentStep);
-                        
-                        // Защита границ диапазона
-                        if (nextVol < 0) nextVol = 0;
-                        if (nextVol > 1) nextVol = 1;
-                        
-                        barAmbient.volume = nextVol;
-
-                        if (currentStep >= totalSteps) {
-                            barAmbient.volume = targetVolume;
-                            clearInterval(fadeTimer);
-                        }
-                    }, stepTime);
-                }
-            };
-
-            // Полностью изолированный интервал кашля Чарли (вызывается авто-запуском в фоне)
-            function initIsolatedCough() {
-                if (coughTimer) clearInterval(coughTimer);
-                
-                coughTimer = setInterval(() => {
-                    const currentBlock = document.querySelector('.block.active');
-                    const barAmbient = document.getElementById('snd-ambient');
-                    
-                    // Жесткое условие: ТОЛЬКО в Баре и ТОЛЬКО если фоновый звук играет
-                    if (currentBlock && currentBlock.id === 'block-bar' && barAmbient && !barAmbient.paused) {
-                        const khe = document.getElementById('snd-khe');
-                        if (khe) { 
-                            khe.volume = 0.15; 
-                            khe.play().catch(() => {}); 
-                        }
-                    }
-                }, 25000); // Строго каждые 25 секунд
-            }
-
-            // Запускаем контроль кашля сразу при чтении скрипта
-            initIsolatedCough();
-        })();
-
-        // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ DOM ===
-        document.addEventListener("DOMContentLoaded", () => {
-            
-            const savedFlag = safeStorageGet('gygy_flag', 'gb');
-            const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
-            
-            currentActiveCode = matchingLang.code;
-            currentFlagCode = matchingLang.c;
-            
-            const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) {
-                activeDisplay.innerHTML = `
-                    <img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon notranslate" translate="no"> 
-                    <span class="notranslate" translate="no">${matchingLang.n}</span>
-                `;
-            }
-            
-            const badgeFlag = document.getElementById('badge-flag-img');
-            if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
-
-            renderLangList();
-
-            setTimeout(() => {
-                const selectEl = document.querySelector('.goog-te-combo');
-                if (selectEl) {
-                    selectEl.value = currentActiveCode;
-                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            }, 1000);
-
-            checkAndFillRegistrationForm();
-
-            if (currentUserImage) {
-                const badgeImg = document.getElementById('badge-avatar-img');
-                const passImg = document.getElementById('pass-avatar-img');
-                if (badgeImg) badgeImg.src = currentUserImage;
-                if (passImg) passImg.src = currentUserImage;
-            }
-
-            // === ПРЯЧЕМ ВСЕ КОМНАТЫ ===
-            document.querySelectorAll('.block').forEach(b => {
-                b.classList.remove('active');
-                b.style.display = 'none';
-            });
-
-            // === ПОКАЗЫВАЕМ ТОЛЬКО ДВЕРЬ ===
-            const entrance = document.getElementById('block-entrance');
-            if (entrance) {
-                entrance.style.display = 'flex';
-                entrance.classList.add('active');
-            }
-
-            // === ДИНАМИЧЕСКОЕ ПОДКЛЮЧЕНИЕ GOOGLE TRANSLATE ===
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            document.head.appendChild(script);
-
-            document.body.classList.add('page-loaded');
+        document.querySelectorAll('.block').forEach(b => {
+            b.classList.remove('active');
+            b.style.display = 'none';
         });
-    </script>
+
+        const entrance = document.getElementById('block-entrance');
+        if (entrance) {
+            entrance.style.display = 'flex';
+            entrance.classList.add('active');
+        }
+
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.head.appendChild(script);
+
+        document.body.classList.add('page-loaded');
+    });
+</script>
+</body>
+</html>
