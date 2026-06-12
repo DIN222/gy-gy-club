@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.143| HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.144| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -535,7 +535,7 @@
             }
         }
 
-        function portalTransition(nextId) {
+     function portalTransition(nextId) {
             const currentActiveBlock = document.querySelector('.block.active');
             const targetBlock = document.getElementById(nextId);
             const globalBackBtn = document.getElementById('btn-global-back');
@@ -546,17 +546,38 @@
 
             // --- УПРАВЛЕНИЕ АУДИОПОТОКАМИ ЧЕРЕЗ ИЗОЛИРОВАННЫЙ ДВИЖОК ---
             if (nextId === 'block-server') {
-                // Серверная: плавно уводим бар в минимум, включаем сервера
+                // Серверная: плавно уводим бар в минимум через наш движок
                 window.GY_AUDIO_ENGINE.fadeBarAmbient(0.02, 800);
+                
                 if (sndServer) {
-                    sndServer.volume = 0.35;
-                    sndServer.play().catch(err => {
+                    // Устанавливаем правильный файл серверного гула до загрузки нового документа
+                    sndServer.src = 'sbridge_ambient.mp3';
+                    sndServer.volume = 0; // Стартуем с нуля для идеальной плавности
+                    
+                    sndServer.play().then(() => {
+                        // Линейный микро-шаг нарастания (fade-in) звука серверов во время перехода
+                        let srvVol = 0;
+                        const srvTarget = 0.35;
+                        
+                        // Удаляем старые таймеры на этом элементе, если они были
+                        if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
+                        
+                        sndServer.fadeInterval = setInterval(() => {
+                            if (srvVol < srvTarget) {
+                                srvVol += 0.02;
+                                sndServer.volume = Math.min(srvVol, srvTarget);
+                            } else {
+                                clearInterval(sndServer.fadeInterval);
+                            }
+                        }, 40); // 40мс дают идеальный аналоговый разгон
+                    }).catch(err => {
                         console.log("Audio contextual lock", err);
                     });
                 }
             } else {
-                // Выход из серверной: тушим сервера, плавно возвращаем бар
+                // Выход из серверной: тушим сервера, очищаем таймер, плавно возвращаем бар
                 if (sndServer) {
+                    if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
                     sndServer.pause();
                     sndServer.currentTime = 0;
                 }
@@ -565,6 +586,33 @@
                 }
             }
 
+            // --- НАВИГАЦИЯ И ИНТЕРФЕЙС ---
+            if (nextId === 'block-entrance') {
+                if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
+                if (badge) badge.style.display = 'none';
+                if (globalBackBtn) globalBackBtn.style.display = 'none';
+            } else {
+                if (badge && currentUserImage) badge.style.display = 'block';
+            }
+
+            if (nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
+                if (globalBackBtn) { globalBackBtn.style.display = 'block'; globalBackBtn.style.opacity = '1'; }
+            } else {
+                if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
+            }
+
+            // Переключение экранов
+            if (currentActiveBlock) { 
+                currentActiveBlock.classList.remove('active'); 
+                currentActiveBlock.style.display = 'none'; 
+            }
+            if (targetBlock) {
+                targetBlock.style.display = 'flex';
+                setTimeout(() => { targetBlock.classList.add('active'); }, 20);
+                const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
+                if (embeddedArrows) embeddedArrows.style.display = 'flex';
+            }
+        }
             // --- НАВИГАЦИЯ И ИНТЕРФЕЙС ---
             if (nextId === 'block-entrance') {
                 if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
