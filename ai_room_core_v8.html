@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY — AI Room Core v8.4</title>
+    <title>GY-GY Club — AI Room Core v8.4</title>
     <style>
-        /* --- СТИЛИЗАЦИЯ И СЕТКА ИНТЕРФЕЙСА (VINTAGE / NOIR MINIMALISM) --- */
+        /* --- БАЗОВАЯ СТРОГАЯ СЕТКА КЛУБА (NOIR MINIMALISM) --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -22,7 +22,7 @@
             flex-direction: column;
         }
 
-        /* Постоянная верхняя панель GY-GY */
+        /* ПОСТОЯННЫЕ РЕКВИЗИТЫ: ВЕРХНЯЯ ПАНЕЛЬ */
         header {
             display: flex;
             justify-content: space-between;
@@ -39,10 +39,7 @@
             letter-spacing: 2px;
             cursor: default;
         }
-
-        .logo-box span {
-            color: #6e6e73;
-        }
+        .logo-box span { color: #6e6e73; }
 
         .header-controls {
             display: flex;
@@ -59,13 +56,27 @@
             border: 1px solid #2c2c35;
             padding: 5px 10px;
         }
-
         .user-badge img {
             width: 20px;
             height: 20px;
             border-radius: 2px;
             background-color: #2c2c35;
         }
+
+        .lang-panel {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #2c2c35;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #f5f5f7;
+            background: #121215;
+        }
+        .lang-panel:hover { border-color: #6e6e73; }
+        .lang-flag { width: 16px; height: 11px; object-fit: cover; }
 
         .btn-back {
             background: none;
@@ -78,13 +89,12 @@
             font-size: 12px;
             transition: all 0.2s ease;
         }
-
         .btn-back:hover {
             background-color: #f5f5f7;
             color: #0f0f11;
         }
 
-        /* Основной контейнер ИИ-Комнаты */
+        /* --- ОСНОВНОЙ КОНТЕНТ ИИ-КОМНАТЫ --- */
         main {
             flex: 1;
             display: flex;
@@ -94,7 +104,7 @@
             position: relative;
         }
 
-        /* Интерактивные зоны навигации (Strict 2cm Offset Zone) */
+        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ (Strict 2cm / 80px Offset Zone) */
         .ui-nav-arrows {
             position: absolute;
             top: 50%;
@@ -106,7 +116,6 @@
             pointer-events: none;
             z-index: 5;
         }
-
         .nav-arrow {
             pointer-events: auto;
             background: none;
@@ -118,36 +127,33 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
             transition: all 0.2s ease;
         }
-
-        .nav-arrow:hover {
-            border-style: solid;
-            color: #f5f5f7;
-            border-color: #f5f5f7;
+        .nav-arrow:hover { 
+            border-style: solid; 
+            color: #f5f5f7; 
+            border-color: #f5f5f7; 
+            background-color: #121215;
         }
 
-        /* Левая панель: Терминал диалога */
+        /* Терминал */
         .terminal-container {
             flex: 1.5;
             display: flex;
             flex-direction: column;
             border: 1px solid #2c2c35;
             background-color: #121215;
-            position: relative;
+            z-index: 2; /* Чтобы стрелки не перекрывали клики в текстовом поле */
         }
-
         .terminal-header {
             padding: 12px 20px;
             border-bottom: 1px solid #2c2c35;
             font-size: 11px;
             color: #6e6e73;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: space-between;
         }
-
         .chat-output {
             flex: 1;
             padding: 20px;
@@ -156,163 +162,28 @@
             flex-direction: column;
             gap: 15px;
             font-size: 13px;
-            line-height: 1.6;
         }
+        .message { display: flex; flex-direction: column; max-width: 85%; }
+        .message.user { align-self: flex-end; align-items: flex-end; }
+        .message.ai { align-self: flex-start; align-items: flex-start; }
+        .msg-meta { font-size: 10px; color: #6e6e73; margin-bottom: 4px; }
+        .msg-text { padding: 12px 16px; border-radius: 2px; background-color: #16161a; border: 1px solid #2c2c35; }
+        .message.user .msg-text { background-color: #2c2c35; border-color: #3a3a44; }
 
-        .message {
-            display: flex;
-            flex-direction: column;
-            max-width: 85%;
-        }
+        .terminal-input-zone { display: flex; border-top: 1px solid #2c2c35; }
+        .terminal-input { flex: 1; background: none; border: none; color: #f5f5f7; padding: 20px; font-family: monospace; outline: none; }
+        .btn-send { background: none; border: none; border-left: 1px solid #2c2c35; color: #f5f5f7; padding: 0 30px; cursor: pointer; font-family: monospace; text-transform: uppercase; }
+        .btn-send:hover { background-color: #2c2c35; }
 
-        .message.user {
-            align-self: flex-end;
-            align-items: flex-end;
-        }
-
-        .message.ai {
-            align-self: flex-start;
-            align-items: flex-start;
-        }
-
-        .msg-meta {
-            font-size: 10px;
-            color: #6e6e73;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-        }
-
-        .msg-text {
-            padding: 12px 16px;
-            border-radius: 2px;
-            word-wrap: break-word;
-        }
-
-        .message.user .msg-text {
-            background-color: #2c2c35;
-            color: #f5f5f7;
-            border: 1px solid #3a3a44;
-        }
-
-        .message.ai .msg-text {
-            background-color: #16161a;
-            color: #f5f5f7;
-            border: 1px solid #2c2c35;
-        }
-
-        .terminal-input-zone {
-            display: flex;
-            border-top: 1px solid #2c2c35;
-            background-color: #0f0f11;
-        }
-
-        .terminal-input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #f5f5f7;
-            padding: 20px;
-            font-family: monospace;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .btn-send {
-            background: none;
-            border: none;
-            border-left: 1px solid #2c2c35;
-            color: #f5f5f7;
-            padding: 0 30px;
-            cursor: pointer;
-            font-family: monospace;
-            text-transform: uppercase;
-            font-size: 12px;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-send:hover {
-            background-color: #2c2c35;
-        }
-
-        /* Правая панель: Модуль GY-GY Verses и управление */
-        .control-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .panel-block {
-            border: 1px solid #2c2c35;
-            background-color: #121215;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .panel-title {
-            font-size: 12px;
-            color: #6e6e73;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px dashed #2c2c35;
-            padding-bottom: 8px;
-        }
-
-        .rhyme-selector {
-            display: flex;
-            gap: 10px;
-        }
-
-        .rhyme-btn {
-            flex: 1;
-            background: none;
-            border: 1px solid #2c2c35;
-            color: #6e6e73;
-            padding: 8px;
-            cursor: pointer;
-            font-family: monospace;
-            font-size: 11px;
-        }
-
-        .rhyme-btn.active {
-            border-color: #f5f5f7;
-            color: #f5f5f7;
-            background-color: #1c1c22;
-        }
-
-        .server-log-box {
-            flex: 1;
-            background-color: #0b0b0d;
-            border: 1px solid #1c1c22;
-            padding: 15px;
-            font-size: 11px;
-            color: #6e6e73;
-            overflow-y: auto;
-            line-height: 1.5;
-        }
-
-        .log-entry {
-            margin-bottom: 6px;
-        }
-
-        .log-entry.system { color: #f5f5f7; }
-        .log-entry.success { color: #5e7e5e; }
-
-        /* Системный статус лоадера кастомного набора текста */
-        .typing-indicator {
-            display: none;
-            font-size: 11px;
-            color: #6e6e73;
-            padding: 5px 20px;
-            font-style: italic;
-        }
-
-        /* Скрытый системный контейнер для Google Translate */
-        #google_translate_element {
-            display: none;
-        }
+        /* Правая панель */
+        .control-panel { flex: 1; display: flex; flex-direction: column; gap: 20px; z-index: 2; }
+        .panel-block { border: 1px solid #2c2c35; background-color: #121215; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .panel-title { font-size: 12px; color: #6e6e73; text-transform: uppercase; border-bottom: 1px dashed #2c2c35; padding-bottom: 8px; }
+        .rhyme-selector { display: flex; gap: 10px; }
+        .rhyme-btn { flex: 1; background: none; border: 1px solid #2c2c35; color: #6e6e73; padding: 8px; cursor: pointer; font-family: monospace; }
+        .rhyme-btn.active { border-color: #f5f5f7; color: #f5f5f7; background-color: #1c1c22; }
+        .server-log-box { flex: 1; background-color: #0b0b0d; border: 1px solid #1c1c22; padding: 15px; font-size: 11px; color: #6e6e73; overflow-y: auto; }
+        .typing-indicator { display: none; font-size: 11px; color: #6e6e73; padding: 5px 20px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -320,257 +191,219 @@
     <header>
         <div class="logo-box">GY-GY <span>CLUB</span></div>
         <div class="header-controls">
-            <div class="user-badge" id="core-user-badge">
+            <div class="user-badge">
                 <img id="core-avatar-img" src="" alt="Avatar">
                 <span id="core-id-label">GY-000-0000</span>
             </div>
-            <div class="user-badge" id="core-lang-panel">LN: <span id="core-lang-val">EN</span></div>
+            <div class="lang-panel" id="gy-lang-switcher">
+                <img src="https://flagcdn.com/w20/gb.png" class="lang-flag" id="core-flag-img">
+                <span id="core-lang-val">EN</span>
+            </div>
             <button class="btn-back" onclick="exitRoom()">Retour</button>
         </div>
     </header>
 
     <main>
         <div class="ui-nav-arrows">
-            <button class="nav-arrow" onclick="navRoom('left')">&lt;</button>
-            <button class="nav-arrow" onclick="navRoom('right')">&gt;</button>
+            <button class="nav-arrow" onclick="navRoom('block-bar')">&lt;</button>
+            <button class="nav-arrow" onclick="navRoom('block-tables')">&gt;</button>
         </div>
 
         <section class="terminal-container">
-            <div class="terminal-header">
-                <span>AI_ROOM_CORE_v8.4 // SECURE_SESSION</span>
-                <span id="session-status">CONNECTED</span>
-            </div>
-            
+            <div class="terminal-header">AI_ROOM_CORE_v8.4 // SECURE_SESSION // SERVER_AMBIENT_ON</div>
             <div class="chat-output" id="chat-output">
                 <div class="message ai">
-                    <div class="msg-meta">Charlie (AI Proxy)</div>
-                    <div class="msg-text">Приветствуем в ИИ-капсуле GY-GY. Матрица печати на футболках стабилизирована, генератор ироничных стихов на месте. О чем побеседуем?</div>
+                    <div class="msg-meta">Charlie</div>
+                    <div class="msg-text">Звуковые контуры серверной замкнуты на ИИ-комнату. Эмбиент активен. Стрелки подключены к сетке Клуба. Задавай параметры.</div>
                 </div>
             </div>
-
-            <div class="typing-indicator" id="typing-indicator">Чарли генерирует рифму...</div>
-
+            <div class="typing-indicator" id="typing-indicator">Чарли подбирает рифму...</div>
             <div class="terminal-input-zone">
-                <input type="text" class="terminal-input" id="terminal-input" placeholder="Введите команду или строку для стиха..." onkeydown="if(event.key === 'Enter') sendToAgent()">
+                <input type="text" class="terminal-input" id="terminal-input" placeholder="Введите текст..." onkeydown="if(event.key === 'Enter') sendToAgent()">
                 <button class="btn-send" onclick="sendToAgent()">Send</button>
             </div>
         </section>
 
         <section class="control-panel">
             <div class="panel-block">
-                <div class="panel-title">GY-GY Verses (Стихоплет)</div>
+                <div class="panel-title">GY-GY Verses</div>
                 <div class="rhyme-selector">
-                    <button class="rhyme-btn active" id="scheme-aabb" onclick="setRhymeScheme('AABB')">AABB (Парная)</button>
-                    <button class="rhyme-btn" id="scheme-abab" onclick="setRhymeScheme('ABAB')">ABAB (Перекрестная)</button>
+                    <button class="rhyme-btn active" id="scheme-aabb" onclick="setRhymeScheme('AABB')">AABB</button>
+                    <button class="rhyme-btn" id="scheme-abab" onclick="setRhymeScheme('ABAB')">ABAB</button>
                 </div>
-                <p style="font-size: 11px; color: #6e6e73; line-height: 1.4;">
-                    Задайте тему или первую строчку, выберите схему рифмы, и Чарли выдаст порцию фирменной иронии клуба.
-                </p>
             </div>
-
             <div class="panel-block" style="flex: 1;">
                 <div class="panel-title">Server Traffic Logs</div>
-                <div class="server-log-box" id="log-box">
-                    <div class="log-entry success">[SYS]: Digital trace verified successfully.</div>
-                    <div class="log-entry">[SYS]: Context size initialized to 12 turns.</div>
-                </div>
+                <div class="server-log-box" id="log-box"></div>
             </div>
         </section>
     </main>
 
-    <div id="google_translate_element"></div>
-
     <script type="text/javascript">
-        // ==========================================
-        // ГЛОБАЛЬНЫЕ КОНСТАНТЫ И НАСТРОЙКИ ЯДРА ИИ (v8.4)
-        // ==========================================
         const AI_CORE_CONFIG = {
             VERSION: "8.4",
             STRICT_MODE: true,
             MAX_CONTEXT_TURNS: 12,       
             TYPING_SPEED_MIN: 15,        
             TYPING_SPEED_MAX: 45,
-            PROXY_ENDPOINT: "/api/ai-room/v1/chat",
-            VERSE_GENERATOR_ENDPOINT: "/api/ai-room/v1/verses",
-            API_TIMEOUT_MS: 15000,
-            RETRY_ATTEMPTS: 3,
-            HEARTBEAT_INTERVAL_MS: 30000 
+            PROXY_ENDPOINT: "/api/ai-room/v1/chat"
         };
 
         const GY_STORAGE_KEYS = {
             USER_TRACE: "gy_trace",       
             USER_AVATAR: "gy_user_avatar", 
             USER_LANG: "gy_lang",         
-            AI_ROOM_HISTORY: "gy_ai_history_v8", 
             PASSPORT_DATA: "gygy_id"      
-        };
-
-        const UI_STYLING = {
-            AVANT_GARDE_DARK: "#0f0f11",  
-            STRICT_WHITE: "#f5f5f7",      
-            MUTED_GRAY: "#6e6e73",        
-            FADE_TRANSITION_MS: 300,       
-            NAV_ARROW_OFFSET_CM: 2        
         };
 
         let AI_ROOM_STATE = {
             isAgentTyping: false,
-            activePromptContext: [],
-            currentRhymeScheme: "AABB",   
-            lastServerResponseTime: 0,
-            isConnected: true
+            currentRhymeScheme: "AABB"
         };
 
-        // БЕЗОПАСНОЕ ИЗВЛЕЧЕНИЕ ИЗ LOCALSTORAGE
         function safeGet(key, fallback = "") {
             try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
         }
 
-        // ДОБАВЛЕНИЕ ЛОГА НА ЭКРАН СЕРВЕРА
-        function pushLog(text, type = "") {
+        function pushLog(text) {
             const logBox = document.getElementById('log-box');
             if (!logBox) return;
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}`;
-            const time = new Date().toLocaleTimeString();
-            entry.innerText = `[${time}] ${text}`;
-            logBox.appendChild(entry);
+            logBox.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${text}</div>`;
             logBox.scrollTop = logBox.scrollHeight;
         }
 
-        // СИНХРОНИЗАЦИЯ ПРОФИЛЯ С ХОЛЛОМ (COOKIE-RECOGNITION EFFECT)
+        // УПРАВЛЕНИЕ АУДИОПОТОКОМ СЕРВЕРНОЙ ВНУТРИ ИИ-КАПСУЛЫ
+        function initServerAudio() {
+            // Ищем тег серверного эмбиента в родительском окне или локально
+            let sndServer = document.getElementById('snd-server') || window.parent.document.getElementById('snd-server');
+            let sndAmbient = document.getElementById('snd-ambient') || window.parent.document.getElementById('snd-ambient');
+
+            // Приглушаем бар, если он играет в фоне
+            if (sndAmbient) {
+                try { sndAmbient.volume = 0.02; } catch(e){}
+            }
+
+            // Запускаем сочный гул серверного моста на стабильной громкости 0.35
+            if (sndServer) {
+                try {
+                    sndServer.src = 'sbridge_ambient.mp3';
+                    sndServer.volume = 0.35;
+                    sndServer.loop = true;
+                    sndServer.play().catch(err => {
+                        pushLog("Audio autoplay blocked. Click anywhere to activate stream.");
+                        document.body.addEventListener('click', () => { sndServer.play().catch(()=>{}); }, { once: true });
+                    });
+                    pushLog("Server ambient stream pulled and locked.");
+                } catch(audioErr) {
+                    console.error("Audio engine routing error:", audioErr);
+                }
+            } else {
+                pushLog("[WARN]: Audio stream 'snd-server' not found in DOM.");
+            }
+        }
+
         function initUserProfile() {
-            const traceId = safeGet(GY_STORAGE_KEYS.USER_TRACE) || safeGet(GY_STORAGE_KEYS.PASSPORT_DATA) || "GY-UNKNOWN-TRACE";
+            const traceId = safeGet(GY_STORAGE_KEYS.USER_TRACE) || safeGet(GY_STORAGE_KEYS.PASSPORT_DATA) || "GY-TRACE-EMPTY";
             const avatarData = safeGet(GY_STORAGE_KEYS.USER_AVATAR) || safeGet('gygy_avatar');
             const langData = safeGet(GY_STORAGE_KEYS.USER_LANG) || "EN";
+            const flagData = safeGet('gygy_flag') || "gb";
 
-            const idLabel = document.getElementById('core-id-label');
-            if (idLabel) idLabel.innerText = traceId;
-
-            const langVal = document.getElementById('core-lang-val');
-            if (langVal) langVal.innerText = langData.toUpperCase();
+            document.getElementById('core-id-label').innerText = traceId;
+            document.getElementById('core-lang-val').innerText = langData.toUpperCase();
+            document.getElementById('core-flag-img').src = `https://flagcdn.com/w20/${flagData.toLowerCase()}.png`;
 
             const avatarImg = document.getElementById('core-avatar-img');
             if (avatarImg && avatarData) {
                 avatarImg.src = avatarData;
             } else if (avatarImg) {
-                // Дефолтный минималистичный аватар, если пустой
                 avatarImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20"><rect width="100" height="100" fill="%232c2c35"/></svg>';
             }
-            pushLog(`Profile trace "${traceId}" deployed successfully.`, "success");
         }
 
-        // ИЗМЕНЕНИЕ СХЕМЫ РИФМЫ В ВЕРСАХ
         function setRhymeScheme(scheme) {
             AI_ROOM_STATE.currentRhymeScheme = scheme;
             document.querySelectorAll('.rhyme-btn').forEach(btn => btn.classList.remove('active'));
             if (scheme === 'AABB') document.getElementById('scheme-aabb').classList.add('active');
             if (scheme === 'ABAB') document.getElementById('scheme-abab').classList.add('active');
-            pushLog(`Rhyme matrix shifted to: ${scheme}`);
+            pushLog(`Rhyme matrix: ${scheme}`);
         }
 
-        // ОТПРАВКА СТРОКИ ИИ АГЕНТУ
         function sendToAgent() {
             if (AI_ROOM_STATE.isAgentTyping) return;
-            
             const inputEl = document.getElementById('terminal-input');
             if (!inputEl || !inputEl.value.trim()) return;
 
             const userText = inputEl.value.trim();
-            inputEl.value = ""; // Очистка поля ввода
+            inputEl.value = ""; 
 
-            // Отрендерить сообщение пользователя
-            renderMessage(userText, "user", "Вы (Trace)");
-            
-            // Включение лоадера Чарли
+            renderMessage(userText, "user", "You");
             AI_ROOM_STATE.isAgentTyping = true;
             document.getElementById('typing-indicator').style.display = "block";
 
-            pushLog(`Transmitting prompt payload to server proxy...`);
-
-            // Имитация ответа сервера с плавным посимвольным выводом (без прыжков интерфейса)
             setTimeout(() => {
                 document.getElementById('typing-indicator').style.display = "none";
-                
-                // Пример ответа с клубной иронией
-                const simulatedResponse = `[Схема: ${AI_ROOM_STATE.currentRhymeScheme}] Строка принята. Футболка с этим принтом продастся в Одессе за миллион. ИИ одобряет этот творческий порыв!`;
-                
-                renderMessageWithTyping(simulatedResponse, "ai", "Charlie (AI Proxy)");
-                pushLog(`Payload response processed in 450ms.`, "success");
+                const response = `[Charlie v8.4]: Рифма сгенерирована. Потоки данных под защитой серверного гула.`;
+                renderMessageWithTyping(response, "ai", "Charlie");
             }, 800);
         }
 
-        // РЕНДЕРИНГ МГНОВЕННОГО СООБЩЕНИЯ (ПОЛЬЗОВАТЕЛЬ)
-        function renderMessage(text, side, authorName) {
+        function renderMessage(text, side, author) {
             const output = document.getElementById('chat-output');
-            if (!output) return;
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${side}`;
-            msgDiv.innerHTML = `
-                <div class="msg-meta">${authorName}</div>
-                <div class="msg-text">${text}</div>
-            `;
-            output.appendChild(msgDiv);
+            const msg = document.createElement('div');
+            msg.className = `message ${side}`;
+            msg.innerHTML = `<div class="msg-meta">${author}</div><div class="msg-text">${text}</div>`;
+            output.appendChild(msg);
             output.scrollTop = output.scrollHeight;
         }
 
-        // СИМУЛЯЦИЯ ЖИВОГО ПОСИМВОЛЬНОГО НАБОРА ТЕКСТА (ИИ АГЕНТ)
-        function renderMessageWithTyping(fullText, side, authorName) {
+        function renderMessageWithTyping(fullText, side, author) {
             const output = document.getElementById('chat-output');
-            if (!output) return;
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${side}`;
+            const msg = document.createElement('div');
+            msg.className = `message ${side}`;
+            msg.innerHTML = `<div class="msg-meta">${author}</div><div class="msg-text"></div>`;
+            output.appendChild(msg);
             
-            const metaDiv = document.createElement('div');
-            metaDiv.className = "msg-meta";
-            metaDiv.innerText = authorName;
-            
-            const textDiv = document.createElement('div');
-            textDiv.className = "msg-text";
-            
-            msgDiv.appendChild(metaDiv);
-            msgDiv.appendChild(textDiv);
-            output.appendChild(msgDiv);
-
+            const textDiv = msg.querySelector('.msg-text');
             let index = 0;
-            function typeChar() {
+            
+            function type() {
                 if (index < fullText.length) {
                     textDiv.innerText += fullText.charAt(index);
                     index++;
                     output.scrollTop = output.scrollHeight;
-                    setTimeout(typeChar, Math.random() * (AI_CORE_CONFIG.TYPING_SPEED_MAX - AI_CORE_CONFIG.TYPING_SPEED_MIN) + AI_CORE_CONFIG.TYPING_SPEED_MIN);
+                    setTimeout(type, Math.random() * (AI_CORE_CONFIG.TYPING_SPEED_MAX - AI_CORE_CONFIG.TYPING_SPEED_MIN) + AI_CORE_CONFIG.TYPING_SPEED_MIN);
                 } else {
-                    AI_ROOM_STATE.isAgentTyping = false; // Освобождаем поток ввода
+                    AI_ROOM_STATE.isAgentTyping = false;
                 }
             }
-            typeChar();
+            type();
         }
 
-        // КНОПКА ВОЗВРАТА СТРОГО НА ПРЕДЫДУЩИЙ УРОВЕНЬ
+        // СТАНДАРТНЫЕ НАВИГАЦИОННЫЕ ПЕРЕХОДЫ МЕЖДУ СЕГМЕНТАМИ КЛУБА
+        function navRoom(targetBlockId) {
+            pushLog(`Executing spatial transition to: ${targetBlockId}`);
+            
+            // Гасим звук серверной перед выходом из капсулы ИИ
+            let sndServer = document.getElementById('snd-server') || window.parent.document.getElementById('snd-server');
+            if (sndServer) { try { sndServer.pause(); sndServer.currentTime = 0; } catch(e){} }
+
+            if (typeof window.portalTransition === 'function') {
+                window.portalTransition(targetBlockId);
+            } else if (typeof window.parent.portalTransition === 'function') {
+                window.parent.portalTransition(targetBlockId);
+            } else {
+                // Если запуск идет в режиме изолированных файлов — делаем обычный редирект на Холл
+                window.location.href = "index.html"; 
+            }
+        }
+
         function exitRoom() {
-            pushLog("Terminating secure AI session... Redirecting to Hall.");
-            setTimeout(() => {
-                // Если мы в структуре цельного приложения, вызываем метод перехода Холла, либо просто редирект
-                if (typeof window.portalTransition === 'function') {
-                    window.portalTransition('block-hall');
-                } else {
-                    window.location.href = "index.html"; 
-                }
-            }, 300);
+            navRoom('block-hall');
         }
 
-        // НАВИГАЦИОННЫЕ КНОПКИ СМЕЩЕНИЯ (ВНУТРИКОМНАТНЫЕ ПЕРЕХОДЫ СЕТКИ)
-        function navRoom(direction) {
-            pushLog(`Shift command register: Navigating ${direction}`);
-            // Логика перехода между подмодулями ИИ комнаты v8
-        }
-
-        // ИНИЦИАЛИЗАЦИЯ СТАРТА ПРИ ЗАГРУЗКЕ DOM
         document.addEventListener("DOMContentLoaded", () => {
             initUserProfile();
-            pushLog(`AI_ROOM_CORE v${AI_CORE_CONFIG.VERSION} online. Grid systems ready.`);
+            initServerAudio();
         });
     </script>
 </body>
