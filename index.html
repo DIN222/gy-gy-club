@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.154 HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.3 FIXED - HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,6 +16,23 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
+        /* === ЕДИНЫЙ ВЕРХНИЙ БАР КЛУБА (СТАНДАРТ) === */
+        .gy-top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            z-index: 1000000;
+            pointer-events: none;
+        }
+        .gy-top-bar * { pointer-events: auto; }
+
         /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
@@ -31,26 +48,37 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY */
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В БАРЕ */
+        .ui-nav-arrows {
+            display: none; gap: 25px; font-size: 26px; font-weight: 900 !important; 
+            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            user-select: none;
         }
-        
+        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item:hover { opacity: 0.8; }
+
         /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            position: absolute; left: 50%; top: 14px; transform: translateX(-50%);
             width: 42px; height: 42px; border-radius: 50%;
             border: 2px solid var(--gold); background: #111;
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer; display: none;
+            cursor: pointer; display: none;
         }
         .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px;
             width: 17px; height: 12px; object-fit: cover;
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+        }
+
+        /* ЛОГОТИП GY-GY */
+        .ui-header-right { 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            user-select: none;
         }
 
         /* ПАСПОРТ */
@@ -61,8 +89,14 @@
 
         .ui-back-to-bar { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000005; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold); padding: 12px 24px; cursor: pointer; display: none; opacity: 0; transition: opacity 0.5s; }
 
+        /* БЛОКИ (ЛОКАЦИИ) */
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        
+        /* КРИТИЧЕСКИЙ ФИКС: Принудительная работа активного экрана */
         .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
+        
+        /* Жёсткое стартовое состояние входа */
+        #block-entrance { display: flex; opacity: 1; z-index: 5000; }
 
         #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 1.2s ease-in, opacity 1s; z-index: 9999999 !important; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
@@ -71,9 +105,12 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         
-        /* БЛОК СТОЛИКОВ: РЕЖИМ МАКСИМАЛЬНОГО МАСШТАБА И ИСКЛЮЧЕНИЯ СДВИГОВ */
         #block-tables { 
-            position: fixed; inset: 0; display: none; background: #000; overflow: hidden; 
+            background: url('lounge.jpg') no-repeat center bottom; 
+            background-size: 100% 100%; 
+            width: 100vw;
+            height: 100vh;
+            position: relative;
         }
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
@@ -83,18 +120,6 @@
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
-
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
-        .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
-            pointer-events: auto !important; user-select: none; display: none;
-        }
-        .arrow-item { transition: opacity 0.2s; }
-        .arrow-item:hover { opacity: 0.8; }
 
         /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
@@ -170,18 +195,10 @@
         }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
+        /* Защита от сдвигов перевода Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
-        
-        body:has(#block-welcome.active) #lang-switcher,
-        body:has(#block-identity.active) #lang-switcher,
-        body:has(#block-hall.active) #lang-switcher,
-        body:has(#block-tables.active) #lang-switcher,
-        body:has(#block-bar.active) #lang-switcher,
-        body:has(#block-server.active) #lang-switcher {
-            display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
-        }
         
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
@@ -191,9 +208,18 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
-        <img id="badge-avatar-img" class="badge-img" src="">
-        <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
+    <div class="gy-top-bar notranslate" translate="no">
+        <div class="ui-nav-arrows" id="gy-global-nav">
+            <div class="arrow-item" id="nav-arrow-back">&lt;</div>
+            <div class="arrow-item" id="nav-arrow-home">&lt;&lt;</div>
+        </div>
+
+        <div id="global-user-badge" class="ui-user-badge" onclick="openPassport()">
+            <img id="badge-avatar-img" class="badge-img" src="">
+            <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
+        </div>
+
+        <div class="ui-header-right">GY-GY</div>
     </div>
 
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
@@ -216,7 +242,6 @@
     </div>
         
     <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
-    <div class="ui-header-right notranslate">GY-GY</div>
 
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
@@ -224,15 +249,11 @@
     <audio id="snd-khe" src="charlie_cough.mp3" preload="auto"></audio>
     <audio id="snd-server" src="sbridge_ambient.mp3" loop preload="auto"></audio>
 
-    <div id="block-entrance" class="block">
+    <div id="block-entrance" class="block active">
         <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-welcome">
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
         <div class="quote-text">I'M CHARLIE</div>
         <div class="quote-text">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
@@ -242,10 +263,6 @@
     </div>  
 
     <div id="block-identity" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-identity">
-            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
         <div class="quote-text">There is never too much champagne</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
@@ -267,13 +284,8 @@
     </div>
 
     <div id="block-hall" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
-            <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
-        </div>
-
         <div class="hall-interior">
-            <div class="quote-text" style="position: absolute; top: 8vh; left: 50%; transform: translateX(-50%); width: 85%; margin: 0; text-align: center; color: var(--gold) !important; font-size: 28px; font-weight: 700; text-shadow: 0 0 8px #000, 0 0 15px #000, 0 0 25px #000;">
+            <div class="quote-text">
                 In every joke there is a share of whisky
             </div>
             
@@ -293,8 +305,7 @@
             
             <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
                 <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
-                
-                <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;" onclick="portalTransition('block-bar')">
+                <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
                     <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
                 </div>
             </div>
@@ -302,20 +313,11 @@
     </div>
   
     <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0; display: none;">
-        <div class="notranslate ui-nav-arrows" id="nav-server" style="display: flex; z-index: 1000005; pointer-events: auto !important;">
-            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
-        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000005;">GY-GY</div>
         <div id="three-screens-zone" style="position: absolute; top: 20vh; left: 10vw; width: 80vw; height: 50vh; cursor: pointer; background: rgba(255, 0, 0, 0); z-index: 1000010; pointer-events: auto !important;" onclick="console.log('Клик по экранам сработал!'); window.location.href='verses.html'"></div>
     </div>
 
     <div id="block-bar" class="block">
         <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
-        <div class="notranslate ui-nav-arrows" id="nav-bar" style="display: flex; z-index: 10;">
-            <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
         <div class="quote-text" style="position:absolute; top:8vh; z-index: 10;">In every joke there is a share of whisky</div>
         <div class="bar-ui-container" style="z-index: 10;">
             <div style="display:flex; justify-content: space-between; width:100%;">
@@ -326,28 +328,16 @@
     </div>
 
     <div id="block-tables" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-tables" style="display: flex; z-index: 1000005;">
-            <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
-        
-        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000005;">GY-GY</div>
-
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vh; max-width: 177.78vh; max-height: 56.25vw; display: block;">
-            
             <img src="lounge.jpg" style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none;">
-
             <div class="mic-zone" style="position: absolute; bottom: 58%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; cursor: pointer; z-index: 5;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
             
             <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 28%; transform: translate(-50%, -50%);" onclick="alert('Table 1 selected')"></div>
             <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 72%; transform: translate(-50%, -50%);" onclick="alert('Table 2 selected')"></div>
-            
             <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 20%; transform: translate(-50%, -50%);" onclick="alert('Table 3 selected')"></div>
             <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 80%; transform: translate(-50%, -50%);" onclick="alert('Table 4 selected')"></div>
-            
             <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 32%; transform: translate(-50%, -50%);" onclick="alert('Table 5 selected')"></div>
             <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 68%; transform: translate(-50%, -50%);" onclick="alert('Table 6 selected')"></div>
-            
         </div>
     </div>
 
@@ -463,30 +453,130 @@
             });
         }
 
-        function safePlaySound(audioId, volume = 1.0) {
-            const audio = document.getElementById(audioId);
-            if (!audio) return;
-            try {
-                audio.currentTime = 0;
-                audio.volume = volume;
-                audio.play().catch(() => {
-                    document.body.addEventListener('click', () => { audio.play().catch(()=>{}); }, { once: true });
-                });
-            } catch (e) {}
+        function handleDoor() {
+            safePlaySound('snd-door');
+            const d = document.getElementById('main-door');
+            if (d) {
+                d.style.transform = "scale(5)"; 
+                d.style.opacity = "0"; 
+                d.style.pointerEvents = "none";
+            }
+            
+            const langSwitcher = document.getElementById('lang-switcher');
+            if (langSwitcher) langSwitcher.style.opacity = "0";
+            
+            if(!currentID) {
+                currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+                safeStorageSet('gygy_id', currentID);
+                safeStorageSet('gy_trace', currentID);
+            }
+            
+            renderUserPassports(currentID);
+            
+            setTimeout(() => { 
+                portalTransition('block-welcome'); 
+                if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
+                    window.GY_AUDIO_ENGINE.fadeBarAmbient(0.12, 1500);
+                }
+            }, 1000);
         }
 
-        function portalTransition(nextId) {
-            const currentActiveBlock = document.querySelector('.block.active');
-            const targetBlock = document.getElementById(nextId);
-            const badge = document.getElementById('global-user-badge');
+        function renderUserPassports(targetID) {
+            const idLabel = document.getElementById('id-label');
+            const passIdVal = document.getElementById('pass-id-val');
+            const qrBoxReg = document.getElementById('qr-box-reg');
+            const passQrBox = document.getElementById('pass-qr-box');
+
+            if (idLabel) idLabel.innerText = targetID;
+            if (passIdVal) passIdVal.innerText = targetID;
             
-            if (currentActiveBlock) currentActiveBlock.classList.remove('active');
+            if (qrBoxReg && typeof QRCode !== 'undefined') {
+                qrBoxReg.innerHTML = "";
+                new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
+            }
+            if (passQrBox && typeof QRCode !== 'undefined') {
+                passQrBox.innerHTML = "";
+                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
+            }
+        }
+
+        function checkAndFillRegistrationForm() {
+            const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+            
+            if (currentID) { renderUserPassports(currentID); }
+            if (savedAvatar) {
+                currentUserImage = savedAvatar;
+                if (savedAvatar.startsWith('data:image/svg+xml')) {
+                    const avatarImg = document.getElementById('avatar-img');
+                    if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+                    const txtAvatar = document.getElementById('txt-avatar');
+                    if (txtAvatar) txtAvatar.style.display = "none";
+                } else { 
+                    const ppImg = document.getElementById('pp');
+                    if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                    const txtPhoto = document.getElementById('txt-photo');
+                    if (txtPhoto) txtPhoto.style.display = "none";
+                }
+                const btnWHall = document.getElementById('btn-w-hall');
+                if(btnWHall) btnWHall.classList.remove('btn-sleep');
+                const btnPass = document.getElementById('btn-pass');
+                if(btnPass) btnPass.classList.remove('btn-sleep');
+            }
+        }
+
+        // === УПРАВЛЕНИЕ ТОЧКАМИ ПЕРЕХОДОВ И ЦЕНТРАЛЬНЫМ БАРОМ ШАПКИ ===
+        function portalTransition(nextId) {
+            document.querySelectorAll('.block').forEach(b => b.classList.remove('active'));
+            const targetBlock = document.getElementById(nextId);
             if (targetBlock) targetBlock.classList.add('active');
 
-            if (nextId !== 'block-entrance' && nextId !== 'block-welcome' && nextId !== 'block-identity') {
-                if (badge) badge.style.display = "block";
+            const navBar = document.getElementById('gy-global-nav');
+            const badge = document.getElementById('global-user-badge');
+            const langSwitcher = document.getElementById('lang-switcher');
+
+            // 1. Управление видимостью навигации слева
+            if (navBar) {
+                if (nextId === 'block-entrance' || nextId === 'block-welcome') {
+                    navBar.style.display = "none";
+                } else {
+                    navBar.style.display = "flex";
+                    
+                    // Динамическая перепривязка шагов назад по твоей карте переходов
+                    document.getElementById('nav-arrow-home').onclick = () => portalTransition('block-entrance');
+                    if (nextId === 'block-identity') document.getElementById('nav-arrow-back').onclick = () => portalTransition('block-welcome');
+                    if (nextId === 'block-hall') document.getElementById('nav-arrow-back').onclick = () => portalTransition('block-identity');
+                    if (nextId === 'block-bar') document.getElementById('nav-arrow-back').onclick = () => portalTransition('block-hall');
+                    if (nextId === 'block-server') document.getElementById('nav-arrow-back').onclick = () => portalTransition('block-hall');
+                    if (nextId === 'block-tables') document.getElementById('nav-arrow-back').onclick = () => portalTransition('block-bar');
+                }
+            }
+
+            // 2. Управление сквозным аватаром по центру
+            if (badge) {
+                if (nextId === 'block-entrance' || nextId === 'block-welcome' || nextId === 'block-identity') {
+                    badge.style.display = "none";
+                } else {
+                    badge.style.display = "block";
+                }
+            }
+
+            // 3. Скрытие селектора языка на внутренних экранах
+            if (langSwitcher) {
+                if (nextId === 'block-entrance') {
+                    langSwitcher.style.display = "flex";
+                    langSwitcher.style.opacity = "1";
+                } else {
+                    langSwitcher.style.display = "none";
+                }
+            }
+
+            // Контроль фонового звука серверов
+            if (nextId === 'block-server') {
+                safePlaySound('snd-server');
             } else {
-                if (badge) badge.style.display = "none";
+                const sndServer = document.getElementById('snd-server');
+                if (sndServer) sndServer.pause();
             }
         }
 
@@ -515,9 +605,12 @@
                     const pp = document.getElementById('pp');
                     if (pp) { pp.src = e.target.result; pp.style.display = 'block'; }
                     currentUserImage = e.target.result;
-                    document.getElementById('txt-photo').style.display = 'none';
-                    document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-                    document.getElementById('btn-pass').classList.remove('btn-sleep');
+                    const txtPhoto = document.getElementById('txt-photo');
+                    if (txtPhoto) txtPhoto.style.display = 'none';
+                    const btnWHall = document.getElementById('btn-w-hall');
+                    if (btnWHall) btnWHall.classList.remove('btn-sleep');
+                    const btnPass = document.getElementById('btn-pass');
+                    if (btnPass) btnPass.classList.remove('btn-sleep');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -528,79 +621,56 @@
             const avatarImg = document.getElementById('avatar-img');
             if (avatarImg) { avatarImg.src = svg; avatarImg.style.display = 'block'; }
             currentUserImage = svg;
-            document.getElementById('txt-avatar').style.display = 'none';
-            document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-            document.getElementById('btn-pass').classList.remove('btn-sleep');
+            const txtAvatar = document.getElementById('txt-avatar');
+            if (txtAvatar) txtAvatar.style.display = 'none';
+            const btnWHall = document.getElementById('btn-w-hall');
+            if (btnWHall) btnWHall.classList.remove('btn-sleep');
+            const btnPass = document.getElementById('btn-pass');
+            if (btnPass) btnPass.classList.remove('btn-sleep');
         }
 
         function saveUserProfile() {
             safeStorageSet('gy_user_img', currentUserImage);
             safeStorageSet('gygy_avatar', currentUserImage);
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = currentUserImage;
-            if (passImg) passImg.src = currentUserImage;
-            alert('Profile configuration locked.');
+            syncProfileUI();
+            alert('Profile saved.');
         }
 
-        function checkAndFillRegistrationForm() {
+        function syncProfileUI() {
             const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+            const savedID = safeStorageGet('gygy_id') || safeStorageGet('gy_trace');
+            const savedFlag = safeStorageGet('gygy_flag') || 'gb';
             
-            if (currentID) { renderUserPassports(currentID); }
             if (savedAvatar) {
-                currentUserImage = savedAvatar;
                 const badgeImg = document.getElementById('badge-avatar-img');
                 const passImg = document.getElementById('pass-avatar-img');
                 if (badgeImg) badgeImg.src = savedAvatar;
                 if (passImg) passImg.src = savedAvatar;
-                
-                if (savedAvatar.startsWith('data:image/svg+xml')) {
-                    const avatarImg = document.getElementById('avatar-img');
-                    if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                    if (document.getElementById('txt-avatar')) document.getElementById('txt-avatar').style.display = "none";
-                } else { 
-                    const ppImg = document.getElementById('pp');
-                    if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                    if (document.getElementById('txt-photo')) document.getElementById('txt-photo').style.display = "none";
-                }
-                if(document.getElementById('btn-w-hall')) document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-                if(document.getElementById('btn-pass')) document.getElementById('btn-pass').classList.remove('btn-sleep');
+            }
+            
+            const flagImg = document.getElementById('badge-flag-img');
+            if (flagImg) flagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
+
+            if (savedID) {
+                renderUserPassports(savedID);
             }
         }
 
-        // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА
-        (function() {
-            let fadeTimer = null;
-            window.GY_AUDIO_ENGINE = {
-                fadeBarAmbient: function(targetVolume, durationMs) {
-                    const barAmbient = document.getElementById('snd-ambient');
-                    if (!barAmbient) return;
-                    if (targetVolume === 0.12) targetVolume = 0.55; 
-                    if (barAmbient.paused) { barAmbient.volume = 0; barAmbient.play().catch(()=>{}); }
-                    if (fadeTimer) clearInterval(fadeTimer);
-                    const startVolume = barAmbient.volume;
-                    const volumeDifference = targetVolume - startVolume;
-                    const stepTime = 30; 
-                    const totalSteps = durationMs / stepTime;
-                    const volumeStep = volumeDifference / totalSteps;
-                    let currentStep = 0;
-                    fadeTimer = setInterval(() => {
-                        currentStep++;
-                        let nextVol = startVolume + (volumeStep * currentStep);
-                        if (nextVol < 0) nextVol = 0; if (nextVol > 1) nextVol = 1;
-                        barAmbient.volume = nextVol;
-                        if (currentStep >= totalSteps) { barAmbient.volume = targetVolume; clearInterval(fadeTimer); }
-                    }, stepTime);
-                }
-            };
-        })();
+        function safePlaySound(audioId) {
+            const audio = document.getElementById(audioId);
+            if (audio) { audio.currentTime = 0; audio.play().catch(()=>{}); }
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.add('page-loaded');
             renderLangList();
             checkAndFillRegistrationForm();
-            portalTransition('block-entrance');
+            syncProfileUI();
+            
+            // Включение фонового шума бара при первом клике на документ
+            document.addEventListener('click', () => {
+                safePlaySound('snd-ambient');
+            }, { once: true });
         });
     </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
