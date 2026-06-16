@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.1.153 HYBRID TRANSLATION ENGINE</title>
+    <title>GY-GY Club v4.5.1.135| HYBRID TRANSLATION ENGINE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -70,13 +70,8 @@
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-        #block-tables { 
-    background: url('lounge.jpg') no-repeat center bottom; 
-    background-size: 100% 100%; /* Заставляет картинку строго встать в границы экрана */
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-}
+
+        #block-tables { background: url('lounge.jpg') no-repeat center bottom / contain #000; }
         .lamp-zone { position: absolute; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; background: radial-gradient(circle, var(--neon-glow) 0%, transparent 75%); border: 1px solid var(--violet); box-shadow: 0 0 18px var(--neon-glow); transform: translate(-50%, -50%); }
         .bar-ui-container { position: absolute; bottom: 5vh; width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
@@ -228,12 +223,11 @@
     <div class="ui-header-right notranslate">GY-GY</div>
 
     <!-- ПУЛ АУДИОРЕСУРСОВ -->
-    <!-- СИСТЕМНЫЕ АУДИОПОТОКИ ХОЛЛА И БАРА -->
-<audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
-<audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
-<audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
-<audio id="snd-khe" src="charlie_cough.mp3" preload="auto"></audio>
-<audio id="snd-server" src="sbridge_ambient.mp3" loop preload="auto"></audio>
+    <audio id="snd-door"><source src="door_open.mp3"></audio>
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
+    <audio id="snd-khe"><source src="charlie_bar_fx.mp3"></audio>
+    <audio id="snd-pour"><source src="pour_whisky.mp3"></audio>
+    <audio id="snd-server" loop preload="auto"><source src="server_room.mp3"></audio>
 
     <!-- БЛОК 1: ДВЕРЬ -->
     <div id="block-entrance" class="block">
@@ -315,19 +309,21 @@
     </div>
   
     <!-- БЛОК 5: СЕРВЕРНАЯ (ЧИСТЫЙ СТИЛЬ С ПРАВИЛЬНЫМ ФОНОМ И ПРОГРАММНЫМ ИСКЛЮЧЕНИЕМ МУСОРА) -->
-   <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0; display: none;">
+    <div id="block-server" class="block" style="background: url('banana_server_room.jpg') center/cover no-repeat #000; position: fixed; inset: 0; display: none;">
         
-        <div class="notranslate ui-nav-arrows" id="nav-server" style="display: flex; z-index: 1000005; pointer-events: auto !important;">
+        <div class="notranslate ui-nav-arrows" id="nav-server" style="display: flex; z-index: 1000002;">
             <div class="arrow-item" onclick="portalTransition('block-hall')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
 
-        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000005;">GY-GY</div>
+        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000002;">GY-GY</div>
 
-        <div id="three-screens-zone" style="position: absolute; top: 20vh; left: 10vw; width: 80vw; height: 50vh; cursor: pointer; background: rgba(255, 0, 0, 0); z-index: 1000010; pointer-events: auto !important;" onclick="console.log('Клик по экранам сработал!'); window.location.href='verses.html'">
+        <div id="three-screens-zone" style="position: absolute; top: 30vh; left: 50%; transform: translateX(-50%); width: 60vw; height: 35vh; cursor: pointer; background: transparent; z-index: 1000000;" onclick="window.location.href='verses.html'">
+            <span class="cue-arrow-hall" style="font-size: 20px; opacity: 0; transition: opacity 0.3s; color: var(--violet); text-shadow: 0 0 10px var(--violet); display: block; text-align: center; margin-top: 15vh;">ENTER AI ROOM</span>
         </div>
 
     </div>
+
     <!-- БЛОК 6: БАР -->
     <div id="block-bar" class="block">
         <img src="horse_bar.png" style="height: 80vh; width: auto; object-fit: contain; margin-bottom: -10px;">
@@ -346,586 +342,359 @@
         </div>
     </div>
 
- <div id="block-tables" class="block" style="position: fixed; inset: 0; display: none; background: #000; overflow: hidden;">
-        
-        <div class="notranslate ui-nav-arrows" id="nav-tables" style="display: flex; z-index: 1000005;">
+    <!-- БЛОК 7: СТОЛЫ -->
+    <div id="block-tables" class="block">
+        <div class="notranslate ui-nav-arrows" id="nav-tables">
             <div class="arrow-item" onclick="portalTransition('block-bar')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-        
-        <div class="ui-header-right notranslate" style="display: block !important; opacity: 1 !important; visibility: visible !important; z-index: 1000005;">GY-GY</div>
-
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vh; max-width: 177.78vh; max-height: 56.25vw; display: block;">
-            
-            <img src="lounge.jpg" style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none;">
-
-            <div class="mic-zone" style="position: absolute; bottom: 58%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; cursor: pointer; z-index: 5;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
-            
-            <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 28%; transform: translate(-50%, -50%);" onclick="alert('Table 1 selected')"></div>
-            <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 72%; transform: translate(-50%, -50%);" onclick="alert('Table 2 selected')"></div>
-            
-            <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 20%; transform: translate(-50%, -50%);" onclick="alert('Table 3 selected')"></div>
-            <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 80%; transform: translate(-50%, -50%);" onclick="alert('Table 4 selected')"></div>
-            
-            <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 32%; transform: translate(-50%, -50%);" onclick="alert('Table 5 selected')"></div>
-            <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 68%; transform: translate(-50%, -50%);" onclick="alert('Table 6 selected')"></div>
-            
-        </div>
+        <div class="mic-zone" style="bottom: 58%; left: 50%;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
+        <div class="lamp-zone" style="bottom: 48%; left: 25%;" onclick="alert('Table 1 selected')"></div>
+        <div class="lamp-zone" style="bottom: 48%; left: 75%;" onclick="alert('Table 2 selected')"></div>
+        <div class="lamp-zone" style="bottom: 32%; left: 18%;" onclick="alert('Table 3 selected')"></div>
+        <div class="lamp-zone" style="bottom: 32%; left: 82%;" onclick="alert('Table 4 selected')"></div>
+        <div class="lamp-zone" style="bottom: 18%; left: 30%;" onclick="alert('Table 5 selected')"></div>
+        <div class="lamp-zone" style="bottom: 18%; left: 70%;" onclick="alert('Table 6 selected')"></div>
     </div>
- <script type="text/javascript">
-    // === ИНИЦИАЛИЗАЦИЯ И НАСТРОЙКА GOOGLE TRANSLATE ===
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
 
-    // ГЛОБАЛЬНЫЕ СИСТЕМНЫЕ ПЕРЕМЕННЫЕ ХОЛЛА
-    let currentID = "";
-    let currentActiveCode = 'en';
-    let currentUserImage = "";
-    let currentFlagCode = 'gb';
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
 
-    // СПИСОК ДОСТУПНЫХ ЯЗЫКОВ
-    const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, 
-        {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, 
-        {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, 
-        {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊS', c:'pt', code:'pt'}, 
-        {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
-        {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, 
-        {n:'日本語', c:'jp', code:'ja'}
-    ];
+        let currentID = "";
+        let currentActiveCode = 'en';
+        let currentUserImage = "";
+        let currentFlagCode = 'gb';
 
-    // РЕНДЕРИНГ ЯЗЫКОВОГО ВЫПАДАЮЩЕГО СПИСКА
-    function renderLangList() {
-        const container = document.getElementById('lang-list-container');
-        if (!container) return;
-        container.innerHTML = ''; 
-        allLangs.forEach(lang => {
-            if(lang.code === currentActiveCode) return; 
-            const div = document.createElement('div');
-            div.className = 'lang-item notranslate';
-            div.setAttribute('translate', 'no');
+        const barAmbient = document.getElementById('snd-ambient');   
+        const srvSnd = document.getElementById('snd-server');
+        let coughInterval = null; 
+          const allLangs = [
+            {n:'ENGLISH', c:'gb', code:'en'}, 
+            {n:'DEUTSCH', c:'de', code:'de'}, 
+            {n:'ESPAÑOL', c:'es', code:'es'}, 
+            {n:'FRANÇAIS', c:'fr', code:'fr'},
+            {n:'ITALIANO', c:'it', code:'it'}, 
+            {n:'POLSKI', c:'pl', code:'pl'}, 
+            {n:'PORTUGUÊS .', c:'pt', code:'pt'}, 
+            {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+            {n:'TÜRKЧЕ', c:'tr', code:'tr'}, 
+            {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+            {n:'中文', c:'cn', code:'zh-CN'}, 
+            {n:'日本語', c:'jp', code:'ja'}
+        ];
+  function renderLangList() {
+            const container = document.getElementById('lang-list-container');
+            if (!container) return;
+            container.innerHTML = ''; 
+            allLangs.forEach(lang => {
+                if(lang.code === currentActiveCode) return; 
+                const div = document.createElement('div');
+                div.className = 'lang-item notranslate';
+                
+                // Жестко запрещаем перевод на уровне стандартов HTML5
+                div.setAttribute('translate', 'no'); 
+                
+                div.innerHTML = `
+                    <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
+                    <span class="notranslate" translate="no">${lang.n}</span>
+                `;
+                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+                container.appendChild(div);
+            });
+        }
+        function safeStorageGet(key, fallback = "") {
+            try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+        }
+
+        // Заменено на сессионный режим для исключения авто-прыжков при перезагрузке жесткого старта двери
+        function safeStorageSet(key, value) {
+            try { localStorage.setItem(key, value); } catch (e) {}
+        }
+
+        function applyLanguage(lang) {
+            currentActiveCode = lang.code;
+            currentFlagCode = lang.c; 
+            safeStorageSet('gygy_flag', lang.c);
             
-            div.innerHTML = `
-                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
-                <span class="notranslate" translate="no">${lang.n}</span>
-            `;
-            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-            container.appendChild(div);
-        });
-    }
-
-    // БЕЗОПАСНАЯ РАБОТА С LOCALSTORAGE
-    function safeStorageGet(key, fallback = "") {
-        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
-    }
-
-    function safeStorageSet(key, value) {
-        try { localStorage.setItem(key, value); } catch (e) {}
-    }
-
-    // ПРИМЕНЕНИЕ ВЫБРАННОГО ЯЗЫКА И ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
-    function applyLanguage(lang) {
-        currentActiveCode = lang.code;
-        currentFlagCode = lang.c; 
-        safeStorageSet('gygy_flag', lang.c);
-        safeStorageSet('gy_lang', lang.code.toUpperCase() === 'UK' ? 'UA' : lang.code.toUpperCase());
-        
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) {
-            activeDisplay.innerHTML = `
+            document.getElementById('active-lang-display').innerHTML = `
                 <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
                 <span>${lang.n}</span>
             `;
+            document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${lang.c}.png`;
+            document.getElementById('lang-list-container').style.display = 'none';
+            renderLangList();
+            let attempts = 0;
+            const selectTimer = setInterval(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) {
+                    selectEl.value = lang.code;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    clearInterval(selectTimer);
+                }
+                if (++attempts > 50) clearInterval(selectTimer);
+            }, 150);
         }
-        
-        const badgeFlagImg = document.getElementById('badge-flag-img');
-        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
-        
-        const langListContainer = document.getElementById('lang-list-container');
-        if (langListContainer) langListContainer.style.display = 'none';
-        
-        renderLangList();
-        
-        let attempts = 0;
-        const selectTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                selectEl.value = lang.code;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                clearInterval(selectTimer);
-            }
-            if (++attempts > 50) clearInterval(selectTimer);
-        }, 150);
-    }
 
-    // ПЕРЕКЛЮЧЕНИЕ ВИДИМОСТИ СПИСКА ЯЗЫКОВ
-    function toggleLangList() {
-        const list = document.getElementById('lang-list-container');
-        if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-    }
+        function toggleLangList() {
+            const list = document.getElementById('lang-list-container');
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        }
 
-    // УПРАВЛЕНИЕ ОКНАМИ МАНИФЕСТОВ В ХОЛЛЕ
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-50px" : "-35px";
-            } else {
-                box.style.opacity = "0";
-                box.style.pointerEvents = "none";
-                box.setAttribute('data-opened', "false");
-                box.style.bottom = "-50px";
-            }
-        });
-    }
+        function toggleManifest(boxId) {
+            document.querySelectorAll('.manifest-btn-box').forEach(box => {
+                if(box.id === boxId) {
+                    const isOpened = box.getAttribute('data-opened') === "true";
+                    box.style.opacity = isOpened ? "0" : "1";
+                    box.style.pointerEvents = isOpened ? "none" : "auto";
+                    box.setAttribute('data-opened', isOpened ? "false" : "true");
+                    box.style.bottom = isOpened ? "-50px" : "-35px";
+                } else {
+                    box.style.opacity = "0";
+                    box.style.pointerEvents = "none";
+                    box.setAttribute('data-opened', "false");
+                    box.style.bottom = "-50px";
+                }
+            });
+        }
 
-    // ОБРАБОТКА НАЖАТИЯ НА ВХОДНУЮ ДВЕРЬ
-    function handleDoor() {
-        safePlaySound('snd-door');
-        const d = document.getElementById('main-door');
-        if (d) {
+        function handleDoor() {
+            safePlaySound('snd-door');
+            const d = document.getElementById('main-door');
             d.style.transform = "scale(5)"; 
             d.style.opacity = "0"; 
             d.style.pointerEvents = "none";
-        }
-        
-        const langSwitcher = document.getElementById('lang-switcher');
-        if (langSwitcher) langSwitcher.style.opacity = "0";
-        
-        if(!currentID) {
-            currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            safeStorageSet('gygy_id', currentID);
-            safeStorageSet('gy_trace', currentID);
-        }
-        
-        renderUserPassports(currentID);
-        
-        setTimeout(() => { 
-            portalTransition('block-welcome'); 
-            if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
-                window.GY_AUDIO_ENGINE.fadeBarAmbient(0.12, 1500);
-            }
-        }, 1000);
-    }
-
-    // ОБНОВЛЕНИЕ ID И ГЕНЕРАЦИЯ QR В ПАСПОРТАХ
-    function renderUserPassports(targetID) {
-        const idLabel = document.getElementById('id-label');
-        const passIdVal = document.getElementById('pass-id-val');
-        const qrBoxReg = document.getElementById('qr-box-reg');
-        const passQrBox = document.getElementById('pass-qr-box');
-
-        if (idLabel) idLabel.innerText = targetID;
-        if (passIdVal) passIdVal.innerText = targetID;
-        
-        if (qrBoxReg && typeof QRCode !== 'undefined') {
-            qrBoxReg.innerHTML = "";
-            new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
-        }
-        if (passQrBox && typeof QRCode !== 'undefined') {
-            passQrBox.innerHTML = "";
-            new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
-        }
-    }
-
-    // ПРОВЕРКА ПРОФИЛЯ И АВТОЗАПОЛНЕНИЕ ФОРМЫ РЕГИСТРАЦИИ (COOKIE-RECOGNITION EFFECT)
-    function checkAndFillRegistrationForm() {
-        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        
-        if (currentID) { renderUserPassports(currentID); }
-        if (savedAvatar) {
-            currentUserImage = savedAvatar;
-            if (savedAvatar.startsWith('data:image/svg+xml')) {
-                const avatarImg = document.getElementById('avatar-img');
-                if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                const txtAvatar = document.getElementById('txt-avatar');
-                if (txtAvatar) txtAvatar.style.display = "none";
-            } else { 
-                const ppImg = document.getElementById('pp');
-                if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                const txtPhoto = document.getElementById('txt-photo');
-                if (txtPhoto) txtPhoto.style.display = "none";
-            }
-            const btnWHall = document.getElementById('btn-w-hall');
-            if(btnWHall) btnWHall.classList.remove('btn-sleep');
-            const btnPass = document.getElementById('btn-pass');
-            if(btnPass) btnPass.classList.remove('btn-sleep');
-        }
-    }
-
-    // КРИТИЧЕСКИЙ УЗЕЛ НАВИГАЦИИ: БЕЗОПАСНЫЙ ПЕРЕХОД МЕЖДУ СЕГМЕНТАМИ
-    function portalTransition(nextId) {
-        const currentActiveBlock = document.querySelector('.block.active');
-        const targetBlock = document.getElementById(nextId);
-        const globalBackBtn = document.getElementById('btn-global-back');
-        const badge = document.getElementById('global-user-badge');
-        const langSwitcher = document.getElementById('lang-switcher');
-        const sndServer = document.getElementById('snd-server');
-
-        // --- БЕЗОПАСНОЕ УПРАВЛЕНИЕ АУДИОПОТОКАМИ ЧЕРЕЗ ИЗОЛИРОВАННЫЙ ДВИЖОК ---
-        if (nextId === 'block-server') {
-            if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
-                window.GY_AUDIO_ENGINE.fadeBarAmbient(0.02, 800);
+            document.getElementById('lang-switcher').style.opacity = "0";
+            
+            if(!currentID) {
+                currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
+                safeStorageSet('gygy_id', currentID);
             }
             
-            if (sndServer) {
-                try {
-                    sndServer.src = 'sbridge_ambient.mp3';
-                    sndServer.volume = 0; 
-                    
-                    sndServer.play().then(() => {
-                        let srvVol = 0;
-                        const srvTarget = 0.35;
-                        
-                        if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
-                        
-                        sndServer.fadeInterval = setInterval(() => {
-                            if (srvVol < srvTarget) {
-                                srvVol += 0.02;
-                                sndServer.volume = Math.min(srvVol, srvTarget);
-                            } else {
-                                clearInterval(sndServer.fadeInterval);
-                            }
-                        }, 40);
-                    }).catch(err => {
-                        console.log("Audio play blocked or interrupted", err);
-                    });
-                } catch (audioErr) {
-                    console.error("Audio system busy, bypassing block down...", audioErr);
-                }
-            }
-        } else {
-            if (sndServer) {
-                if (sndServer.fadeInterval) clearInterval(sndServer.fadeInterval);
-                try { sndServer.pause(); sndServer.currentTime = 0; } catch(e){}
-            }
-            if (currentActiveBlock?.id === 'block-server') {
-                if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
-                    window.GY_AUDIO_ENGINE.fadeBarAmbient(0.15, 1200);
-                }
-            }
-        }
-
-        // --- УПРАВЛЕНИЕ ВИДИМОСТЬЮ ИНТЕРФЕЙСНЫХ ЭЛЕМЕНТОВ ---
-        if (nextId === 'block-entrance') {
-            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
-            if (badge) badge.style.display = 'none';
-            if (globalBackBtn) globalBackBtn.style.display = 'none';
-        } else {
-            if (badge && currentUserImage) badge.style.display = 'block';
-        }
-
-        if (nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
-            if (globalBackBtn) { globalBackBtn.style.display = 'block'; globalBackBtn.style.opacity = '1'; }
-        } else {
-            if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
-        }
-
-        // --- ПЕРЕКЛЮЧЕНИЕ ОТОБРАЖЕНИЯ ЭКРАНОВ (ЗАЩИТА ОТ ТЕМНОТЫ) ---
-        if (currentActiveBlock) { 
-            currentActiveBlock.classList.remove('active'); 
-            currentActiveBlock.style.display = 'none'; 
-        }
-        
-        if (targetBlock) {
-            targetBlock.style.display = 'flex';
-            setTimeout(() => { targetBlock.classList.add('active'); }, 20);
-            const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
-            if (embeddedArrows) embeddedArrows.style.display = 'flex';
-        } else {
-            console.error(`Ошибка DOM: Целевой блок "${nextId}" отсутствует.`);
-            if (currentActiveBlock) {
-                currentActiveBlock.style.display = 'flex';
-                currentActiveBlock.classList.add('active');
-            }
-        }
-    }
-
-   // ЖЕЛЕЗОБЕТОННОЕ ВОСПРОИЗВЕДЕНИЕ ОДИНОЧНЫХ ЗВУКОВ
-function safePlaySound(audioId, volume = 1.0) {
-    const audio = document.getElementById(audioId);
-    if (!audio) {
-        console.error(`[GY-AUDIO]: Тег с id "${audioId}" не найден в DOM!`);
-        return;
-    }
-    try {
-        audio.currentTime = 0; // Сбрасываем дорожку в начало перед каждым щелчком
-        audio.volume = volume;  // Выставляем честный уровень без обрезаний
-        
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(err => {
-                console.warn(`[GY-AUDIO]: Браузер заблокировал щелчок двери до клика:`, err);
-                // Микро-хак: если заблокировано, вешаем триггер на следующий любой клик по телу страницы
-                document.body.addEventListener('click', () => { audio.play().catch(e=>{}); }, { once: true });
-            });
-        }
-    } catch (e) {
-        console.error(`[GY-AUDIO]: Сбой звуковой карты или занят поток:`, e);
-    }
-}
-
-// ОБРАБОТКА НАЖАТИЯ НА ВХОДНУЮ ДВЕРЬ
-function handleDoor() {
-    // Врубаем щелчок двери на полную громкость (1.0) до начала всех анимаций
-    safePlaySound('snd-door', 1.0);
-    
-    const d = document.getElementById('main-door');
-    if (d) {
-        d.style.transform = "scale(5)"; 
-        d.style.opacity = "0"; 
-        d.style.pointerEvents = "none";
-    }
-    
-    const langSwitcher = document.getElementById('lang-switcher');
-    if (langSwitcher) langSwitcher.style.opacity = "0";
-    
-    if(!currentID) {
-        currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-        safeStorageSet('gygy_id', currentID);
-        safeStorageSet('gy_trace', currentID);
-    }
-    
-    renderUserPassports(currentID);
-    
-    setTimeout(() => { 
-        portalTransition('block-welcome'); 
-        if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
-            // Включаем сочный гул бара
-            window.GY_AUDIO_ENGINE.fadeBarAmbient(0.55, 1500);
-        }
-    }, 1000);
-}
-
-    // ОБРАБОТКА ЗАГРУЖЕННОГО ПОЛЬЗОВАТЕЛЬСКОГО ИЗОБРАЖЕНИЯ
-    function preview(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentUserImage = e.target.result;
-                const pp = document.getElementById('pp');
-                if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
-                const txtPhoto = document.getElementById('txt-photo');
-                if (txtPhoto) txtPhoto.style.display = 'none';
-                
-                const avatarImg = document.getElementById('avatar-img');
-                if (avatarImg) avatarImg.style.display = 'none';
-                const txtAvatar = document.getElementById('txt-avatar');
-                if (txtAvatar) txtAvatar.style.display = 'block';
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // ГЕНЕРАЦИЯ УНИКАЛЬНОГО ЦВЕТНОГО СВГ-АВАТАРА ДЛЯ КЛУБА
-    function generateAvatar() {
-        const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
-        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        
-        const avatarImg = document.getElementById('avatar-img');
-        if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
-        const txtAvatar = document.getElementById('txt-avatar');
-        if (txtAvatar) txtAvatar.style.display = 'none';
-
-        const pp = document.getElementById('pp');
-        if (pp) pp.style.display = 'none';
-        const txtPhoto = document.getElementById('txt-photo');
-        if (txtPhoto) txtPhoto.style.display = 'block';
-    }
-
-    // СОХРАНЕНИЕ ПРОФИЛЯ
-    function saveUserProfile() {
-        if (!currentUserImage) return;
-        safeStorageSet('gygy_avatar', currentUserImage);
-        safeStorageSet('gy_user_img', currentUserImage);
-        safeStorageSet('gy_user_avatar', currentUserImage); 
-        safeStorageSet('gy_user_id', currentID);
-
-        const badgeImg = document.getElementById('badge-avatar-img');
-        const passImg = document.getElementById('pass-avatar-img');
-        const headerAvatar = document.getElementById('user-header-avatar'); 
-        
-        if (badgeImg) badgeImg.src = currentUserImage;
-        if (passImg) passImg.src = currentUserImage;
-        if (headerAvatar) headerAvatar.src = currentUserImage;
-
-        const btnWHall = document.getElementById('btn-w-hall');
-        if (btnWHall) btnWHall.classList.remove('btn-sleep');
-        const btnPass = document.getElementById('btn-pass');
-        if (btnPass) btnPass.classList.remove('btn-sleep');
-        
-        safePlaySound('snd-pour');
-        portalTransition('block-hall');
-    }
-
-    function smoothTransitionToTables() { safePlaySound('snd-pour'); portalTransition('block-tables'); }
-    function enterStudio() { alert('STUDIO module initializing... Connecting printing matrix.'); }
-    function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
-    function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
-
-// ==========================================
-    // КЛУБНАЯ ИЗОЛИРОВАННАЯ КАПСУЛА ЗВУКА (ОПТИМИЗАЦИЯ ГРОМКОСТИ)
-    // ==========================================
-    (function() {
-        let fadeTimer = null;
-        let coughTimer = null;
-
-        window.GY_AUDIO_ENGINE = {
-            fadeBarAmbient: function(targetVolume, durationMs) {
-                const barAmbient = document.getElementById('snd-ambient');
-                if (!barAmbient) return;
-
-                // Если это вход в бар, форсируем сочную клубную громкость вместо тишины
-                if (targetVolume === 0.12) targetVolume = 0.55; 
-
-                if (barAmbient.paused) {
-                    barAmbient.volume = 0;
-                    barAmbient.play().catch((err) => {
-                        console.log("Браузер заблокировал автоплей. Требуется первый клик пользователя.", err);
-                    });
-                }
-
-                if (fadeTimer) clearInterval(fadeTimer);
-
-                const startVolume = barAmbient.volume;
-                const volumeDifference = targetVolume - startVolume;
-                const stepTime = 30; 
-                const totalSteps = durationMs / stepTime;
-                const volumeStep = volumeDifference / totalSteps;
-                let currentStep = 0;
-
-                fadeTimer = setInterval(() => {
-                    currentStep++;
-                    let nextVol = startVolume + (volumeStep * currentStep);
-                    
-                    if (nextVol < 0) nextVol = 0;
-                    if (nextVol > 1) nextVol = 1;
-                    
-                    barAmbient.volume = nextVol;
-
-                    if (currentStep >= totalSteps) {
-                        barAmbient.volume = targetVolume;
-                        clearInterval(fadeTimer);
-                    }
-                }, stepTime);
-            }
-        };
-
-        function initIsolatedCough() {
-            if (coughTimer) clearInterval(coughTimer);
+            renderUserPassports(currentID);
             
-            coughTimer = setInterval(() => {
-                const currentBlock = document.querySelector('.block.active');
-                const barAmbient = document.getElementById('snd-ambient');
-                
-                // Кашель срабатывает только если мы физически находимся в Баре
-                if (currentBlock && currentBlock.id === 'block-bar' && barAmbient && !barAmbient.paused) {
-                    const khe = document.getElementById('snd-khe');
-                    if (khe) { 
-                        khe.volume = 0.60; // Подняли громкость кашля Чарли, чтобы его было слышно через эмбиент
-                        khe.play().catch(() => {}); 
-                    }
+            setTimeout(() => { 
+                portalTransition('block-welcome'); 
+                if (barAmbient) { 
+                    barAmbient.volume = 0.1; 
+                    barAmbient.play().catch(e => {}); 
                 }
-            }, 25000); 
+            }, 1000);
         }
 
-        initIsolatedCough();
-    })();
+        function renderUserPassports(targetID) {
+            const idLabel = document.getElementById('id-label');
+            const passIdVal = document.getElementById('pass-id-val');
+            const qrBoxReg = document.getElementById('qr-box-reg');
+            const passQrBox = document.getElementById('pass-qr-box');
 
-    // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ DOM ===
-    document.addEventListener("DOMContentLoaded", () => {
-        
-        const savedFlag = safeStorageGet('gygy_flag', 'gb');
-        const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
-        
-        currentActiveCode = matchingLang.code;
-        currentFlagCode = matchingLang.c;
-        
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) {
-            activeDisplay.innerHTML = `
-                <img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon notranslate" translate="no"> 
-                <span class="notranslate" translate="no">${matchingLang.n}</span>
-            `;
-        }
-        
-        const badgeFlag = document.getElementById('badge-flag-img');
-        if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
-
-        renderLangList();
-
-        setTimeout(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                selectEl.value = currentActiveCode;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            if (idLabel) idLabel.innerText = targetID;
+            if (passIdVal) passIdVal.innerText = targetID;
+            
+            if (qrBoxReg) {
+                qrBoxReg.innerHTML = "";
+                new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 });
             }
-        }, 1000);
+            if (passQrBox) {
+                passQrBox.innerHTML = "";
+                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 });
+            }
+        }
 
-        checkAndFillRegistrationForm();
+        function checkAndFillRegistrationForm() {
+            const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id');
+            
+            if (currentID) { renderUserPassports(currentID); }
+            if (savedAvatar) {
+                currentUserImage = savedAvatar;
+                if (savedAvatar.startsWith('data:image/svg+xml')) {
+                    const avatarImg = document.getElementById('avatar-img');
+                    if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+                    const txtAvatar = document.getElementById('txt-avatar');
+                    if (txtAvatar) txtAvatar.style.display = "none";
+                } else { 
+                    const ppImg = document.getElementById('pp');
+                    if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                    const txtPhoto = document.getElementById('txt-photo');
+                    if (txtPhoto) txtPhoto.style.display = "none";
+                }
+                const btnWHall = document.getElementById('btn-w-hall');
+                if(btnWHall) btnWHall.classList.remove('btn-sleep');
+                const btnPass = document.getElementById('btn-pass');
+                if(btnPass) btnPass.classList.remove('btn-sleep');
+            }
+        }
 
-        if (currentUserImage) {
+        function portalTransition(nextId) {
+            const currentActiveBlock = document.querySelector('.block.active');
+            const targetBlock = document.getElementById(nextId);
+            const globalBackBtn = document.getElementById('btn-global-back');
+            const badge = document.getElementById('global-user-badge');
+            const langSwitcher = document.getElementById('lang-switcher');
+
+            if (nextId === 'block-server') {
+                safePlaySound('snd-server', 0.25);
+                if (barAmbient) barAmbient.volume = 0.02;
+            } else {
+                safeFadeSound('snd-server');
+                if (barAmbient && currentActiveBlock?.id === 'block-server') barAmbient.volume = 0.1;
+            }
+
+            if (nextId === 'block-entrance') {
+                if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
+                if (badge) badge.style.display = 'none';
+                if (globalBackBtn) globalBackBtn.style.display = 'none';
+            } else {
+                if (badge && currentUserImage) badge.style.display = 'block';
+            }
+
+            if (nextId === 'block-bar' || nextId === 'block-tables' || nextId === 'block-server') {
+                if (globalBackBtn) { globalBackBtn.style.display = 'block'; globalBackBtn.style.opacity = '1'; }
+            } else {
+                if (globalBackBtn) { globalBackBtn.style.display = 'none'; globalBackBtn.style.opacity = '0'; }
+            }
+
+            if (currentActiveBlock) { currentActiveBlock.classList.remove('active'); currentActiveBlock.style.display = 'none'; }
+            if (targetBlock) {
+                targetBlock.style.display = 'flex';
+                setTimeout(() => { targetBlock.classList.add('active'); }, 20);
+                const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
+                if (embeddedArrows) embeddedArrows.style.display = 'flex';
+            }
+        }
+
+        function safePlaySound(audioId, volume = 1.0) {
+            const audio = document.getElementById(audioId);
+            if (!audio) return;
+            try {
+                audio.volume = volume;
+                const playPromise = audio.play();
+                if (playPromise !== undefined) { playPromise.catch(e => {}); }
+            } catch (e) {}
+        }
+
+        function safeFadeSound(audioId) {
+            const audio = document.getElementById(audioId);
+            if (!audio) return;
+            try { audio.pause(); } catch (e) {}
+        }
+
+        function preview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUserImage = e.target.result;
+                    const pp = document.getElementById('pp');
+                    if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
+                    const txtPhoto = document.getElementById('txt-photo');
+                    if (txtPhoto) txtPhoto.style.display = 'none';
+                    
+                    const avatarImg = document.getElementById('avatar-img');
+                    if (avatarImg) avatarImg.style.display = 'none';
+                    const txtAvatar = document.getElementById('txt-avatar');
+                    if (txtAvatar) txtAvatar.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function generateAvatar() {
+            const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
+            currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            
+            const avatarImg = document.getElementById('avatar-img');
+            if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
+            const txtAvatar = document.getElementById('txt-avatar');
+            if (txtAvatar) txtAvatar.style.display = 'none';
+
+            const pp = document.getElementById('pp');
+            if (pp) pp.style.display = 'none';
+            const txtPhoto = document.getElementById('txt-photo');
+            if (txtPhoto) txtPhoto.style.display = 'block';
+        }
+
+        function saveUserProfile() {
+            if (!currentUserImage) return;
+            safeStorageSet('gygy_avatar', currentUserImage);
+            safeStorageSet('gy_user_img', currentUserImage);
+            safeStorageSet('gy_user_id', currentID);
+
             const badgeImg = document.getElementById('badge-avatar-img');
             const passImg = document.getElementById('pass-avatar-img');
             if (badgeImg) badgeImg.src = currentUserImage;
             if (passImg) passImg.src = currentUserImage;
+
+            document.getElementById('btn-w-hall').classList.remove('btn-sleep');
+            document.getElementById('btn-pass').classList.remove('btn-sleep');
+            
+            safePlaySound('snd-pour');
+            portalTransition('block-hall');
         }
 
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
+        function smoothTransitionToTables() { safePlaySound('snd-pour'); portalTransition('block-tables'); }
+        function enterStudio() { alert('STUDIO module initializing... Connecting printing matrix.'); }
+        function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
+        function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
+
+        // === ИНИЦИАЛИЗАЦИЯ НА СТАРТЕ (СТРОГИЙ СТАРТ С ЗАКРЫТОЙ ДВЕРИ) ===
+        document.addEventListener("DOMContentLoaded", () => {
+            renderLangList();
+            
+            const savedFlag = safeStorageGet('gygy_flag', 'gb');
+            const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
+            currentActiveCode = matchingLang.code;
+            currentFlagCode = matchingLang.c;
+            
+            document.getElementById('active-lang-display').innerHTML = `
+                <img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon"> 
+                <span>${matchingLang.n}</span>
+            `;
+            document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
+
+            checkAndFillRegistrationForm();
+
+            if (currentUserImage) {
+                const badgeImg = document.getElementById('badge-avatar-img');
+                const passImg = document.getElementById('pass-avatar-img');
+                if (badgeImg) badgeImg.src = currentUserImage;
+                if (passImg) passImg.src = currentUserImage;
+            }
+
+            // Намертво глушим все блоки при загрузке
+            document.querySelectorAll('.block').forEach(b => {
+                b.classList.remove('active');
+                b.style.display = 'none';
+            });
+
+            // Активируем исключительно Дверь
+            const entrance = document.getElementById('block-entrance');
+            if (entrance) {
+                entrance.style.display = 'flex';
+                entrance.classList.add('active');
+            }
+
+            document.body.classList.add('page-loaded');
+
+            coughInterval = setInterval(() => {
+                const currentBlock = document.querySelector('.block.active');
+                if (currentBlock && (currentBlock.id === 'block-bar' || currentBlock.id === 'block-welcome')) {
+                    safePlaySound('snd-khe', 0.15);
+                }
+            }, 25000);
         });
-
-        const entrance = document.getElementById('block-entrance');
-        if (entrance) {
-            entrance.style.display = 'flex';
-            entrance.classList.add('active');
-        }
 
         const script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
         document.head.appendChild(script);
-
-        document.body.classList.add('page-loaded');
-    });
-</script>
-    <style>
-        #block-tables {
-            background-size: cover; 
-            background-position: center;
-            background-repeat: no-repeat;
-            width: 100%;
-            height: 100vh;
-        }
-    </style>
-    <!-- ФОРСИРОВАННЫЙ СБРОС И ВОЗВРАТ РАЗМЕРА КАРТИНКИ СТОЛИКОВ -->
-    <style>
-        #block-tables { 
-            background: url('lounge.jpg') no-repeat center bottom / cover #000 !important;
-            background-size: cover !important; /* Если лампы съехали, замени слово cover на 100% 100% */
-            width: 100vw !important;
-            height: 100vh !important;
-        }
-    </style>
-
+    </script>
 </body>
 </html>
-
-
