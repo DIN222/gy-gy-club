@@ -3,349 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club v5.0.1 — Core</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://flagcdn.com/assets/style.css">
-    
+    <title>GY-GY Club 001</title>
     <style>
-        :root {
-            --bg-dark: #0a0a0c;
-            --neon-gold: #ffdf00;
-            --neon-blue: #00f0ff;
-            --neon-violet: #b026ff;
-            --neon-green: #00ff66;
-            --font-mono: 'Share Tech Mono', monospace;
-            --font-serif: 'Playfair Display', serif;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-dark);
-            color: #e0e0e3;
-            font-family: var(--font-mono);
+        /* ВИНТАЖНЫЙ ПРЕМИУМ СТИЛЬ GY-GY КЛУБА */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
             overflow: hidden;
-            height: 100vh;
         }
 
-        /* --- ИНТЕРФЕЙСНЫЙ АВТОМАТ --- */
-        #global-header {
-            position: fixed; top: 15px; left: 20px; right: 20px;
-            display: flex; justify-content: space-between; align-items: center; z-index: 999;
+        /* ПОСТОЯННЫЕ АТРИБУТЫ СТРАНИЦЫ */
+        .system-header {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
         }
         .logo-gy {
-            font-size: 24px; font-weight: bold; color: var(--neon-gold);
-            text-shadow: 0 0 10px var(--neon-gold); cursor: pointer; user-select: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffb700;
+            letter-spacing: 2px;
+            pointer-events: auto;
+            cursor: pointer;
+            user-select: none;
         }
-        #btn-global-back {
-            display: none; background: transparent; border: 1px solid var(--neon-gold);
-            color: var(--neon-gold); padding: 5px 15px; font-family: var(--font-mono); cursor: pointer;
-        }
-
-        /* Паспорт-Аватар (Матрешка) */
-        #user-passport-block { position: relative; cursor: pointer; }
-        #user-avatar-trigger {
-            width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--neon-gold);
-            background-size: cover; background-position: center; position: relative;
-        }
-        #mini-flag-slot {
-            position: absolute; bottom: -2px; right: -2px; width: 16px; height: 12px; border-radius: 2px;
-        }
-
-        #passport-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); z-index: 9999; display: none;
-            justify-content: center; align-items: center;
-        }
-        .passport-card {
-            background: #121216; border: 2px solid var(--neon-gold); padding: 30px;
-            width: 350px; text-align: center; box-shadow: 0 0 30px rgba(255,223,0,0.3);
-        }
-
-        /* 12 языков. По умолчанию en */
-        #lang-switcher {
-            position: fixed; bottom: 20px; left: 20px; z-index: 999;
-            background: rgba(10,10,12,0.8); border: 1px solid var(--neon-gold); padding: 5px;
-        }
-        #lang-switcher select {
-            background: transparent; color: var(--neon-gold); border: none; font-family: var(--font-mono); outline: none; cursor: pointer;
-        }
-
-        /* АРХИТЕКТУРА ЭКРАНОВ */
-        .block { display: none; width: 100vw; height: 100vh; position: relative; }
-        .block.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-
-        /* --- ОРИГИНАЛЬНЫЙ АНИМИРОВАННЫЙ ВХОД (ПРИЕМНАЯ КЛУБА) --- */
-        #block-entrance {
-            background: var(--bg-dark);
-            perspective: 1000px;
-        }
-        .door-container {
-            position: relative; width: 280px; height: 420px;
-            border: 3px solid var(--neon-gold); box-shadow: 0 0 20px rgba(255,223,0,0.2);
-            cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s;
-        }
-        .door-leaf {
-            position: absolute; width: 100%; height: 100%; background: #111115;
-            border: 1px solid #222; transform-origin: left center;
-            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .door-container.open .door-leaf {
-            transform: rotateY(-110deg);
-        }
-        .door-plate {
-            font-family: var(--font-serif); color: var(--neon-gold);
-            font-size: 26px; letter-spacing: 3px; font-weight: bold; text-align: center;
-        }
-        .stability-option {
-            margin-top: 25px; font-size: 13px; color: #555; transition: color 0.3s;
-        }
-        .stability-option:hover { color: var(--neon-blue); }
-
-        /* --- ХОЛЛ: МАТРИЦА СТРЕЛОК --- */
-        #block-hall { 
-            background: #111; background-image: url('hall_bg_jpg.jpg'); background-size: cover; background-position: center; 
-        }
-        .hall-arrow {
-            position: absolute; width: 220px; height: 120px; border: 1px solid transparent;
-            background: rgba(0,0,0,0.75); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s; user-select: none;
-        }
-        .arrow-left-top { left: 8%; top: 20%; border-color: var(--neon-blue); color: var(--neon-blue); }
-        .arrow-left-top:hover { box-shadow: 0 0 20px var(--neon-blue); background: rgba(0, 240, 255, 0.1); }
         
-        .arrow-left-bottom { left: 8%; bottom: 20%; border-color: var(--neon-violet); color: var(--neon-violet); }
-        .arrow-left-bottom:hover { box-shadow: 0 0 20px var(--neon-violet); background: rgba(176, 38, 255, 0.1); }
-        
-        .arrow-right-top { right: 8%; top: 20%; border-color: var(--neon-gold); color: var(--neon-gold); }
-        .arrow-right-top:hover { box-shadow: 0 0 20px var(--neon-gold); background: rgba(255, 223, 0, 0.1); }
-        
-        .arrow-right-bottom { right: 8%; bottom: 20%; border-color: var(--neon-green); color: var(--neon-green); }
-        .arrow-right-bottom:hover { box-shadow: 0 0 20px var(--neon-green); background: rgba(0, 255, 102, 0.1); }
+        /* ДИНАМИЧЕСКАЯ ЯЗЫКОВАЯ ПАНЕЛЬ */
+        .lang-panel {
+            position: relative;
+            pointer-events: auto;
+            background: rgba(17, 17, 17, 0.9);
+            border: 1px solid #ffb700;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #ffb700;
+            user-select: none;
+        }
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: #0a0a0a;
+            border: 1px solid #ffb700;
+            width: 140px;
+            border-radius: 4px;
+            max-height: 280px;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+        .lang-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s ease;
+            color: #fff;
+        }
+        .lang-item:hover {
+            background: #ffb700;
+            color: #000;
+        }
+        .flag-icon {
+            width: 20px;
+            height: auto;
+            display: block;
+        }
 
-        .arrow-icon { font-size: 28px; margin-bottom: 5px; }
-        .arrow-text { font-weight: bold; letter-spacing: 2px; }
+        /* СИСТЕМА ЭКРАНОВ / КОМНАТ */
+        .screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        /* ЭКРАН 1: ВХОД С ДВЕРЬЮ */
+        #screen-entrance {
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+        }
+        .vintage-door {
+            width: 200px;
+            height: 350px;
+            border: 3px solid #ffb700;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(255, 183, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            background: #0d0d0d;
+        }
+        .vintage-door:hover {
+            box-shadow: 0 0 40px rgba(255, 183, 0, 0.6);
+            transform: scale(1.02);
+        }
+        .door-handle {
+            width: 20px;
+            height: 20px;
+            background: #ffb700;
+            border-radius: 50%;
+        }
+
+        /* ЭКРАН 2: ПРИВЕТСТВИЕ С КОНЕМ */
+        #screen-welcome {
+            background: #0a0a0a;
+        }
+        .welcome-horse-img {
+            max-width: 400px;
+            width: 80%;
+            border-radius: 8px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        /* ЭКРАН 3: РЕГИСТРАЦИЯ */
+        #screen-register {
+            background: #0d0d0d;
+        }
+        .reg-box {
+            background: #111;
+            border: 1px solid #ffb700;
+            padding: 4px;
+            width: 300px;
+            text-align: center;
+        }
+        .reg-input {
+            width: 80%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: inherit;
+        }
+        .reg-input:focus {
+            border-color: #ffb700;
+            outline: none;
+        }
+
+        /* ЭКРАН 4: ХОЛЛ С ЧЕТЫРЬМЯ ПЕРЕХОДАМИ */
+        #screen-hall {
+            background: radial-gradient(circle, #111 0%, #000 100%);
+        }
+        .hall-title {
+            font-size: 32px;
+            color: #fff;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+        .doors-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        /* УНИВЕРСАЛЬНЫЕ КНОПКИ КЛУБА */
+        .club-btn {
+            background: #000;
+            color: #ffb700;
+            border: 1px solid #ffb700;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+        .club-btn:hover {
+            background: #ffb700;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 183, 0, 0.4);
+        }
+
+        /* ИФРЕЙМ ДЛЯ УДЛИНИТЕЛЯ БАРА */
+        #module-router-frame {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
 
-    <div id="global-header">
-        <div class="logo-gy" onclick="location.reload()">GY-GY</div>
-        <button id="btn-global-back" onclick="window.GY_CORE.back()">[ BACK ]</button>
-        <div id="user-passport-block" onclick="window.GY_CORE.togglePassport()">
-            <div id="user-avatar-trigger">
-                <div id="mini-flag-slot"></div>
+    <div class="system-header">
+        <div class="logo-gy" onclick="returnToEntrance()">GY-GY</div>
+        
+        <div class="lang-panel">
+            <div id="active-lang-display" onclick="toggleLangList()" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <img src="https://flagcdn.com/w20/gb.png" id="badge-flag-img" class="flag-icon">
+                <span>English</span>
             </div>
+            <div id="lang-dropdown-list" class="lang-dropdown">
+                </div>
         </div>
     </div>
 
-    <div id="lang-switcher">
-        <select id="gy-lang-selector" onchange="window.GY_LANG_ENGINE.changeLang(this.value)">
-            <option value="en" selected>English</option>
-            <option value="ru">Русский</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="es">Español</option>
-            <option value="it">Italiano</option>
-            <option value="zh-CN">中文</option>
-            <option value="ja">日本語</option>
-            <option value="ar">العربية</option>
-            <option value="pt">Português</option>
-            <option value="tr">Türkçe</option>
-            <option value="pl">Polski</option>
-        </select>
-    </div>
+    <div id="google_translate_element" style="display:none;"></div>
 
-    <div id="passport-overlay" onclick="window.GY_CORE.togglePassport()">
-        <div class="passport-card" onclick="event.stopPropagation()">
-            <h2 style="color:var(--neon-gold); margin-bottom:15px; font-family:var(--font-mono);">GY-GY PASSPORT</h2>
-            <div id="passport-avatar-view" style="width:100px; height:100px; border-radius:50%; margin:0 auto 15px; border:2px solid var(--neon-gold); background-size:cover;"></div>
-            <p>ID: <span id="passport-id-field" style="color:var(--neon-blue);"></span></p>
-            <p style="margin-top:10px; font-size:12px; color:#666;">STATUS: CLUB MEMBER</p>
-            <div id="passport-qrcode" style="margin-top:15px; display:inline-block; background:#fff; padding:5px;"></div>
+    <div id="screen-entrance" class="screen active">
+        <div class="vintage-door" onclick="navigateTo('screen-welcome')">
+            <div class="door-handle"></div>
         </div>
     </div>
 
-    <div id="block-entrance" class="block active">
-        <div class="door-container" id="gy-main-door" onclick="window.GY_CORE.handleDoorClick()">
-            <div class="door-leaf">
-                <div class="door-plate">GY-GY<br>CLUB</div>
-                <div style="font-size: 11px; margin-top:40px; color:#444; letter-spacing:1px;">[ TAP TO OPEN ]</div>
-            </div>
-        </div>
-        <div class="stability-option" onclick="alert('Telegram Auth Connection...')">Alternative stable entry via Telegram</div>
+    <div id="screen-welcome" class="screen">
+        <img src="horse_bar.png" class="welcome-horse-img" alt="Welcome Horse">
+        <h2 style="color: #ffb700; margin-bottom: 20px;">Welcome to GY-GY Club</h2>
+        <button class="club-btn" onclick="navigateTo('screen-register')">Proceed</button>
     </div>
 
-    <div id="block-welcome" class="block">
-        <div style="width:200px; height:200px; background-image:url('horse_welcome.png'); background-size:cover; margin-bottom:20px;"></div>
-        <p style="font-family:var(--font-serif); font-style:italic; font-size:22px; text-align:center; max-width:600px; margin-bottom:30px;">
-            «Привет, путник. Клуб GY-GY приветствует тебя. Здесь юмор — закон, а ИИ — твой бро...»
-        </p>
-        <button onclick="window.GY_CORE.nextScreen('block-register')" style="background:transparent; border:1px solid var(--neon-gold); color:var(--neon-gold); padding:10px 30px; font-family:var(--font-mono); cursor:pointer;">[ CONTINUE ]</button>
-    </div>
-
-    <div id="block-register" class="block">
-        <h2 style="margin-bottom:20px;">DIGITAL TRACE IDENTIFICATION</h2>
-        <div id="generated-avatar-preview" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--neon-gold); margin-bottom:20px;"></div>
-        <button onclick="window.GY_CORE.generateAndSaveTrace()" style="background:var(--neon-gold); color:#000; font-weight:bold; padding:10px 25px; border:none; font-family:var(--font-mono); cursor:pointer;">[ APPROVE TRACE ]</button>
-    </div>
-
-    <div id="block-hall" class="block">
-        <div class="hall-arrow arrow-left-top" onclick="alert('AI ROOM bus is under development')">
-            <span class="arrow-icon">🧠</span>
-            <span class="arrow-text">AI ROOM</span>
-        </div>
-        <div class="hall-arrow arrow-left-bottom" onclick="alert('Access to closed loop of Office is blocked')">
-            <span class="arrow-icon">💜</span>
-            <span class="arrow-text">OFFICE</span>
-        </div>
-        <div class="hall-arrow arrow-right-top" onclick="window.GY_CORE.plugModule('bar', 'dynamic-module-node')">
-            <span class="arrow-icon">🍺</span>
-            <span class="arrow-text">BAR GY-GY</span>
-        </div>
-        <div class="hall-arrow arrow-right-bottom" onclick="alert('STUDIO bus is under development')">
-            <span class="arrow-icon">👕</span>
-            <span class="arrow-text">STUDIO</span>
+    <div id="screen-register" class="screen">
+        <div class="reg-box">
+            <h3 style="color: #ffb700; margin-bottom: 20px;">Identity Secure Check</h3>
+            <input type="text" id="user-nickname" class="reg-input" placeholder="Enter Nickname">
+            <button class="club-btn" onclick="completeRegistration()">Generate ID & Enter</button>
         </div>
     </div>
 
-    <div id="dynamic-module-node" class="block"></div>
+    <div id="screen-hall" class="screen">
+        <div class="hall-title">THE HALL</div>
+        <div class="doors-grid">
+            <a href="ai_room.html" class="club-btn">AI Room</a>
+            <a href="studio.html" class="club-btn">Studio</a>
+            <button class="club-btn" onclick="openExternalModule('bar.html')">Bar</button>
+            <a href="office.html" class="club-btn">Office</a>
+        </div>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <iframe id="module-router-frame" src="about:blank"></iframe>
 
     <script>
-        window.GY_CORE = {
-            history: [],
-            currentScreen: 'block-entrance',
+        // ГЛОБАЛЬНЫЙ ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ
+        let currentUser = { id: null, nickname: 'Guest' };
 
-            init() {
-                // Cookie-recognition детекция уникального следа из v4.5.1.153
-                let trace = localStorage.getItem('gy_trace');
-                let isRecognized = !!trace;
-                
-                if (!trace) {
-                    trace = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-                    localStorage.setItem('gy_trace', trace);
-                }
-                document.getElementById('passport-id-field').innerText = trace;
-                window.GY_LANG_ENGINE.changeLang('en');
+        // МАТРИЦА ИЗ 12 ЯЗЫКОВ
+        const initialLanguages = [
+            { code: 'en', flag: 'gb', name: 'English' },
+            { code: 'ru', flag: 'ru', name: 'Русский' },
+            { code: 'fr', flag: 'fr', name: 'Français' },
+            { code: 'de', flag: 'de', name: 'Deutsch' },
+            { code: 'es', flag: 'es', name: 'Español' },
+            { code: 'it', flag: 'it', name: 'Italiano' },
+            { code: 'zh', flag: 'cn', name: 'Chinesse' },
+            { code: 'ja', flag: 'jp', name: 'Japanese' },
+            { code: 'ar', flag: 'ae', name: 'Arabic' },
+            { code: 'pt', flag: 'pt', name: 'Português' },
+            { code: 'tr', flag: 'tr', name: 'Türkçe' },
+            { code: 'pl', flag: 'pl', name: 'Polski' }
+        ];
 
-                // Если куки узнали пользователя — он может миновать полную регистрацию, но дверь всё равно анимируем
-                window.GY_CORE.isRecognizedUser = isRecognized;
+        // НАВИГАЦИОННЫЙ ДВИЖОК ЭКРАНОВ
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) targetScreen.classList.add('active');
+        }
 
-                window.GY_AUDIO_ENGINE = {
-                    crossfade(track, vol) { console.log(`[Audio Engine] Crossfade -> ${track} (Vol: ${vol})`); }
-                };
-            },
-
-            handleDoorClick() {
-                const door = document.getElementById('gy-main-door');
-                door.classList.add('open');
-                
-                setTimeout(() => {
-                    if (this.isRecognizedUser) {
-                        // Распознан по кукам автоматический сквозной вход сразу в Холл
-                        this.nextScreen('block-hall');
-                    } else {
-                        // Новичка ведем по полной цепочке
-                        this.nextScreen('block-welcome');
-                    }
-                }, 1200); // Дверь успевает распахнуться по 3D-траектории
-            },
-
-            nextScreen(targetId) {
-                this.history.push(this.currentScreen);
-                document.getElementById(this.currentScreen).classList.remove('active');
-                document.getElementById(targetId).classList.add('active');
-                this.currentScreen = targetId;
-
-                if (targetId === 'block-hall') {
-                    document.getElementById('lang-switcher').style.display = 'none';
-                    document.getElementById('btn-global-back').style.display = 'none';
-                } else if (targetId === 'block-entrance') {
-                    document.getElementById('btn-global-back').style.display = 'none';
-                    document.getElementById('lang-switcher').style.display = 'block';
-                } else {
-                    document.getElementById('btn-global-back').style.display = 'block';
-                }
-            },
-
-            back() {
-                if (this.history.length === 0) return;
-                const prev = this.history.pop();
-                document.getElementById(this.currentScreen).classList.remove('active');
-                
-                if (this.currentScreen === 'dynamic-module-node') {
-                    document.getElementById('dynamic-module-node').innerHTML = '';
-                    const dynStyle = document.getElementById('dynamic-module-styles');
-                    if(dynStyle) dynStyle.remove();
-                }
-
-                document.getElementById(prev).classList.add('active');
-                this.currentScreen = prev;
-                
-                if (prev === 'block-hall') {
-                    document.getElementById('lang-switcher').style.display = 'none';
-                    document.getElementById('btn-global-back').style.display = 'none';
-                } else if (prev === 'block-entrance') {
-                    // Закрываем дверь обратно, если вернулись в самое начало
-                    document.getElementById('gy-main-door').classList.remove('open');
-                    document.getElementById('lang-switcher').style.display = 'block';
-                    document.getElementById('btn-global-back').style.display = 'none';
-                }
-            },
-
-            generateAndSaveTrace() {
-                document.getElementById('user-avatar-trigger').style.backgroundColor = '#ffdf00';
-                document.getElementById('passport-qrcode').innerHTML = '';
-                new QRCode(document.getElementById('passport-qrcode'), {
-                    text: localStorage.getItem('gy_trace'), width: 100, height: 100
-                });
-                this.nextScreen('block-hall');
-            },
-
-            togglePassport() {
-                const overlay = document.getElementById('passport-overlay');
-                overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
-            },
-
-            plugModule(moduleName, targetNodeId) {
-                const sessionContext = {
-                    trace: localStorage.getItem('gy_trace'),
-                    currentLang: window.GY_LANG_ENGINE.currentLang
-                };
-
-                fetch(`./modules/${moduleName}_bundle.json`)
-                    .then(res => { if(!res.ok) throw new Error('Module bundle not found'); return res.json(); })
-                    .then(bundle => {
-                        const node = document.getElementById(targetNodeId);
-                        node.innerHTML = bundle.html;
-
-                        const styleTag = document.createElement('style');
-                        styleTag.id = 'dynamic-module-styles';
-                        styleTag.innerHTML = bundle.css;
-                        document.head.appendChild(styleTag);
-
-                        const executeModuleLogic = new Function('context', bundle.js);
-                        executeModuleLogic(sessionContext);
-
-                        window.GY_AUDIO_ENGINE.crossfade(bundle.audioTrack, 0.35);
-                        this.nextScreen(targetNodeId);
-                    })
-                    .catch(err => { alert(`Commutation error: ${err.message}`); });
+        // РЕГИСТРАЦИЯ И ГЕНЕРАЦИЯ ЦИФРОВОГО СЛЕДА
+        function completeRegistration() {
+            const input = document.getElementById('user-nickname');
+            if (input && input.value.trim() !== "") {
+                currentUser.nickname = input.value.trim();
+            } else {
+                currentUser.nickname = "User_" + Math.floor(Math.random() * 9000 + 1000);
             }
-        };
+            currentUser.id = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            
+            localStorage.setItem('gygy_user_id', currentUser.id);
+            localStorage.setItem('gygy_user_name', currentUser.nickname);
 
-        window.GY_LANG_ENGINE = {
-            currentLang: 'en',
-            changeLang(lang) {
-                this.currentLang = lang;
-                document.getElementById('mini-flag-slot').className = `mini-flag fib fi-${lang === 'en' ? 'us' : lang === 'ja' ? 'jp' : lang === 'zh-CN' ? 'cn' : lang}`;
+            navigateTo('screen-hall');
+        }
+
+        // ПОДКЛЮЧЕНИЕ УДЛИНИТЕЛЯ БАРА
+        function openExternalModule(url) {
+            const frame = document.getElementById('module-router-frame');
+            if (frame) {
+                frame.src = url;
+                frame.style.display = 'block';
             }
-        };
+        }
 
-        window.onload = () => { window.GY_CORE.init(); };
+        // КНОПКА ВОЗВРАТА (ЛОГОТИП GY-GY)
+        function returnToEntrance() {
+            const frame = document.getElementById('module-router-frame');
+            if (frame && frame.style.display === 'block') {
+                frame.style.display = 'none';
+                frame.src = 'about:blank';
+                return;
+            }
+            navigateTo('screen-entrance');
+        }
+
+        // ЛОГИКА СИСТЕМЫ ЯЗЫКОВЫХ ПАКЕТОВ
+        function renderLangList() {
+            const listContainer = document.getElementById('lang-dropdown-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = initialLanguages.map(lang => `
+                <div class="lang-item" onclick="selectLanguage('${lang.code}', '${lang.flag}', '${lang.name}')">
+                    <img src="https://flagcdn.com/w20/${lang.flag}.png" class="flag-icon">
+                    <span>${lang.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleLangList() {
+            const list = document.getElementById('lang-dropdown-list');
+            if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function selectLanguage(code, flag, name) {
+            localStorage.setItem('gygy_lang_code', code);
+            localStorage.setItem('gygy_flag', flag);
+            
+            document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${flag}.png`;
+            document.querySelector('#active-lang-display span').innerText = name;
+            
+            const selectEl = document.querySelector('.goog-te-combo');
+            if (selectEl) {
+                selectEl.value = code;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            toggleLangList();
+        }
+
+        // ИНИЦИАЛИЗАЦИЯ И ФИКСАЦИЯ СТРОГОГО EN ПО УМОЛЧАНИЮ
+        document.addEventListener("DOMContentLoaded", () => {
+            renderLangList();
+            
+            const currentLang = localStorage.getItem('gygy_lang_code') || 'en';
+            const currentFlag = localStorage.getItem('gygy_flag') || 'gb';
+            const currentName = initialLanguages.find(l => l.code === currentLang)?.name || 'English';
+            
+            document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${currentFlag}.png`;
+            document.querySelector('#active-lang-display span').innerText = currentName;
+            
+            setTimeout(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) {
+                    selectEl.value = currentLang;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }, 1200);
+        });
+
+        // Интеграция шины Google Translate
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ru,fr,de,es,it,zh,ja,ar,pt,tr,pl',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
     </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
