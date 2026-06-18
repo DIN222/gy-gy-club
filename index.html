@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club v5.0.0 — Core</title>
+    <title>GY-GY Club v5.0.1 — Core</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://flagcdn.com/assets/style.css">
     
@@ -27,7 +27,7 @@
             height: 100vh;
         }
 
-        /* --- ПРАВИЛО 1: ИНТЕРФЕЙСНЫЙ АВТОМАТ --- */
+        /* --- ИНТЕРФЕЙСНЫЙ АВТОМАТ --- */
         #global-header {
             position: fixed; top: 15px; left: 20px; right: 20px;
             display: flex; justify-content: space-between; align-items: center; z-index: 999;
@@ -39,22 +39,18 @@
         #btn-global-back {
             display: none; background: transparent; border: 1px solid var(--neon-gold);
             color: var(--neon-gold); padding: 5px 15px; font-family: var(--font-mono); cursor: pointer;
-            box-shadow: 0 0 5px rgba(255, 223, 0, 0.3);
         }
-        #btn-global-back:hover { background: var(--neon-gold); color: #000; }
 
         /* Паспорт-Аватар (Матрешка) */
         #user-passport-block { position: relative; cursor: pointer; }
         #user-avatar-trigger {
             width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--neon-gold);
             background-size: cover; background-position: center; position: relative;
-            box-shadow: 0 0 10px rgba(255, 223, 0, 0.4);
         }
         #mini-flag-slot {
             position: absolute; bottom: -2px; right: -2px; width: 16px; height: 12px; border-radius: 2px;
         }
 
-        /* Оверлей паспорта */
         #passport-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.85); z-index: 9999; display: none;
@@ -65,7 +61,7 @@
             width: 350px; text-align: center; box-shadow: 0 0 30px rgba(255,223,0,0.3);
         }
 
-        /* Скрываемая языковая панель (12 языков) */
+        /* 12 языков. По умолчанию en */
         #lang-switcher {
             position: fixed; bottom: 20px; left: 20px; z-index: 999;
             background: rgba(10,10,12,0.8); border: 1px solid var(--neon-gold); padding: 5px;
@@ -74,45 +70,57 @@
             background: transparent; color: var(--neon-gold); border: none; font-family: var(--font-mono); outline: none; cursor: pointer;
         }
 
-        /* --- БАЗОВАЯ АРХИТЕКТУРА ЭКРАНОВ --- */
+        /* АРХИТЕКТУРА ЭКРАНОВ */
         .block { display: none; width: 100vw; height: 100vh; position: relative; }
         .block.active { display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-        /* --- ХОЛЛ: ХАКЕРСКАЯ ЧЕТЫРЕХКВАДРАНТНАЯ МАТРИЦА --- */
-        #block-hall { 
-            background: #111; 
-            background-image: url('hall_bg_jpg.jpg'); 
-            background-size: cover; 
-            background-position: center; 
+        /* --- ОРИГИНАЛЬНЫЙ АНИМИРОВАННЫЙ ВХОД (ПРИЕМНАЯ КЛУБА) --- */
+        #block-entrance {
+            background: var(--bg-dark);
+            perspective: 1000px;
         }
-        
+        .door-container {
+            position: relative; width: 280px; height: 420px;
+            border: 3px solid var(--neon-gold); box-shadow: 0 0 20px rgba(255,223,0,0.2);
+            cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s;
+        }
+        .door-leaf {
+            position: absolute; width: 100%; height: 100%; background: #111115;
+            border: 1px solid #222; transform-origin: left center;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .door-container.open .door-leaf {
+            transform: rotateY(-110deg);
+        }
+        .door-plate {
+            font-family: var(--font-serif); color: var(--neon-gold);
+            font-size: 26px; letter-spacing: 3px; font-weight: bold; text-align: center;
+        }
+        .stability-option {
+            margin-top: 25px; font-size: 13px; color: #555; transition: color 0.3s;
+        }
+        .stability-option:hover { color: var(--neon-blue); }
+
+        /* --- ХОЛЛ: МАТРИЦА СТРЕЛОК --- */
+        #block-hall { 
+            background: #111; background-image: url('hall_bg_jpg.jpg'); background-size: cover; background-position: center; 
+        }
         .hall-arrow {
             position: absolute; width: 220px; height: 120px; border: 1px solid transparent;
             background: rgba(0,0,0,0.75); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s;
-            user-select: none;
+            justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s; user-select: none;
         }
-
-        /* Левое крыло (Технологии и Управление) */
-        .arrow-left-top { 
-            left: 8%; top: 20%; border-color: var(--neon-blue); color: var(--neon-blue); 
-        }
+        .arrow-left-top { left: 8%; top: 20%; border-color: var(--neon-blue); color: var(--neon-blue); }
         .arrow-left-top:hover { box-shadow: 0 0 20px var(--neon-blue); background: rgba(0, 240, 255, 0.1); }
-
-        .arrow-left-bottom { 
-            left: 8%; bottom: 20%; border-color: var(--neon-violet); color: var(--neon-violet); 
-        }
+        
+        .arrow-left-bottom { left: 8%; bottom: 20%; border-color: var(--neon-violet); color: var(--neon-violet); }
         .arrow-left-bottom:hover { box-shadow: 0 0 20px var(--neon-violet); background: rgba(176, 38, 255, 0.1); }
-
-        /* Правое крыло (Атмосфера и Бизнес) */
-        .arrow-right-top { 
-            right: 8%; top: 20%; border-color: var(--neon-gold); color: var(--neon-gold); 
-        }
+        
+        .arrow-right-top { right: 8%; top: 20%; border-color: var(--neon-gold); color: var(--neon-gold); }
         .arrow-right-top:hover { box-shadow: 0 0 20px var(--neon-gold); background: rgba(255, 223, 0, 0.1); }
-
-        .arrow-right-bottom { 
-            right: 8%; bottom: 20%; border-color: var(--neon-green); color: var(--neon-green); 
-        }
+        
+        .arrow-right-bottom { right: 8%; bottom: 20%; border-color: var(--neon-green); color: var(--neon-green); }
         .arrow-right-bottom:hover { box-shadow: 0 0 20px var(--neon-green); background: rgba(0, 255, 102, 0.1); }
 
         .arrow-icon { font-size: 28px; margin-bottom: 5px; }
@@ -123,7 +131,7 @@
 
     <div id="global-header">
         <div class="logo-gy" onclick="location.reload()">GY-GY</div>
-        <button id="btn-global-back" onclick="window.GY_CORE.back()">[ НАЗАД ]</button>
+        <button id="btn-global-back" onclick="window.GY_CORE.back()">[ BACK ]</button>
         <div id="user-passport-block" onclick="window.GY_CORE.togglePassport()">
             <div id="user-avatar-trigger">
                 <div id="mini-flag-slot"></div>
@@ -133,9 +141,9 @@
 
     <div id="lang-switcher">
         <select id="gy-lang-selector" onchange="window.GY_LANG_ENGINE.changeLang(this.value)">
+            <option value="en" selected>English</option>
             <option value="ru">Русский</option>
             <option value="fr">Français</option>
-            <option value="en">English</option>
             <option value="de">Deutsch</option>
             <option value="es">Español</option>
             <option value="it">Italiano</option>
@@ -159,8 +167,13 @@
     </div>
 
     <div id="block-entrance" class="block active">
-        <h1 style="font-family:var(--font-serif); font-size:48px; margin-bottom:20px;">GY-GY CLUB</h1>
-        <button onclick="window.GY_CORE.nextScreen('block-welcome')" style="background:transparent; border:1px solid var(--neon-gold); color:var(--neon-gold); padding:15px 40px; font-family:var(--font-mono); font-size:18px; cursor:pointer;">[ ОТКРЫТЬ ДВЕРЬ ]</button>
+        <div class="door-container" id="gy-main-door" onclick="window.GY_CORE.handleDoorClick()">
+            <div class="door-leaf">
+                <div class="door-plate">GY-GY<br>CLUB</div>
+                <div style="font-size: 11px; margin-top:40px; color:#444; letter-spacing:1px;">[ TAP TO OPEN ]</div>
+            </div>
+        </div>
+        <div class="stability-option" onclick="alert('Telegram Auth Connection...')">Alternative stable entry via Telegram</div>
     </div>
 
     <div id="block-welcome" class="block">
@@ -168,32 +181,29 @@
         <p style="font-family:var(--font-serif); font-style:italic; font-size:22px; text-align:center; max-width:600px; margin-bottom:30px;">
             «Привет, путник. Клуб GY-GY приветствует тебя. Здесь юмор — закон, а ИИ — твой бро...»
         </p>
-        <button onclick="window.GY_CORE.nextScreen('block-register')" style="background:transparent; border:1px solid var(--neon-gold); color:var(--neon-gold); padding:10px 30px; font-family:var(--font-mono); cursor:pointer;">[ ПРОДОЛЖИТЬ ]</button>
+        <button onclick="window.GY_CORE.nextScreen('block-register')" style="background:transparent; border:1px solid var(--neon-gold); color:var(--neon-gold); padding:10px 30px; font-family:var(--font-mono); cursor:pointer;">[ CONTINUE ]</button>
     </div>
 
     <div id="block-register" class="block">
-        <h2 style="margin-bottom:20px;">ИДЕНТИФИКАЦИЯ ЦИФРОВОГО СЛЕДА</h2>
+        <h2 style="margin-bottom:20px;">DIGITAL TRACE IDENTIFICATION</h2>
         <div id="generated-avatar-preview" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--neon-gold); margin-bottom:20px;"></div>
-        <button onclick="window.GY_CORE.generateAndSaveTrace()" style="background:var(--neon-gold); color:#000; font-weight:bold; padding:10px 25px; border:none; font-family:var(--font-mono); cursor:pointer;">[ УТВЕРДИТЬ СЛЕД ]</button>
+        <button onclick="window.GY_CORE.generateAndSaveTrace()" style="background:var(--neon-gold); color:#000; font-weight:bold; padding:10px 25px; border:none; font-family:var(--font-mono); cursor:pointer;">[ APPROVE TRACE ]</button>
     </div>
 
     <div id="block-hall" class="block">
-        <div class="hall-arrow arrow-left-top" onclick="alert('Шина AI ROOM проектируется')">
+        <div class="hall-arrow arrow-left-top" onclick="alert('AI ROOM bus is under development')">
             <span class="arrow-icon">🧠</span>
             <span class="arrow-text">AI ROOM</span>
         </div>
-
-        <div class="hall-arrow arrow-left-bottom" onclick="alert('Вход в закрытый контур Офиса заблокирован')">
+        <div class="hall-arrow arrow-left-bottom" onclick="alert('Access to closed loop of Office is blocked')">
             <span class="arrow-icon">💜</span>
             <span class="arrow-text">OFFICE</span>
         </div>
-
         <div class="hall-arrow arrow-right-top" onclick="window.GY_CORE.plugModule('bar', 'dynamic-module-node')">
             <span class="arrow-icon">🍺</span>
             <span class="arrow-text">BAR GY-GY</span>
         </div>
-
-        <div class="hall-arrow arrow-right-bottom" onclick="alert('Шина STUDIO проектируется')">
+        <div class="hall-arrow arrow-right-bottom" onclick="alert('STUDIO bus is under development')">
             <span class="arrow-icon">👕</span>
             <span class="arrow-text">STUDIO</span>
         </div>
@@ -205,23 +215,43 @@
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script>
-        // --- СИСТЕМНЫЙ КОНТРОЛЛЕР ШИНЫ ---
         window.GY_CORE = {
             history: [],
             currentScreen: 'block-entrance',
 
             init() {
+                // Cookie-recognition детекция уникального следа из v4.5.1.153
                 let trace = localStorage.getItem('gy_trace');
+                let isRecognized = !!trace;
+                
                 if (!trace) {
                     trace = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
                     localStorage.setItem('gy_trace', trace);
                 }
                 document.getElementById('passport-id-field').innerText = trace;
-                
-                // Звуковой микшер v4.5.1.153
+                window.GY_LANG_ENGINE.changeLang('en');
+
+                // Если куки узнали пользователя — он может миновать полную регистрацию, но дверь всё равно анимируем
+                window.GY_CORE.isRecognizedUser = isRecognized;
+
                 window.GY_AUDIO_ENGINE = {
-                    crossfade(track, vol) { console.log(`[Audio Engine] Микширование -> ${track} (Vol: ${vol})`); }
+                    crossfade(track, vol) { console.log(`[Audio Engine] Crossfade -> ${track} (Vol: ${vol})`); }
                 };
+            },
+
+            handleDoorClick() {
+                const door = document.getElementById('gy-main-door');
+                door.classList.add('open');
+                
+                setTimeout(() => {
+                    if (this.isRecognizedUser) {
+                        // Распознан по кукам автоматический сквозной вход сразу в Холл
+                        this.nextScreen('block-hall');
+                    } else {
+                        // Новичка ведем по полной цепочке
+                        this.nextScreen('block-welcome');
+                    }
+                }, 1200); // Дверь успевает распахнуться по 3D-траектории
             },
 
             nextScreen(targetId) {
@@ -230,7 +260,6 @@
                 document.getElementById(targetId).classList.add('active');
                 this.currentScreen = targetId;
 
-                // Управление видимостью автоматов согласно правилам
                 if (targetId === 'block-hall') {
                     document.getElementById('lang-switcher').style.display = 'none';
                     document.getElementById('btn-global-back').style.display = 'none';
@@ -247,7 +276,6 @@
                 const prev = this.history.pop();
                 document.getElementById(this.currentScreen).classList.remove('active');
                 
-                // Если выдергиваем шнур из розетки Бара — полностью зачищаем контейнер и стили
                 if (this.currentScreen === 'dynamic-module-node') {
                     document.getElementById('dynamic-module-node').innerHTML = '';
                     const dynStyle = document.getElementById('dynamic-module-styles');
@@ -261,6 +289,8 @@
                     document.getElementById('lang-switcher').style.display = 'none';
                     document.getElementById('btn-global-back').style.display = 'none';
                 } else if (prev === 'block-entrance') {
+                    // Закрываем дверь обратно, если вернулись в самое начало
+                    document.getElementById('gy-main-door').classList.remove('open');
                     document.getElementById('lang-switcher').style.display = 'block';
                     document.getElementById('btn-global-back').style.display = 'none';
                 }
@@ -280,47 +310,35 @@
                 overlay.style.display = overlay.style.display === 'flex' ? 'none' : 'flex';
             },
 
-            /* ФУНКЦИЯ-КОММУТАТОР: ПОДКЛЮЧЕНИЕ УДЛИНИТЕЛЕЙ К РОЗЕТКЕ */
             plugModule(moduleName, targetNodeId) {
-                // Пакет данных цифрового следа для передачи внутрь подключаемой комнаты
                 const sessionContext = {
                     trace: localStorage.getItem('gy_trace'),
                     currentLang: window.GY_LANG_ENGINE.currentLang
                 };
 
-                // Тянем провод к внешнему бандлу
                 fetch(`./modules/${moduleName}_bundle.json`)
-                    .then(res => { if(!res.ok) throw new Error('Модуль не обнаружен в розетке'); return res.json(); })
+                    .then(res => { if(!res.ok) throw new Error('Module bundle not found'); return res.json(); })
                     .then(bundle => {
-                        // 1. Вживляем HTML стены
                         const node = document.getElementById(targetNodeId);
                         node.innerHTML = bundle.html;
 
-                        // 2. Изолированно накатываем CSS-стили модуля
                         const styleTag = document.createElement('style');
                         styleTag.id = 'dynamic-module-styles';
                         styleTag.innerHTML = bundle.css;
                         document.head.appendChild(styleTag);
 
-                        // 3. Запускаем JS-логику модуля и передаем ей цифровой след
                         const executeModuleLogic = new Function('context', bundle.js);
                         executeModuleLogic(sessionContext);
 
-                        // 4. Переключаем звуковую дорожку в микшере
                         window.GY_AUDIO_ENGINE.crossfade(bundle.audioTrack, 0.35);
-                        
-                        // Активируем розетку на экране
                         this.nextScreen(targetNodeId);
                     })
-                    .catch(err => {
-                        alert(`Ошибка коммутации: ${err.message}`);
-                    });
+                    .catch(err => { alert(`Commutation error: ${err.message}`); });
             }
         };
 
-        // --- ЛИНГВИСТИЧЕСКИЙ ДВИЖОК ---
         window.GY_LANG_ENGINE = {
-            currentLang: 'ru',
+            currentLang: 'en',
             changeLang(lang) {
                 this.currentLang = lang;
                 document.getElementById('mini-flag-slot').className = `mini-flag fib fi-${lang === 'en' ? 'us' : lang === 'ja' ? 'jp' : lang === 'zh-CN' ? 'cn' : lang}`;
