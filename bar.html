@@ -1,23 +1,380 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>GY-GY BAR</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>GY-GY Club - Bar & Lounge Extension 001</title>
+    <style>
+        /* БАЗОВАЯ СИСТЕМНАЯ ШИНА ИЗОЛЯЦИИ */
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+
+        /* КОНТЕНЕРЫ РОЗЕТОК УДЛИНИТЕЛЯ */
+        .block {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .block.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* РОЗЕТКА №1: СТОЛИКИ (ФОРСИРОВАННЫЙ ЖЕСТКИЙ СБРОС) */
+        #block-tables { 
+            background: url('lounge.jpg') no-repeat center bottom / cover #000 !important;
+            background-size: cover !important;
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+
+        /* РОЗЕТКА №2: СТОЙКА БАРА */
+        #block-bar-inner {
+            background: url('bar_interior.jpg') no-repeat center center / cover #0b0b0b;
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+
+        /* ТИПОВАЯ КЛУБНАЯ ИНТЕРФЕЙСНАЯ НАВИГАЦИЯ */
+        .nav-link-btn {
+            background: rgba(0, 0, 0, 0.75);
+            color: #ffb700;
+            border: 1px solid #ffb700;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+        .nav-link-btn:hover {
+            background: #ffb700;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 183, 0, 0.6);
+        }
+
+        /* ТРЕТЬЕ ГНЕЗДО: КНИГА ЖАЛОБ И ОСКОРБЛЕНИЙ (VINTAGE PREMIUM) */
+        #btn-complaints-global {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 9999;
+            background: #111;
+            color: #ff3333;
+            border: 1px solid #ff3333;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.2);
+            transition: all 0.3s ease;
+        }
+        #btn-complaints-global:hover {
+            background: #ff3333;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* МОДАЛЬНОЕ ОКНО КНИГИ ОБИД */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .modal-box-complaints {
+            background: #0a0a0a;
+            border: 2px solid #ff3333;
+            width: 90%;
+            max-width: 550px;
+            padding: 30px;
+            box-shadow: 0 0 35px rgba(255, 51, 51, 0.2);
+            display: flex;
+            flex-direction: column;
+            border-radius: 6px;
+        }
+        .modal-box-complaints h3 {
+            color: #ff3333;
+            margin-top: 0;
+            font-size: 22px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        
+        /* СПИСОК ИЗЛИТОЙ ЖЕЛЧИ */
+        #complaints-list {
+            max-height: 240px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+        #complaints-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        #complaints-list::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+        
+        .complaint-item {
+            background: #111;
+            border-left: 3px solid #ff3333;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            border-radius: 0 4px 4px 0;
+        }
+        .c-header { 
+            color: #ffb700; 
+            display: flex; 
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .c-text { 
+            margin: 8px 0; 
+            color: #eee; 
+            font-style: italic; 
+            word-wrap: break-word;
+        }
+        .c-reply { 
+            font-size: 13px; 
+            color: #a8ffb2; 
+            background: #091a0c; 
+            padding: 6px 10px; 
+            margin-top: 5px;
+            border-radius: 2px;
+        }
+
+        /* ПОЛЕ ВВОДА */
+        #complaint-text {
+            width: 100%;
+            height: 80px;
+            background: #141414;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none;
+            margin-bottom: 20px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        #complaint-text:focus { 
+            border-color: #ff3333; 
+            outline: none; 
+            background: #1a1a1a;
+        }
+        
+        .modal-buttons { 
+            display: flex; 
+            gap: 12px; 
+            justify-content: flex-end; 
+        }
+        .modal-buttons button {
+            background: #161616;
+            color: #ccc;
+            border: 1px solid #444;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .modal-buttons button:hover {
+            background: #222;
+            color: #fff;
+        }
+        .modal-buttons button.btn-trigger-toxic {
+            background: #ff3333;
+            border-color: #ff3333;
+            color: #fff;
+            font-weight: bold;
+        }
+        .modal-buttons button.btn-trigger-toxic:hover {
+            background: #e02222;
+            box-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+        }
+    </style>
 </head>
 <body>
-    <div class="back-zone">
-        <button class="btn-gy" onclick="Agent.transit('hall.html')">BACK</button>
+
+    <!-- РОЗЕТКА №1: СТОЛИКИ -->
+    <div id="block-tables" class="block">
+        <h1 style="color: #fff; font-size: 3rem; text-shadow: 0 0 20px rgba(0,0,0,0.8);">ЗОНА СТОЛИКОВ</h1>
+        <p style="color: #ccc; max-width: 500px; text-align: center; text-shadow: 1px 1px 5px #000;">
+            Здесь можно обсудить дела, заказать кальян на незамерзайке или просто посидеть в темноте.
+        </p>
+        <button class="nav-link-btn" onclick="switchInternalBlock('block-bar-inner')">👉 Подойти к барной стойке</button>
     </div>
-    
-    <header class="fixed-header"><div class="gy-logo">GY-GY</div></header>
 
-    <main class="portal-zone" style="background-image: url('bar_bg.jpg');">
-        <h2 style="margin-bottom: 20px;">"THE HORSE IS A BARTENDER TOO..."</h2>
-        <!-- КОНЬ ВИДЕН ЗДЕСЬ -->
-        <img src="horse.png" class="horse-img">
-        <button class="btn-gy" style="margin-top:20px;" onclick="Agent.transit('tables.html')">TO TABLES</button>
-    </main>
+    <!-- РОЗЕТКА №2: БАРНАЯ СТОЙКА -->
+    <div id="block-bar-inner" class="block">
+        <h1 style="color: #ffb700; font-size: 3rem; text-shadow: 0 0 15px rgba(0,0,0,0.9);">БАРНАЯ СТОЙКА</h1>
+        <p style="color: #eee; max-width: 500px; text-align: center;">
+            Чарли протирает бокалы той же тряпкой, которой мыл пол. Атмосферно.
+        </p>
+        <button class="nav-link-btn" onclick="switchInternalBlock('block-tables')">👈 Вернуться за столик</button>
+    </div>
 
-    <script src="shared-logic.js"></script>
+    <!-- СКВОЗНОЙ СЕРВИС УДЛИНИТЕЛЯ: КНИГА ЖАЛОБ И ОСКОРБЛЕНИЙ -->
+    <button id="btn-complaints-global" onclick="openComplaintsBook()">📕 Книга Обид</button>
+
+    <div id="modal-complaints" class="modal-overlay">
+        <div class="modal-box-complaints">
+            <h3>📕 Книга Жалоб и Оскорблений GY-GY Клуба</h3>
+            <div id="complaints-list"></div>
+            <textarea id="complaint-text" placeholder="Напишите гадость, оскорбите персонал или излейте наболевшую желчь..."></textarea>
+            <div class="modal-buttons">
+                <button class="btn-trigger-toxic" onclick="submitComplaint()">Излить желчь</button>
+                <button onclick="closeComplaintsBook()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ВНУТРЕННИЙ ПЕРЕКЛЮЧАТЕЛЬ ДЛЯ РОЗЕТОК УДЛИНИТЕЛЯ
+        function switchInternalBlock(targetId) {
+            document.querySelectorAll('.block').forEach(b => {
+                b.classList.remove('active');
+                b.style.display = 'none';
+            });
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.style.display = 'flex';
+                setTimeout(() => target.classList.add('active'), 20);
+                
+                // Передаем звук наверх в родительский фрейм, если совершается внутренний переход
+                triggerParentSound('snd-pour', 0.5);
+            }
+        }
+
+        // СЛУШАТЕЛЬ СИГНАЛОВ ИЗВНЕ (От родительского index.html)
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'SWITCH_BLOCK') {
+                const target = event.data.targetId;
+                if (target === 'block-bar') {
+                    switchInternalBlock('block-bar-inner');
+                } else if (target === 'block-tables') {
+                    switchInternalBlock('block-tables');
+                }
+            }
+        });
+
+        // СКРИПТ АВТОМАТИЧЕСКИХ ОТВЕТОВ КЛУБА
+        const gyClubAnswers = [
+            "Ваше мнение очень важно для нас (на самом деле нет).",
+            "Жалоба обработана. Бармен Чарли плюнул в ваш следующий коктейль.",
+            "Прекрасный слог! За эту жалобу вы получаете абсолютно ничего.",
+            "Оскорбление зафиксировано. Наша нейросеть занесла вас в список душнил.",
+            "Администрация GY-GY Клуба советует вам выпить чего-нибудь покрепче и не плакать.",
+            "Ваша претензия отправлена в секретный архив. То есть в шредер.",
+            "Клуб приносит свои извинения, но вам всё равно придется за это заплатить."
+        ];
+
+        // УПРАВЛЕНИЕ ОКНОМ КНИГИ ОБИД
+        function openComplaintsBook() {
+            triggerParentSound('snd-pour', 0.4);
+            const modal = document.getElementById('modal-complaints');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.style.opacity = '1', 10);
+            renderComplaints();
+        }
+
+        function closeComplaintsBook() {
+            const modal = document.getElementById('modal-complaints');
+            modal.style.opacity = '0';
+            setTimeout(() => modal.style.display = 'none', 200);
+        }
+
+        // ЗАПИСЬ ЖАЛОБЫ В СИСТЕМНОЕ ХРАНИЛИЩЕ
+        function submitComplaint() {
+            const textarea = document.getElementById('complaint-text');
+            if (!textarea || !textarea.value.trim()) return;
+
+            let complaints = JSON.parse(localStorage.getItem('gygy_complaints') || '[]');
+            
+            // Вытягиваем идентификатор игрока из родительского окна, если сессия активна
+            const userNick = (parent && parent.currentID) ? parent.currentID : 'Анонимный Хейтер';
+            const randomAnswer = gyClubAnswers[Math.floor(Math.random() * gyClubAnswers.length)];
+
+            const newComplaint = {
+                id: Date.now(),
+                user: userNick,
+                text: textarea.value.trim(),
+                reply: randomAnswer,
+                date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})
+            };
+
+            complaints.unshift(newComplaint);
+            localStorage.setItem('gygy_complaints', JSON.stringify(complaints));
+            textarea.value = '';
+            
+            // Триггерим кашель Чарли на верхнем уровне как реакцию на токсичность
+            triggerParentSound('snd-khe', 0.9);
+            renderComplaints();
+        }
+
+        // ОТРИСОВКА ИСТОРИИ ЖАЛОБ
+        function renderComplaints() {
+            const list = document.getElementById('complaints-list');
+            if (!list) return;
+            
+            let complaints = JSON.parse(localStorage.getItem('gygy_complaints') || '[]');
+            if (complaints.length === 0) {
+                list.innerHTML = '<p style="color: #555; text-align:center; padding-top:20px;">Книга чиста. Либо все довольны, либо боятся Чарли.</p>';
+                return;
+            }
+
+            list.innerHTML = complaints.map(c => `
+                <div class="complaint-item">
+                    <div class="c-header"><strong>${c.user}</strong> <span>${c.date}</span></div>
+                    <div class="c-text">«${c.text}»</div>
+                    <div class="c-reply"><strong>Ответ GY-GY:</strong> ${c.reply}</div>
+                </div>
+            `).join('');
+        }
+
+        // БЕЗОПАСНЫЙ МОСТ ДЛЯ ПРОБРОСА АУДИОСИГНАЛОВ НАВЕРХ В INDEX.HTML
+        function triggerParentSound(soundId, volume) {
+            if (parent && typeof parent.safePlaySound === 'function') {
+                try {
+                    parent.safePlaySound(soundId, volume);
+                } catch(e) {
+                    console.warn("Родительский аудио-мост недоступен:", e);
+                }
+            }
+        }
+    </script>
 </body>
 </html>
