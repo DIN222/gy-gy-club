@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club 001</title>
+    <title>GY-GY Club 002 </title>
     <style>
         /* ВИНТАЖНЫЙ ПРЕМИУМ СТИЛЬ GY-GY КЛУБА */
         body, html {
@@ -17,7 +17,7 @@
             overflow: hidden;
         }
 
-        /* ПОСТОЯННЫЕ АТРИБУТЫ СТРАНИЦЫ */
+        /* ПОСТОЯННЫЕ АТРИБУТЫ СТРАНИЦЫ (ЛОГО И ЯЗЫК) */
         .system-header {
             position: fixed;
             top: 20px;
@@ -39,7 +39,6 @@
             user-select: none;
         }
         
-        /* ДИНАМИЧЕСКАЯ ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-panel {
             position: relative;
             pointer-events: auto;
@@ -80,10 +79,9 @@
         .flag-icon {
             width: 20px;
             height: auto;
-            display: block;
         }
 
-        /* СИСТЕМА ЭКРАНОВ / КОМНАТ */
+        /* СИСТЕМА ЭКРАНОВ (ОРИГИНАЛ 153) */
         .screen {
             display: none;
             width: 100vw;
@@ -100,7 +98,7 @@
             display: flex;
         }
 
-        /* ЭКРАН 1: ВХОД С ДВЕРЬЮ */
+        /* ВХОД С ДВЕРЬЮ */
         #screen-entrance {
             background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
         }
@@ -128,7 +126,7 @@
             border-radius: 50%;
         }
 
-        /* ЭКРАН 2: ПРИВЕТСТВИЕ С КОНЕМ */
+        /* ВЕЛКОМ С КОНЕМ */
         #screen-welcome {
             background: #0a0a0a;
         }
@@ -140,7 +138,7 @@
             margin-bottom: 20px;
         }
 
-        /* ЭКРАН 3: РЕГИСТРАЦИЯ */
+        /* РЕГИСТРАЦИЯ */
         #screen-register {
             background: #0d0d0d;
         }
@@ -166,7 +164,7 @@
             outline: none;
         }
 
-        /* ЭКРАН 4: ХОЛЛ С ЧЕТЫРЬМЯ ПЕРЕХОДАМИ */
+        /* ХОЛЛ С ЧЕТЫРЬМЯ ПЕРЕХОДАМИ */
         #screen-hall {
             background: radial-gradient(circle, #111 0%, #000 100%);
         }
@@ -194,8 +192,8 @@
             font-family: 'Playfair Display', serif;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-decoration: none;
             text-align: center;
+            user-select: none;
         }
         .club-btn:hover {
             background: #ffb700;
@@ -203,8 +201,8 @@
             box-shadow: 0 0 15px rgba(255, 183, 0, 0.4);
         }
 
-        /* ИФРЕЙМ ДЛЯ УДЛИНИТЕЛЯ БАРА */
-        #module-router-frame {
+        /* ЕДИНЫЙ МАРШРУТИЗАТОР ДЛЯ ВСЕХ ВНЕШНИХ МОДУЛЕЙ */
+        #club-modules-router {
             display: none;
             position: fixed;
             top: 0;
@@ -212,29 +210,28 @@
             width: 100vw;
             height: 100vh;
             border: none;
-            z-index: 9999;
+            z-index: 999;
         }
     </style>
 </head>
 <body>
 
     <div class="system-header">
-        <div class="logo-gy" onclick="returnToEntrance()">GY-GY</div>
+        <div class="logo-gy" onclick="returnToPreviousLevel()">GY-GY</div>
         
         <div class="lang-panel">
             <div id="active-lang-display" onclick="toggleLangList()" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
                 <img src="https://flagcdn.com/w20/gb.png" id="badge-flag-img" class="flag-icon">
                 <span>English</span>
             </div>
-            <div id="lang-dropdown-list" class="lang-dropdown">
-                </div>
+            <div id="lang-dropdown-list" class="lang-dropdown"></div>
         </div>
     </div>
 
     <div id="google_translate_element" style="display:none;"></div>
 
     <div id="screen-entrance" class="screen active">
-        <div class="vintage-door" onclick="navigateTo('screen-welcome')">
+        <div class="vintage-door" onclick="portalTransition('screen-welcome')">
             <div class="door-handle"></div>
         </div>
     </div>
@@ -242,7 +239,7 @@
     <div id="screen-welcome" class="screen">
         <img src="horse_bar.png" class="welcome-horse-img" alt="Welcome Horse">
         <h2 style="color: #ffb700; margin-bottom: 20px;">Welcome to GY-GY Club</h2>
-        <button class="club-btn" onclick="navigateTo('screen-register')">Proceed</button>
+        <button class="club-btn" onclick="portalTransition('screen-register')">Proceed</button>
     </div>
 
     <div id="screen-register" class="screen">
@@ -256,20 +253,18 @@
     <div id="screen-hall" class="screen">
         <div class="hall-title">THE HALL</div>
         <div class="doors-grid">
-            <a href="ai_room.html" class="club-btn">AI Room</a>
-            <a href="studio.html" class="club-btn">Studio</a>
-            <button class="club-btn" onclick="openExternalModule('bar.html')">Bar</button>
-            <a href="office.html" class="club-btn">Office</a>
+            <button class="club-btn" onclick="openRoomModule('ai_room.html')">AI Room</button>
+            <button class="club-btn" onclick="openRoomModule('studio.html')">Studio</button>
+            <button class="club-btn" onclick="openRoomModule('bar.html')">Bar</button>
+            <button class="club-btn" onclick="openRoomModule('office.html')">Office</button>
         </div>
     </div>
 
-    <iframe id="module-router-frame" src="about:blank"></iframe>
+    <iframe id="club-modules-router" src="about:blank"></iframe>
 
     <script>
-        // ГЛОБАЛЬНЫЙ ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ
         let currentUser = { id: null, nickname: 'Guest' };
 
-        // МАТРИЦА ИЗ 12 ЯЗЫКОВ
         const initialLanguages = [
             { code: 'en', flag: 'gb', name: 'English' },
             { code: 'ru', flag: 'ru', name: 'Русский' },
@@ -285,16 +280,15 @@
             { code: 'pl', flag: 'pl', name: 'Polski' }
         ];
 
-        // НАВИГАЦИОННЫЙ ДВИЖОК ЭКРАНОВ
-        function navigateTo(screenId) {
+        // ОРИГИНАЛЬНЫЙ ДВИЖОК ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ (SPA)
+        function portalTransition(nextScreenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            const targetScreen = document.getElementById(screenId);
-            if (targetScreen) targetScreen.classList.add('active');
+            const nextScreen = document.getElementById(nextScreenId);
+            if (nextScreen) nextScreen.classList.add('active');
         }
 
-        // РЕГИСТРАЦИЯ И ГЕНЕРАЦИЯ ЦИФРОВОГО СЛЕДА
         function completeRegistration() {
             const input = document.getElementById('user-nickname');
             if (input && input.value.trim() !== "") {
@@ -307,30 +301,38 @@
             localStorage.setItem('gygy_user_id', currentUser.id);
             localStorage.setItem('gygy_user_name', currentUser.nickname);
 
-            navigateTo('screen-hall');
+            portalTransition('screen-hall');
         }
 
-        // ПОДКЛЮЧЕНИЕ УДЛИНИТЕЛЯ БАРА
-        function openExternalModule(url) {
-            const frame = document.getElementById('module-router-frame');
-            if (frame) {
-                frame.src = url;
-                frame.style.display = 'block';
+        // ТОЧНЫЙ ВЫЗОВ ВНЕШНИХ МОДУЛЕЙ ИЗ ХОЛЛА
+        function openRoomModule(url) {
+            const router = document.getElementById('club-modules-router');
+            if (router) {
+                router.src = url;
+                router.style.display = 'block';
             }
         }
 
-        // КНОПКА ВОЗВРАТА (ЛОГОТИП GY-GY)
-        function returnToEntrance() {
-            const frame = document.getElementById('module-router-frame');
-            if (frame && frame.style.display === 'block') {
-                frame.style.display = 'none';
-                frame.src = 'about:blank';
+        // ФУНКЦИЯ ВОЗВРАТА НА ПРЕДЫДУЩИЙ УРОВЕНЬ (КНОПКА НА ЛОГОТИПЕ)
+        function returnToPreviousLevel() {
+            const router = document.getElementById('club-modules-router');
+            // Если мы находимся внутри какой-то комнаты (открыт iframe), кнопка гасит комнату и возвращает в Холл
+            if (router && router.style.display === 'block') {
+                router.style.display = 'none';
+                router.src = 'about:blank';
                 return;
             }
-            navigateTo('screen-entrance');
+            
+            // Если мы просто на экранах — шаг назад по цепочке
+            const currentActive = document.querySelector('.screen.active');
+            if (currentActive) {
+                if (currentActive.id === 'screen-hall') portalTransition('screen-register');
+                else if (currentActive.id === 'screen-register') portalTransition('screen-welcome');
+                else if (currentActive.id === 'screen-welcome') portalTransition('screen-entrance');
+            }
         }
 
-        // ЛОГИКА СИСТЕМЫ ЯЗЫКОВЫХ ПАКЕТОВ
+        // МУЛЬТИЯЗЫЧНЫЙ СЕРВИС
         function renderLangList() {
             const listContainer = document.getElementById('lang-dropdown-list');
             if (!listContainer) return;
@@ -362,10 +364,10 @@
             toggleLangList();
         }
 
-        // ИНИЦИАЛИЗАЦИЯ И ФИКСАЦИЯ СТРОГОГО EN ПО УМОЛЧАНИЮ
         document.addEventListener("DOMContentLoaded", () => {
             renderLangList();
             
+            // Фиксация дефолтного en
             const currentLang = localStorage.getItem('gygy_lang_code') || 'en';
             const currentFlag = localStorage.getItem('gygy_flag') || 'gb';
             const currentName = initialLanguages.find(l => l.code === currentLang)?.name || 'English';
@@ -382,7 +384,6 @@
             }, 1200);
         });
 
-        // Интеграция шины Google Translate
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
