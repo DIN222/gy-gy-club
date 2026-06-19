@@ -67,9 +67,9 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ЭКРАННЫЙ КОНЬ И ПАНЕЛЬ КНОПОК ВНИЗУ */
-        #block-bar { padding: 0 !important; justify-content: flex-end; }
-        .bar-bg-horse { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        /* КОНЬ НА ВСЮ ВЫСОТУ ЭКРАНА И КНОПКИ ПОВЕРХ */
+        #block-bar { padding: 0 !important; justify-content: center; overflow: hidden; }
+        .bar-bg-horse { height: 100vh; width: auto; object-fit: contain; z-index: 1; position: relative; }
         
         .bar-top-content { position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 2; pointer-events: none; }
         
@@ -108,7 +108,7 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- СТРЕЛКИ НАВИГАЦИИ (ВЕРНУТЬСЯ В INDEX.HTML) -->
+    <!-- СТРЕЛКИ НАВИГАЦИИ -->
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="leaveToEntrance()">&lt;</div>
         <div class="arrow-item" onclick="leaveToEntrance()">&lt;&lt;</div>
@@ -136,7 +136,7 @@
 
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
 
-    <!-- БЛОК БАРА: КОНЬ НА ВЕСЬ ЭКРАН И КНОПКИ В РЯД ВНИЗУ -->
+    <!-- БЛОК БАРА: КОНЬ ПО ВЫСОТЕ ЭКРАНА -->
     <div id="block-bar" class="block">
         <img src="horse_bar.png" class="bar-bg-horse">
         
@@ -230,7 +230,6 @@
         window.location.href = 'index.html';
     }
 
-    // ПЕРЕХОД К КНИГЕ САРКАЗМА (ОСКОРБЛЕНИЙ)
     function openSarcasmBook() {
         window.location.href = 'book.html';
     }
