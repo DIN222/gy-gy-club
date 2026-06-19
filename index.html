@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.7 CORE</title>
+    <title>GY-GY Club v4.5.8 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -262,23 +262,22 @@
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
         </div>
             
-       <div class="hall-interior">
+      <div class="hall-interior">
         <div class="quote-text">In every joke there is a share of whisky</div>
         
-        <div class="painting-zone painting-left" onclick="toggleManifest('manifest-left')">
-            <span class="cue-arrow-hall">→</span>
+        <div class="painting-zone painting-left" id="zone-ai-room" onclick="toggleManifest('manifest-left')">
+            <span class="cue-arrow-hall" style="color: var(--gold) !important;">→</span>
             <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+                <button class="btn-gy btn-manifest notranslate" style="color: var(--gold) !important; border-color: var(--gold) !important;" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
             </div>
         </div>
 
-        <div class="painting-zone painting-left" style="margin-top: 15px;" onclick="toggleManifest('manifest-office')">
-            <span class="cue-arrow-hall">→</span>
+        <div class="painting-zone painting-left" id="zone-office" style="margin-top: 15px;" onclick="toggleManifest('manifest-office')">
+            <span class="cue-arrow-hall" style="color: var(--gold) !important;">→</span>
             <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); openOfficeStub()">OFFICE</button>
+                <button class="btn-gy btn-manifest notranslate" style="color: var(--gold) !important; border-color: var(--gold) !important;" onclick="event.stopPropagation(); openOfficeStub()">OFFICE</button>
             </div>
         </div>
-
         <div class="painting-zone painting-left" style="margin-top: 15px;" onclick="toggleManifest('manifest-office')">
             <span class="cue-arrow-hall">→</span>
             <div id="manifest-office" class="manifest-btn-box" data-opened="false">
@@ -428,11 +427,14 @@
         }
     }
 
-    // КРИТИЧЕСКИЙ УЗЕЛ НАВИГАЦИИ: ВЫХОД ИЗ ХОЛЛА В ДРУГИЕ ФАЙЛЫ
+   // КРИТИЧЕСКИЙ УЗЕЛ НАВИГАЦИИ: ВЫХОД ИЗ ХОЛЛА В ДРУГИЕ ФАЙЛЫ
     function portalTransition(nextId) {
         // Если запрашиваются внешние сегменты — осуществляем физический переход
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
+        
+        // Добавляем Офис в критический узел переходов
+        if (nextId === 'block-office') { openOfficeStub(); return; }
 
         const currentActiveBlock = document.querySelector('.block.active');
         const targetBlock = document.getElementById(nextId);
@@ -561,9 +563,10 @@
             }
         };
     })();
+
     function openOfficeStub() {
-    alert("OFFICE: Under Construction / В разработке");
-}
+        alert("OFFICE: Under Construction / В разработке");
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
         const savedFlag = safeStorageGet('gygy_flag', 'gb');
@@ -599,6 +602,7 @@
         document.head.appendChild(script);
         document.body.classList.add('page-loaded');
     });
-</script>
+    </script>
 </body>
 </html>
+
