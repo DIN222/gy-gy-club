@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club 002 </title>
+    <title>GY-GY Club 005 </title>
     <style>
         /* ВИНТАЖНЫЙ ПРЕМИУМ СТИЛЬ GY-GY КЛУБА */
         body, html {
@@ -17,38 +17,49 @@
             overflow: hidden;
         }
 
-        /* ПОСТОЯННЫЕ АТРИБУТЫ СТРАНИЦЫ (ЛОГО И ЯЗЫК) */
-        .system-header {
+        /* ПОСТОЯННЫЕ АТРИБУТЫ БРЕНДА И НАВИГАЦИИ (СО ВТОРОГО ЭКРАНА) */
+        .brand-nav-header {
             position: fixed;
             top: 20px;
             left: 20px;
-            right: 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 15px;
             z-index: 1000;
-            pointer-events: none;
         }
         .logo-gy {
             font-size: 24px;
             font-weight: bold;
             color: #ffb700;
             letter-spacing: 2px;
-            pointer-events: auto;
-            cursor: pointer;
             user-select: none;
         }
-        
-        .lang-panel {
-            position: relative;
-            pointer-events: auto;
-            background: rgba(17, 17, 17, 0.9);
-            border: 1px solid #ffb700;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 14px;
+        .nav-arrow {
+            font-size: 22px;
             color: #ffb700;
+            cursor: pointer;
             user-select: none;
+            transition: color 0.2s ease;
+            display: none; 
+        }
+        .nav-arrow-double {
+            font-size: 20px;
+            color: #ffb700;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
+            display: none;
+        }
+        .nav-arrow:hover, .nav-arrow-double:hover {
+            color: #fff;
+        }
+
+        /* ДИНАМИЧЕСКИЙ ЯЗЫКОВОЙ БЛОК (СТРОГО ДЛЯ ЭКРАНА ВХОДА) */
+        .lang-panel-entrance {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
         }
         .lang-dropdown {
             display: none;
@@ -59,9 +70,20 @@
             border: 1px solid #ffb700;
             width: 140px;
             border-radius: 4px;
-            max-height: 280px;
-            overflow-y: auto;
+            max-height: 280px; 
+            overflow-y: auto; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+        /* Кастомный скроллбар — Золотая нить */
+        .lang-dropdown::-webkit-scrollbar {
+            width: 3px;
+        }
+        .lang-dropdown::-webkit-scrollbar-track {
+            background: #000;
+        }
+        .lang-dropdown::-webkit-scrollbar-thumb {
+            background: #ffb700;
+            border-radius: 2px;
         }
         .lang-item {
             padding: 8px 12px;
@@ -69,8 +91,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: background 0.2s ease;
             color: #fff;
+            transition: background 0.2s ease, color 0.2s ease; 
         }
         .lang-item:hover {
             background: #ffb700;
@@ -81,7 +103,7 @@
             height: auto;
         }
 
-        /* СИСТЕМА ЭКРАНОВ (ОРИГИНАЛ 153) */
+        /* СИСТЕМА ЭКРАНОВ (SPA LAYER ENGINE) */
         .screen {
             display: none;
             width: 100vw;
@@ -98,7 +120,7 @@
             display: flex;
         }
 
-        /* ВХОД С ДВЕРЬЮ */
+        /* ЭКРАН 1: ВХОД С ВИНТАЖНОЙ ДВЕРЬЮ */
         #screen-entrance {
             background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
         }
@@ -126,10 +148,8 @@
             border-radius: 50%;
         }
 
-        /* ВЕЛКОМ С КОНЕМ */
-        #screen-welcome {
-            background: #0a0a0a;
-        }
+        /* ЭКРАН 2: ВЕЛКОМ С КОНЕМ */
+        #screen-welcome { background: #0a0a0a; }
         .welcome-horse-img {
             max-width: 400px;
             width: 80%;
@@ -138,10 +158,8 @@
             margin-bottom: 20px;
         }
 
-        /* РЕГИСТРАЦИЯ */
-        #screen-register {
-            background: #0d0d0d;
-        }
+        /* ЭКРАН 3: IDENTITY SECURE CHECK */
+        #screen-register { background: #0d0d0d; }
         .reg-box {
             background: #111;
             border: 1px solid #ffb700;
@@ -164,7 +182,7 @@
             outline: none;
         }
 
-        /* ХОЛЛ С ЧЕТЫРЬМЯ ПЕРЕХОДАМИ */
+        /* ЭКРАН 4: ХОЛЛ (ГЛАВНЫЙ СВИТЧЕР) */
         #screen-hall {
             background: radial-gradient(circle, #111 0%, #000 100%);
         }
@@ -182,7 +200,7 @@
             width: 90%;
         }
 
-        /* УНИВЕРСАЛЬНЫЕ КНОПКИ КЛУБА */
+        /* КЛУБНЫЕ КНОПКИ */
         .club-btn {
             background: #000;
             color: #ffb700;
@@ -201,7 +219,7 @@
             box-shadow: 0 0 15px rgba(255, 183, 0, 0.4);
         }
 
-        /* ЕДИНЫЙ МАРШРУТИЗАТОР ДЛЯ ВСЕХ ВНЕШНИХ МОДУЛЕЙ */
+        /* СИСТЕМНЫЙ МАРШРУТИЗАТОР КОМНАТ */
         #club-modules-router {
             display: none;
             position: fixed;
@@ -216,21 +234,24 @@
 </head>
 <body>
 
-    <div class="system-header">
-        <div class="logo-gy" onclick="returnToPreviousLevel()">GY-GY</div>
-        
-        <div class="lang-panel">
-            <div id="active-lang-display" onclick="toggleLangList()" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                <img src="https://flagcdn.com/w20/gb.png" id="badge-flag-img" class="flag-icon">
-                <span>English</span>
-            </div>
-            <div id="lang-dropdown-list" class="lang-dropdown"></div>
-        </div>
+    <div class="brand-nav-header">
+        <div id="nav-double-back" class="nav-arrow-double" onclick="resetToEntrance()">🫷</div>
+        <div id="nav-single-back" class="nav-arrow" onclick="executeNavigationBack()">←</div>
+        <div class="logo-gy">GY-GY</div>
     </div>
 
     <div id="google_translate_element" style="display:none;"></div>
 
     <div id="screen-entrance" class="screen active">
+        
+        <div class="lang-panel-entrance">
+            <div id="active-lang-display" onclick="toggleLangList()" style="cursor: pointer; display: flex; align-items: center; gap: 6px; background: rgba(17,17,17,0.9); border: 1px solid #ffb700; padding: 6px 12px; border-radius: 4px; color: #ffb700; user-select: none;">
+                <img src="https://flagcdn.com/w20/gb.png" id="badge-flag-img" class="flag-icon">
+                <span>English</span>
+            </div>
+            <div id="lang-dropdown-list" class="lang-dropdown"></div>
+        </div>
+
         <div class="vintage-door" onclick="portalTransition('screen-welcome')">
             <div class="door-handle"></div>
         </div>
@@ -265,6 +286,7 @@
     <script>
         let currentUser = { id: null, nickname: 'Guest' };
 
+        // Закрытая матрица из 12 языков
         const initialLanguages = [
             { code: 'en', flag: 'gb', name: 'English' },
             { code: 'ru', flag: 'ru', name: 'Русский' },
@@ -280,13 +302,31 @@
             { code: 'pl', flag: 'pl', name: 'Polski' }
         ];
 
-        // ОРИГИНАЛЬНЫЙ ДВИЖОК ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ (SPA)
+        // УПРАВЛЕНИЕ ВИДИМОСТЬЮ СТРЕЛОК С КОНТЕКСТОМ МОДУЛЕЙ
+        function updateNavigationArrows(currentScreenId, isModuleOpen = false) {
+            const singleArrow = document.getElementById('nav-single-back');
+            const doubleArrow = document.getElementById('nav-double-back');
+            
+            if (!singleArrow || !doubleArrow) return;
+
+            // На первом экране Входа навигация полностью скрыта
+            if (currentScreenId === 'screen-entrance' && !isModuleOpen) {
+                singleArrow.style.display = 'none';
+                doubleArrow.style.display = 'none';
+            } else {
+                singleArrow.style.display = 'block';
+                doubleArrow.style.display = 'block';
+            }
+        }
+
         function portalTransition(nextScreenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
             const nextScreen = document.getElementById(nextScreenId);
             if (nextScreen) nextScreen.classList.add('active');
+
+            updateNavigationArrows(nextScreenId, false);
         }
 
         function completeRegistration() {
@@ -304,26 +344,28 @@
             portalTransition('screen-hall');
         }
 
-        // ТОЧНЫЙ ВЫЗОВ ВНЕШНИХ МОДУЛЕЙ ИЗ ХОЛЛА
         function openRoomModule(url) {
             const router = document.getElementById('club-modules-router');
             if (router) {
                 router.src = url;
                 router.style.display = 'block';
             }
+            updateNavigationArrows('screen-hall', true);
         }
 
-        // ФУНКЦИЯ ВОЗВРАТА НА ПРЕДЫДУЩИЙ УРОВЕНЬ (КНОПКА НА ЛОГОТИПЕ)
-        function returnToPreviousLevel() {
+        // ОДИНАРНАЯ СТРЕЛКА (ЛОГИЧЕСКИЙ ШАГ НАЗАД)
+        function executeNavigationBack() {
             const router = document.getElementById('club-modules-router');
-            // Если мы находимся внутри какой-то комнаты (открыт iframe), кнопка гасит комнату и возвращает в Холл
+            
+            // Если развернут фрейм комнаты — гасим его и остаемся в Холле
             if (router && router.style.display === 'block') {
                 router.style.display = 'none';
                 router.src = 'about:blank';
+                updateNavigationArrows('screen-hall', false);
                 return;
             }
             
-            // Если мы просто на экранах — шаг назад по цепочке
+            // Отмотка экранов
             const currentActive = document.querySelector('.screen.active');
             if (currentActive) {
                 if (currentActive.id === 'screen-hall') portalTransition('screen-register');
@@ -332,7 +374,17 @@
             }
         }
 
-        // МУЛЬТИЯЗЫЧНЫЙ СЕРВИС
+        // ДВОЙНАЯ СТРЕЛКА (ПОЛНЫЙ СБРОС К ЗАКРЫТОЙ ДВЕРИ)
+        function resetToEntrance() {
+            const router = document.getElementById('club-modules-router');
+            if (router) {
+                router.style.display = 'none';
+                router.src = 'about:blank';
+            }
+            portalTransition('screen-entrance');
+        }
+
+        // РАБОТА МУЛЬТИЯЗЫЧНОЙ ШИНЫ
         function renderLangList() {
             const listContainer = document.getElementById('lang-dropdown-list');
             if (!listContainer) return;
@@ -356,6 +408,7 @@
             document.getElementById('badge-flag-img').src = `https://flagcdn.com/w20/${flag}.png`;
             document.querySelector('#active-lang-display span').innerText = name;
             
+            // Передаем команду смыслового перевода в ядро Google Translate
             const selectEl = document.querySelector('.goog-te-combo');
             if (selectEl) {
                 selectEl.value = code;
@@ -367,7 +420,7 @@
         document.addEventListener("DOMContentLoaded", () => {
             renderLangList();
             
-            // Фиксация дефолтного en
+            // По умолчанию строго English / GB
             const currentLang = localStorage.getItem('gygy_lang_code') || 'en';
             const currentFlag = localStorage.getItem('gygy_flag') || 'gb';
             const currentName = initialLanguages.find(l => l.code === currentLang)?.name || 'English';
