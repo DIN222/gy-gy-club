@@ -1,259 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.18</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club - Tables Zone</title>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --violet: #8A2BE2; 
-        }
-        * { 
-            -webkit-tap-highlight-color: transparent !important; 
-            box-sizing: border-box; 
-        }
-            
-        /* ЭФФЕКТ ПЛАВНОГО НАПЛЫВА ИЗ ТЕМНОТЫ */
-        body { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: #000000 !important; 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; position: fixed; 
-            opacity: 0; transition: opacity 0.5s ease-in-out;
-            top: 0 !important;
-        }
-        body.page-loaded { opacity: 1; }
-
-        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА (СТРОГОЕ ЗОЛОТО) */
-        .ui-nav-arrows {
-            position: fixed; top: 15px; left: 20px; z-index: 6000; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
-            cursor: pointer; color: var(--gold) !important; user-select: none; line-height: 1;
-            text-shadow: none !important;
-            opacity: 0; 
-            transition: opacity 0.3s ease-in-out;
-        }
-        .arrow-item { transition: opacity 0.2s; color: var(--gold) !important; text-shadow: none !important; }
-        .arrow-item:hover { opacity: 0.8; text-shadow: none !important; box-shadow: none !important; }
-
-        /* КЛУБНЫЙ ЛОГОТИП GY-GY */
-        #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold) !important; font-size: 24px; font-weight: bold; letter-spacing: 5px; text-shadow: none !important; }
-
-        /* РОДИТЕЛЬСКИЙ ЦЕНТРИРУЮЩИЙ СЛОЙ */
-        #hall-layer { 
-            width: 100vw; height: 100vh; 
-            position: relative; 
-            display: flex; justify-content: center; align-items: center; 
+        /* Базовые сбросы и стили Клуба */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
             overflow: hidden;
-        }
-            
-        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА */
-        .table-scene {
-            position: relative;
-            width: 1000px; 
-            height: 562.5px; 
-            background: url('lounge.jpg') no-repeat center center / contain;
-            z-index: 10;
-            flex-shrink: 0;
-            transform: scale(min(100vw / 1000, 100vh / 562.5));
-            transform-origin: center center;
-        }
-            
-        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ КОЛЬЦА */
-        .lamp-zone { 
-            position: absolute; 
-            width: 44px; height: 44px; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            z-index: 100; 
-            background: transparent !important;
-            border: 1px solid var(--violet); 
-            box-shadow: 0 0 10px var(--violet);
-            transition: 0.3s;
-            transform: translate(-50%, -50%); 
-        }
-        .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 15px var(--violet); z-index: 500; }
-
-        /* ЮВЕЛИРНЫЕ НАСТРОЕННЫЕ КООРДИНАТЫ АБАЖУРОВ СТОЛОВ И СЦЕНЫ */
-        #table-1 { top: 396px; left: 330px; }   
-        #table-2 { top: 344px; left: 419px; }   
-        #table-3 { top: 303px; left: 438px; }   
-        #table-4 { top: 303px; left: 575px; }   
-        #table-5 { top: 341px; left: 603px; }   
-        #table-6 { top: 396px; left: 659px; }   
-        #mic-zone { top: 234px; left: 503px; } 
-
-        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
-        .lamp-zone::after {
-            content: attr(data-label);
-            position: absolute; bottom: 100%; left: 50%; 
-            transform: translateX(-50%) translateY(-14px); 
-            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
-            padding: 6px 12px; font-size: 13px; white-space: nowrap; border-radius: 4px;
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.2s ease, transform 0.2s ease; 
-            font-family: 'Share Tech Mono', monospace;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
-            z-index: 999999;
-            text-shadow: none !important;
-        }
-        .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
-
-        /* HUD АВАТАРА — СТРОГО ПО ЦЕНТРУ ЭКРАНА С ПРАВИЛЬНЫМ МАСШТАБОМ */
-        #hud { 
-            position: fixed; 
-            top: 15px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 7000; 
-            line-height: 0; 
-        }
-        .user-mini { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            border: 2px solid var(--gold); 
-            background: #000000; 
-            object-fit: cover;
-            box-sizing: border-box; 
-            box-shadow: none !important;
+            font-family: sans-serif;
         }
 
-        /* МАКСИМАЛЬНЫЙ УЛЬТИМАТУМ ПРОТИВ ПОДСВЕТОК И КУСКОВ ГУГЛА */
-        #google_translate_element,
-        .goog-te-banner-frame,
-        .goog-te-banner,
-        .goog-te-balloon-frame,
-        #goog-gt-tt,
-        .skiptranslate,
-        iframe[id*="translate"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-            height: 0 !important;
-            width: 0 !important;
+        /* Постоянные атрибуты: Стрелки навигации */
+        .ui-nav-arrows {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000005;
+        }
+        .arrow-item {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--gold, #ffb703);
+            color: var(--gold, #ffb703);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(0,0,0,0.6);
+            font-weight: bold;
+            user-select: none;
         }
 
-        /* ТОТАЛЬНАЯ МАТОВОСТЬ ДЛЯ ВСЕХ КНОПОК И ЭЛЕМЕНТОВ С КЛИКОМ */
-        button, .btn, .table-btn, .arrow-item, [onclick], 
-        button *, .btn *, .table-btn *, .arrow-item *, [onclick] * {
-            text-shadow: none !important;
-            box-shadow: none !important;
-            -webkit-text-stroke: 0px transparent !important;
-            outline: none !important;
-            background-image: none !important;
-            -webkit-user-select: none !important; /* Запрет на выделение текста кнопками */
-            user-select: none !important;
+        /* Постоянный атрибут: Логотип GY-GY сверху справа */
+        .ui-header-right {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            color: var(--gold, #ffb703);
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1000005;
+            user-select: none;
         }
 
-        button:hover, .btn:hover, .table-btn:hover, .arrow-item:hover, [onclick]:hover,
-        button:focus, .btn:focus, .table-btn:focus, .arrow-item:focus, [onclick]:focus,
-        button:active, .btn:active, .table-btn:active, .arrow-item:active, [onclick]:active {
-            text-shadow: none !important;
-            box-shadow: none !important;
-            outline: none !important;
-            background-image: none !important;
-            background-color: transparent !important;
+        /* Интерактивные зоны ламп/столов */
+        .lamp-zone {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 5;
+            /* Чтобы зоны было видно при отладке, можно раскомментировать строку ниже: */
+            /* border: 1px dashed rgba(255,255,255,0.3); */
         }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div id="google_translate_element" class="notranslate" style="display:none !important; visibility:hidden !important; position:absolute; top:-9999px; left:-9999px; width:0; height:0; overflow:hidden;"></div>
-    
-    <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
-    
-    <div class="notranslate ui-nav-arrows" id="global-nav">
-        <div class="arrow-item" onclick="Core.backToBar()">&lt;</div>
-        <div class="arrow-item" onclick="Core.exitToEntrance()">&lt;&lt;</div>
+    <div class="notranslate ui-nav-arrows" id="nav-tables">
+        <div class="arrow-item" onclick="window.location.href='bar.html'">&lt;</div>
+        <div class="arrow-item" onclick="window.location.href='index.html'">&lt;&lt;</div>
     </div>
     
-    <div id="ui-logo" class="notranslate">GY-GY</div>
+    <div class="ui-header-right notranslate">GY-GY</div>
 
-    <div id="hud" style="display: none; position: fixed;">
-        <div style="position: relative; display: inline-block;">
-            <img id="user-avatar" class="user-mini" src="">
-            <img id="badge-flag-img" src="" style="position: absolute; bottom: 0; right: 0; width: 14px; height: 10px; border: 1px solid #000; border-radius: 2px; object-fit: cover; z-index: 7100;">
-        </div>
-    </div>
-
-    <div id="hall-layer">
-        <div class="table-scene">
-            <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Core.loadZone('risk.html')"></div>
-            <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Core.loadZone('battle.html')"></div>
-            <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Анонимные Диалоги» (Рулетка)" onclick="Core.loadZone('anon.html')"></div>
-            <div id="table-4" class="lamp-zone" data-label="TABLE 4: «Переводчик М / Ж»" onclick="Core.loadZone('translator.html')"></div>
-            <div id="table-5" class="lamp-zone" data-label="TABLE 5: «Дуэль Комплиментов»" onclick="Core.loadZone('compliments.html')"></div>
-            <div id="table-6" class="lamp-zone" data-label="TABLE 6: «Тень Барона» (vs ИИ)" onclick="Core.loadZone('baron.html')"></div>
-            
-            <div id="mic-zone" class="lamp-zone" data-label="MIC ZONE: «Open Mic»" onclick="Core.loadZone('openmic.html')"></div>
-        </div>
-    </div>
-
-    <script>
-        const Core = {
-            init() {
-                document.body.classList.add('page-loaded');
-
-                const navArrows = document.getElementById('global-nav');
-                if (navArrows) {
-                    setTimeout(() => { navArrows.style.opacity = "1"; }, 150);
-                }
-
-                const amb = document.getElementById('snd-ambient');
-                if (amb) {
-                    amb.volume = 0.8;
-                    amb.play().catch(() => {
-                        document.body.addEventListener('click', () => { amb.play(); }, { once: true });
-                    });
-                }
-
-                const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-                if (savedAvatar) {
-                    document.getElementById('user-avatar').src = savedAvatar;
-                    document.getElementById('hud').style.display = 'block';
-                }
-
-                const savedFlag = localStorage.getItem('gygy_flag') || 'gb';
-                const flagImg = document.getElementById('badge-flag-img');
-                if (flagImg) {
-                    flagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
-                }
-            },
-            loadZone(url) {
-                document.body.classList.remove('page-loaded');
-                setTimeout(() => {
-                    location.href = url;
-                }, 500);
-            },
-            backToBar() {
-                document.body.classList.remove('page-loaded');
-                sessionStorage.setItem('return_to_bar', 'true');
-                setTimeout(() => {
-                    location.href = 'index.html'; 
-                }, 500);
-            },
-            exitToEntrance() {
-                document.body.classList.remove('page-loaded');
-                sessionStorage.removeItem('return_to_bar');
-                sessionStorage.setItem('force_entrance', 'true');
-                
-                setTimeout(() => {
-                    location.href = 'index.html'; 
-                }, 500);
-            }
-        }; // КРИТИЧЕСКИЙ МАРКЕР СКРИПТА СТОЛОВ ДОБАВЛЕН .
-
-        window.onload = () => { Core.init(); };
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vh; max-width: 177.78vh; max-height: 56.25vw; display: block;">
         
-        function googleTranslateElementInit() { 
-            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); 
-        }
-    </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+        <img src="lounge.jpg" style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none;">
+
+        <div class="mic-zone" style="position: absolute; bottom: 58%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; cursor: pointer; z-index: 5;" onclick="alert('Testing mic... One, two... Is Charlie in the room?')"></div>
+        
+        <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 28%; transform: translate(-50%, -50%);" onclick="alert('Table 1 selected')"></div>
+        <div class="lamp-zone" style="position: absolute; bottom: 52%; left: 72%; transform: translate(-50%, -50%);" onclick="alert('Table 2 selected')"></div>
+        
+        <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 20%; transform: translate(-50%, -50%);" onclick="alert('Table 3 selected')"></div>
+        <div class="lamp-zone" style="position: absolute; bottom: 36%; left: 80%; transform: translate(-50%, -50%);" onclick="alert('Table 4 selected')"></div>
+        
+        <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 32%; transform: translate(-50%, -50%);" onclick="alert('Table 5 selected')"></div>
+        <div class="lamp-zone" style="position: absolute; bottom: 20%; left: 68%; transform: translate(-50%, -50%);" onclick="alert('Table 6 selected')"></div>
+        
+    </div>
+
 </body>
 </html>
