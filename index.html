@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.17 CORE</title>
+    <title>GY-GY Club v4.5.18 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -178,21 +178,23 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
-     /* Фикс центрирования экрана входа */
+   /* Монументальное центрирование экрана входа */
         body #block-entrance {
             display: flex !important;
             flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
+            justify-content: center !important; /* Центр по вертикали */
+            align-items: center !important;     /* Центр по горизонтали */
             position: fixed !important;
             inset: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
             padding: 0 !important;
             margin: 0 !important;
+            background: #000 !important;
+            z-index: 5000 !important;
         }
         
-        /* Возвращаем анимацию двери и держим центр */
+        /* Идеальный центр для картинки двери с сохранением анимации */
         body #main-door {
             display: block !important;
             opacity: 1 !important;
@@ -201,12 +203,7 @@
             width: auto !important;
             max-width: 100% !important;
             object-fit: contain !important;
-            margin: 0 auto !important;
-            /* Убираем жесткий transform, чтобы функция handleDoor() могла свободно крутить/масштабировать дверь */
-        }
-
-        .notranslate {
-            font-family: inherit;
+            margin: 0 auto !important; /* Выравнивание внутри флекса */
         }
     </style>
 </head>
@@ -244,8 +241,8 @@
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
-    <div class="club-door notranslate" onclick="goToWelcome()">
-        <img src="door_1.jpg" id="main-door" onclick="handleDoor()">
+ <div id="block-entrance" class="block active">
+        <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
