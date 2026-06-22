@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club - BAR (v1.63 Adaptive)</title>
+    <title>GY-GY Club - BAR (v1.65 Fixed)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -49,8 +49,25 @@
 
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; text-align: center; max-width: 85%; text-shadow: 2px 2px 6px #000; }
         
-        /* КНОПКИ С УМЕНЬШЕННЫМИ РАМКАМИ */
-        .btn-gy { min-width: 140px; padding: 10px 14px; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono'; transition: all 0.3s; }
+        /* КНОПКИ БАРА БЕЗ ИЗМЕНЕНИЯ ФОНА ПРИ НАВЕДЕНИИ */
+        .btn-gy { 
+            min-width: 140px; 
+            padding: 10px 14px; 
+            background: rgba(0,0,0,0.85) !important; 
+            border: 1px solid var(--gold) !important; 
+            color: var(--gold) !important; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono'; 
+            transition: none !important; 
+        }
+        .btn-gy:hover { 
+            cursor: pointer !important;
+            background: rgba(0,0,0,0.85) !important; 
+            color: var(--gold) !important;
+            border-color: var(--gold) !important;
+        }
         
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
@@ -66,16 +83,16 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* КОНЬ НА ВСЮ ВЫСОТУ ЭКРАНА И КНОПКИ ПОВЕРХ */
+        /* КОНЬ ПО ВЫСОТЕ ЭКРАНА */
         #block-bar { padding: 0 !important; justify-content: center; overflow: hidden; }
         .bar-bg-horse { height: 100vh; width: auto; object-fit: contain; z-index: 1; position: relative; }
         
         .bar-top-content { position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 2; pointer-events: none; }
       
-        /* НАШ ТЕКУЩИЙ БЛОК ДЛЯ КНОПОК БАРА */
+        /* НИЖНЯЯ ПАНЕЛЬ ДЛЯ КНОПОК БАРА */
         .bar-bottom-panel { 
             position: fixed; 
-            bottom: 5vh; /* Приподняли от самого низа */
+            bottom: 5vh; 
             left: 50%; 
             transform: translateX(-50%); 
             z-index: 999999 !important; 
@@ -84,13 +101,6 @@
             width: auto;
             justify-content: center;
             pointer-events: auto !important;
-        }
-
-        /* Отмена золотого фона при наведении */
-        .btn-gy:hover, .bar-bottom-panel .btn-gy:hover {
-            background: transparent !important; /* Фон всегда остается прозрачным */
-            color: var(--gold, #ffb703) !important; /* Текст остается золотым */
-            border-color: var(--gold, #ffb703) !important; /* Рамка остается золотой */
         }
 
         /* Поддержка Google Translate */
@@ -104,7 +114,7 @@
 <body oncontextmenu="return false;">
 
     <div class="notranslate ui-nav-arrows" id="global-nav">
-        <div class="arrow-item" onclick="leaveToEntrance()">&lt;</div>
+        <div class="arrow-item" onclick="goBack()">&lt;</div>
         <div class="arrow-item" onclick="leaveToEntrance()">&lt;&lt;</div>
     </div>
 
@@ -191,6 +201,15 @@
             if (target) {
                 target.style.display = 'flex';
                 setTimeout(() => { target.classList.add('active'); }, 20);
+            }
+        }
+
+        // УМНЫЙ ВОЗВРАТ НА ПРЕДЫДУЩУЮ СТРАНИЦУ
+        function goBack() {
+            if (document.referrer) {
+                window.location.href = document.referrer;
+            } else {
+                window.history.back();
             }
         }
 
