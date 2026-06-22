@@ -20,7 +20,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
@@ -51,7 +51,6 @@
         
         /* КНОПКИ С УМЕНЬШЕННЫМИ РАМКАМИ */
         .btn-gy { min-width: 140px; padding: 10px 14px; background: rgba(0,0,0,0.85); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono'; transition: all 0.3s; }
-        .btn-gy:hover { background: var(--gold); color: #000; }
         
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
@@ -61,7 +60,7 @@
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             pointer-events: auto !important; user-select: none;
         }
         .arrow-item { transition: opacity 0.2s; }
@@ -72,28 +71,27 @@
         .bar-bg-horse { height: 100vh; width: auto; object-fit: contain; z-index: 1; position: relative; }
         
         .bar-top-content { position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 2; pointer-events: none; }
-      <div class="bar-bottom-panel" style="pointer-events: auto !important; z-index: 999999 !important;">
-    <span class="btn-gy notranslate" 
-          style="display: inline-flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; pointer-events: auto !important;" 
-          onclick="window.location.assign('tables.html');">
-        TABLES ZONE
-    </span>
-    
-    <button class="btn-gy" onclick="openSarcasmBook()">SARCASM BOOK</button>
-</div>
-  
-        /* ЗОНА СТОЛИКОВ */
-        #block-tables { justify-content: center; background: #000; }
-        .tables-layout { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; width: 85%; max-width: 450px; }
-        .table-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); padding: 12px 20px; }
-        .table-info { display: flex; flex-direction: column; align-items: flex-start; }
-        .table-num { font-size: 16px; font-weight: 900; color: var(--gold); }
-        .table-status { font-size: 12px; font-weight: 700; margin-top: 2px; }
-        .table-status.free { color: #00FF00; text-shadow: 0 0 5px rgba(0,255,0,0.4); }
-        .table-status.busy { color: #FF0000; text-shadow: 0 0 5px rgba(255,0,0,0.4); }
-        
-        .btn-table-action { padding: 6px 14px; background: #000; border: 1px solid var(--gold); color: var(--gold); font-family: 'Share Tech Mono'; font-size: 12px; font-weight: 900; cursor: pointer; transition: all 0.2s; }
-        .btn-table-action:hover { background: var(--gold); color: #000; }
+      
+        /* НАШ ТЕКУЩИЙ БЛОК ДЛЯ КНОПОК БАРА */
+        .bar-bottom-panel { 
+            position: fixed; 
+            bottom: 5vh; /* Приподняли от самого низа */
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 999999 !important; 
+            display: flex; 
+            gap: 15px; 
+            width: auto;
+            justify-content: center;
+            pointer-events: auto !important;
+        }
+
+        /* Отмена золотого фона при наведении */
+        .btn-gy:hover, .bar-bottom-panel .btn-gy:hover {
+            background: transparent !important; /* Фон всегда остается прозрачным */
+            color: var(--gold, #ffb703) !important; /* Текст остается золотым */
+            border-color: var(--gold, #ffb703) !important; /* Рамка остается золотой */
+        }
 
         /* Поддержка Google Translate */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
@@ -101,38 +99,15 @@
         body.page-loaded { opacity: 1 !important; }
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
-        /* ... какие-то твои старые стили, которые уже есть в файле ... */
-
-        /* НАШ ТЕКУЩИЙ БЛОК ДЛЯ КНОПОК БАРА */
-        .bar-bottom-panel { 
-            position: absolute; 
-            bottom: 4vh; /* Чуть приподняли от самого низа */
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 3; 
-            display: flex; 
-            gap: 15px; 
-            width: auto;
-            justify-content: center;
-        }
-
-/* Отмена золотого фона при наведении */
-.btn-gy:hover, .bar-bottom-panel .btn-gy:hover {
-    background: transparent !important; /* Фон всегда остается прозрачным */
-    color: var(--gold, #ffb703) !important; /* Текст остается золотым */
-    border-color: var(--gold, #ffb703) !important; /* Рамка остается золотой */
-}
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- СТРЕЛКИ НАВИГАЦИИ -->
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="leaveToEntrance()">&lt;</div>
         <div class="arrow-item" onclick="leaveToEntrance()">&lt;&lt;</div>
     </div>
 
-    <!-- СИСТЕМА СКВОЗНОГО АВАТАРА И ПАСПОРТА -->
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
@@ -154,7 +129,6 @@
 
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
 
-    <!-- БЛОК БАРА: КОНЬ ПО ВЫСОТЕ ЭКРАНА -->
     <div id="block-bar" class="block">
         <img src="horse_bar.png" class="bar-bg-horse">
         
@@ -163,113 +137,98 @@
         </div>
         
         <div class="bar-bottom-panel">
-            <button class="btn-gy" onclick="switchLocalBlock('block-tables')">TABLES ZONE</button>
+            <button class="btn-gy notranslate" onclick="event.stopPropagation(); window.top.location.href='tables.html';">TABLES ZONE</button>
             <button class="btn-gy" onclick="openSarcasmBook()">SARCASM BOOK</button>
         </div>
     </div>
-  
-          function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
 
-    let currentID = "";
-    let currentUserImage = "";
-
-    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-
-    function syncUserBadge() {
-        currentUserImage = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || safeStorageGet('gy_user_avatar');
-        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        const savedFlag = safeStorageGet('gygy_flag', 'gb');
-
-        if (currentUserImage) {
-            const badge = document.getElementById('global-user-badge');
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            
-            if (badge) badge.style.display = 'block';
-            if (badgeImg) badgeImg.src = currentUserImage;
-            if (passImg) passImg.src = currentUserImage;
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
         }
 
-        if (currentID) {
-            const passIdVal = document.getElementById('pass-id-val');
-            const passQrBox = document.getElementById('pass-qr-box');
-            if (passIdVal) passIdVal.innerText = currentID;
-            if (passQrBox && typeof QRCode !== 'undefined') {
-                passQrBox.innerHTML = ""; 
-                new QRCode(passQrBox, { text: currentID, width: 100, height: 100 });
+        let currentID = "";
+        let currentUserImage = "";
+
+        function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
+
+        function syncUserBadge() {
+            currentUserImage = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || safeStorageGet('gy_user_avatar');
+            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+            const savedFlag = safeStorageGet('gygy_flag', 'gb');
+
+            if (currentUserImage) {
+                const badge = document.getElementById('global-user-badge');
+                const badgeImg = document.getElementById('badge-avatar-img');
+                const passImg = document.getElementById('pass-avatar-img');
+                const badgeFlagImg = document.getElementById('badge-flag-img');
+                
+                if (badge) badge.style.display = 'block';
+                if (badgeImg) badgeImg.src = currentUserImage;
+                if (passImg) passImg.src = currentUserImage;
+                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
+            }
+
+            if (currentID) {
+                const passIdVal = document.getElementById('pass-id-val');
+                const passQrBox = document.getElementById('pass-qr-box');
+                if (passIdVal) passIdVal.innerText = currentID;
+                if (passQrBox && typeof QRCode !== 'undefined') {
+                    passQrBox.innerHTML = ""; 
+                    new QRCode(passQrBox, { text: currentID, width: 100, height: 100 });
+                }
             }
         }
-    }
 
-    function switchLocalBlock(blockId) {
-        document.querySelectorAll('.block').forEach(b => { b.classList.remove('active'); b.style.display = 'none'; });
-        const target = document.getElementById(blockId);
-        if (target) {
-            target.style.display = 'flex';
-            setTimeout(() => { target.classList.add('active'); }, 20);
-        }
-    }
-
-    function leaveToEntrance() {
-        window.location.href = 'index.html';
-    }
-
-    function openSarcasmBook() {
-        window.location.href = 'book.html';
-    }
-
-    function toggleTable(id) {
-        const statusEl = document.getElementById(`t${id}-status`);
-        const btnEl = document.getElementById(`t${id}-btn`);
-        if (!statusEl || !btnEl) return;
-
-        if (statusEl.classList.contains('free')) {
-            statusEl.classList.remove('free'); statusEl.classList.add('busy');
-            statusEl.innerText = "OCCUPIED"; btnEl.innerText = "CALL WAIT";
-        } else {
-            if (confirm("Do you want to release this table?")) {
-                statusEl.classList.remove('busy'); statusEl.classList.add('free');
-                statusEl.innerText = "FREE"; btnEl.innerText = "BOOK";
+        function switchLocalBlock(blockId) {
+            document.querySelectorAll('.block').forEach(b => { b.classList.remove('active'); b.style.display = 'none'; });
+            const target = document.getElementById(blockId);
+            if (target) {
+                target.style.display = 'flex';
+                setTimeout(() => { target.classList.add('active'); }, 20);
             }
         }
-    }
 
-    function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
-    function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
+        function leaveToEntrance() {
+            window.location.href = 'index.html';
+        }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        syncUserBadge();
+        function openSarcasmBook() {
+            window.location.href = 'book.html';
+        }
 
-        const savedLangCode = safeStorageGet('gy_lang', 'EN').toLowerCase();
-        setTimeout(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) { 
-                selectEl.value = savedLangCode === 'ua' ? 'uk' : savedLangCode; 
-                selectEl.dispatchEvent(new Event('change', { bubbles: true })); 
-            }
-        }, 800);
+        function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
+        function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
 
-        const ambient = document.getElementById('snd-ambient');
-        if (ambient) { ambient.volume = 0.55; ambient.play().catch(() => {
-            document.body.addEventListener('click', () => { ambient.play().catch(()=>{}); }, { once: true });
-        }); }
+        document.addEventListener("DOMContentLoaded", () => {
+            syncUserBadge();
 
-        switchLocalBlock('block-bar');
+            const savedLangCode = safeStorageGet('gy_lang', 'EN').toLowerCase();
+            setTimeout(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) { 
+                    selectEl.value = savedLangCode === 'ua' ? 'uk' : savedLangCode; 
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true })); 
+                }
+            }, 800);
 
-        const script = document.createElement('script'); script.type = 'text/javascript';
-        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        document.head.appendChild(script);
-        document.body.classList.add('page-loaded');
-    });
-</script>
+            const ambient = document.getElementById('snd-ambient');
+            if (ambient) { ambient.volume = 0.55; ambient.play().catch(() => {
+                document.body.addEventListener('click', () => { ambient.play().catch(()=>{}); }, { once: true });
+            }); }
+
+            switchLocalBlock('block-bar');
+
+            const script = document.createElement('script'); script.type = 'text/javascript';
+            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.head.appendChild(script);
+            document.body.classList.add('page-loaded');
+        });
+    </script>
 </body>
 </html>
