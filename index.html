@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.15 CORE</title>
+    <title>GY-GY Club v4.5.16 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -178,35 +178,37 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
-       /* Монументальное центрирование и фикс двери против автоперевода */
+      /* Абсолютное геометрическое центрирование двери на экране */
         #block-entrance {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important; /* Центр по вертикали */
-            align-items: center !important;     /* Центр по горизонтали */
-            width: 100vw !important;
-            height: 100vh !important;
             position: fixed !important;
             inset: 0 !important;
-            padding: 0 !important;              /* Сбрасываем любые отступы */
+            width: 100vw !important;
+            height: 100vh !important;
+            background: #000 !important;
             margin: 0 !important;
+            padding: 0 !important;
         }
         
         #main-door {
             display: block !important;
             opacity: 1 !important;
             visibility: visible !important;
+            
+            /* Жесткая посадка ровно в центр экрана */
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            
             height: calc(50vh + 20px) !important;
             width: auto !important;
             max-width: 100% !important;
             object-fit: contain !important;
-            margin: 0 auto !important;          /* Жесткое центрирование */
-            position: relative !important;
-            transform: none !important;         /* Защита от сдвигов перевода */
         }
 
         .notranslate {
-            translate: none !important;
+            /* Защищаем только свойство translate, чтобы не конфликтовать с центрированием */
+            font-family: inherit;
         }
     </style>
 </head>
