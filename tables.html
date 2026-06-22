@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.8</title>
+    <title>GY-GY Club | Tables v1.5.9 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -147,14 +147,19 @@
                     });
                 }
 
-               const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+             const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                 if (savedAvatar) {
                     const badgeImg = document.getElementById('badge-avatar-img');
                     const badgeContainer = document.getElementById('global-user-badge');
                     if (badgeImg) badgeImg.src = savedAvatar;
+                    
+                    // Подтягиваем флаг выбранного языка
+                    const savedFlag = localStorage.getItem('gygy_flag') || 'https://flagcdn.com/w20/gb.png';
+                    const badgeFlag = document.getElementById('badge-flag-img');
+                    if (badgeFlag) badgeFlag.src = savedFlag;
+
                     if (badgeContainer) badgeContainer.style.display = 'block';
                 }
-            },
 
             // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
