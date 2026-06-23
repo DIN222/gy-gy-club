@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.19 CORE</title>
+    <title>GY-GY Club v4.5.20 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -491,7 +491,7 @@
         } catch (e) {}
     }
 
-   function handleDoor() {
+  function handleDoor() {
     const sndDoor = document.getElementById('snd-door');
     const sndAmbient = document.getElementById('snd-ambient');
     const blockEntrance = document.getElementById('block-entrance');
@@ -527,6 +527,14 @@
             sndAmbient.play().catch(e => console.log("Ambient autoplay blocked"));
         }
 
+        // Если переход на экран welcome не произошел автоматически — подталкиваем
+        if (typeof goToWelcome === "function") {
+            goToWelcome();
+        } else if (typeof portalTransition === "function") {
+            portalTransition('block-welcome');
+        }
+    }, 1200);
+}
         // Если переход на экран welcome не произошел автоматически — подталкиваем
         if (typeof goToWelcome === "function") {
             goToWelcome();
