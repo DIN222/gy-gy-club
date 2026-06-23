@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.18 CORE</title>
+    <title>GY-GY Club v4.5.19 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -491,26 +491,50 @@
         } catch (e) {}
     }
 
-    function handleDoor() {
-        safePlaySound('snd-door', 1.0);
-        const d = document.getElementById('main-door');
-        if (d) { d.style.transform = "scale(5)"; d.style.opacity = "0"; d.style.pointerEvents = "none"; }
-        const langSwitcher = document.getElementById('lang-switcher');
-        if (langSwitcher) langSwitcher.style.opacity = "0";
-        
-        if(!currentID) {
-            currentID = `GY-${Math.floor(100+Math.random()*899)}-${Math.floor(1000+Math.random()*8999)}`;
-            safeStorageSet('gygy_id', currentID); safeStorageSet('gy_trace', currentID);
-        }
-        renderUserPassports(currentID);
-        
-        setTimeout(() => { 
-            portalTransition('block-welcome'); 
-            if (window.GY_AUDIO_ENGINE && typeof window.GY_AUDIO_ENGINE.fadeBarAmbient === 'function') {
-                window.GY_AUDIO_ENGINE.fadeBarAmbient(0.55, 1500);
-            }
-        }, 1000);
+   function handleDoor() {
+    const sndDoor = document.getElementById('snd-door');
+    const sndAmbient = document.getElementById('snd-ambient');
+    const blockEntrance = document.getElementById('block-entrance');
+    const mainDoor = document.getElementById('main-door');
+
+    // 1. Включаем звук петель
+    if (sndDoor) sndDoor.play();
+
+    // 2. Запускаем визуальный разлет и растворение самой двери
+    if (mainDoor) {
+        mainDoor.style.transition = "transform 1.2s ease-in, opacity 1s ease-out";
+        mainDoor.style.transform = "scale(2.5)";
+        mainDoor.style.opacity = "0";
     }
+
+    // 3. Плавно растворяем ЧЕРНЫЙ ФОН всего экрана входа, чтобы не зависал
+    if (blockEntrance) {
+        blockEntrance.style.transition = "opacity 1.2s ease-out, visibility 1.2s";
+        blockEntrance.style.opacity = "0";
+        blockEntrance.style.pointerEvents = "none"; // Сквозной клик, чтобы не упереться в невидимую стену
+    }
+
+    // 4. Через секунду, когда всё растворилось, переключаем фокус на Чарли
+    setTimeout(() => {
+        if (blockEntrance) {
+            blockEntrance.classList.remove('active');
+            blockEntrance.style.display = 'none'; // Полностью убираем из разметки
+        }
+        
+        // Включаем фоновый гул бара
+        if (sndAmbient) {
+            sndAmbient.volume = 0.5;
+            sndAmbient.play().catch(e => console.log("Ambient autoplay blocked"));
+        }
+
+        // Если переход на экран welcome не произошел автоматически — подталкиваем
+        if (typeof goToWelcome === "function") {
+            goToWelcome();
+        } else if (typeof portalTransition === "function") {
+            portalTransition('block-welcome');
+        }
+    }, 1200);
+}
 
     function preview(input) {
         if (input.files && input.files[0]) {
