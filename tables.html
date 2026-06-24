@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.11 </title>
+    <title>GY-GY Club | Tables v1.5.12 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -191,22 +191,20 @@
                 }, 500);
             },
 
-         // ОДИНАРНАЯ СТРЕЛА (<) — ШАГ НАЗАД В ХОЛЛ
-            backToBar() {
-                document.body.classList.remove('page-loaded');
-                setTimeout(() => {
-                    location.href = 'index.html?go=hall'; 
-                }, 500);
-            },
-            
-            // ДВОЙНАЯ СТРЕЛА (<<) — ТОТАЛЬНЫЙ ВЫХОД К ЗАКРЫТОЙ ДВЕРИ
-            exitToEntrance() {
-                document.body.classList.remove('page-loaded');
-                setTimeout(() => {
-                    // Чистый переход на главную без параметров — она сама откроет дверь
-                    location.href = 'index.html'; 
-                }, 500);
-            }
+      window.onload = () => {
+        document.body.classList.add('page-loaded');
+        checkAndFillRegistrationForm();
+        renderLangList();
+
+        // Проверяем, пришли ли мы целенаправленно по одинарной стрелке в Холл
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetBlock = urlParams.get('go'); 
+
+        if (targetBlock === 'hall') {
+            portalTransition('block-hall');
+        }
+        // Если параметра 'go' нет (как при нажатии <<), код просто оставит активным block-entrance с дверью
+    };
         }; // КРИТИЧЕСКИЙ МАРКЕР СКРИПТА СТОЛОВ ДОБАВЛЕН .
 
         window.onload = () => { Core.init(); };
