@@ -62,7 +62,6 @@
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; }
         .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
 
-        #main-door { height: calc(50vh + 20px); width: auto; cursor: pointer; transition: transform 1.2s ease-in, opacity 1s; z-index: 9999999 !important; }
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
@@ -179,7 +178,7 @@
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
         
-        /* Монументальное центрирование экрана входа */
+        /* МОНУМЕНТАЛЬНОЕ ЦЕНТРИРОВАНИЕ ЭКРАНА ВХОДА */
         body #block-entrance {
             display: flex !important;
             flex-direction: column !important;
@@ -193,18 +192,32 @@
             margin: 0 !important;
             background: #000 !important;
             z-index: 5000 !important;
+            opacity: 1;
+            transition: opacity 0.8s ease-out;
         }
         
-        /* Идеальный центр для картинки двери с сохранением анимации */
+        /* Чистые исходные стили двери */
         body #main-door {
             display: block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
             height: calc(50vh + 20px) !important;
             width: auto !important;
             max-width: 100% !important;
             object-fit: contain !important;
             margin: 0 auto !important; 
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: scale(1);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.7s ease-out !important;
+        }
+
+        /* КЛАССЫ АНИМАЦИИ ВЗРЫВА И РАСТВОРЕНИЯ (назначаются через JS) */
+        body #block-entrance.door-fading {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        body #block-entrance.door-fading #main-door {
+            transform: scale(3.5) !important;
+            opacity: 0 !important;
         }
     </style>
 </head>
@@ -454,7 +467,12 @@
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
 
+        // КРИТИЧЕСКИЙ СБРОС АНИМАЦИИ ДВЕРИ ПРИ ВОЗВРАТЕ НА ПЕРВУЮ СТРАНИЦУ
         if (nextId === 'block-entrance') {
+            const blockEntrance = document.getElementById('block-entrance');
+            if (blockEntrance) {
+                blockEntrance.classList.remove('door-fading'); // Убираем класс растворения
+            }
             if (langSwitcher) { langSwitcher.style.setProperty('display', 'flex', 'important'); langSwitcher.style.opacity = '1'; }
             if (badge) badge.style.display = 'none';
         } else {
@@ -478,42 +496,23 @@
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
         const blockEntrance = document.getElementById('block-entrance');
-        const mainDoor = document.getElementById('main-door');
-        const blockWelcome = document.getElementById('block-welcome');
 
         if (sndDoor) sndDoor.play();
 
-        if (mainDoor) {
-            mainDoor.style.transition = "transform 0.8s ease-in, opacity 0.8s ease-out";
-            mainDoor.style.transform = "scale(2.8)";
-            mainDoor.style.opacity = "0";
-        }
-
+        // Запускаем синхронную CSS-анимацию «взрыва» двери и затухания фона через класс
         if (blockEntrance) {
-            blockEntrance.style.transition = "opacity 0.8s ease-out";
-            blockEntrance.style.opacity = "0";
-            blockEntrance.style.pointerEvents = "none";
+            blockEntrance.classList.add('door-fading');
         }
 
+        // Ждем окончания CSS transition (700-800мс) и переключаемся
         setTimeout(() => {
-            if (blockEntrance) {
-                blockEntrance.classList.remove('active');
-                blockEntrance.style.setProperty('display', 'none', 'important');
-            }
-
-            if (blockWelcome) {
-                blockWelcome.classList.add('active');
-                blockWelcome.style.setProperty('display', 'flex', 'important');
-                blockWelcome.style.setProperty('opacity', '1', 'important');
-            }
-            
             if (sndAmbient) {
                 sndAmbient.volume = 0.5;
                 sndAmbient.play().catch(e => console.log("Ambient autoplay blocked"));
             }
-
+            // Переходим к Чарли штатными рельсами архитектуры
             portalTransition('block-welcome');
-        }, 800);
+        }, 750);
     }
 
     function preview(input) {
@@ -549,28 +548,4 @@
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
-        if (badgeImg) badgeImg.src = currentUserImage;
-        if (passImg) passImg.src = currentUserImage;
-
-        const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
-        const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
-    }
-
-    function openPassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
-    }
-    function closePassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
-    }
-
-    window.onload = () => {
-        document.body.classList.add('page-loaded');
-        checkAndFillRegistrationForm();
-        renderLangList();
-    };
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
+        if (badgeImg) badge
