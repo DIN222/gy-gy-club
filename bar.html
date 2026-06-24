@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club - BAR (v1.65 Fixed)</title>
+    <title>GY-GY Club - BAR (v1.67 Optimized)</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -147,7 +147,7 @@
         </div>
         
         <div class="bar-bottom-panel">
-            <button class="btn-gy notranslate" onclick="event.stopPropagation(); window.top.location.href='tables.html';">TABLES ZONE</button>
+            <button class="btn-gy notranslate" onclick="event.stopPropagation(); goToTablesZone();">TABLES ZONE</button>
             <button class="btn-gy" onclick="openSarcasmBook()">SARCASM BOOK</button>
         </div>
     </div>
@@ -170,7 +170,12 @@
         function syncUserBadge() {
             currentUserImage = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || safeStorageGet('gy_user_avatar');
             currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-            const savedFlag = safeStorageGet('gygy_flag', 'gb');
+            
+            let savedFlag = safeStorageGet('gygy_flag', 'gb') || safeStorageGet('gy_user_flag', 'gb');
+            // Если в памяти лежит полная старая ссылка, очищаем её до двухбуквенного кода страны
+            if (savedFlag.includes('/')) {
+                savedFlag = savedFlag.split('/').pop().replace('.png', '');
+            }
 
             if (currentUserImage) {
                 const badge = document.getElementById('global-user-badge');
@@ -181,7 +186,7 @@
                 if (badge) badge.style.display = 'block';
                 if (badgeImg) badgeImg.src = currentUserImage;
                 if (passImg) passImg.src = currentUserImage;
-                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag}.png`;
+                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
             }
 
             if (currentID) {
@@ -204,21 +209,35 @@
             }
         }
 
-        // УМНЫЙ ВОЗВРАТ НА ПРЕДЫДУЩУЮ СТРАНИЦУ
+        // ОДИНАРНАЯ СТРЕЛА (<) — Назад на предыдущую страницу (в Холл главной страницы)
         function goBack() {
-            if (document.referrer) {
-                window.location.href = document.referrer;
-            } else {
-                window.history.back();
-            }
+            document.body.classList.remove('page-loaded');
+            setTimeout(() => {
+                window.location.href = 'index.html?go=hall';
+            }, 400);
         }
 
+        // ДВОЙНАЯ СТРЕЛА (<<) — Выход напрямую к закрытой двери
         function leaveToEntrance() {
-            window.location.href = 'index.html';
+            document.body.classList.remove('page-loaded');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 400);
+        }
+
+        // Плавный переход в зону столиков
+        function goToTablesZone() {
+            document.body.classList.remove('page-loaded');
+            setTimeout(() => {
+                window.location.href = 'tables.html';
+            }, 400);
         }
 
         function openSarcasmBook() {
-            window.location.href = 'book.html';
+            document.body.classList.remove('page-loaded');
+            setTimeout(() => {
+                window.location.href = 'book.html';
+            }, 400);
         }
 
         function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
