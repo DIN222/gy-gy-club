@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.24 CORE</title>
+    <title>GY-GY Club v4.5.25 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -35,7 +35,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
@@ -72,7 +72,6 @@
             opacity: 0; 
             transition: opacity 0.5s ease-in-out; 
         }
-        /* Единственный рабочий активный класс */
         .block.active { 
             display: flex !important; 
             opacity: 1 !important; 
@@ -207,7 +206,6 @@
             transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
         }
 
-        /* КЛАСС ВЗРЫВА ДВЕРИ */
         .door-exploded {
             transform: scale(3.5) !important;
             opacity: 0 !important;
@@ -332,7 +330,6 @@
     </div>
 
 <script type="text/javascript">
-    // === ИНИЦИАЛИЗАЦИЯ И НАСТРОЙКА GOOGLE TRANSLATE ===
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'en',
@@ -351,7 +348,7 @@
         {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
         {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
         {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊS', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
         {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
         {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
@@ -434,9 +431,32 @@
     function checkAndFillRegistrationForm() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+        
+        // Восстановление флага страны
+        const savedFlag = safeStorageGet('gygy_flag');
+        if (savedFlag) {
+            const matchedLang = allLangs.find(l => l.c === savedFlag);
+            if (matchedLang) {
+                currentFlagCode = matchedLang.c;
+                currentActiveCode = matchedLang.code;
+                const activeDisplay = document.getElementById('active-lang-display');
+                if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
+                const badgeFlagImg = document.getElementById('badge-flag-img');
+                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+            }
+        }
+
         if (currentID) { renderUserPassports(currentID); }
+        
         if (savedAvatar) {
             currentUserImage = savedAvatar;
+            
+            // Загоняем картинку в сквозные аватарки верхнего бара и паспорта сразу
+            const badgeImg = document.getElementById('badge-avatar-img');
+            const passImg = document.getElementById('pass-avatar-img');
+            if (badgeImg) badgeImg.src = savedAvatar;
+            if (passImg) passImg.src = savedAvatar;
+
             if (savedAvatar.startsWith('data:image/svg+xml')) {
                 const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
                 const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
@@ -446,10 +466,16 @@
             }
             const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
             const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
+
+            // Проверяем: если мы НЕ на первой странице входа, аватарка должна быть видна
+            const activeBlock = document.querySelector('.block.active');
+            if (activeBlock && activeBlock.id !== 'block-entrance') {
+                const badge = document.getElementById('global-user-badge');
+                if (badge) badge.style.display = 'block';
+            }
         }
     }
 
-    // НАДЕЖНАЯ СИСТЕМА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ БЕЗ СБОЕВ В DISPLAY: NONE
     function portalTransition(nextId) {
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
@@ -457,34 +483,29 @@
         if (nextId === 'block-office') { alert('Office coming soon...'); return; }
 
         const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) {
-            console.error(`Блок не найден: ${nextId}`);
-            return;
-        }
+        if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
 
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
 
-        // Сброс анимации двери при возврате на первую страницу
+        // Логика видимости плавающего бейджа аватара
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
             if (mainDoor) mainDoor.classList.remove('door-exploded');
             if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
             if (badge) badge.style.display = 'none';
         } else {
+            // Если аватарка создана/загружена — показываем её на всех экранах кроме первого
             if (badge && currentUserImage) badge.style.display = 'block';
         }
 
-        // 1. Снимаем active со ВСЕХ блоков на странице, чтобы исключить накладки
         document.querySelectorAll('.block').forEach(b => {
             b.classList.remove('active');
             b.style.display = 'none';
         });
 
-        // 2. Включаем отображение целевого блока
         targetBlock.style.display = 'flex';
         
-        // 3. Даем браузеру микропаузу на перерисовку display перед запуском анимации
         setTimeout(() => {
             targetBlock.classList.add('active');
             const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
@@ -498,13 +519,8 @@
         const mainDoor = document.getElementById('main-door');
 
         if (sndDoor) sndDoor.play();
+        if (mainDoor) mainDoor.classList.add('door-exploded');
 
-        // Анимируем саму картинку двери
-        if (mainDoor) {
-            mainDoor.classList.add('door-exploded');
-        }
-
-        // Ждем завершения анимации двери и переключаем экран
         setTimeout(() => {
             if (sndAmbient) {
                 sndAmbient.volume = 0.5;
@@ -549,6 +565,10 @@
         const passImg = document.getElementById('pass-avatar-img');
         if (badgeImg) badgeImg.src = currentUserImage;
         if (passImg) passImg.src = currentUserImage;
+
+        // ЖЕЛЕЗНО ВКЛЮЧАЕМ ВИДИМОСТЬ БЕЙДЖА ПОСЛЕ НАЖАТИЯ НА SAVE
+        const badge = document.getElementById('global-user-badge');
+        if (badge) badge.style.display = 'block';
 
         const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
