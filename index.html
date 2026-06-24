@@ -370,11 +370,14 @@
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
+    // КЛИК ПО ЯЗЫКУ: Сохраняем и мгновенно переводим
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
         safeStorageSet('gygy_flag', lang.c);
-        safeStorageSet('gy_lang', lang.code.toUpperCase() === 'UK' ? 'UA' : lang.code.toUpperCase());
+        safeStorageSet('gy_user_flag', lang.c);
+        safeStorageSet('gy_lang', lang.code);
+        safeStorageSet('gygy_lang', lang.code);
         
         const activeDisplay = document.getElementById('active-lang-display');
         if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
@@ -385,16 +388,24 @@
         if (langListContainer) langListContainer.style.display = 'none';
         renderLangList();
         
+        // Переводим интерфейс "на лету"
+        forceTriggerGoogleTranslate(lang.code);
+    }
+
+    // Внутренний пушер для виджета Google
+    function forceTriggerGoogleTranslate(langCode) {
         let attempts = 0;
         const selectTimer = setInterval(() => {
             const selectEl = document.querySelector('.goog-te-combo');
             if (selectEl) {
-                selectEl.value = lang.code;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                if (selectEl.value !== langCode) {
+                    selectEl.value = langCode;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                }
                 clearInterval(selectTimer);
             }
             if (++attempts > 50) clearInterval(selectTimer);
-        }, 150);
+        }, 100);
     }
 
     function toggleLangList() {
@@ -431,26 +442,41 @@
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
-        // Восстановление флага страны
-        const savedFlag = safeStorageGet('gygy_flag');
+        // Восстановление сохраненного языка при входе
+        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
+        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
+        
+        // Синхронизация старых текстовых форматов ('UA', 'EN' -> 'uk', 'en')
+        if (savedLangCode) {
+            savedLangCode = savedLangCode.toLowerCase();
+            if (savedLangCode === 'ua') savedLangCode = 'uk';
+        }
+
+        let matchedLang = null;
         if (savedFlag) {
-            const matchedLang = allLangs.find(l => l.c === savedFlag);
-            if (matchedLang) {
-                currentFlagCode = matchedLang.c;
-                currentActiveCode = matchedLang.code;
-                const activeDisplay = document.getElementById('active-lang-display');
-                if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
-                const badgeFlagImg = document.getElementById('badge-flag-img');
-                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-            }
+            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
+        } else if (savedLangCode) {
+            matchedLang = allLangs.find(l => l.code === savedLangCode);
+        }
+
+        // Если нашли совпадение — выставляем переменные
+        if (matchedLang) {
+            currentFlagCode = matchedLang.c;
+            currentActiveCode = matchedLang.code;
+            
+            const activeDisplay = document.getElementById('active-lang-display');
+            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
+            const badgeFlagImg = document.getElementById('badge-flag-img');
+            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+            
+            // Принудительно запускаем перевод главной страницы под сохраненный язык
+            forceTriggerGoogleTranslate(matchedLang.code);
         }
 
         if (currentID) { renderUserPassports(currentID); }
         
         if (savedAvatar) {
             currentUserImage = savedAvatar;
-            
-            // Загоняем картинку в сквозные аватарки верхнего бара и паспорта сразу
             const badgeImg = document.getElementById('badge-avatar-img');
             const passImg = document.getElementById('pass-avatar-img');
             if (badgeImg) badgeImg.src = savedAvatar;
@@ -466,7 +492,6 @@
             const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
             const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
 
-            // Проверяем: если мы НЕ на первой странице входа, аватарка должна быть видна
             const activeBlock = document.querySelector('.block.active');
             if (activeBlock && activeBlock.id !== 'block-entrance') {
                 const badge = document.getElementById('global-user-badge');
@@ -478,7 +503,7 @@
     function portalTransition(nextId) {
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
+        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; return; } 
         if (nextId === 'block-office') { alert('Office coming soon...'); return; }
 
         const targetBlock = document.getElementById(nextId);
@@ -487,14 +512,12 @@
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
 
-        // Логика видимости плавающего бейджа аватара
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
             if (mainDoor) mainDoor.classList.remove('door-exploded');
             if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
             if (badge) badge.style.display = 'none';
         } else {
-            // Если аватарка создана/загружена — показываем её на всех экранах кроме первого
             if (badge && currentUserImage) badge.style.display = 'block';
         }
 
@@ -565,7 +588,6 @@
         if (badgeImg) badgeImg.src = currentUserImage;
         if (passImg) passImg.src = currentUserImage;
 
-        // ЖЕЛЕЗНО ВКЛЮЧАЕМ ВИДИМОСТЬ БЕЙДЖА ПОСЛЕ НАЖАТИЯ НА SAVE
         const badge = document.getElementById('global-user-badge');
         if (badge) badge.style.display = 'block';
 
@@ -581,8 +603,8 @@
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
     }
-window.onload = () => {
-        document.body.classList.add('page-loaded');
+
+    window.onload = () => {
         checkAndFillRegistrationForm();
         renderLangList();
 
@@ -593,9 +615,11 @@ window.onload = () => {
         if (targetBlock === 'hall') {
             portalTransition('block-hall');
         }
-        // Если параметра 'go' нет (как при нажатии <<), код просто оставит активным block-entrance с дверью
+
+        // Мягко убираем шторку темноты после инициализации перевода
+        setTimeout(() => {
+            document.body.classList.add('page-loaded');
+        }, 150);
     };
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
