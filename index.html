@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.25 CORE</title>
+    <title>GY-GY Club v4.5.26 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -581,11 +581,19 @@
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
     }
-
-    window.onload = () => {
+window.onload = () => {
         document.body.classList.add('page-loaded');
         checkAndFillRegistrationForm();
         renderLangList();
+
+        // Проверяем, пришли ли мы целенаправленно по одинарной стрелке в Холл
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetBlock = urlParams.get('go'); 
+
+        if (targetBlock === 'hall') {
+            portalTransition('block-hall');
+        }
+        // Если параметра 'go' нет (как при нажатии <<), код просто оставит активным block-entrance с дверью
     };
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
