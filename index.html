@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.29 CORE</title>
+    <title>GY-GY Club v4.5.30 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -608,7 +608,7 @@
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
     }
 
-  function openPassport() {
+ function openPassport() {
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
     }
@@ -619,6 +619,20 @@
     }
 
     window.onload = () => {
+        console.log("[GY-GY] Инициализация Клуба...");
+        
+        // 1. Достаем сохраненный язык из хранилища ДО загрузки формы
+        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang') || 'en';
+        savedLangCode = savedLangCode.toLowerCase();
+        if (savedLangCode === 'ua') savedLangCode = 'uk';
+
+        // 2. ЖЕЛЕЗНЫЙ ДОПИНГ: Принудительно пишем куки перевода для Google.
+        // Это заставит Google Translate применить нужный язык ПРИ СТАРТЕ, даже если селектор заглючит.
+        document.cookie = "googtrans=/en/" + savedLangCode + "; path=/";
+        document.cookie = "googtrans=/en/" + savedLangCode + "; domain=" + window.location.hostname + "; path=/";
+        console.log(`[GY-GY] В куки прописан язык: ${savedLangCode}`);
+
+        // 3. Восстанавливаем форму, аватары и запускаем интервал селектора
         checkAndFillRegistrationForm();
         renderLangList();
 
@@ -630,14 +644,15 @@
             portalTransition('block-hall');
         }
 
-        // Мягко убираем шторку темноты после инициализации перевода
+        // Мягко убираем шторку темноты после того, как куки встали на место
         setTimeout(() => {
             document.body.classList.add('page-loaded');
-        }, 150);
+            console.log("[GY-GY] Страница проявлена.");
+        }, 200);
     };
 </script>
 
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
