@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.10 </title>
+    <title>GY-GY Club | Tables v1.5.11 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -142,9 +142,9 @@
         </div>
     </div>
 
-    <script>
+   <script>
         const Core = {
-            init() {
+           init() {
                 // Включаем плавное проявление страницы столиков
                 document.body.classList.add('page-loaded');
 
@@ -156,21 +156,33 @@
                     });
                 }
 
-                const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-                if (savedAvatar) {
-                    const badgeImg = document.getElementById('badge-avatar-img');
-                    const badgeContainer = document.getElementById('global-user-badge');
-                    if (badgeImg) badgeImg.src = savedAvatar;
-                    
-                    // Безопасный подтяг флага (защита от падения скрипта)
-                    const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'https://flagcdn.com/w20/gb.png';
-                    const badgeFlag = document.getElementById('badge-flag-img');
-                    if (badgeFlag) badgeFlag.src = savedFlag;
+                // 1. ОТДЕЛЬНЫЙ НЕЗАВИСИМЫЙ ПОДТЯГ ФЛАГА
+                let savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+                // Очищаем, если там полная ссылка
+                if (savedFlag.includes('/')) {
+                    savedFlag = savedFlag.split('/').pop().replace('.png', '');
+                }
+                
+                // Проверяем оба возможных ID элемента флага, чтобы наверняка попасть в цель
+                const badgeFlag = document.getElementById('badge-flag-img') || document.getElementById('badge-flag');
+                if (badgeFlag) {
+                    badgeFlag.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+                }
 
-                    if (badgeContainer) badgeContainer.style.display = 'block';
+                // 2. ОТДЕЛЬНЫЙ ПОДТЯГ АВАТАРА
+                const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                const badgeContainer = document.getElementById('global-user-badge');
+                
+                if (savedAvatar) {
+                    const badgeImg = document.getElementById('badge-avatar-img') || document.getElementById('badge-avatar');
+                    if (badgeImg) badgeImg.src = savedAvatar;
+                }
+
+                // В любом случае показываем контейнер бейджа, если он есть
+                if (badgeContainer) {
+                    badgeContainer.style.display = 'block';
                 }
             },
-
             // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
                 document.body.classList.remove('page-loaded');
@@ -179,13 +191,12 @@
                 }, 500);
             },
 
-            // ОДИНАРНАЯ СТРЕЛА (<) — ВОЗВРАТ К КОНЮ С УМНЫМ МАРКЕРОМ
+            // ОДИНАРНАЯ СТРЕЛА (<) — ВОЗВРАТ В ХОЛЛ БЕЗ СТУКА В ДВЕРЬ
             backToBar() {
                 document.body.classList.remove('page-loaded');
-                // Говорим главной странице: «Это возврат из зала, пропусти в бар!»
-                sessionStorage.setItem('return_to_bar', 'true');
                 setTimeout(() => {
-                    location.href = 'index.html'; 
+                    // ИСПРАВЛЕНО: Передаем явный параметр ?go=hall, который нативно подхватит обновленная index.html
+                    location.href = 'index.html?go=hall'; 
                 }, 500);
             },
             
