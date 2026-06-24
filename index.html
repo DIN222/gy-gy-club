@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.22 CORE</title>
+    <title>GY-GY Club v4.5.23 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -35,7 +35,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
@@ -81,7 +81,7 @@
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             pointer-events: auto !important; user-select: none; display: none;
         }
         .arrow-item { transition: opacity 0.2s; }
@@ -178,12 +178,13 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
-   /* Монументальное центрирование экрана входа */
+        
+        /* Монументальное центрирование экрана входа */
         body #block-entrance {
             display: flex !important;
             flex-direction: column !important;
-            justify-content: center !important; /* Центр по вертикали */
-            align-items: center !important;     /* Центр по горизонтали */
+            justify-content: center !important; 
+            align-items: center !important;     
             position: fixed !important;
             inset: 0 !important;
             width: 100vw !important;
@@ -203,7 +204,7 @@
             width: auto !important;
             max-width: 100% !important;
             object-fit: contain !important;
-            margin: 0 auto !important; /* Выравнивание внутри флекса */
+            margin: 0 auto !important; 
         }
     </style>
 </head>
@@ -241,7 +242,7 @@
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
- <div id="block-entrance" class="block active">
+    <div id="block-entrance" class="block active">
         <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
@@ -289,41 +290,37 @@
             <div class="arrow-item" onclick="portalTransition('block-welcome')">&lt;&lt;</div>
         </div>
             
- <div class="hall-interior" style="position: relative;">
-        <div class="quote-text">In every joke there is a share of whisky</div>
-        
-        <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
+        <div class="hall-interior" style="position: relative;">
+            <div class="quote-text">In every joke there is a share of whisky</div>
             
-            <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
-                <span class="cue-arrow-hall">→</span>
-                <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+            <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
+                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
+                    <span class="cue-arrow-hall">→</span>
+                    <div id="manifest-left" class="manifest-btn-box" data-opened="false">
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+                    </div>
                 </div>
-            </div>
 
-            <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
-                <span class="cue-arrow-hall">→</span>
-                <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')">OFFICE</button>
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
+                    <span class="cue-arrow-hall">→</span>
+                    <div id="manifest-office" class="manifest-btn-box" data-opened="false">
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')">OFFICE</button>
+                    </div>
                 </div>
             </div>
-            
-        </div>
-            
-        <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
-            <span class="cue-arrow-hall">←</span>
-            <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
-            </div>
-        </div>
-    </div>
-            
-            <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
-                <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
                 
-                <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;" onclick="portalTransition('block-bar')">
-                    <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
+            <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
+                <span class="cue-arrow-hall">←</span>
+                <div id="manifest-right" class="manifest-btn-box" data-opened="false">
+                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
                 </div>
+            </div>
+        </div>
+            
+        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
+            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
+            <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
+                <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
             </div>
         </div>
     </div>
@@ -446,12 +443,11 @@
         }
     }
 
-  function portalTransition(nextId) {
-        // Физические переходы по отдельным файлам
+    function portalTransition(nextId) {
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } // ПОДКЛЮЧИЛИ
-        if (nextId === 'block-office') { openOfficeStub(); return; }
+        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
+        if (nextId === 'block-office') { alert('Office coming soon...'); return; }
 
         const currentActiveBlock = document.querySelector('.block.active');
         const targetBlock = document.getElementById(nextId);
@@ -459,98 +455,66 @@
         const langSwitcher = document.getElementById('lang-switcher');
 
         if (nextId === 'block-entrance') {
-            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
+            if (langSwitcher) { langSwitcher.style.setProperty('display', 'flex', 'important'); langSwitcher.style.opacity = '1'; }
             if (badge) badge.style.display = 'none';
         } else {
             if (badge && currentUserImage) badge.style.display = 'block';
         }
 
-        if (currentActiveBlock) { currentActiveBlock.classList.remove('active'); currentActiveBlock.style.display = 'none'; }
+        if (currentActiveBlock) { currentActiveBlock.classList.remove('active'); currentActiveBlock.style.setProperty('display', 'none', 'important'); }
         
         if (targetBlock) {
-            targetBlock.style.display = 'flex';
+            targetBlock.style.setProperty('display', 'flex', 'important');
             setTimeout(() => { targetBlock.classList.add('active'); }, 20);
             const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
             if (embeddedArrows) embeddedArrows.style.display = 'flex';
         } else {
             console.error(`Ошибка DOM: Целевой блок "${nextId}" отсутствует.`);
-            if (currentActiveBlock) { currentActiveBlock.style.display = 'flex'; currentActiveBlock.classList.add('active'); }
+            if (currentActiveBlock) { currentActiveBlock.style.setProperty('display', 'flex', 'important'); currentActiveBlock.classList.add('active'); }
         }
     }
 
-    function safePlaySound(audioId, volume = 1.0) {
-        const audio = document.getElementById(audioId); if (!audio) return;
-        try {
-            audio.currentTime = 0; audio.volume = volume;  
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(err => {
-                    document.body.addEventListener('click', () => { audio.play().catch(e=>{}); }, { once: true });
-                });
-            }
-        } catch (e) {}
-    }
+    function handleDoor() {
+        const sndDoor = document.getElementById('snd-door');
+        const sndAmbient = document.getElementById('snd-ambient');
+        const blockEntrance = document.getElementById('block-entrance');
+        const mainDoor = document.getElementById('main-door');
+        const blockWelcome = document.getElementById('block-welcome');
 
-function handleDoor() {
-    const sndDoor = document.getElementById('snd-door');
-    const sndAmbient = document.getElementById('snd-ambient');
-    const blockEntrance = document.getElementById('block-entrance');
-    const mainDoor = document.getElementById('main-door');
-    const blockWelcome = document.getElementById('block-welcome');
+        if (sndDoor) sndDoor.play();
 
-    // 1. Включаем звук петель
-    if (sndDoor) sndDoor.play();
+        if (mainDoor) {
+            mainDoor.style.transition = "transform 0.8s ease-in, opacity 0.8s ease-out";
+            mainDoor.style.transform = "scale(2.8)";
+            mainDoor.style.opacity = "0";
+        }
 
-    // 2. Анимация полета двери на пользователя
-    if (mainDoor) {
-        mainDoor.style.transition = "transform 0.8s ease-in, opacity 0.8s ease-out";
-        mainDoor.style.transform = "scale(2.8)";
-        mainDoor.style.opacity = "0";
-    }
-
-    // 3. Плавно гасим первый экран
-    if (blockEntrance) {
-        blockEntrance.style.transition = "opacity 0.8s ease-out";
-        blockEntrance.style.opacity = "0";
-        blockEntrance.style.pointerEvents = "none";
-    }
-
-    // 4. Через 800мс жестко убираем дверь и принудительно зажигаем Чарли
-    setTimeout(() => {
         if (blockEntrance) {
-            blockEntrance.classList.remove('active');
-            blockEntrance.style.setProperty('display', 'none', 'important');
+            blockEntrance.style.transition = "opacity 0.8s ease-out";
+            blockEntrance.style.opacity = "0";
+            blockEntrance.style.pointerEvents = "none";
         }
 
-        // ЖЕСТКАЯ АКТИВАЦИЯ СЛЕДУЮЩЕГО ЭКРАНА (Прощай, черный экран!)
-        if (blockWelcome) {
-            blockWelcome.classList.add('active');
-            blockWelcome.style.setProperty('display', 'flex', 'important');
-            blockWelcome.style.setProperty('opacity', '1', 'important');
-        }
-        
-        // Включаем фоновый гул бара
-        if (sndAmbient) {
-            sndAmbient.volume = 0.5;
-            sndAmbient.play().catch(e => console.log("Ambient autoplay blocked"));
-        }
+        setTimeout(() => {
+            if (blockEntrance) {
+                blockEntrance.classList.remove('active');
+                blockEntrance.style.setProperty('display', 'none', 'important');
+            }
 
-        // Вызываем штатные переключатели на всякий случай
-        if (typeof goToWelcome === "function") {
-            goToWelcome();
-        } else if (typeof portalTransition === "function") {
+            if (blockWelcome) {
+                blockWelcome.classList.add('active');
+                blockWelcome.style.setProperty('display', 'flex', 'important');
+                blockWelcome.style.setProperty('opacity', '1', 'important');
+            }
+            
+            if (sndAmbient) {
+                sndAmbient.volume = 0.5;
+                sndAmbient.play().catch(e => console.log("Ambient autoplay blocked"));
+            }
+
             portalTransition('block-welcome');
-        }
-    }, 800);
-}
-        // Если переход на экран welcome не произошел автоматически — подталкиваем
-        if (typeof goToWelcome === "function") {
-            goToWelcome();
-        } else if (typeof portalTransition === "function") {
-            portalTransition('block-welcome');
-        }
-    }, 1200);
-}
+        }, 800);
+    }
 
     function preview(input) {
         if (input.files && input.files[0]) {
@@ -590,76 +554,23 @@ function handleDoor() {
 
         const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
-        
-        safePlaySound('snd-pour');
-        portalTransition('block-hall');
     }
 
-    function enterStudio() { alert('STUDIO module initializing... Connecting printing matrix.'); }
-    function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } }
-    function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } }
-
-    (function() {
-        let fadeTimer = null;
-        window.GY_AUDIO_ENGINE = {
-            fadeBarAmbient: function(targetVolume, durationMs) {
-                const barAmbient = document.getElementById('snd-ambient'); if (!barAmbient) return;
-                if (targetVolume === 0.12) targetVolume = 0.55; 
-                if (barAmbient.paused) { barAmbient.volume = 0; barAmbient.play().catch(() => {}); }
-                if (fadeTimer) clearInterval(fadeTimer);
-                const startVolume = barAmbient.volume;
-                const volumeDifference = targetVolume - startVolume;
-                const stepTime = 30; const totalSteps = durationMs / stepTime; const volumeStep = volumeDifference / totalSteps;
-                let currentStep = 0;
-                fadeTimer = setInterval(() => {
-                    currentStep++; let nextVol = startVolume + (volumeStep * currentStep);
-                    if (nextVol < 0) nextVol = 0; if (nextVol > 1) nextVol = 1;
-                    barAmbient.volume = nextVol;
-                    if (currentStep >= totalSteps) { barAmbient.volume = targetVolume; clearInterval(fadeTimer); }
-                }, stepTime);
-            }
-        };
-    })();
-
-    function openOfficeStub() {
-        alert("OFFICE: Under Construction / В разработке");
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+    }
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const savedFlag = safeStorageGet('gygy_flag', 'gb');
-        const matchingLang = allLangs.find(l => l.c === savedFlag) || allLangs[0];
-        currentActiveCode = matchingLang.code;
-        currentFlagCode = matchingLang.c;
-        
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) {
-            activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${currentFlagCode}.png" class="flag-icon notranslate" translate="no"> <span class="notranslate" translate="no">${matchingLang.n}</span>`;
-        }
-        const badgeFlag = document.getElementById('badge-flag-img');
-        if (badgeFlag) badgeFlag.src = `https://flagcdn.com/w20/${currentFlagCode}.png`;
-
-        renderLangList();
-        setTimeout(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) { selectEl.value = currentActiveCode; selectEl.dispatchEvent(new Event('change', { bubbles: true })); }
-        }, 1000);
-
-        checkAndFillRegistrationForm();
-        if (currentUserImage) {
-            const badgeImg = document.getElementById('badge-avatar-img'); const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = currentUserImage; if (passImg) passImg.src = currentUserImage;
-        }
-
-        document.querySelectorAll('.block').forEach(b => { b.classList.remove('active'); b.style.display = 'none'; });
-        const entrance = document.getElementById('block-entrance');
-        if (entrance) { entrance.style.display = 'flex'; entrance.classList.add('active'); }
-
-        const script = document.createElement('script'); script.type = 'text/javascript';
-        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        document.head.appendChild(script);
+    window.onload = () => {
         document.body.classList.add('page-loaded');
-    });
-    </script>
+        checkAndFillRegistrationForm();
+        renderLangList();
+    };
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
-
