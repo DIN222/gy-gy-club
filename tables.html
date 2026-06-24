@@ -191,21 +191,19 @@
                 }, 500);
             },
 
-            // ОДИНАРНАЯ СТРЕЛА (<) — ВОЗВРАТ В ХОЛЛ БЕЗ СТУКА В ДВЕРЬ
+         // ОДИНАРНАЯ СТРЕЛА (<) — ШАГ НАЗАД В ХОЛЛ
             backToBar() {
                 document.body.classList.remove('page-loaded');
                 setTimeout(() => {
-                    // ИСПРАВЛЕНО: Передаем явный параметр ?go=hall, который нативно подхватит обновленная index.html
                     location.href = 'index.html?go=hall'; 
                 }, 500);
             },
             
-            // ДВОЙНАЯ СТРЕЛА (<<) — ВЫХОД С ПОЛНЫМ СБРОСОМ К ЗАКРЫТЫМ ДВЕРЯМ
+            // ДВОЙНАЯ СТРЕЛА (<<) — ТОТАЛЬНЫЙ ВЫХОД К ЗАКРЫТОЙ ДВЕРИ
             exitToEntrance() {
                 document.body.classList.remove('page-loaded');
-                sessionStorage.removeItem('return_to_bar');
                 setTimeout(() => {
-                    localStorage.removeItem('gygy_id'); 
+                    // Чистый переход на главную без параметров — она сама откроет дверь
                     location.href = 'index.html'; 
                 }, 500);
             }
