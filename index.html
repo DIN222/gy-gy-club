@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.23 CORE</title>
+    <title>GY-GY Club v4.5.24 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -59,8 +59,25 @@
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
 
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.4s ease-in-out; }
-        .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
+        /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ СТРАНИЦ */
+        .block { 
+            position: fixed; 
+            inset: 0; 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            background: #000; 
+            z-index: 10; 
+            opacity: 0; 
+            transition: opacity 0.5s ease-in-out; 
+        }
+        /* Единственный рабочий активный класс */
+        .block.active { 
+            display: flex !important; 
+            opacity: 1 !important; 
+            z-index: 5000 !important; 
+        }
 
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
@@ -178,44 +195,20 @@
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
         
-        /* МОНУМЕНТАЛЬНОЕ ЦЕНТРИРОВАНИЕ ЭКРАНА ВХОДА */
-        body #block-entrance {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important; 
-            align-items: center !important;     
-            position: fixed !important;
-            inset: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            background: #000 !important;
-            z-index: 5000 !important;
-            opacity: 1;
-            transition: opacity 0.8s ease-out;
-        }
-        
-        /* Чистые исходные стили двери */
-        body #main-door {
-            display: block !important;
-            height: calc(50vh + 20px) !important;
-            width: auto !important;
-            max-width: 100% !important;
-            object-fit: contain !important;
-            margin: 0 auto !important; 
-            opacity: 1 !important;
-            visibility: visible !important;
+        /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
+        #main-door {
+            display: block;
+            height: calc(50vh + 20px);
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            margin: 0 auto; 
             transform: scale(1);
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.7s ease-out !important;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
         }
 
-        /* КЛАССЫ АНИМАЦИИ ВЗРЫВА И РАСТВОРЕНИЯ (назначаются через JS) */
-        body #block-entrance.door-fading {
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
-        body #block-entrance.door-fading #main-door {
+        /* КЛАСС ВЗРЫВА ДВЕРИ */
+        .door-exploded {
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
@@ -456,63 +449,69 @@
         }
     }
 
+    // НАДЕЖНАЯ СИСТЕМА ПЕРЕКЛЮЧЕНИЯ ЭКРАНОВ БЕЗ СБОЕВ В DISPLAY: NONE
     function portalTransition(nextId) {
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
         if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
         if (nextId === 'block-office') { alert('Office coming soon...'); return; }
 
-        const currentActiveBlock = document.querySelector('.block.active');
         const targetBlock = document.getElementById(nextId);
+        if (!targetBlock) {
+            console.error(`Блок не найден: ${nextId}`);
+            return;
+        }
+
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
 
-        // КРИТИЧЕСКИЙ СБРОС АНИМАЦИИ ДВЕРИ ПРИ ВОЗВРАТЕ НА ПЕРВУЮ СТРАНИЦУ
+        // Сброс анимации двери при возврате на первую страницу
         if (nextId === 'block-entrance') {
-            const blockEntrance = document.getElementById('block-entrance');
-            if (blockEntrance) {
-                blockEntrance.classList.remove('door-fading'); // Убираем класс растворения
-            }
-            if (langSwitcher) { langSwitcher.style.setProperty('display', 'flex', 'important'); langSwitcher.style.opacity = '1'; }
+            const mainDoor = document.getElementById('main-door');
+            if (mainDoor) mainDoor.classList.remove('door-exploded');
+            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
             if (badge) badge.style.display = 'none';
         } else {
             if (badge && currentUserImage) badge.style.display = 'block';
         }
 
-        if (currentActiveBlock) { currentActiveBlock.classList.remove('active'); currentActiveBlock.style.setProperty('display', 'none', 'important'); }
+        // 1. Снимаем active со ВСЕХ блоков на странице, чтобы исключить накладки
+        document.querySelectorAll('.block').forEach(b => {
+            b.classList.remove('active');
+            b.style.display = 'none';
+        });
+
+        // 2. Включаем отображение целевого блока
+        targetBlock.style.display = 'flex';
         
-        if (targetBlock) {
-            targetBlock.style.setProperty('display', 'flex', 'important');
-            setTimeout(() => { targetBlock.classList.add('active'); }, 20);
+        // 3. Даем браузеру микропаузу на перерисовку display перед запуском анимации
+        setTimeout(() => {
+            targetBlock.classList.add('active');
             const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
             if (embeddedArrows) embeddedArrows.style.display = 'flex';
-        } else {
-            console.error(`Ошибка DOM: Целевой блок "${nextId}" отсутствует.`);
-            if (currentActiveBlock) { currentActiveBlock.style.setProperty('display', 'flex', 'important'); currentActiveBlock.classList.add('active'); }
-        }
+        }, 20);
     }
 
     function handleDoor() {
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
-        const blockEntrance = document.getElementById('block-entrance');
+        const mainDoor = document.getElementById('main-door');
 
         if (sndDoor) sndDoor.play();
 
-        // Запускаем синхронную CSS-анимацию «взрыва» двери и затухания фона через класс
-        if (blockEntrance) {
-            blockEntrance.classList.add('door-fading');
+        // Анимируем саму картинку двери
+        if (mainDoor) {
+            mainDoor.classList.add('door-exploded');
         }
 
-        // Ждем окончания CSS transition (700-800мс) и переключаемся
+        // Ждем завершения анимации двери и переключаем экран
         setTimeout(() => {
             if (sndAmbient) {
                 sndAmbient.volume = 0.5;
-                sndAmbient.play().catch(e => console.log("Ambient autoplay blocked"));
+                sndAmbient.play().catch(e => console.log("Ambient blocked"));
             }
-            // Переходим к Чарли штатными рельсами архитектуры
             portalTransition('block-welcome');
-        }, 750);
+        }, 700);
     }
 
     function preview(input) {
@@ -548,4 +547,28 @@
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
-        if (badgeImg) badge
+        if (badgeImg) badgeImg.src = currentUserImage;
+        if (passImg) passImg.src = currentUserImage;
+
+        const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
+        const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
+    }
+
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+    }
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
+    }
+
+    window.onload = () => {
+        document.body.classList.add('page-loaded');
+        checkAndFillRegistrationForm();
+        renderLangList();
+    };
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
