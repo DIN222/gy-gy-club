@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.13 </title>
+    <title>GY-GY Club | Tables v1.5.14 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -142,7 +142,8 @@
         </div>
     </div>
 
-   <script>
+ 
+<script>
         const Core = {
             init() {
                 // Включаем плавное проявление страницы столиков
@@ -206,12 +207,47 @@
             }
         }; // КРИТИЧЕСКИЙ МАРКЕР СКРИПТА СТОЛОВ ДОБАВЛЕН .
 
-        window.onload = () => { Core.init(); };
+        // ЖЕЛЕЗНЫЙ АВТОПЕРЕВОД ПРИ ВХОДЕ В ЗАЛ
+        function applySavedLanguageForPage() {
+            let savedLang = (localStorage.getItem('gy_lang') || localStorage.getItem('gygy_lang') || 'en').toLowerCase();
+            if (savedLang === 'ua') savedLang = 'uk';
+
+            console.log(`[GY-GY Столики] Активация языка из памяти: ${savedLang}`);
+
+            // Прописываем куки, чтобы Google Translate сразу подхватил язык до рендеринга элементов
+            document.cookie = "googtrans=/en/" + savedLang + "; path=/";
+            document.cookie = "googtrans=/en/" + savedLang + "; domain=" + window.location.hostname + "; path=/";
+
+            // Страховочный пинок селектора, если куки не сработали мгновенно
+            let attempts = 0;
+            const checkSelectInterval = setInterval(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) {
+                    clearInterval(checkSelectInterval);
+                    if (selectEl.value !== savedLang) {
+                        selectEl.value = savedLang;
+                        selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                        console.log(`[GY-GY Столики] Виджет принудительно переключен на: ${savedLang}`);
+                    }
+                }
+                if (++attempts > 100) clearInterval(checkSelectInterval);
+            }, 100);
+        }
+
+        window.onload = () => { 
+            applySavedLanguageForPage();
+            Core.init(); 
+        };
         
         function googleTranslateElementInit() { 
-            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element'); 
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element'); 
         }
     </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
