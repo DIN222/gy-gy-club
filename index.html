@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.27 CORE</title>
+    <title>GY-GY Club v4.5.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -393,20 +393,33 @@
     }
 
     // Внутренний пушер для виджета Google
-    function forceTriggerGoogleTranslate(langCode) {
-        let attempts = 0;
-        const selectTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                if (selectEl.value !== langCode) {
-                    selectEl.value = langCode;
-                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-                clearInterval(selectTimer);
-            }
-            if (++attempts > 50) clearInterval(selectTimer);
-        }, 100);
-    }
+ function forceTriggerGoogleTranslate(langCode) {
+    // Очищаем старые таймеры, если они были
+    if (window.langTimer) clearInterval(window.langTimer);
+
+    let attempts = 0;
+    window.langTimer = setInterval(() => {
+        const selectEl = document.querySelector('.goog-te-combo');
+        
+        if (selectEl) {
+            clearInterval(window.langTimer);
+            
+            // Если язык уже стоит какой нужно — выходим
+            if (selectEl.value === langCode) return;
+
+            // Принудительно меняем язык виджета
+            selectEl.value = langCode;
+            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
+        }
+
+        // Если за 10 секунд (100 попыток) Google не ответил, прекращаем мучить браузер
+        if (++attempts > 100) {
+            clearInterval(window.langTimer);
+            console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
+        }
+    }, 100); // Проверяем каждые 100мс
+}
 
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
@@ -595,10 +608,11 @@
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
     }
 
-    function openPassport() {
+  function openPassport() {
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
     }
+    
     function closePassport() {
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
@@ -622,7 +636,8 @@
         }, 150);
     };
 </script>
+
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
- </script>
-   </body>
+
+</body>
 </html>
