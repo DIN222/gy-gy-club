@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.12 </title>
+    <title>GY-GY Club | Tables v1.5.13 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -115,7 +115,7 @@
 
     <div id="google_translate_element"></div>
     
-    <audio id="snd-ambient" loop autoplay><source src="bar_ambient.mp3"></audio>
+    <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
     
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="Core.backToBar()">&lt;</div>
@@ -144,7 +144,7 @@
 
    <script>
         const Core = {
-           init() {
+            init() {
                 // Включаем плавное проявление страницы столиков
                 document.body.classList.add('page-loaded');
 
@@ -158,12 +158,10 @@
 
                 // 1. ОТДЕЛЬНЫЙ НЕЗАВИСИМЫЙ ПОДТЯГ ФЛАГА
                 let savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-                // Очищаем, если там полная ссылка
                 if (savedFlag.includes('/')) {
                     savedFlag = savedFlag.split('/').pop().replace('.png', '');
                 }
                 
-                // Проверяем оба возможных ID элемента флага, чтобы наверняка попасть в цель
                 const badgeFlag = document.getElementById('badge-flag-img') || document.getElementById('badge-flag');
                 if (badgeFlag) {
                     badgeFlag.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
@@ -178,11 +176,11 @@
                     if (badgeImg) badgeImg.src = savedAvatar;
                 }
 
-                // В любом случае показываем контейнер бейджа, если он есть
                 if (badgeContainer) {
                     badgeContainer.style.display = 'block';
                 }
             },
+
             // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
                 document.body.classList.remove('page-loaded');
@@ -191,20 +189,21 @@
                 }, 500);
             },
 
-      window.onload = () => {
-        document.body.classList.add('page-loaded');
-        checkAndFillRegistrationForm();
-        renderLangList();
-
-        // Проверяем, пришли ли мы целенаправленно по одинарной стрелке в Холл
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetBlock = urlParams.get('go'); 
-
-        if (targetBlock === 'hall') {
-            portalTransition('block-hall');
-        }
-        // Если параметра 'go' нет (как при нажатии <<), код просто оставит активным block-entrance с дверью
-    };
+            // ОДИНАРНАЯ СТРЕЛА (<) — НАЗАД В БАР К КОНЮ
+            backToBar() {
+                document.body.classList.remove('page-loaded');
+                setTimeout(() => {
+                    location.href = 'bar.html'; 
+                }, 500);
+            },
+            
+            // ДВОЙНАЯ СТРЕЛА (<<) — ТОТАЛЬНЫЙ ВЫХОД К ЗАКРЫТОЙ ДВЕРИ
+            exitToEntrance() {
+                document.body.classList.remove('page-loaded');
+                setTimeout(() => {
+                    location.href = 'index.html'; 
+                }, 500);
+            }
         }; // КРИТИЧЕСКИЙ МАРКЕР СКРИПТА СТОЛОВ ДОБАВЛЕН .
 
         window.onload = () => { Core.init(); };
