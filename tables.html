@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.14 </title>
+    <title>GY-GY Club | Tables v1.5.15 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -74,22 +74,54 @@
         #table-6 { top: 396px; left: 659px; }   
         #mic-zone { top: 234px; left: 503px; } 
 
-        /* НАДПИСИ НАД КОЛЬЦАМИ (СКВОЗНОЙ КЛИК) */
+      /* СТИЛЬНАЯ СЕРАЯ ДЫМЧАТАЯ ПОДСВЕТКА НАДПИСЕЙ (ПОВТОРЯЕТ БУКВЫ) */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
             transform: translateX(-50%) translateY(-14px); 
-            background: rgba(0, 0, 0, 0.95); border: 1px solid var(--gold); color: var(--gold);
-            padding: 6px 12px; font-size: 13px; white-space: nowrap; border-radius: 4px;
+            background: rgba(10, 10, 10, 0.98); 
+            border: 1px solid #444; /* Графитовая сдержанная рамка */
+            color: var(--gold);
+            padding: 6px 12px; 
+            font-size: 13px; 
+            white-space: nowrap; 
+            border-radius: 4px;
             opacity: 0; 
-            pointer-events: none; /* Текст полностью прозрачен для тапов */
-            transition: opacity 0.2s ease, transform 0.2s ease; 
+            pointer-events: none; 
+            transition: opacity 0.25s ease, transform 0.25s ease; 
             font-family: 'Share Tech Mono', monospace;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.9); 
-            z-index: 999999;
+            
+            /* Глубокая тень блока + серая пепельная дымка строго по контуру букв */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 0 4px rgba(150, 150, 150, 0.6), 0 0 8px rgba(100, 100, 100, 0.4); 
+            z-index: 999999 !important;
         }
-        .lamp-zone:hover::after { opacity: 1; transform: translateX(-50%) translateY(-20px); }
+        
+        /* ПЛАВНОЕ ПРОЯВЛЕНИЕ ДЫМКА ПРИ НАВЕДЕНИИ */
+        .lamp-zone:hover::after { 
+            opacity: 1 !important; 
+            transform: translateX(-50%) translateY(-20px); 
+        }
 
+        /* ТОТАЛЬНЫЙ ДЕМОНТАЖ ГУГЛ-ПАНЕЛИ ИЗ ВИДИМОСТИ */
+        #google_translate_element, 
+        .skiptranslate, 
+        .goog-te-banner-frame, 
+        #goog-gt-tt, 
+        .goog-te-balloon-frame { 
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important; 
+            position: fixed !important; 
+            top: -9000px !important;
+            left: -9000px !important;
+            z-index: -99999 !important; 
+            pointer-events: none !important;
+        }
+        
+        /* Защита от гугловских сдвигов разметки */
+        body { top: 0 !important; position: fixed !important; }
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
         /* СКВОЗНОЙ АВАТАР — ЖЕСТКИЙ ЦЕНТР */
         .ui-user-badge {
             position: fixed; top: 12px; left: 50% !important; transform: translateX(-50%) !important;
