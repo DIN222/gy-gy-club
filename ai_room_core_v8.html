@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — AI Room Core v8.5</title>
+    <title>GY-GY Club — AI Room Core v8.6</title>
     <style>
         /* --- БАЗОВАЯ СТРОГАЯ СЕТКА КЛУБА (NOIR MINIMALISM) --- */
         * {
@@ -20,122 +20,105 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            top: 0 !important; position: fixed !important; /* Жесткая блокировка автосдвигов Гугла */
         }
 
-        /* ПОСТОЯННЫЕ РЕКВИЗИТЫ: ВЕРХНЯЯ ПАНЕЛЬ */
-        header {
-            display: flex;
-            justify-content: space-between;
+        /* ТОТАЛЬНЫЙ ДЕМОНТАЖ ГУГЛ-ПАНЕЛИ */
+        #google_translate_element, .skiptranslate, .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame { 
+            display: none !important; visibility: hidden !important; opacity: 0 !important; position: fixed !important; top: -9000px !important;
+        }
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+
+        /* ВЕРХНЯЯ ПАНЕЛЬ v5.0 — В ОДНУ ЛИНИЮ БЕЗ ПОДЧЕРКИВАНИЙ */
+        .gy-top-bar-v5 {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* Идеальное распределение: лево, центр, право */
             align-items: center;
             padding: 20px 40px;
-            border-bottom: 1px solid #2c2c35;
-            background-color: #0f0f11;
+            background: transparent; /* Полная свобода от рамок и линий */
             z-index: 10;
         }
 
+        /* 1. Стрелки навигации — СЛЕВА */
+        .nav-group {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+        .nav-arrow {
+            color: #6e6e73;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: monospace;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .nav-arrow:hover {
+            color: #f5f5f7;
+            transform: scale(1.1);
+        }
+
+        /* 2. Аватар Юзера с флагом — ПО ЦЕНТРУ */
+        .user-center-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(22, 22, 26, 0.7);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid #2c2c35;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .user-center-profile:hover {
+            border-color: #f5f5f7;
+        }
+        .user-avatar-mini {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #2c2c35;
+            border: 1px solid #6e6e73;
+            object-fit: cover;
+        }
+        .user-id-text {
+            font-size: 12px;
+            color: #6e6e73;
+        }
+        .lang-flag {
+            width: 16px;
+            height: 11px;
+            object-fit: cover;
+            filter: grayscale(30%);
+        }
+
+        /* 3. Логотип — СПРАВА */
+        .logo-group {
+            display: flex;
+            justify-content: flex-end;
+        }
         .logo-box {
             font-size: 24px;
             font-weight: bold;
             letter-spacing: 2px;
-            cursor: default;
+            color: #f5f5f7;
+            text-decoration: none;
+            cursor: pointer;
         }
         .logo-box span { color: #6e6e73; }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            color: #6e6e73;
-            border: 1px solid #2c2c35;
-            padding: 5px 10px;
-        }
-        .user-badge img {
-            width: 20px;
-            height: 20px;
-            border-radius: 2px;
-            background-color: #2c2c35;
-        }
-
-        .lang-panel {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid #2c2c35;
-            padding: 5px 12px;
-            cursor: pointer;
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #f5f5f7;
-            background: #121215;
-        }
-        .lang-panel:hover { border-color: #6e6e73; }
-        .lang-flag { width: 16px; height: 11px; object-fit: cover; }
-
-        .btn-back {
-            background: none;
-            border: 1px solid #f5f5f7;
-            color: #f5f5f7;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-family: monospace;
-            text-transform: uppercase;
-            font-size: 12px;
-            transition: all 0.2s ease;
-        }
-        .btn-back:hover {
-            background-color: #f5f5f7;
-            color: #0f0f11;
-        }
 
         /* --- ОСНОВНОЙ КОНТЕНТ ИИ-КОМНАТЫ --- */
         main {
             flex: 1;
             display: flex;
             flex-direction: row;
-            padding: 40px;
+            padding: 20px 40px 40px 40px; /* Сжатый верхний отступ под парящую панель */
             gap: 40px;
             position: relative;
-        }
-
-        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ (Strict 2cm / 80px Offset Zone) */
-        .ui-nav-arrows {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-            width: calc(100% - 160px);
-            left: 80px;
-            pointer-events: none;
-            z-index: 5;
-        }
-        .nav-arrow {
-            pointer-events: auto;
-            background: none;
-            border: 1px dashed #6e6e73;
-            color: #6e6e73;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-        .nav-arrow:hover { 
-            border-style: solid; 
-            color: #f5f5f7; 
-            border-color: #f5f5f7; 
-            background-color: #121215;
         }
 
         /* Терминал */
@@ -145,7 +128,7 @@
             flex-direction: column;
             border: 1px solid #2c2c35;
             background-color: #121215;
-            z-index: 2; /* Чтобы стрелки не перекрывали клики в текстовом поле */
+            z-index: 2;
         }
         .terminal-header {
             padding: 12px 20px;
@@ -188,29 +171,26 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo-box">GY-GY <span>CLUB</span></div>
-        <div class="header-controls">
-            <div class="user-badge">
-                <img id="core-avatar-img" src="" alt="Avatar">
-                <span id="core-id-label">GY-000-0000</span>
-            </div>
-            <div class="lang-panel" id="gy-lang-switcher">
-                <img src="https://flagcdn.com/w20/gb.png" class="lang-flag" id="core-flag-img">
-                <span id="core-lang-val">EN</span>
-            </div>
-            <button class="btn-back" onclick="exitRoom()">Retour</button>
+    <div class="gy-top-bar-v5">
+        <div class="nav-group">
+            <button class="nav-arrow" onclick="navRoom('block-server')" title="Step Back to Server Room">←</button>
+            <button class="nav-arrow" onclick="exitRoom()" title="Fast Return to Hall">≪</button>
         </div>
-    </header>
+
+        <div class="user-center-profile" onclick="pushLog('User Trace ID re-verified.')" title="Your unique digital trace identity">
+            <img id="core-avatar-img" class="user-avatar-mini" src="" alt="•">
+            <span class="user-id-text" id="core-id-label">GY-000-0000</span>
+            <img src="https://flagcdn.com/w20/gb.png" class="lang-flag" id="core-flag-img">
+        </div>
+
+        <div class="logo-group">
+            <a href="index.html" class="logo-box" title="GY-GY Club // Author Space">GY-GY <span>CLUB</span></a>
+        </div>
+    </div>
 
     <main>
-        <div class="ui-nav-arrows">
-            <button class="nav-arrow" onclick="navRoom('block-bar')">&lt;</button>
-            <button class="nav-arrow" onclick="navRoom('block-tables')">&gt;</button>
-        </div>
-
         <section class="terminal-container">
-            <div class="terminal-header">AI_ROOM_CORE_v8.4 // SECURE_SESSION // SERVER_AMBIENT_ON</div>
+            <div class="terminal-header">AI_ROOM_CORE_v8.5 // SECURE_SESSION // SERVER_AMBIENT_ON</div>
             <div class="chat-output" id="chat-output">
                 <div class="message ai">
                     <div class="msg-meta">Charlie</div>
@@ -241,7 +221,7 @@
 
     <script type="text/javascript">
         const AI_CORE_CONFIG = {
-            VERSION: "8.4",
+            VERSION: "8.5",
             STRICT_MODE: true,
             MAX_CONTEXT_TURNS: 12,       
             TYPING_SPEED_MIN: 15,        
@@ -272,18 +252,14 @@
             logBox.scrollTop = logBox.scrollHeight;
         }
 
-        // УПРАВЛЕНИЕ АУДИОПОТОКОМ СЕРВЕРНОЙ ВНУТРИ ИИ-КАПСУЛЫ
         function initServerAudio() {
-            // Ищем тег серверного эмбиента в родительском окне или локально
             let sndServer = document.getElementById('snd-server') || window.parent.document.getElementById('snd-server');
             let sndAmbient = document.getElementById('snd-ambient') || window.parent.document.getElementById('snd-ambient');
 
-            // Приглушаем бар, если он играет в фоне
             if (sndAmbient) {
                 try { sndAmbient.volume = 0.02; } catch(e){}
             }
 
-            // Запускаем сочный гул серверного моста на стабильной громкости 0.35
             if (sndServer) {
                 try {
                     sndServer.src = 'sbridge_ambient.mp3';
@@ -309,14 +285,13 @@
             const flagData = safeGet('gygy_flag') || "gb";
 
             document.getElementById('core-id-label').innerText = traceId;
-            document.getElementById('core-lang-val').innerText = langData.toUpperCase();
             document.getElementById('core-flag-img').src = `https://flagcdn.com/w20/${flagData.toLowerCase()}.png`;
 
             const avatarImg = document.getElementById('core-avatar-img');
             if (avatarImg && avatarData) {
                 avatarImg.src = avatarData;
             } else if (avatarImg) {
-                avatarImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20"><rect width="100" height="100" fill="%232c2c35"/></svg>';
+                avatarImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20"><circle cx="50" cy="50" r="40" fill="%232c2c35"/></svg>';
             }
         }
 
@@ -342,7 +317,7 @@
 
             setTimeout(() => {
                 document.getElementById('typing-indicator').style.display = "none";
-                const response = `[Charlie v8.4]: Рифма сгенерирована. Потоки данных под защитой серверного гула.`;
+                const response = `[Charlie v8.5]: Рифма сгенерирована. Потоки данных под защитой серверного гула.`;
                 renderMessageWithTyping(response, "ai", "Charlie");
             }, 800);
         }
@@ -379,11 +354,9 @@
             type();
         }
 
-        // СТАНДАРТНЫЕ НАВИГАЦИОННЫЕ ПЕРЕХОДЫ МЕЖДУ СЕГМЕНТАМИ КЛУБА
         function navRoom(targetBlockId) {
             pushLog(`Executing spatial transition to: ${targetBlockId}`);
             
-            // Гасим звук серверной перед выходом из капсулы ИИ
             let sndServer = document.getElementById('snd-server') || window.parent.document.getElementById('snd-server');
             if (sndServer) { try { sndServer.pause(); sndServer.currentTime = 0; } catch(e){} }
 
@@ -392,8 +365,8 @@
             } else if (typeof window.parent.portalTransition === 'function') {
                 window.parent.portalTransition(targetBlockId);
             } else {
-                // Если запуск идет в режиме изолированных файлов — делаем обычный редирект на Холл
-                window.location.href = "index.html"; 
+                // Если запуск идет локально, ищем файлы переходов
+                window.location.href = targetBlockId === 'block-server' ? "server.html" : "index.html"; 
             }
         }
 
