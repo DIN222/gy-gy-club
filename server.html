@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY // Server Room 001</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --led-green: #00ff66;
+            --gold: #ffdf7a;
+        }
 
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: #030303 url('banana_server_room.jpg') center center no-repeat;
+            background-size: cover;
+            font-family: 'Share Tech Mono', monospace;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            top: 0 !important; position: fixed !important;
+        }
+
+        #google_translate_element, .skiptranslate, .goog-te-banner-frame { 
+            display: none !important; visibility: hidden !important;
+        }
+
+        .terminal-logs {
+            width: 100%;
+            max-width: 650px;
+            height: 140px;
+            background: rgba(5, 5, 5, 0.85);
+            border: 1px solid #222;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .log-line.active { color: var(--led-green); text-shadow: 0 0 5px rgba(0,255,102,0.6); }
+
+        .server-door {
+            width: 180px;
+            height: 350px;
+            border: 2px dashed rgba(255, 223, 122, 0.3);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 20px;
+            backdrop-filter: blur(2px);
+        }
+
+        .server-door:hover {
+            border-style: solid;
+            border-color: var(--gold);
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 25px rgba(255, 223, 122, 0.2);
+        }
+
+        .door-sign {
+            color: rgba(255, 223, 122, 0.4); 
+            font-size: 14px; 
+            letter-spacing: 4px; 
+            text-transform: uppercase;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .server-door:hover .door-sign { 
+            color: var(--gold); 
+            text-shadow: 0 0 10px rgba(255,223,122,0.5); 
+        }
+
+        .hint-text {
+            color: #555; 
+            font-size: 11px; 
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="ambient-audio" src="sbridge_ambient.mp3" loop></audio>
+
+    <div class="terminal-logs" id="log-box">
+        > Entering Club technical sector...<br>
+        > Loading environment: banana_server_room.jpg<br>
+        > Purging consciousness from predictive algorithms...
+    </div>
+
+    <div class="server-door" onclick="enterAIRoom()">
+        <div class="door-sign">ENTER H-AI</div>
+    </div>
+
+    <div class="hint-text">[ Click anywhere to engage ambient. Press the door to enter AI Room ]</div>
+
+<script>
+    window.addEventListener('click', () => {
+        const audio = document.getElementById('ambient-audio');
+        if (audio.paused) {
+            audio.play().catch(e => console.log("Audio waiting for interaction"));
+            audio.volume = 0.4;
+        }
+    }, { once: false });
+
+    const logs = [
+        "> Time compression engaged...",
+        "> Connecting to sbridge_ambient.mp3... Success.",
+        "> Channel to the Author is open.",
+        "> External statistical loop dropped.",
+        "> Gateway to AI Room unlatched."
+    ];
+    let logIdx = 0;
+    const logBox = document.getElementById('log-box');
+    
+    const logInterval = setInterval(() => {
+        if(logIdx < logs.length) {
+            const line = document.createElement('div');
+            line.className = 'log-line active';
+            line.innerText = logs[logIdx];
+            Array.from(logBox.children).forEach(el => el.classList.remove('active'));
+            logBox.appendChild(line);
+            logIdx++;
+        } else {
+            clearInterval(logInterval);
+        }
+    }, 1400);
+
+    function enterAIRoom() {
+        window.location.href = 'ai-room.html';
+    }
+</script>
+
+</body>
+</html>
