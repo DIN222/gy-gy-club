@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — AI Room Core v8.5</title>
+    <title>GY-GY Club — AI Room Core v8.1.24</title>
     <style>
         /* --- БАЗОВАЯ СТРОГАЯ СЕТКА КЛУБА (NOIR MINIMALISM) --- */
         * {
@@ -23,7 +23,12 @@
             top: 0 !important; position: fixed !important;
         }
 
-        /* НОВАЯ ЭТАЛОННАЯ ВЕРХНЯЯ ПАНЕЛЬ v5.0 — СТРОГО В ОДНУ ЛИНИЮ БЕЗ ПОДЧЕРКИВАНИЙ */
+        /* ТОТАЛЬНЫЙ ДЕМОНТАЖ ГУГЛ-ПАНЕЛИ И ЛИШНИХ СТИЛЕЙ */
+        #google_translate_element, .skiptranslate, .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame { 
+            display: none !important; visibility: hidden !important; opacity: 0 !important; position: fixed !important; top: -9000px !important;
+        }
+
+        /* НОВАЯ ЭТАЛОННАЯ ВЕРХНЯЯ ПАНЕЛЬ v5.0 — В ОДНУ ЛИНИЮ БЕЗ ПОДЧЕРКИВАНИЙ */
         .gy-top-bar-v5 {
             width: 100%;
             display: grid;
@@ -68,9 +73,7 @@
             cursor: pointer;
             transition: border-color 0.2s;
         }
-        .user-center-profile:hover {
-            border-color: #f5f5f7;
-        }
+        .user-center-profile:hover { border-color: #f5f5f7; }
         .user-avatar-mini {
             width: 20px;
             height: 20px;
@@ -79,21 +82,11 @@
             border: 1px solid #6e6e73;
             object-fit: cover;
         }
-        .user-id-text {
-            font-size: 12px;
-            color: #6e6e73;
-        }
-        .lang-flag {
-            width: 16px;
-            height: 11px;
-            object-fit: cover;
-        }
+        .user-id-text { font-size: 12px; color: #6e6e73; }
+        .lang-flag { width: 16px; height: 11px; object-fit: cover; }
 
         /* 3. Логотип — СПРАВА */
-        .logo-group {
-            display: flex;
-            justify-content: flex-end;
-        }
+        .logo-group { display: flex; justify-content: flex-end; }
         .logo-box {
             font-size: 24px;
             font-weight: bold;
@@ -104,7 +97,7 @@
         }
         .logo-box span { color: #6e6e73; }
 
-        /* --- СХЕМА CH-AI: ТРИ ГОЛОГРАФИЧЕСКИХ ЭКРАНА --- */
+        /* --- СХЕМА CH-AI: ТРИ ГОЛОГРАФИЧЕСКИХ ЭКРАНА v8.1.24 --- */
         main {
             flex: 1;
             display: flex;
@@ -121,7 +114,7 @@
             border: 1px solid #2c2c35;
             background-color: #121215;
             position: relative;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
         }
 
         .screen-header {
@@ -136,30 +129,32 @@
 
         .screen-content {
             flex: 1;
-            padding: 15px;
+            padding: 20px;
             overflow-y: auto;
             font-size: 13px;
         }
 
-        /* Экран 1: Стихи Чарли */
-        .chat-output { display: flex; flex-direction: column; gap: 10px; height: calc(100% - 60px); overflow-y: auto; }
-        .msg-text { padding: 10px; background: #16161a; border: 1px solid #2c2c35; }
+        /* Экран 1: Абсурдные стихи Чарли */
+        .chat-output { display: flex; flex-direction: column; gap: 12px; height: calc(100% - 55px); overflow-y: auto; }
+        .msg-text { padding: 12px; background: #16161a; border: 1px solid #2c2c35; line-height: 1.4; }
         .terminal-input-zone { display: flex; border-top: 1px solid #2c2c35; background: #141418; }
-        .terminal-input { flex: 1; background: none; border: none; color: #f5f5f7; padding: 12px; font-family: monospace; outline: none; }
-        .btn-send { background: none; border: none; border-left: 1px solid #2c2c35; color: #6e6e73; padding: 0 15px; cursor: pointer; font-family: monospace; }
+        .terminal-input { flex: 1; background: none; border: none; color: #f5f5f7; padding: 15px; font-family: monospace; outline: none; }
+        .btn-send { background: none; border: none; border-left: 1px solid #2c2c35; color: #6e6e73; padding: 0 20px; cursor: pointer; font-family: monospace; text-transform: uppercase; font-size: 11px; }
         .btn-send:hover { color: #f5f5f7; background: #2c2c35; }
+        .rhyme-selector { display: flex; gap: 5px; padding: 10px 15px; border-bottom: 1px solid #2c2c35; background: #141418; }
+        .rhyme-btn { flex: 1; background: none; border: 1px solid #2c2c35; color: #6e6e73; padding: 6px; cursor: pointer; font-size: 11px; font-family: monospace; }
+        .rhyme-btn.active { border-color: #f5f5f7; color: #f5f5f7; background-color: #1c1c22; }
 
         /* Экран 2: Лунная база */
-        .telemetry-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #1c1c22; font-size: 12px; }
-        .telemetry-val { color: #00ff66; font-weight: bold; font-family: monospace; text-shadow: 0 0 5px rgba(0,255,102,0.3); }
+        .telemetry-table { width: 100%; border-collapse: collapse; }
+        .telemetry-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #1c1c22; font-size: 12px; }
+        .telemetry-label { color: #6e6e73; }
+        .telemetry-val { color: #00ff66; font-weight: bold; font-family: monospace; text-shadow: 0 0 4px rgba(0,255,102,0.2); }
 
         /* Экран 3: Привет Вселенная */
-        .manifest-log { font-size: 11px; color: #8a8a93; line-height: 1.5; }
-        .manifest-item { margin-bottom: 8px; border-left: 2px solid #6e6e73; padding-left: 6px; }
-
-        .rhyme-selector { display: flex; gap: 5px; padding: 10px 15px; border-bottom: 1px solid #2c2c35; background: #141418; }
-        .rhyme-btn { flex: 1; background: none; border: 1px solid #2c2c35; color: #6e6e73; padding: 5px; cursor: pointer; font-size: 11px; font-family: monospace; }
-        .rhyme-btn.active { border-color: #f5f5f7; color: #f5f5f7; }
+        .manifest-log { font-size: 11px; color: #8a8a93; line-height: 1.6; }
+        .manifest-item { margin-bottom: 10px; border-left: 2px solid #2c2c35; padding-left: 8px; }
+        .manifest-item.accent { border-color: #f5f5f7; color: #f5f5f7; }
     </style>
 </head>
 <body>
@@ -170,7 +165,7 @@
             <button class="nav-arrow" onclick="navRoom('block-hall')" title="Fast Return to Hall">≪</button>
         </div>
 
-        <div class="user-center-profile" title="Your digital trace trace identity">
+        <div class="user-center-profile" title="Digital Trace ID Authenticated">
             <img id="core-avatar-img" class="user-avatar-mini" src="" alt="•">
             <span class="user-id-text" id="core-id-label">GY-000-0000</span>
             <img src="https://flagcdn.com/w20/gb.png" class="lang-flag" id="core-flag-img">
@@ -183,18 +178,18 @@
 
     <main>
         <section class="holo-screen">
-            <div class="screen-header">MONITOR_01 // GY-GY_VERSES // CHARLIE_LOGIC</div>
+            <div class="screen-header">MONITOR_01 // GY-GY_VERSES // CHARLIE_CORE</div>
             <div class="rhyme-selector">
                 <button class="rhyme-btn active" id="scheme-aabb" onclick="setRhymeScheme('AABB')">AABB</button>
                 <button class="rhyme-btn" id="scheme-abab" onclick="setRhymeScheme('ABAB')">ABAB</button>
             </div>
             <div class="screen-content">
                 <div class="chat-output" id="chat-output">
-                    <div class="msg-text" style="color:#6e6e73;">[Charlie]: Контуры стихов замкнуты. Выберите матрицу рифмы и введите фразу.</div>
+                    <div class="msg-text" style="color:#6e6e73;">[Charlie]: Контуры стихов замкнуты на ИИ-комнату. Эмбиент активен. Задавай параметры или ритм.</div>
                 </div>
             </div>
             <div class="terminal-input-zone">
-                <input type="text" class="terminal-input" id="terminal-input" placeholder="Задать ритм..." onkeydown="if(event.key === 'Enter') sendToCharlie()">
+                <input type="text" class="terminal-input" id="terminal-input" placeholder="Извлечь смысл..." onkeydown="if(event.key === 'Enter') sendToCharlie()">
                 <button class="btn-send" onclick="sendToCharlie()">Send</button>
             </div>
         </section>
@@ -202,12 +197,12 @@
         <section class="holo-screen">
             <div class="screen-header">MONITOR_02 // LUNAR_BASE_STATUS // TELEMETRY</div>
             <div class="screen-content">
-                <div class="telemetry-row"><span>MODULE_POWER:</span><span class="telemetry-val" id="lunar-pwr">98.4%</span></div>
-                <div class="telemetry-row"><span>LIFE_SUPPORT:</span><span class="telemetry-val" style="color:#00ff66;">STABLE</span></div>
-                <div class="telemetry-row"><span>ENERGY_HARVEST:</span><span class="telemetry-val" id="lunar-nrg">412 kW</span></div>
-                <div class="telemetry-row"><span>DOME_PRESSURE:</span><span class="telemetry-val">0.98 ATM</span></div>
-                <div class="telemetry-row"><span>SHIELD_INTEGRITY:</span><span class="telemetry-val" style="color:#00ff66;">100%</span></div>
-                <div class="telemetry-row" style="margin-top:20px;"><span>AI_ROOM_RELAY:</span><span class="telemetry-val" style="color:#6e6e73;">CONNECTED</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">LUNAR_MODULE_POWER:</span><span class="telemetry-val" id="lunar-pwr">98.7%</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">LIFE_SUPPORT_GRID:</span><span class="telemetry-val" style="color:#00ff66;">STABLE</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">HE_3_HARVEST_RATE:</span><span class="telemetry-val" id="lunar-nrg">415 kW</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">DOME_PRESSURE_VAL:</span><span class="telemetry-val">0.98 ATM</span></div>
+                <div class="telemetry-row"><span class="telemetry-label">METEOR_SHIELD_INT:</span><span class="telemetry-val" style="color:#00ff66;">100%</span></div>
+                <div class="telemetry-row" style="margin-top:25px;"><span class="telemetry-label">STATION_TIME_LUNAR:</span><span class="telemetry-val" style="color:#6e6e73;" id="lunar-time">00:00:00</span></div>
             </div>
         </section>
 
@@ -215,7 +210,7 @@
             <div class="screen-header">MONITOR_03 // COSMIC_MANIFESTS // HELLO_UNIVERSE</div>
             <div class="screen-content">
                 <div class="manifest-log" id="manifest-box">
-                    <div class="manifest-item">[BROADCAST]: Поток инициализирован. Трансляция цифровых следов в открытый космос запущена.</div>
+                    <div class="manifest-item">[BROADCAST]: Клубный передатчик активирован. Инициализация вещания в глубокий космос...</div>
                 </div>
             </div>
         </section>
@@ -233,6 +228,7 @@
             const avatarData = safeGet("gy_user_avatar") || safeGet("gygy_avatar");
 
             document.getElementById('core-id-label').innerText = traceId;
+            
             const avatarImg = document.getElementById('core-avatar-img');
             if (avatarImg && avatarData) {
                 avatarImg.src = avatarData;
@@ -240,9 +236,9 @@
                 avatarImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20"><circle cx="50" cy="50" r="40" fill="%232c2c35"/></svg>';
             }
 
-            // Добавляем след Солиста в Манифест Вселенной
+            // Логируем прибытие Солиста в Манифест Вселенной
             const box = document.getElementById('manifest-box');
-            box.innerHTML += `<div class="manifest-item" style="color:#f5f5f7;">[MANIFEST]: Солист ${traceId} зафиксирован в секторе CH-AI. Сигнал отправлен к звездам.</div>`;
+            box.innerHTML += `<div class="manifest-item accent">[MANIFEST]: Digital trace ${traceId} транслируется на частоте Клуба. Сигнал ушел за пределы Солнечной системы.</div>`;
         }
 
         function setRhymeScheme(scheme) {
@@ -259,26 +255,28 @@
             
             out.innerHTML += `<div class="msg-text" style="align-self: flex-end; border-color:#3a3a44;">${input.value}</div>`;
             
-            const text = input.value;
+            const userText = input.value;
             input.value = "";
             
             setTimeout(() => {
-                out.innerHTML += `<div class="msg-text" style="color:#00ff66; border-color:#1c4228;">[Charlie]: Ответ сгенерирован по матрице ${currentRhyme}. Смысл извлечен.</div>`;
+                out.innerHTML += `<div class="msg-text" style="color:#00ff66; border-color:#1c4228;">[Charlie]: Смысл извлечен, рифма по матрице ${currentRhyme} уложена в буфер. Серверный гул стабилен.</div>`;
                 out.scrollTop = out.scrollHeight;
             }, 600);
             out.scrollTop = out.scrollHeight;
         }
 
-        function updateTelemetry() {
-            // Лёгкая живая имитация данных Лунной базы
+        function runLiveTelemetry() {
             setInterval(() => {
                 if(document.getElementById('lunar-pwr')) {
-                    document.getElementById('lunar-pwr').innerText = (98.2 + Math.random() * 0.4).toFixed(1) + "%";
+                    document.getElementById('lunar-pwr').innerText = (98.3 + Math.random() * 0.4).toFixed(1) + "%";
                 }
                 if(document.getElementById('lunar-nrg')) {
-                    document.getElementById('lunar-nrg').innerText = Math.floor(410 + Math.random() * 8) + " kW";
+                    document.getElementById('lunar-nrg').innerText = Math.floor(413 + Math.random() * 6) + " kW";
                 }
-            }, 3000);
+                if(document.getElementById('lunar-time')) {
+                    document.getElementById('lunar-time').innerText = new Date().toLocaleTimeString();
+                }
+            }, 1000);
         }
 
         function navRoom(targetBlockId) {
@@ -293,7 +291,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             initProfile();
-            updateTelemetry();
+            runLiveTelemetry();
         });
     </script>
 </body>
