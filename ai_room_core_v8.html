@@ -1,156 +1,300 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI ROOM CORE | v8.1.7 (Internal 4.3)</title>
+    <title>GY-GY Club — AI Room Core v8.5</title>
     <style>
-        :root {
-            --neon-blue: #00f2ff;
-            --neon-glow: 0 0 20px rgba(0, 242, 255, 0.9), 0 0 40px rgba(0, 242, 255, 0.4);
-            --gold: #ffd700;
-        }
-
-        body, html {
+        /* --- БАЗОВАЯ СТРОГАЯ СЕТКА КЛУБА (NOIR MINIMALISM) --- */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #0f0f11;
+            color: #f5f5f7;
+            font-family: monospace;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .viewport {
-            position: relative;
-            width: 100vw;
             height: 100vh;
-            background: url('OIG2_vintage_tv_room_v2.png') no-repeat center center;
-            background-size: contain; 
-        }
-
-        .top-bar {
-            position: absolute;
-            top: 25px;
-            width: 100%;
             display: flex;
-            justify-content: space-between;
-            padding: 0 40px;
-            box-sizing: border-box;
-            z-index: 1000;
+            flex-direction: column;
+            top: 0 !important; position: fixed !important;
         }
 
-        .brand-logo {
-            color: var(--gold);
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 5px;
+        /* НОВАЯ ЭТАЛОННАЯ ВЕРХНЯЯ ПАНЕЛЬ v5.0 — СТРОГО В ОДНУ ЛИНИЮ БЕЗ ПОДЧЕРКИВАНИЙ */
+        .gy-top-bar-v5 {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 25px 40px;
+            background: transparent;
+            z-index: 10;
         }
 
-        .screen-label {
-            position: absolute;
-            color: var(--neon-blue);
-            text-shadow: var(--neon-glow);
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
+        /* 1. Стрелки навигации — СЛЕВА */
+        .nav-group {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+        .nav-arrow {
+            color: #6e6e73;
             text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: monospace;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .nav-arrow:hover {
+            color: #f5f5f7;
+            transform: scale(1.1);
+        }
+
+        /* 2. Аватар Юзера с флагом — ПО ЦЕНТРУ */
+        .user-center-profile {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            text-transform: lowercase;
-        }
-
-        /* Выровнены в одну строку по top: 45% */
-        #verses-zone {
-            top: 45%; 
-            left: 28%; 
-            width: 15%;
-            height: 12%;
-            font-size: 2.2vw;
-        }
-
-        #techpark-zone {
-            top: 45%; 
-            left: 43.5%;
-            width: 15%;
-            height: 12%;
-            font-size: 2.2vw;
-        }
-
-        .screen-label:hover {
-            filter: brightness(1.5);
-            transform: scale(1.05);
-            text-shadow: 0 0 30px var(--neon-blue);
-        }
-
-        .bottom-nav {
-            position: absolute;
-            bottom: 30px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 40px;
-            box-sizing: border-box;
-            align-items: flex-end;
-        }
-
-        .btn-back {
-            background: none;
-            border: 1px solid rgba(255,255,255,0.6);
-            color: #fff;
-            padding: 10px 25px;
+            gap: 12px;
+            background: rgba(22, 22, 26, 0.7);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid #2c2c35;
             cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .user-center-profile:hover {
+            border-color: #f5f5f7;
+        }
+        .user-avatar-mini {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #2c2c35;
+            border: 1px solid #6e6e73;
+            object-fit: cover;
+        }
+        .user-id-text {
+            font-size: 12px;
+            color: #6e6e73;
+        }
+        .lang-flag {
+            width: 16px;
+            height: 11px;
+            object-fit: cover;
+        }
+
+        /* 3. Логотип — СПРАВА */
+        .logo-group {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .logo-box {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #f5f5f7;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .logo-box span { color: #6e6e73; }
+
+        /* --- СХЕМА CH-AI: ТРИ ГОЛОГРАФИЧЕСКИХ ЭКРАНА --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            padding: 10px 40px 40px 40px;
+            gap: 25px;
+            position: relative;
+        }
+
+        .holo-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #2c2c35;
+            background-color: #121215;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .screen-header {
+            padding: 12px 15px;
+            border-bottom: 1px solid #2c2c35;
+            font-size: 11px;
+            color: #6e6e73;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            letter-spacing: 1px;
+            background: #141418;
         }
 
-        .meta-data {
-            text-align: right;
-            color: rgba(255,255,255,0.3);
-            font-size: 0.7rem;
+        .screen-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 13px;
         }
 
-        #digital-trace { color: var(--neon-blue); }
+        /* Экран 1: Стихи Чарли */
+        .chat-output { display: flex; flex-direction: column; gap: 10px; height: calc(100% - 60px); overflow-y: auto; }
+        .msg-text { padding: 10px; background: #16161a; border: 1px solid #2c2c35; }
+        .terminal-input-zone { display: flex; border-top: 1px solid #2c2c35; background: #141418; }
+        .terminal-input { flex: 1; background: none; border: none; color: #f5f5f7; padding: 12px; font-family: monospace; outline: none; }
+        .btn-send { background: none; border: none; border-left: 1px solid #2c2c35; color: #6e6e73; padding: 0 15px; cursor: pointer; font-family: monospace; }
+        .btn-send:hover { color: #f5f5f7; background: #2c2c35; }
+
+        /* Экран 2: Лунная база */
+        .telemetry-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #1c1c22; font-size: 12px; }
+        .telemetry-val { color: #00ff66; font-weight: bold; font-family: monospace; text-shadow: 0 0 5px rgba(0,255,102,0.3); }
+
+        /* Экран 3: Привет Вселенная */
+        .manifest-log { font-size: 11px; color: #8a8a93; line-height: 1.5; }
+        .manifest-item { margin-bottom: 8px; border-left: 2px solid #6e6e73; padding-left: 6px; }
+
+        .rhyme-selector { display: flex; gap: 5px; padding: 10px 15px; border-bottom: 1px solid #2c2c35; background: #141418; }
+        .rhyme-btn { flex: 1; background: none; border: 1px solid #2c2c35; color: #6e6e73; padding: 5px; cursor: pointer; font-size: 11px; font-family: monospace; }
+        .rhyme-btn.active { border-color: #f5f5f7; color: #f5f5f7; }
     </style>
 </head>
 <body>
 
-<div class="viewport">
-    <div class="top-bar">
-        <div id="google_translate_element"></div>
-        <div class="brand-logo">GY-GY</div>
-    </div>
+    <div class="gy-top-bar-v5">
+        <div class="nav-group">
+            <button class="nav-arrow" onclick="navRoom('block-server')" title="Step Back to Server Room">←</button>
+            <button class="nav-arrow" onclick="navRoom('block-hall')" title="Fast Return to Hall">≪</button>
+        </div>
 
-    <a href="verses.html" class="screen-label" id="verses-zone">verses</a>
-    <a href="techpark.html" class="screen-label" id="techpark-zone">techpark</a>
+        <div class="user-center-profile" title="Your digital trace trace identity">
+            <img id="core-avatar-img" class="user-avatar-mini" src="" alt="•">
+            <span class="user-id-text" id="core-id-label">GY-000-0000</span>
+            <img src="https://flagcdn.com/w20/gb.png" class="lang-flag" id="core-flag-img">
+        </div>
 
-    <div class="bottom-nav">
-        <button class="btn-back" onclick="history.back()">← RETURN</button>
-        <div class="meta-data">
-            CORE_VER: 4.3 (Build 8.1.7)<br>
-            TRACE_ID: <span id="digital-trace">...</span>
+        <div class="logo-group">
+            <a href="index.html" class="logo-box">GY-GY <span>CLUB</span></a>
         </div>
     </div>
-</div>
 
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({pageLanguage: 'ru'}, 'google_translate_element');
-    }
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <main>
+        <section class="holo-screen">
+            <div class="screen-header">MONITOR_01 // GY-GY_VERSES // CHARLIE_LOGIC</div>
+            <div class="rhyme-selector">
+                <button class="rhyme-btn active" id="scheme-aabb" onclick="setRhymeScheme('AABB')">AABB</button>
+                <button class="rhyme-btn" id="scheme-abab" onclick="setRhymeScheme('ABAB')">ABAB</button>
+            </div>
+            <div class="screen-content">
+                <div class="chat-output" id="chat-output">
+                    <div class="msg-text" style="color:#6e6e73;">[Charlie]: Контуры стихов замкнуты. Выберите матрицу рифмы и введите фразу.</div>
+                </div>
+            </div>
+            <div class="terminal-input-zone">
+                <input type="text" class="terminal-input" id="terminal-input" placeholder="Задать ритм..." onkeydown="if(event.key === 'Enter') sendToCharlie()">
+                <button class="btn-send" onclick="sendToCharlie()">Send</button>
+            </div>
+        </section>
 
-<script>
-    (function() {
-        let id = localStorage.getItem('gy_trace') || 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        localStorage.setItem('gy_trace', id);
-        document.getElementById('digital-trace').innerText = id;
-    })();
-</script>
+        <section class="holo-screen">
+            <div class="screen-header">MONITOR_02 // LUNAR_BASE_STATUS // TELEMETRY</div>
+            <div class="screen-content">
+                <div class="telemetry-row"><span>MODULE_POWER:</span><span class="telemetry-val" id="lunar-pwr">98.4%</span></div>
+                <div class="telemetry-row"><span>LIFE_SUPPORT:</span><span class="telemetry-val" style="color:#00ff66;">STABLE</span></div>
+                <div class="telemetry-row"><span>ENERGY_HARVEST:</span><span class="telemetry-val" id="lunar-nrg">412 kW</span></div>
+                <div class="telemetry-row"><span>DOME_PRESSURE:</span><span class="telemetry-val">0.98 ATM</span></div>
+                <div class="telemetry-row"><span>SHIELD_INTEGRITY:</span><span class="telemetry-val" style="color:#00ff66;">100%</span></div>
+                <div class="telemetry-row" style="margin-top:20px;"><span>AI_ROOM_RELAY:</span><span class="telemetry-val" style="color:#6e6e73;">CONNECTED</span></div>
+            </div>
+        </section>
 
+        <section class="holo-screen">
+            <div class="screen-header">MONITOR_03 // COSMIC_MANIFESTS // HELLO_UNIVERSE</div>
+            <div class="screen-content">
+                <div class="manifest-log" id="manifest-box">
+                    <div class="manifest-item">[BROADCAST]: Поток инициализирован. Трансляция цифровых следов в открытый космос запущена.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentRhyme = "AABB";
+
+        function safeGet(key, fallback = "") {
+            try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+        }
+
+        function initProfile() {
+            const traceId = safeGet("gy_trace") || safeGet("gygy_id") || "GY-TRACE-EMPTY";
+            const avatarData = safeGet("gy_user_avatar") || safeGet("gygy_avatar");
+
+            document.getElementById('core-id-label').innerText = traceId;
+            const avatarImg = document.getElementById('core-avatar-img');
+            if (avatarImg && avatarData) {
+                avatarImg.src = avatarData;
+            } else if (avatarImg) {
+                avatarImg.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="20" height="20"><circle cx="50" cy="50" r="40" fill="%232c2c35"/></svg>';
+            }
+
+            // Добавляем след Солиста в Манифест Вселенной
+            const box = document.getElementById('manifest-box');
+            box.innerHTML += `<div class="manifest-item" style="color:#f5f5f7;">[MANIFEST]: Солист ${traceId} зафиксирован в секторе CH-AI. Сигнал отправлен к звездам.</div>`;
+        }
+
+        function setRhymeScheme(scheme) {
+            currentRhyme = scheme;
+            document.querySelectorAll('.rhyme-btn').forEach(btn => btn.classList.remove('active'));
+            if(scheme === 'AABB') document.getElementById('scheme-aabb').classList.add('active');
+            if(scheme === 'ABAB') document.getElementById('scheme-abab').classList.add('active');
+        }
+
+        function sendToCharlie() {
+            const input = document.getElementById('terminal-input');
+            if (!input || !input.value.trim()) return;
+            const out = document.getElementById('chat-output');
+            
+            out.innerHTML += `<div class="msg-text" style="align-self: flex-end; border-color:#3a3a44;">${input.value}</div>`;
+            
+            const text = input.value;
+            input.value = "";
+            
+            setTimeout(() => {
+                out.innerHTML += `<div class="msg-text" style="color:#00ff66; border-color:#1c4228;">[Charlie]: Ответ сгенерирован по матрице ${currentRhyme}. Смысл извлечен.</div>`;
+                out.scrollTop = out.scrollHeight;
+            }, 600);
+            out.scrollTop = out.scrollHeight;
+        }
+
+        function updateTelemetry() {
+            // Лёгкая живая имитация данных Лунной базы
+            setInterval(() => {
+                if(document.getElementById('lunar-pwr')) {
+                    document.getElementById('lunar-pwr').innerText = (98.2 + Math.random() * 0.4).toFixed(1) + "%";
+                }
+                if(document.getElementById('lunar-nrg')) {
+                    document.getElementById('lunar-nrg').innerText = Math.floor(410 + Math.random() * 8) + " kW";
+                }
+            }, 3000);
+        }
+
+        function navRoom(targetBlockId) {
+            if (typeof window.portalTransition === 'function') {
+                window.portalTransition(targetBlockId);
+            } else if (typeof window.parent.portalTransition === 'function') {
+                window.parent.portalTransition(targetBlockId);
+            } else {
+                window.location.href = targetBlockId === 'block-server' ? "server.html" : "index.html"; 
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initProfile();
+            updateTelemetry();
+        });
+    </script>
 </body>
 </html>
