@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE оо1 </title>
+    <title>GY-GY Club — AI ZONE 003 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,11 +16,12 @@
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         body, button, input, div, img, span { pointer-events: auto !important; }
+        img { -webkit-user-drag: none !important; }
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           ЕДИНЫЙ СТАНДАРТ ШАПКИ (СТРЕЛКИ СЛЕВА, АВАТАР ПО ЦЕНТРУ, ЛОГО СПРАВА)
+           СТАНДАРТНАЯ ШАПКА (ЯЗЫК СЛЕВА, LOGO СПРАВА — СТРОГО ПО ТРЕБОВАНИЮ)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -38,15 +39,49 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        .bar-left-nav { font-size: 26px; font-weight: 900; color: var(--gold); text-shadow: 0 0 5px #000; user-select: none; letter-spacing: -2px; display: flex; gap: 15px; }
-        .bar-left-nav span { cursor: pointer; }
+        /* Панель возврата и языка на левой стороне */
+        .bar-left-nav {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .back-btn { cursor: pointer; font-size: 26px; font-weight: 900; letter-spacing: -2px; }
+        .lang-panel { font-size: 16px; font-weight: bold; cursor: pointer; letter-spacing: 1px; }
 
-        .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
-        .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
+        /* Сквозной аватар пользователя по центру */
+        .bar-center-badge-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bar-center-badge {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            background: #111;
+            cursor: pointer;
+            box-shadow: 0 0 0 1px #000;
+        }
         .bar-center-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         .bar-center-badge .badge-flag { position: absolute; bottom: -2px; right: -4px; width: 17px; height: 12px; border: 1px solid var(--gold); }
 
+        /* Логотип строго на правой стороне */
         .bar-right-logo { font-size: 24px; letter-spacing: 5px; font-weight: bold; text-shadow: 0 0 5px #000; }
+
+        /* ПАСПОРТ ОБЩИЙ */
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card .box-final { margin: 15px auto; border-color: #000; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         /* УНИВЕРСАЛЬНЫЕ БЛОКИ ДЛЯ ЭКРАНОВ */
         .block { 
@@ -62,35 +97,44 @@
         }
 
         /* ==========================================================================
-           ЛОКАЦИЯ 1: СЕРВЕРНАЯ И БРОНЕ ДВЕРЬ
+           ЭКРАН СЕРВЕРНОЙ (ОРИГИНАЛЬНЫЙ СТИЛЬ С BANANA_SERVER_ROOM.JPG)
            ========================================================================== */
-        .server-grid { position: absolute; inset: 0; background: linear-gradient(rgba(0,40,0,0.1) 50%, rgba(0,0,0,0.3) 50%), linear-gradient(90deg, rgba(0,255,0,0.02) 1px, transparent 1px); background-size: 100% 4px, 20px 100%; opacity: 0.7; pointer-events: none; }
+        #section-server {
+            background-image: url('banana_server_room.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        #section-server::after {
+            content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); z-index: 1; pointer-events: none;
+        }
+        #section-server * { z-index: 2; }
         
         .armored-door {
-            width: 200px;
-            height: 300px;
-            background: linear-gradient(135deg, #1e1e1e 0%, #111111 100%);
-            border: 5px solid #333;
+            width: 210px;
+            height: 310px;
+            background: linear-gradient(135deg, #2b2b2b 0%, #0f0f0f 100%);
+            border: 6px solid #3a3a3a;
             border-radius: 12px;
-            box-shadow: inset 0 0 20px #000, 0 0 30px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 30px #000, 0 0 40px rgba(0,0,0,0.9);
             position: relative;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 40px 10px;
+            padding: 45px 10px;
             transition: all 0.4s ease;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         .armored-door:hover {
             border-color: var(--gold);
-            box-shadow: 0 0 25px rgba(214, 175, 55, 0.4);
+            box-shadow: 0 0 30px rgba(214, 175, 55, 0.5);
         }
         .door-plate {
             background: #000;
             border: 2px solid var(--gold);
-            padding: 8px 15px;
+            padding: 8px 18px;
             font-size: 18px;
             font-weight: 900;
             letter-spacing: 3px;
@@ -99,24 +143,17 @@
             text-align: center;
         }
         .door-wheel {
-            width: 60px;
-            height: 60px;
-            border: 4px dashed #444;
+            width: 65px;
+            height: 65px;
+            border: 5px dashed #444;
             border-radius: 50%;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
         .armored-door:hover .door-wheel { transform: rotate(180deg); border-color: var(--gold); }
 
-        .server-lights { display: flex; gap: 6px; margin-bottom: 10px; }
-        .light { width: 6px; height: 6px; background: #ff0000; border-radius: 50%; animation: blink 0.6s infinite alternate; }
-        .light.g { background: #00ff00; animation-delay: 0.2s; }
-
-        @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
-
         /* ==========================================================================
-           ЛОКАЦИЯ 2: КОМНАТА С 3 ГОЛОГРАФИЧЕСКИМИ ЭКРАНАМИ
+           ЭКРАН С ГОЛОГРАФИЧЕСКИМИ ПАНЕЛЯМИ
            ========================================================================== */
-        /* Стилизация под "Голограмму" */
         .holo-screen { 
             width: 85%; 
             max-width: 500px; 
@@ -131,27 +168,24 @@
             text-align: center;
             position: relative;
         }
-        /* Сетка поверх голограммы */
         .holo-screen::before {
             content: " "; display: block; position: absolute; inset: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
             background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 2;
         }
         
         .holo-title { color: var(--holo-cyan); font-size: 24px; font-weight: 900; letter-spacing: 3px; margin-bottom: 20px; text-shadow: 0 0 8px var(--holo-cyan); }
         .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; font-family: 'Playfair Display', serif; font-style: italic; }
 
-        /* Переключатели голограмм (Вкладки навигации снизу экрана) */
+        /* Нижние табы оригинальной навигации комнат */
         .holo-tabs-container { display: flex; gap: 8px; justify-content: center; width: 90%; max-width: 500px; margin-top: 10px; }
         .tab-btn {
             flex: 1; padding: 12px 5px; background: #000; border: 1px solid var(--holo-cyan);
             color: var(--holo-cyan); font-family: 'Share Tech Mono'; font-size: 12px; font-weight: bold;
             cursor: pointer; text-transform: uppercase; transition: all 0.3s;
-            box-shadow: 0 0 5px rgba(0,255,255,0.2);
         }
         .tab-btn.active-tab { background: var(--holo-cyan); color: #000; box-shadow: 0 0 12px var(--holo-cyan); }
 
-        /* Кнопки действий внутри экранов */
         .btn-action { width: 100%; max-width: 270px; padding: 12px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; font-weight: 900; font-family: 'Share Tech Mono'; text-transform: uppercase; margin-top: 5px; }
         .btn-action:hover { background: var(--gold); color: #000; }
     </style>
@@ -160,13 +194,13 @@
 
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
-            <span onclick="handleGlobalBack()">&lt;</span>
-            <span onclick="backToHall()">&lt;&lt;</span>
+            <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
+            <span class="lang-panel" onclick="alert('Language switch')">EN</span>
         </div>
         
         <div class="bar-center-badge-container">
-            <div id="global-user-badge" class="bar-center-badge notranslate" onclick="alert('Passport Clicked')">
-                <img id="badge-avatar-img" class="badge-img" src="https://via.placeholder.com/42">
+            <div id="global-user-badge" class="bar-center-badge notranslate" onclick="openPassport()">
+                <img id="badge-avatar-img" class="badge-img" src="">
                 <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
             </div>
         </div>
@@ -174,15 +208,26 @@
         <div class="bar-right-logo notranslate">GY-GY</div>
     </div>
 
+    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
+        <div class="passport-card" onclick="event.stopPropagation()">
+            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+        </div>
+    </div>
+
+    <audio id="ambient-audio" src="sbridge_ambient.mp3" loop></audio>
+
     <div id="section-server" class="block" style="display: flex;">
-        <div class="server-grid"></div>
-        <div class="server-lights"><div class="light"></div><div class="light g"></div><div class="light"></div></div>
-        <div style="font-size: 13px; color: #555; letter-spacing: 2px; margin-bottom: 10px;">mainframe connection: online</div>
+        <div style="font-size: 14px; color: var(--gold); letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 4px #000;">MAINFRAME STATUS: CONNECTED</div>
         
         <div class="armored-door" onclick="unlockAndEnterRoom()">
             <div class="door-plate">AI ROOM</div>
             <div class="door-wheel"></div>
-            <div style="font-size: 10px; color: #444; font-weight: 900;">TAP TO UNLOCK</div>
+            <div style="font-size: 11px; color: #666; font-weight: 900; letter-spacing: 1px;">CLICK TO ENTER</div>
         </div>
     </div>
 
@@ -201,16 +246,15 @@
 
         <div id="pane-lunar" class="holo-screen" style="display: none;">
             <div class="holo-title">LUNAR BASE</div>
-            <div style="color: #fff; font-size: 15px; line-height: 1.6; margin-top: 20px;">
+            <div style="color: #fff; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left;">
                 <span style="color: var(--holo-cyan)">[SYSTEM STATUS]:</span> Domed City operational.<br>
                 <span style="color: var(--holo-cyan)">[ENERGY CORE]:</span> 98.4% Stable.<br>
-                <span style="color: var(--holo-cyan)">[OXYGEN]:</span> Normal.<br><br>
-                Oxygen miners and atmospheric scrapers are currently processing lunar dust. Everything is under AI supervision.
+                <span style="color: var(--holo-cyan)">[LOGISTICS]:</span> Oxygen scrapers processing dust under AI control.
             </div>
         </div>
 
         <div id="pane-hello" class="holo-screen" style="display: none;">
-            <div class="holo-title">HELLO WORLD</div>
+            <div class="holo-title">WELCOME UNIVERSE</div>
             <div style="text-align: left; font-size: 14px; height: 75%; display: flex; flex-direction: column; justify-content: space-between;">
                 <div style="color: var(--holo-cyan); overflow-y: auto;">
                     <b>[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator. Speak your thoughts.
@@ -227,108 +271,87 @@
     </div>
 
 <script type="text/javascript">
-    let isInAiRoom = false; // Маркер: зашли ли мы за бронедверь
-    let audioCtx = null;
+    let isInAiRoom = false;
+    let currentID = "";
 
-    // Инициализация фонового шума серверных стоек
-    function startServerHum() {
-        if (audioCtx) return;
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Низкий гул (60 Гц)
-            let osc = audioCtx.createOscillator();
-            let gainOsc = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(60, audioCtx.currentTime);
-            gainOsc.gain.setValueAtTime(0.03, audioCtx.currentTime);
-            
-            let filter = audioCtx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
-            // Шум кулеров
-            let bufferSize = 2 * audioCtx.sampleRate,
-                noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate),
-                output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
-            let noise = audioCtx.createBufferSource();
-            noise.buffer = noiseBuffer;
-            noise.loop = true;
-            
-            let gainNoise = audioCtx.createGain();
-            let noiseFilter = audioCtx.createBiquadFilter();
-            noiseFilter.type = 'bandpass';
-            noiseFilter.frequency.setValueAtTime(350, audioCtx.currentTime);
-            gainNoise.gain.setValueAtTime(0.012, audioCtx.currentTime);
-
-            osc.connect(filter); filter.connect(gainOsc); gainOsc.connect(audioCtx.destination);
-            noise.connect(noiseFilter); noiseFilter.connect(gainNoise); gainNoise.connect(audioCtx.destination);
-
-            osc.start(); noise.start();
-        } catch(e){}
+    // Запуск эмбиента sbridge_ambient.mp3 при первом взаимодействии пользователя
+    function initAmbientAudio() {
+        const audio = document.getElementById('ambient-audio');
+        if (audio && audio.paused) {
+            audio.volume = 0.4;
+            audio.play().catch(e => console.log("Audio playback delayed"));
+        }
     }
 
-    // Клик по Броне Двери: эффект пшика воздуха и открытие ИИ Комнаты
+    // Логика открытия бронедвери и перехода к экранам
     function unlockAndEnterRoom() {
-        if (audioCtx) {
-            let bufferSize = 0.5 * audioCtx.sampleRate,
-                noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate),
-                output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) { output[i] = Math.random() * 2 - 1; }
-            let pshh = audioCtx.createBufferSource();
-            pshh.buffer = noiseBuffer;
-            let pshhGain = audioCtx.createGain();
-            let pshhFilter = audioCtx.createBiquadFilter();
-            pshhFilter.type = 'lowpass';
-            pshhFilter.frequency.setValueAtTime(900, audioCtx.currentTime);
-            pshhFilter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.4);
-            pshhGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            pshhGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-            pshh.connect(pshhFilter); pshhFilter.connect(pshhGain); pshhGain.connect(audioCtx.destination);
-            pshh.start();
-        }
-
+        initAmbientAudio();
+        
+        // Быстрый программный эффект открытия оригинальной двери
         setTimeout(() => {
             document.getElementById('section-server').style.display = 'none';
             document.getElementById('section-ai-room').style.display = 'flex';
             isInAiRoom = true;
-        }, 350);
+        }, 200);
     }
 
-    // Переключение между тремя голографическими экранами
+    // Родное переключение голограмм
     function showHoloPane(paneName) {
-        // Прячем все три экрана
         document.getElementById('pane-verses').style.display = 'none';
         document.getElementById('pane-lunar').style.display = 'none';
         document.getElementById('pane-hello').style.display = 'none';
         
-        // Убираем активные стили с кнопок табов
         document.getElementById('btn-tab-verses').classList.remove('active-tab');
         document.getElementById('btn-tab-lunar').classList.remove('active-tab');
         document.getElementById('btn-tab-hello').classList.remove('active-tab');
 
-        // Включаем целевой экран и активируем его кнопку
         document.getElementById('pane-' + paneName).style.display = 'block';
         document.getElementById('btn-tab-' + paneName).classList.add('active-tab');
     }
 
-    // Умная обработка стрелки назад "<"
+    // Кнопка возврата в шапке
     function handleGlobalBack() {
         if (isInAiRoom) {
-            // Если мы внутри ИИ Комнаты — шаг назад возвращает в Серверную к Броне Двери
             document.getElementById('section-ai-room').style.display = 'none';
             document.getElementById('section-server').style.display = 'flex';
             isInAiRoom = false;
         } else {
-            // Если мы и так у бронедвери — выходим в Главный Холл
-            backToHall();
+            window.location.href = 'index.html';
         }
     }
 
-    function backToHall() { window.location.href = 'index.html'; }
+    // Инициализация данных профиля
+    function initUserBadge() {
+        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
 
-    // Генератор стихов
+        const badgeFlagImg = document.getElementById('badge-flag-img');
+        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+
+        if (savedAvatar) {
+            const badgeImg = document.getElementById('badge-avatar-img');
+            const passImg = document.getElementById('pass-avatar-img');
+            if (badgeImg) badgeImg.src = savedAvatar;
+            if (passImg) passImg.src = savedAvatar;
+        }
+
+        if (currentID) {
+            const passIdVal = document.getElementById('pass-id-val');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (passIdVal) passIdVal.innerText = currentID;
+            if (passQrBox && typeof QRCode !== 'undefined') { 
+                passQrBox.innerHTML = ""; 
+                new QRCode(passQrBox, { text: currentID, width: 100, height: 100 }); 
+            }
+        }
+    }
+
+    function openPassport() { document.getElementById('modal-passport').style.display = 'flex'; }
+    function closePassport() { document.getElementById('modal-passport').style.display = 'none'; }
+
     const pool = [
         ["The neon lights began to fade,", "A code was written, a choice was made.", "The virtual barman pours a glass,", "As shadows on the server pass."],
         ["A toast to bits, a toast to bytes,", "We drink inside the cyber nights.", "Charlie laughs with neon mane,", "In rivers of digital champagne."]
@@ -340,7 +363,8 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-        document.body.addEventListener('click', startServerHum, { once: true });
+        initUserBadge();
+        document.body.addEventListener('click', initAmbientAudio, { once: true });
     });
 </script>
 </body>
