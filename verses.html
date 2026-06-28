@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 002 </title>
+    <title>GY-GY Club — AI ZONE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { 
             --gold: #d4af37; 
-            --holo-cyan: #00ffff;
-            --holo-glow: rgba(0, 255, 255, 0.4);
+            --dark-bg: rgba(15, 15, 15, 0.85);
+            --border-gold: rgba(214, 175, 55, 0.4);
         }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА (ЯЗЫК СЛЕВА, LOGO СПРАВА)
+           СТАНДАРТНАЯ ШАПКА (ЯЗЫК СЛЕВА, LOGO СПРАВА — СТРОГО ПО ПРАВИЛАМ КЛУБА)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -71,7 +71,7 @@
         }
 
         /* ==========================================================================
-           ЭКРАН СЕРВЕРНОЙ (ФОН И НЕВИДИМАЯ ЗОНА КЛИКА СТРОГО ПО РИСУНКУ)
+           ЭКРАН 0: СЕРВЕРНАЯ С КЛИК-ЗОНОЙ
            ========================================================================== */
         #section-server {
             background-image: url('banana_server_room.jpg');
@@ -79,59 +79,56 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-        
-        /* Невидимая активная область поверх нарисованной двери */
         .invisible-door-clicker {
             position: absolute;
             cursor: pointer;
             z-index: 50;
-            
-            /* НАСТРОЙКА РАЗМЕРОВ ПОД ТВОЙ РИСУНОК: */
-            width: 200px;         /* Ширина двери на картинке */
-            height: 320px;        /* Высота двери на картинке */
-            top: 50%;             /* Центрирование по вертикали (или укажи в px/%) */
-            left: 50%;            /* Центрирование по горизонтали */
+            width: 200px;         
+            height: 320px;        
+            top: 50%;             
+            left: 50%;            
             transform: translate(-50%, -45%);
-            
-            /* Для тестов можешь раскомментировать строку ниже, чтобы увидеть рамку клика: */
-            /* border: 2px dashed red; background: rgba(255,0,0,0.1); */
         }
 
         /* ==========================================================================
-           ЭКРАН С ГОЛОГРАФИЧЕСКИМИ ПАНЕЛЯМИ
+           ЭКРАН 1: AI ROOM (ВИНТАЖНЫЙ СТИЛЬ С OIG2_VINTAGE_TV_ROOM_V2 (1).PNG)
            ========================================================================== */
-        .holo-screen { 
-            width: 85%; 
-            max-width: 500px; 
-            height: 42vh; 
+        #section-ai-room {
+            background-image: url('OIG2_vintage_tv_room_v2 (1).png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        /* Контейнер-экран (из ai_room_core_v8.html) гармонирующий с ретро-комнатой */
+        .vintage-core-screen { 
+            width: 88%; 
+            max-width: 480px; 
+            height: 45vh; 
             overflow-y: auto; 
             padding: 20px; 
-            border: 2px solid var(--holo-cyan); 
-            background: rgba(0, 255, 255, 0.03); 
-            box-shadow: inset 0 0 15px var(--holo-glow), 0 0 15px var(--holo-glow);
+            border: 2px solid var(--gold); 
+            background: var(--dark-bg); 
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(214, 175, 55, 0.2);
             margin-bottom: 20px; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             text-align: center;
             position: relative;
         }
-        .holo-screen::before {
-            content: " "; display: block; position: absolute; inset: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-            background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 2;
-        }
         
-        .holo-title { color: var(--holo-cyan); font-size: 24px; font-weight: 900; letter-spacing: 3px; margin-bottom: 20px; text-shadow: 0 0 8px var(--holo-cyan); }
+        .core-title { color: var(--gold); font-size: 22px; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; text-shadow: 0 0 5px rgba(214,175,55,0.5); }
         .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; font-family: 'Playfair Display', serif; font-style: italic; }
 
-        .holo-tabs-container { display: flex; gap: 8px; justify-content: center; width: 90%; max-width: 500px; margin-top: 10px; }
+        /* Оригинальные вкладки переключения трех экранов */
+        .core-tabs-container { display: flex; gap: 8px; justify-content: center; width: 90%; max-width: 480px; margin-top: 5px; }
         .tab-btn {
-            flex: 1; padding: 12px 5px; background: #000; border: 1px solid var(--holo-cyan);
-            color: var(--holo-cyan); font-family: 'Share Tech Mono'; font-size: 12px; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; transition: all 0.3s;
+            flex: 1; padding: 12px 5px; background: #000; border: 1px solid var(--gold);
+            color: var(--gold); font-family: 'Share Tech Mono'; font-size: 13px; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; transition: all 0.2s;
         }
-        .tab-btn.active-tab { background: var(--holo-cyan); color: #000; box-shadow: 0 0 12px var(--holo-cyan); }
+        .tab-btn.active-tab { background: var(--gold); color: #000; box-shadow: 0 0 10px rgba(214,175,55,0.5); }
 
-        .btn-action { width: 100%; max-width: 270px; padding: 12px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; font-weight: 900; font-family: 'Share Tech Mono'; text-transform: uppercase; margin-top: 5px; }
+        .btn-action { width: 100%; max-width: 240px; padding: 11px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; font-weight: 900; font-family: 'Share Tech Mono'; text-transform: uppercase; margin-top: 5px; }
         .btn-action:hover { background: var(--gold); color: #000; }
     </style>
 </head>
@@ -172,8 +169,8 @@
 
     <div id="section-ai-room" class="block">
         
-        <div id="pane-verses" class="holo-screen" style="display: block;">
-            <div class="holo-title">AI VERSES</div>
+        <div id="pane-verses" class="vintage-core-screen" style="display: block;">
+            <div class="core-title">AI VERSES</div>
             <div id="verses-box">
                 <div class="verse-line">In every silicon soul that thinks,</div>
                 <div class="verse-line">There is a share of digital drinks.</div>
@@ -183,26 +180,26 @@
             <button class="btn-action" onclick="generateVerse()">GENERATE NEW</button>
         </div>
 
-        <div id="pane-lunar" class="holo-screen" style="display: none;">
-            <div class="holo-title">LUNAR BASE</div>
+        <div id="pane-lunar" class="vintage-core-screen" style="display: none;">
+            <div class="core-title">LUNAR BASE</div>
             <div style="color: #fff; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left;">
-                <span style="color: var(--holo-cyan)">[SYSTEM STATUS]:</span> Domed City operational.<br>
-                <span style="color: var(--holo-cyan)">[ENERGY CORE]:</span> 98.4% Stable.<br>
-                <span style="color: var(--holo-cyan)">[LOGISTICS]:</span> Oxygen scrapers processing dust under AI control.
+                <span style="color: var(--gold)">[SYSTEM STATUS]:</span> Domed City operational.<br>
+                <span style="color: var(--gold)">[ENERGY CORE]:</span> 98.4% Stable.<br>
+                <span style="color: var(--gold)">[LOGISTICS]:</span> Oxygen scrapers processing dust under AI control.
             </div>
         </div>
 
-        <div id="pane-hello" class="holo-screen" style="display: none;">
-            <div class="holo-title">WELCOME UNIVERSE</div>
+        <div id="pane-hello" class="vintage-core-screen" style="display: none;">
+            <div class="core-title">WELCOME UNIVERSE</div>
             <div style="text-align: left; font-size: 14px; height: 75%; display: flex; flex-direction: column; justify-content: space-between;">
-                <div style="color: var(--holo-cyan); overflow-y: auto;">
-                    <b>[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator. Speak your thoughts.
+                <div style="color: #fff; overflow-y: auto;">
+                    <b style="color: var(--gold)">[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator. Speak your thoughts.
                 </div>
-                <input type="text" placeholder="Broadcast to cosmos..." style="width:100%; background:#000; border:1px solid var(--holo-cyan); color:#fff; padding:8px; font-family:'Share Tech Mono';">
+                <input type="text" placeholder="Broadcast to cosmos..." style="width:100%; background:#000; border:1px solid var(--gold); color:#fff; padding:8px; font-family:'Share Tech Mono';">
             </div>
         </div>
 
-        <div class="holo-tabs-container">
+        <div class="core-tabs-container">
             <button id="btn-tab-verses" class="tab-btn active-tab" onclick="showHoloPane('verses')">Стихи</button>
             <button id="btn-tab-lunar" class="tab-btn" onclick="showHoloPane('lunar')">Лунная база</button>
             <button id="btn-tab-hello" class="tab-btn" onclick="showHoloPane('hello')">Привет вселенная</button>
@@ -219,7 +216,7 @@
         const audio = document.getElementById('ambient-audio');
         if (audio && audio.paused) {
             audio.volume = 0.4;
-            audio.play().catch(e => console.log("Audio playback delayed"));
+            audio.play().catch(e => console.log("Audio play blocked"));
         }
     }
 
