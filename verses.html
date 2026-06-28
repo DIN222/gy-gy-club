@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE</title>
+    <title>GY-GY Club — AI ZONE 004 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { 
             --gold: #d4af37; 
-            --dark-bg: rgba(15, 15, 15, 0.85);
+            --dark-bg: rgba(15, 15, 15, 0.88);
             --border-gold: rgba(214, 175, 55, 0.4);
         }
         
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА (ЯЗЫК СЛЕВА, LOGO СПРАВА — СТРОГО ПО ПРАВИЛАМ КЛУБА)
+           СТАНДАРТНАЯ ШАПКА КЛУБА
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -44,20 +44,20 @@
         .lang-panel { font-size: 16px; font-weight: bold; cursor: pointer; letter-spacing: 1px; }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
-        .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; box-shadow: 0 0 0 1px #000; }
+        .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
         .bar-center-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         .bar-center-badge .badge-flag { position: absolute; bottom: -2px; right: -4px; width: 17px; height: 12px; border: 1px solid var(--gold); }
 
         .bar-right-logo { font-size: 24px; letter-spacing: 5px; font-weight: bold; text-shadow: 0 0 5px #000; }
 
-        /* ПАСПОРТ ОБЩИЙ */
+        /* ПАСПОРТ */
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; position: relative; }
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* УНИВЕРСАЛЬНЫЕ БЛОКИ ДЛЯ ЭКРАНОВ */
+        /* БЛОКИ ОКОН */
         .block { 
             position: fixed; 
             inset: 0; 
@@ -71,7 +71,7 @@
         }
 
         /* ==========================================================================
-           ЭКРАН 0: СЕРВЕРНАЯ С КЛИК-ЗОНОЙ
+           СЕРВЕРНАЯ С ОРИГИНАЛЬНОЙ КЛИК-ЗОНОЙ НА КАРТИНКЕ
            ========================================================================== */
         #section-server {
             background-image: url('banana_server_room.jpg');
@@ -91,7 +91,7 @@
         }
 
         /* ==========================================================================
-           ЭКРАН 1: AI ROOM (ВИНТАЖНЫЙ СТИЛЬ С OIG2_VINTAGE_TV_ROOM_V2 (1).PNG)
+           AI ROOM (ВИНТАЖНЫЙ ЭКРАН)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
@@ -100,36 +100,52 @@
             background-repeat: no-repeat;
         }
         
-        /* Контейнер-экран (из ai_room_core_v8.html) гармонирующий с ретро-комнатой */
         .vintage-core-screen { 
             width: 88%; 
             max-width: 480px; 
-            height: 45vh; 
-            overflow-y: auto; 
+            height: 52vh; 
             padding: 20px; 
             border: 2px solid var(--gold); 
             background: var(--dark-bg); 
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(214, 175, 55, 0.2);
-            margin-bottom: 20px; 
+            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.95);
             border-radius: 6px; 
-            text-align: center;
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
-        
-        .core-title { color: var(--gold); font-size: 22px; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; text-shadow: 0 0 5px rgba(214,175,55,0.5); }
+
+        /* ИНЛАЙН-НАВИГАЦИЯ: Кликабельные надписи прямо на самом экране */
+        .screen-nav-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed var(--border-gold);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .screen-click-label {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: rgba(214, 175, 55, 0.4);
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .screen-click-label.label-active {
+            color: var(--gold);
+            text-shadow: 0 0 6px rgba(214,175,55,0.6);
+        }
+
+        /* Внутренние контентные зоны */
+        .pane-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: none;
+            text-align: center;
+        }
         .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; font-family: 'Playfair Display', serif; font-style: italic; }
 
-        /* Оригинальные вкладки переключения трех экранов */
-        .core-tabs-container { display: flex; gap: 8px; justify-content: center; width: 90%; max-width: 480px; margin-top: 5px; }
-        .tab-btn {
-            flex: 1; padding: 12px 5px; background: #000; border: 1px solid var(--gold);
-            color: var(--gold); font-family: 'Share Tech Mono'; font-size: 13px; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; transition: all 0.2s;
-        }
-        .tab-btn.active-tab { background: var(--gold); color: #000; box-shadow: 0 0 10px rgba(214,175,55,0.5); }
-
-        .btn-action { width: 100%; max-width: 240px; padding: 11px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; font-weight: 900; font-family: 'Share Tech Mono'; text-transform: uppercase; margin-top: 5px; }
-        .btn-action:hover { background: var(--gold); color: #000; }
+        .btn-action { width: 100%; max-width: 220px; padding: 10px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; font-weight: 900; font-family: 'Share Tech Mono'; text-transform: uppercase; margin: 10px auto 0 auto; display: block; }
     </style>
 </head>
 <body>
@@ -153,15 +169,14 @@
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            <div style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
 
-    <audio id="ambient-audio" src="sbridge_ambient.mp3" loop></audio>
+    <audio id="ambient-audio" src="sbridge_ambient.mp3" loop autoplay></audio>
 
     <div id="section-server" class="block" style="display: flex;">
         <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
@@ -169,41 +184,41 @@
 
     <div id="section-ai-room" class="block">
         
-        <div id="pane-verses" class="vintage-core-screen" style="display: block;">
-            <div class="core-title">AI VERSES</div>
-            <div id="verses-box">
-                <div class="verse-line">In every silicon soul that thinks,</div>
-                <div class="verse-line">There is a share of digital drinks.</div>
-                <div class="verse-line">The algorithms spin and play,</div>
-                <div class="verse-line">Inside the Club of GY-GY.</div>
+        <div class="vintage-core-screen">
+            <div class="screen-nav-header">
+                <span id="lbl-verses" class="screen-click-label label-active" onclick="switchHoloTab('verses')">Стихи</span>
+                <span id="lbl-lunar" class="screen-click-label" onclick="switchHoloTab('lunar')">Лунная база</span>
+                <span id="lbl-hello" class="screen-click-label" onclick="switchHoloTab('hello')">Привет вселенная</span>
             </div>
-            <button class="btn-action" onclick="generateVerse()">GENERATE NEW</button>
-        </div>
 
-        <div id="pane-lunar" class="vintage-core-screen" style="display: none;">
-            <div class="core-title">LUNAR BASE</div>
-            <div style="color: #fff; font-size: 15px; line-height: 1.6; margin-top: 20px; text-align: left;">
-                <span style="color: var(--gold)">[SYSTEM STATUS]:</span> Domed City operational.<br>
-                <span style="color: var(--gold)">[ENERGY CORE]:</span> 98.4% Stable.<br>
-                <span style="color: var(--gold)">[LOGISTICS]:</span> Oxygen scrapers processing dust under AI control.
-            </div>
-        </div>
-
-        <div id="pane-hello" class="vintage-core-screen" style="display: none;">
-            <div class="core-title">WELCOME UNIVERSE</div>
-            <div style="text-align: left; font-size: 14px; height: 75%; display: flex; flex-direction: column; justify-content: space-between;">
-                <div style="color: #fff; overflow-y: auto;">
-                    <b style="color: var(--gold)">[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator. Speak your thoughts.
+            <div id="pane-verses" class="pane-content" style="display: block;">
+                <div id="verses-box" style="margin-top: 15px;">
+                    <div class="verse-line">In every silicon soul that thinks,</div>
+                    <div class="verse-line">There is a share of digital drinks.</div>
+                    <div class="verse-line">The algorithms spin and play,</div>
+                    <div class="verse-line">Inside the Club of GY-GY.</div>
                 </div>
-                <input type="text" placeholder="Broadcast to cosmos..." style="width:100%; background:#000; border:1px solid var(--gold); color:#fff; padding:8px; font-family:'Share Tech Mono';">
+                <button class="btn-action" onclick="generateVerse()">GENERATE NEW</button>
+            </div>
+
+            <div id="pane-lunar" class="pane-content">
+                <div style="color: #fff; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: left;">
+                    <span style="color: var(--gold)">[SYSTEM]:</span> Domed City operational.<br>
+                    <span style="color: var(--gold)">[CORE]:</span> 98.4% Stable.<br>
+                    <span style="color: var(--gold)">[LOGISTICS]:</span> Oxygen scrapers processing dust under AI control.
+                </div>
+            </div>
+
+            <div id="pane-hello" class="pane-content" style="height: 100%;">
+                <div style="text-align: left; font-size: 14px; display: flex; flex-direction: column; justify-content: space-between; height: 90%;">
+                    <div style="color: #fff; overflow-y: auto; margin-top: 10px;">
+                        <b style="color: var(--gold)">[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator.
+                    </div>
+                    <input type="text" placeholder="Broadcast to cosmos..." style="width:100%; background:#000; border:1px solid var(--gold); color:#fff; padding:7px; font-family:'Share Tech Mono';">
+                </div>
             </div>
         </div>
 
-        <div class="core-tabs-container">
-            <button id="btn-tab-verses" class="tab-btn active-tab" onclick="showHoloPane('verses')">Стихи</button>
-            <button id="btn-tab-lunar" class="tab-btn" onclick="showHoloPane('lunar')">Лунная база</button>
-            <button id="btn-tab-hello" class="tab-btn" onclick="showHoloPane('hello')">Привет вселенная</button>
-        </div>
     </div>
 
 <script type="text/javascript">
@@ -212,16 +227,19 @@
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
-    function initAmbientAudio() {
+    // Принудительный форсированный запуск звука параллельно загрузке картинок
+    function forcePlayAudio() {
         const audio = document.getElementById('ambient-audio');
-        if (audio && audio.paused) {
+        if (audio) {
             audio.volume = 0.4;
-            audio.play().catch(e => console.log("Audio play blocked"));
+            audio.play().catch(() => {
+                // Если браузер заблочил автоплей до тапа, подстраховываемся на первый клик по документу
+                document.body.addEventListener('click', () => { audio.play(); }, { once: true });
+            });
         }
     }
 
     function unlockAndEnterRoom() {
-        initAmbientAudio();
         setTimeout(() => {
             document.getElementById('section-server').style.display = 'none';
             document.getElementById('section-ai-room').style.display = 'flex';
@@ -229,17 +247,18 @@
         }, 150);
     }
 
-    function showHoloPane(paneName) {
+    // Переключение кликабельных надписей прямо на экране
+    function switchHoloTab(target) {
         document.getElementById('pane-verses').style.display = 'none';
         document.getElementById('pane-lunar').style.display = 'none';
         document.getElementById('pane-hello').style.display = 'none';
         
-        document.getElementById('btn-tab-verses').classList.remove('active-tab');
-        document.getElementById('btn-tab-lunar').classList.remove('active-tab');
-        document.getElementById('btn-tab-hello').classList.remove('active-tab');
+        document.getElementById('lbl-verses').classList.remove('label-active');
+        document.getElementById('lbl-lunar').classList.remove('label-active');
+        document.getElementById('lbl-hello').classList.remove('label-active');
 
-        document.getElementById('pane-' + paneName).style.display = 'block';
-        document.getElementById('btn-tab-' + paneName).classList.add('active-tab');
+        document.getElementById('pane-' + target).style.display = 'block';
+        document.getElementById('lbl-' + target).classList.add('label-active');
     }
 
     function handleGlobalBack() {
@@ -293,7 +312,11 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         initUserBadge();
-        document.body.addEventListener('click', initAmbientAudio, { once: true });
+        
+        const audio = document.getElementById('ambient-audio');
+        if (audio) {
+            audio.addEventListener('canplaythrough', forcePlayAudio, { once: true });
+        }
     });
 </script>
 </body>
