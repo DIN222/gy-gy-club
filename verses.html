@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ROOM 01</title>
+    <title>GY-GY Club — AI ROOM 02</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           ОБНОВЛЕННЫЙ ЕДИНЫЙ СТАНДАРТ ШАПКИ (СТРЕЛКИ СЛЕВА, АВАТАР ПО ЦЕНТРУ)
+           СТАНДАРТНАЯ ШАПКА (СТРЕЛКИ СЛЕВА, АВАТАР ПО ЦЕНТРУ, ЛОГО СПРАВА)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,7 +39,7 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        /* Левая часть: Стрелки навигации (назад в Холл) */
+        /* Левая часть: Стрелки навигации */
         .bar-left-nav {
             font-size: 26px;
             font-weight: 900;
@@ -51,6 +51,7 @@
             display: flex;
             gap: 15px;
         }
+        .bar-left-nav span { cursor: pointer; transition: opacity 0.2s; }
         .bar-left-nav span:hover { opacity: 0.8; }
 
         /* Центр: Сквозной аватар пользователя */
@@ -99,7 +100,7 @@
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* УНИВЕРСАЛЬНЫЕ БЛОКИ */
+        /* УНИВЕРСАЛЬНЫЕ БЛОКИ СТРАНИЦ */
         .block { 
             position: fixed; 
             inset: 0; 
@@ -119,25 +120,27 @@
             z-index: 5000 !important; 
         }
 
-        /* СТИЛИ КОНТЕНТА AI ROOM (СТИХИ) */
+        /* ЭЛЕМЕНТЫ ИНТЕРФЕЙСА КОМНАТ */
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 25px; text-shadow: 2px 2px 4px #000; }
-        .verses-container { width: 85%; max-width: 500px; max-height: 50vh; overflow-y: auto; padding: 15px; border: 1px solid rgba(212, 175, 55, 0.3); background: rgba(10, 10, 10, 0.9); margin-bottom: 20px; border-radius: 4px; text-align: center; }
+        .verses-container { width: 85%; max-width: 500px; max-height: 45vh; overflow-y: auto; padding: 15px; border: 1px solid rgba(212, 175, 55, 0.3); background: rgba(10, 10, 10, 0.9); margin-bottom: 20px; border-radius: 4px; text-align: center; }
         .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         .btn-gy:hover { background: var(--gold); color: #000; }
+        
+        .ai-status-text { font-size: 14px; color: #888; margin-top: 10px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <!-- ОБНОВЛЕННАЯ ШАПКА -->
+    <!-- ЕДИНАЯ ШАПКА -->
     <div class="ui-top-standard-bar">
-        <!-- Слева: Привычные стрелки навигации -->
+        <!-- Слева: Стрелки (Логика переключения завязана на функцию в скрипте) -->
         <div class="bar-left-nav notranslate">
-            <span onclick="backToHall()">&lt;</span>
+            <span onclick="handleBackClick()">&lt;</span>
             <span onclick="backToHall()">&lt;&lt;</span>
         </div>
         
-        <!-- По центру: Аватар (ведет на паспорт) -->
+        <!-- По центру: Аватар (паспорт) -->
         <div class="bar-center-badge-container">
             <div id="global-user-badge" class="bar-center-badge notranslate" onclick="openPassport()">
                 <img id="badge-avatar-img" class="badge-img" src="">
@@ -161,9 +164,13 @@
         </div>
     </div>
 
-    <!-- ПЕРВЫЙ ЭКРАН AI ROOM — ЭКРАН СТИХОВ -->
+    <!-- ==========================================================================
+       ТРИ ЭКРАНА AI ROOM (ПЕРВЫЙ — СТИХИ)
+       ========================================================================== */ -->
+
+    <!-- ЭКРАН 1: СТИХИ (Блок по умолчанию) -->
     <div id="block-verses" class="block active">
-        <div class="quote-text">AI ROOM GENERATIONS</div>
+        <div class="quote-text">AI VERSES GENERATION</div>
         
         <div class="verses-container" id="verses-display-box">
             <div class="verse-line">In every silicon soul that thinks,</div>
@@ -173,14 +180,76 @@
         </div>
 
         <button class="btn-gy" onclick="generateNewVerse()">GENERATE NEW VERSE</button>
+        <button class="btn-gy" onclick="switchBlock('block-images')">NEXT: AI IMAGE ROOM</button>
+    </div>
+
+    <!-- ЭКРАН 2: НЕЙРО-КАРТИНКИ -->
+    <div id="block-images" class="block">
+        <div class="quote-text">AI IMAGE GENERATOR</div>
+        
+        <div class="verses-container" style="height: 40vh; display: flex; align-items: center; justify-content: center;">
+            <div id="image-placeholder" style="border: 1px dashed var(--gold); width: 80%; height: 80%; display: flex; align-items: center; justify-content: center; color: #666;">
+                [ Generated Art Preview ]
+            </div>
+        </div>
+
+        <button class="btn-gy" onclick="alert('Generating art...')">GENERATE IMAGE</button>
+        <button class="btn-gy" onclick="switchBlock('block-chat')">NEXT: AI BARMAN CHAT</button>
+    </div>
+
+    <!-- ЭКРАН 3: ЧАТ С ИИ-БАРМЕНОМ -->
+    <div id="block-chat" class="block">
+        <div class="quote-text">CHAT WITH CHARLIE AI</div>
+        
+        <div class="verses-container" style="height: 40vh; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
+            <div id="chat-history" style="overflow-y: auto; flex-grow: 1; margin-bottom: 10px; font-size: 14px;">
+                <div style="color: var(--gold); margin-bottom: 5px;"><b>Charlie:</b> Hello friend. What's on your mind today?</div>
+            </div>
+            <input type="text" placeholder="Type your message..." style="width: 100%; background: #111; border: 1px solid var(--gold); color: #fff; padding: 8px; font-family: 'Share Tech Mono';">
+        </div>
+
+        <button class="btn-gy" onclick="alert('Sending message...')">SEND MESSAGE</button>
+        <button class="btn-gy" onclick="switchBlock('block-verses')">BACK TO VERSES</button>
     </div>
 
 <script type="text/javascript">
     let currentID = "";
     let currentUserImage = "";
+    let activeBlockId = "block-verses";
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
+    // Логика кнопки одиночного "Назад" (<) в шапке
+    function handleBackClick() {
+        if (activeBlockId === "block-chat") {
+            switchBlock("block-images");
+        } else if (activeBlockId === "block-images") {
+            switchBlock("block-verses");
+        } else {
+            backToHall(); // Если мы на первом экране (Стихи) — уходим в Холл
+        }
+    }
+
+    // Внутреннее переключение между 3 экранами ИИ-комнаты
+    function switchBlock(nextId) {
+        const targetBlock = document.getElementById(nextId);
+        if (!targetBlock) return;
+
+        document.querySelectorAll('.block').forEach(b => {
+            b.classList.remove('active');
+            b.style.display = 'none';
+        });
+
+        activeBlockId = nextId;
+        targetBlock.style.display = 'flex';
+        setTimeout(() => targetBlock.classList.add('active'), 20);
+    }
+
+    function backToHall() {
+        window.location.href = 'index.html';
+    }
+
+    // Инициализация аватара и паспорта
     function initUserBadge() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
@@ -224,10 +293,7 @@
         }
     }
 
-    function backToHall() {
-        window.location.href = 'index.html';
-    }
-
+    // Генератор стихов
     const pool = [
         ["The neon lights began to fade,", "A code was written, a choice was made.", "The virtual barman pours a glass,", "As shadows on the server pass."],
         ["A toast to bits, a toast to bytes,", "We drink inside the cyber nights.", "Charlie laughs with neon mane,", "In rivers of digital champagne."]
