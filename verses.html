@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ROOM</title>
+    <title>GY-GY Club — AI ROOM м </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -103,7 +103,7 @@
         .block { 
             position: fixed; 
             inset: 0; 
-            display: none; /* Переключение теперь управляется строго через JS */
+            display: none; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
@@ -149,7 +149,7 @@
         </div>
     </div>
 
-    <div id="block-verses" class="block" style="display: flex;">
+    <div id="block-verses" class="block">
         <div class="quote-text">AI VERSES GENERATION</div>
         
         <div class="verses-container" id="verses-display-box">
@@ -193,33 +193,36 @@
 <script type="text/javascript">
     let currentID = "";
     let currentUserImage = "";
-    let activeBlockId = "block-verses"; // Текущий активный экран
+    let activeBlockId = "block-verses";
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
-    // Переключение экранов ЖЕСТКО через изменение свойства display
+    // Переключение экранов + динамическое обновление хэша в URL, чтобы не терять привязку
     function switchBlock(nextId) {
-        // Скрываем абсолютно все блоки
         document.querySelectorAll('.block').forEach(b => {
             b.style.display = 'none';
         });
 
-        // Показываем нужный блок
         const targetBlock = document.getElementById(nextId);
         if (targetBlock) {
             targetBlock.style.display = 'flex';
-            activeBlockId = nextId; // Запоминаем, где мы сейчас
+            activeBlockId = nextId;
+            
+            // Синхронизируем адресную строку браузера
+            if(nextId === 'block-verses') window.location.hash = 'verses';
+            if(nextId === 'block-images') window.location.hash = 'images';
+            if(nextId === 'block-chat') window.location.hash = 'chat';
         }
     }
 
-    // Логика стрелочки назад "<" в шапке
+    // Стрелочка назад в шапке
     function handleBackClick() {
         if (activeBlockId === "block-chat") {
             switchBlock("block-images");
         } else if (activeBlockId === "block-images") {
             switchBlock("block-verses");
         } else {
-            backToHall(); // Если уже на Стихах — выходим в Холл
+            backToHall();
         }
     }
 
@@ -227,7 +230,7 @@
         window.location.href = 'index.html';
     }
 
-    // Инициализация профиля
+    // Инициализация профиля И СВЯЗЫВАНИЕ КНОПОК ИЗ ХОЛЛА
     function initUserBadge() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
@@ -253,6 +256,16 @@
                 new QRCode(passQrBox, { text: currentID, width: 100, height: 100 }); 
             }
         }
+
+        // --- ЛОГИКА ПОДВЯЗКИ ХЭШЕЙ ---
+        const currentHash = window.location.hash;
+        if (currentHash === '#images') {
+            switchBlock('block-images');
+        } else if (currentHash === '#chat') {
+            switchBlock('block-chat');
+        } else {
+            switchBlock('block-verses'); // По умолчанию — Стихи
+        }
     }
 
     function openPassport() {
@@ -265,7 +278,6 @@
         if (modal) modal.style.display = 'none';
     }
 
-    // Генерация стихов
     const pool = [
         ["The neon lights began to fade,", "A code was written, a choice was made.", "The virtual barman pours a glass,", "As shadows on the server pass."],
         ["A toast to bits, a toast to bytes,", "We drink inside the cyber nights.", "Charlie laughs with neon mane,", "In rivers of digital champagne."]
