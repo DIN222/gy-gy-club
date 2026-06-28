@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 003 </title>
+    <title>GY-GY Club — AI ZONE 002 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА (ЯЗЫК СЛЕВА, LOGO СПРАВА — СТРОГО ПО ТРЕБОВАНИЮ)
+           СТАНДАРТНАЯ ШАПКА (ЯЗЫК СЛЕВА, LOGO СПРАВА)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,41 +39,15 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        /* Панель возврата и языка на левой стороне */
-        .bar-left-nav {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .bar-left-nav { font-size: 24px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 20px; }
         .back-btn { cursor: pointer; font-size: 26px; font-weight: 900; letter-spacing: -2px; }
         .lang-panel { font-size: 16px; font-weight: bold; cursor: pointer; letter-spacing: 1px; }
 
-        /* Сквозной аватар пользователя по центру */
-        .bar-center-badge-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .bar-center-badge {
-            position: relative;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            background: #111;
-            cursor: pointer;
-            box-shadow: 0 0 0 1px #000;
-        }
+        .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
+        .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; box-shadow: 0 0 0 1px #000; }
         .bar-center-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         .bar-center-badge .badge-flag { position: absolute; bottom: -2px; right: -4px; width: 17px; height: 12px; border: 1px solid var(--gold); }
 
-        /* Логотип строго на правой стороне */
         .bar-right-logo { font-size: 24px; letter-spacing: 5px; font-weight: bold; text-shadow: 0 0 5px #000; }
 
         /* ПАСПОРТ ОБЩИЙ */
@@ -97,7 +71,7 @@
         }
 
         /* ==========================================================================
-           ЭКРАН СЕРВЕРНОЙ (ОРИГИНАЛЬНЫЙ СТИЛЬ С BANANA_SERVER_ROOM.JPG)
+           ЭКРАН СЕРВЕРНОЙ (ФОН И НЕВИДИМАЯ ЗОНА КЛИКА СТРОГО ПО РИСУНКУ)
            ========================================================================== */
         #section-server {
             background-image: url('banana_server_room.jpg');
@@ -105,51 +79,23 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-        #section-server::after {
-            content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); z-index: 1; pointer-events: none;
-        }
-        #section-server * { z-index: 2; }
         
-        .armored-door {
-            width: 210px;
-            height: 310px;
-            background: linear-gradient(135deg, #2b2b2b 0%, #0f0f0f 100%);
-            border: 6px solid #3a3a3a;
-            border-radius: 12px;
-            box-shadow: inset 0 0 30px #000, 0 0 40px rgba(0,0,0,0.9);
-            position: relative;
+        /* Невидимая активная область поверх нарисованной двери */
+        .invisible-door-clicker {
+            position: absolute;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 45px 10px;
-            transition: all 0.4s ease;
-            margin-top: 15px;
+            z-index: 50;
+            
+            /* НАСТРОЙКА РАЗМЕРОВ ПОД ТВОЙ РИСУНОК: */
+            width: 200px;         /* Ширина двери на картинке */
+            height: 320px;        /* Высота двери на картинке */
+            top: 50%;             /* Центрирование по вертикали (или укажи в px/%) */
+            left: 50%;            /* Центрирование по горизонтали */
+            transform: translate(-50%, -45%);
+            
+            /* Для тестов можешь раскомментировать строку ниже, чтобы увидеть рамку клика: */
+            /* border: 2px dashed red; background: rgba(255,0,0,0.1); */
         }
-        .armored-door:hover {
-            border-color: var(--gold);
-            box-shadow: 0 0 30px rgba(214, 175, 55, 0.5);
-        }
-        .door-plate {
-            background: #000;
-            border: 2px solid var(--gold);
-            padding: 8px 18px;
-            font-size: 18px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            color: var(--gold);
-            text-shadow: 0 0 5px var(--gold);
-            text-align: center;
-        }
-        .door-wheel {
-            width: 65px;
-            height: 65px;
-            border: 5px dashed #444;
-            border-radius: 50%;
-            transition: transform 0.6s ease;
-        }
-        .armored-door:hover .door-wheel { transform: rotate(180deg); border-color: var(--gold); }
 
         /* ==========================================================================
            ЭКРАН С ГОЛОГРАФИЧЕСКИМИ ПАНЕЛЯМИ
@@ -177,7 +123,6 @@
         .holo-title { color: var(--holo-cyan); font-size: 24px; font-weight: 900; letter-spacing: 3px; margin-bottom: 20px; text-shadow: 0 0 8px var(--holo-cyan); }
         .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; font-family: 'Playfair Display', serif; font-style: italic; }
 
-        /* Нижние табы оригинальной навигации комнат */
         .holo-tabs-container { display: flex; gap: 8px; justify-content: center; width: 90%; max-width: 500px; margin-top: 10px; }
         .tab-btn {
             flex: 1; padding: 12px 5px; background: #000; border: 1px solid var(--holo-cyan);
@@ -222,13 +167,7 @@
     <audio id="ambient-audio" src="sbridge_ambient.mp3" loop></audio>
 
     <div id="section-server" class="block" style="display: flex;">
-        <div style="font-size: 14px; color: var(--gold); letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 4px #000;">MAINFRAME STATUS: CONNECTED</div>
-        
-        <div class="armored-door" onclick="unlockAndEnterRoom()">
-            <div class="door-plate">AI ROOM</div>
-            <div class="door-wheel"></div>
-            <div style="font-size: 11px; color: #666; font-weight: 900; letter-spacing: 1px;">CLICK TO ENTER</div>
-        </div>
+        <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
     </div>
 
     <div id="section-ai-room" class="block">
@@ -276,7 +215,6 @@
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
-    // Запуск эмбиента sbridge_ambient.mp3 при первом взаимодействии пользователя
     function initAmbientAudio() {
         const audio = document.getElementById('ambient-audio');
         if (audio && audio.paused) {
@@ -285,19 +223,15 @@
         }
     }
 
-    // Логика открытия бронедвери и перехода к экранам
     function unlockAndEnterRoom() {
         initAmbientAudio();
-        
-        // Быстрый программный эффект открытия оригинальной двери
         setTimeout(() => {
             document.getElementById('section-server').style.display = 'none';
             document.getElementById('section-ai-room').style.display = 'flex';
             isInAiRoom = true;
-        }, 200);
+        }, 150);
     }
 
-    // Родное переключение голограмм
     function showHoloPane(paneName) {
         document.getElementById('pane-verses').style.display = 'none';
         document.getElementById('pane-lunar').style.display = 'none';
@@ -311,7 +245,6 @@
         document.getElementById('btn-tab-' + paneName).classList.add('active-tab');
     }
 
-    // Кнопка возврата в шапке
     function handleGlobalBack() {
         if (isInAiRoom) {
             document.getElementById('section-ai-room').style.display = 'none';
@@ -322,7 +255,6 @@
         }
     }
 
-    // Инициализация данных профиля
     function initUserBadge() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
