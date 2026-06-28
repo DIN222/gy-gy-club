@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ROOM 02</title>
+    <title>GY-GY Club — AI ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -11,7 +11,6 @@
         :root { 
             --gold: #d4af37; 
             --violet: #8A2BE2; 
-            --neon-glow: rgba(138, 43, 226, 0.6); 
         }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -94,7 +93,7 @@
         }
 
         /* ПАСПОРТ ОБЩИЙ */
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; }
         .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
@@ -104,20 +103,13 @@
         .block { 
             position: fixed; 
             inset: 0; 
-            display: none; 
+            display: none; /* Переключение теперь управляется строго через JS */
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
             background: #000; 
             z-index: 10; 
-            opacity: 0; 
-            transition: opacity 0.5s ease-in-out; 
             padding-top: 60px;
-        }
-        .block.active { 
-            display: flex !important; 
-            opacity: 1 !important; 
-            z-index: 5000 !important; 
         }
 
         /* ЭЛЕМЕНТЫ ИНТЕРФЕЙСА КОМНАТ */
@@ -126,21 +118,16 @@
         .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         .btn-gy:hover { background: var(--gold); color: #000; }
-        
-        .ai-status-text { font-size: 14px; color: #888; margin-top: 10px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <!-- ЕДИНАЯ ШАПКА -->
     <div class="ui-top-standard-bar">
-        <!-- Слева: Стрелки (Логика переключения завязана на функцию в скрипте) -->
         <div class="bar-left-nav notranslate">
             <span onclick="handleBackClick()">&lt;</span>
             <span onclick="backToHall()">&lt;&lt;</span>
         </div>
         
-        <!-- По центру: Аватар (паспорт) -->
         <div class="bar-center-badge-container">
             <div id="global-user-badge" class="bar-center-badge notranslate" onclick="openPassport()">
                 <img id="badge-avatar-img" class="badge-img" src="">
@@ -148,11 +135,9 @@
             </div>
         </div>
         
-        <!-- Справа: Логотип -->
         <div class="bar-right-logo notranslate">GY-GY</div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -164,12 +149,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================================
-       ТРИ ЭКРАНА AI ROOM (ПЕРВЫЙ — СТИХИ)
-       ========================================================================== */ -->
-
-    <!-- ЭКРАН 1: СТИХИ (Блок по умолчанию) -->
-    <div id="block-verses" class="block active">
+    <div id="block-verses" class="block" style="display: flex;">
         <div class="quote-text">AI VERSES GENERATION</div>
         
         <div class="verses-container" id="verses-display-box">
@@ -183,7 +163,6 @@
         <button class="btn-gy" onclick="switchBlock('block-images')">NEXT: AI IMAGE ROOM</button>
     </div>
 
-    <!-- ЭКРАН 2: НЕЙРО-КАРТИНКИ -->
     <div id="block-images" class="block">
         <div class="quote-text">AI IMAGE GENERATOR</div>
         
@@ -197,7 +176,6 @@
         <button class="btn-gy" onclick="switchBlock('block-chat')">NEXT: AI BARMAN CHAT</button>
     </div>
 
-    <!-- ЭКРАН 3: ЧАТ С ИИ-БАРМЕНОМ -->
     <div id="block-chat" class="block">
         <div class="quote-text">CHAT WITH CHARLIE AI</div>
         
@@ -215,41 +193,41 @@
 <script type="text/javascript">
     let currentID = "";
     let currentUserImage = "";
-    let activeBlockId = "block-verses";
+    let activeBlockId = "block-verses"; // Текущий активный экран
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
-    // Логика кнопки одиночного "Назад" (<) в шапке
+    // Переключение экранов ЖЕСТКО через изменение свойства display
+    function switchBlock(nextId) {
+        // Скрываем абсолютно все блоки
+        document.querySelectorAll('.block').forEach(b => {
+            b.style.display = 'none';
+        });
+
+        // Показываем нужный блок
+        const targetBlock = document.getElementById(nextId);
+        if (targetBlock) {
+            targetBlock.style.display = 'flex';
+            activeBlockId = nextId; // Запоминаем, где мы сейчас
+        }
+    }
+
+    // Логика стрелочки назад "<" в шапке
     function handleBackClick() {
         if (activeBlockId === "block-chat") {
             switchBlock("block-images");
         } else if (activeBlockId === "block-images") {
             switchBlock("block-verses");
         } else {
-            backToHall(); // Если мы на первом экране (Стихи) — уходим в Холл
+            backToHall(); // Если уже на Стихах — выходим в Холл
         }
-    }
-
-    // Внутреннее переключение между 3 экранами ИИ-комнаты
-    function switchBlock(nextId) {
-        const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) return;
-
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
-        });
-
-        activeBlockId = nextId;
-        targetBlock.style.display = 'flex';
-        setTimeout(() => targetBlock.classList.add('active'), 20);
     }
 
     function backToHall() {
         window.location.href = 'index.html';
     }
 
-    // Инициализация аватара и паспорта
+    // Инициализация профиля
     function initUserBadge() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
@@ -279,21 +257,15 @@
 
     function openPassport() {
         const modal = document.getElementById('modal-passport');
-        if (modal) {
-            modal.style.display = 'flex';
-            setTimeout(() => modal.style.opacity = '1', 20);
-        }
+        if (modal) modal.style.display = 'flex';
     }
 
     function closePassport() {
         const modal = document.getElementById('modal-passport');
-        if (modal) {
-            modal.style.opacity = '0';
-            setTimeout(() => modal.style.display = 'none', 300);
-        }
+        if (modal) modal.style.display = 'none';
     }
 
-    // Генератор стихов
+    // Генерация стихов
     const pool = [
         ["The neon lights began to fade,", "A code was written, a choice was made.", "The virtual barman pours a glass,", "As shadows on the server pass."],
         ["A toast to bits, a toast to bytes,", "We drink inside the cyber nights.", "Charlie laughs with neon mane,", "In rivers of digital champagne."]
