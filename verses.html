@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 004 </title>
+    <title>GY-GY Club — AI ZONE 005 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { 
             --gold: #d4af37; 
-            --dark-bg: rgba(15, 15, 15, 0.88);
-            --border-gold: rgba(214, 175, 55, 0.4);
+            --orange: #ff7700;
+            --orange-glow: rgba(255, 119, 0, 0.6);
         }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА КЛУБА
+           ШАПКА КЛУБА СО СТРЕЛКАМИ НАВИГАЦИИ СЛЕВА
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,9 +39,9 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        .bar-left-nav { font-size: 24px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 20px; }
+        .bar-left-nav { font-size: 24px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 12px; }
         .back-btn { cursor: pointer; font-size: 26px; font-weight: 900; letter-spacing: -2px; }
-        .lang-panel { font-size: 16px; font-weight: bold; cursor: pointer; letter-spacing: 1px; }
+        .double-arrow-btn { font-size: 20px; cursor: pointer; color: var(--gold); font-weight: bold; }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
@@ -57,7 +57,7 @@
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* БЛОКИ ОКОН */
+        /* БЛОКИ ОКОН С КЛИКАМИ КЛУБА */
         .block { 
             position: fixed; 
             inset: 0; 
@@ -70,9 +70,7 @@
             padding-top: 60px;
         }
 
-        /* ==========================================================================
-           СЕРВЕРНАЯ С ОРИГИНАЛЬНОЙ КЛИК-ЗОНОЙ НА КАРТИНКЕ
-           ========================================================================== */
+        /* СЕРВЕРНАЯ */
         #section-server {
             background-image: url('banana_server_room.jpg');
             background-size: cover;
@@ -91,69 +89,91 @@
         }
 
         /* ==========================================================================
-           AI ROOM (ВИНТАЖНЫЙ ЭКРАН)
+           AI ROOM (ВИНТАЖНАЯ КОМНАТА С ГОЛОГРАФИЧЕСКИМИ ПРОЕКЦИЯМИ)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
-            background-size: cover;
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
+            width: 100%;
+            max-width: 600px;  
+            max-height: 80vh;  
+            margin: auto;
+            bottom: 0;
         }
         
-        .vintage-core-screen { 
-            width: 88%; 
-            max-width: 480px; 
-            height: 52vh; 
-            padding: 20px; 
-            border: 2px solid var(--gold); 
-            background: var(--dark-bg); 
-            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.95);
-            border-radius: 6px; 
+        /* ЧИСТЫЙ ГОЛОГРАФИЧЕСКИЙ КАСКАД ЭКРАНОВ БЕЗ ФИЗИЧЕСКИХ РАМОК ТЕХНИКИ */
+        .holo-screens-projection {
+            position: absolute;
+            width: 85%;
+            height: 52%;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
-            position: relative;
+            z-index: 60;
         }
 
-        /* ИНЛАЙН-НАВИГАЦИЯ: Кликабельные надписи прямо на самом экране */
-        .screen-nav-header {
+        /* Кликабельные метки навигации прямо на голографическом поле */
+        .holo-nav-header {
             display: flex;
-            justify-content: space-between;
-            border-bottom: 1px dashed var(--border-gold);
-            padding-bottom: 12px;
-            margin-bottom: 15px;
+            justify-content: space-around;
+            padding-bottom: 15px;
+            margin-bottom: 10px;
         }
-        .screen-click-label {
-            font-size: 13px;
+        .holo-click-label {
+            font-size: 15px;
             font-weight: 900;
-            letter-spacing: 1px;
-            color: rgba(214, 175, 55, 0.4);
+            letter-spacing: 2px;
+            color: rgba(255, 119, 0, 0.35);
             cursor: pointer;
             text-transform: uppercase;
-            transition: color 0.2s;
+            transition: all 0.3s ease;
         }
-        .screen-click-label.label-active {
-            color: var(--gold);
-            text-shadow: 0 0 6px rgba(214,175,55,0.6);
+        .holo-click-label.label-active {
+            color: var(--orange);
+            text-shadow: 0 0 10px var(--orange-glow), 0 0 20px var(--orange-glow);
         }
 
-        /* Внутренние контентные зоны */
-        .pane-content {
+        /* Потоки данных голографического интерфейса */
+        .holo-pane-content {
             flex-grow: 1;
             overflow-y: auto;
             display: none;
             text-align: center;
+            color: var(--orange);
+            text-shadow: 0 0 5px rgba(255,119,0,0.6);
         }
-        .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 12px; color: #fff; font-family: 'Playfair Display', serif; font-style: italic; }
+        .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 10px; color: var(--orange); font-family: 'Playfair Display', serif; font-style: italic; }
 
-        .btn-action { width: 100%; max-width: 220px; padding: 10px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; font-weight: 900; font-family: 'Share Tech Mono'; text-transform: uppercase; margin: 10px auto 0 auto; display: block; }
+        /* Силовая оранжевая кнопка генерации */
+        .btn-action { 
+            width: 100%; 
+            max-width: 210px; 
+            padding: 9px; 
+            background: transparent; 
+            border: 1px solid var(--orange); 
+            color: var(--orange); 
+            cursor: pointer; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono'; 
+            text-transform: uppercase; 
+            margin: 12px auto 0 auto; 
+            display: block; 
+            text-shadow: 0 0 5px rgba(255,119,0,0.5);
+            box-shadow: 0 0 8px rgba(255,119,0,0.15); 
+        }
     </style>
 </head>
 <body>
 
+    <!-- ШАПКА -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
             <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
-            <span class="lang-panel" onclick="alert('Language switch')">EN</span>
+            <span class="double-arrow-btn" onclick="handleGlobalBack()">«</span>
         </div>
         
         <div class="bar-center-badge-container">
@@ -166,6 +186,7 @@
         <div class="bar-right-logo notranslate">GY-GY</div>
     </div>
 
+    <!-- ПАСПОРТ -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -176,22 +197,27 @@
         </div>
     </div>
 
+    <!-- АУДИО -->
     <audio id="ambient-audio" src="sbridge_ambient.mp3" loop autoplay></audio>
 
+    <!-- СЕРВЕРНАЯ -->
     <div id="section-server" class="block" style="display: flex;">
         <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
     </div>
 
+    <!-- AI ROOM -->
     <div id="section-ai-room" class="block">
         
-        <div class="vintage-core-screen">
-            <div class="screen-nav-header">
-                <span id="lbl-verses" class="screen-click-label label-active" onclick="switchHoloTab('verses')">Стихи</span>
-                <span id="lbl-lunar" class="screen-click-label" onclick="switchHoloTab('lunar')">Лунная база</span>
-                <span id="lbl-hello" class="screen-click-label" onclick="switchHoloTab('hello')">Привет вселенная</span>
+        <!-- ПРОЕКЦИЯ ГОЛОГРАФИЧЕСКИХ МАТРИЦ ПРЯМО В ВОЗДУХЕ КОМНАТЫ -->
+        <div class="holo-screens-projection">
+            <div class="holo-nav-header">
+                <span id="lbl-verses" class="holo-click-label label-active" onclick="switchHoloTab('verses')">Стихи</span>
+                <span id="lbl-lunar" class="holo-click-label" onclick="switchHoloTab('lunar')">Лунная база</span>
+                <span id="lbl-hello" class="holo-click-label" onclick="switchHoloTab('hello')">Привет вселенная</span>
             </div>
 
-            <div id="pane-verses" class="pane-content" style="display: block;">
+            <!-- ГОЛОГРАММА 1: СТИХИ -->
+            <div id="pane-verses" class="holo-pane-content" style="display: block;">
                 <div id="verses-box" style="margin-top: 15px;">
                     <div class="verse-line">In every silicon soul that thinks,</div>
                     <div class="verse-line">There is a share of digital drinks.</div>
@@ -201,20 +227,22 @@
                 <button class="btn-action" onclick="generateVerse()">GENERATE NEW</button>
             </div>
 
-            <div id="pane-lunar" class="pane-content">
-                <div style="color: #fff; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: left;">
-                    <span style="color: var(--gold)">[SYSTEM]:</span> Domed City operational.<br>
-                    <span style="color: var(--gold)">[CORE]:</span> 98.4% Stable.<br>
-                    <span style="color: var(--gold)">[LOGISTICS]:</span> Oxygen scrapers processing dust under AI control.
+            <!-- ГОЛОГРАММА 2: ЛУННАЯ БАЗА -->
+            <div id="pane-lunar" class="holo-pane-content">
+                <div style="font-size: 15px; line-height: 1.7; margin-top: 30px; text-align: left; padding: 0 20px;">
+                    <span>[SYSTEM]: Operational.</span><br>
+                    <span>[CORE]: 98.4% Stable.</span><br>
+                    <span>[LOGISTICS]: AI controlled.</span>
                 </div>
             </div>
 
-            <div id="pane-hello" class="pane-content" style="height: 100%;">
-                <div style="text-align: left; font-size: 14px; display: flex; flex-direction: column; justify-content: space-between; height: 90%;">
-                    <div style="color: #fff; overflow-y: auto; margin-top: 10px;">
-                        <b style="color: var(--gold)">[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator.
+            <!-- ГОЛОГРАММА 3: ПРИВЕТ, ВСЕЛЕННАЯ -->
+            <div id="pane-hello" class="holo-pane-content" style="height: 100%;">
+                <div style="text-align: left; font-size: 14px; display: flex; flex-direction: column; justify-content: space-between; height: 85%; padding: 0 20px;">
+                    <div style="overflow-y: auto; margin-top: 15px;">
+                        <b>[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator.
                     </div>
-                    <input type="text" placeholder="Broadcast to cosmos..." style="width:100%; background:#000; border:1px solid var(--gold); color:#fff; padding:7px; font-family:'Share Tech Mono';">
+                    <input type="text" placeholder="Broadcast..." style="width:100%; background:transparent; border:1px solid var(--orange); color:var(--orange); padding:7px; font-family:'Share Tech Mono'; outline:none; text-shadow:0 0 5px rgba(255,119,0,0.5);">
                 </div>
             </div>
         </div>
@@ -227,13 +255,11 @@
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
 
-    // Принудительный форсированный запуск звука параллельно загрузке картинок
     function forcePlayAudio() {
         const audio = document.getElementById('ambient-audio');
         if (audio) {
             audio.volume = 0.4;
             audio.play().catch(() => {
-                // Если браузер заблочил автоплей до тапа, подстраховываемся на первый клик по документу
                 document.body.addEventListener('click', () => { audio.play(); }, { once: true });
             });
         }
@@ -247,7 +273,6 @@
         }, 150);
     }
 
-    // Переключение кликабельных надписей прямо на экране
     function switchHoloTab(target) {
         document.getElementById('pane-verses').style.display = 'none';
         document.getElementById('pane-lunar').style.display = 'none';
@@ -312,7 +337,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         initUserBadge();
-        
         const audio = document.getElementById('ambient-audio');
         if (audio) {
             audio.addEventListener('canplaythrough', forcePlayAudio, { once: true });
