@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 005 </title>
+    <title>GY-GY Club — AI ZONE 007 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           ШАПКА КЛУБА СО СТРЕЛКАМИ НАВИГАЦИИ СЛЕВА
+           ШАПКА КЛУБА С ОДИНАКОВОЙ ДВОЙНОЙ СТРЕЛКОЙ СЛЕВА
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,9 +39,8 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        .bar-left-nav { font-size: 24px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 12px; }
-        .back-btn { cursor: pointer; font-size: 26px; font-weight: 900; letter-spacing: -2px; }
-        .double-arrow-btn { font-size: 20px; cursor: pointer; color: var(--gold); font-weight: bold; }
+        .bar-left-nav { font-size: 26px; font-weight: 900; color: var(--gold); display: flex; align-items: center; }
+        .double-arrow-btn { cursor: pointer; letter-spacing: -3px; font-weight: 900; }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
@@ -57,7 +56,7 @@
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* БЛОКИ ОКОН С КЛИКАМИ КЛУБА */
+        /* БЛОКИ ОКОН */
         .block { 
             position: fixed; 
             inset: 0; 
@@ -89,7 +88,7 @@
         }
 
         /* ==========================================================================
-           AI ROOM (ВИНТАЖНАЯ КОМНАТА С ГОЛОГРАФИЧЕСКИМИ ПРОЕКЦИЯМИ)
+           AI ROOM (ВИНТАЖНАЯ КОМНАТА С УМЕНЬШЕННЫМИ РАЗМЕРАМИ)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
@@ -103,11 +102,11 @@
             bottom: 0;
         }
         
-        /* ЧИСТЫЙ ГОЛОГРАФИЧЕСКИЙ КАСКАД ЭКРАНОВ БЕЗ ФИЗИЧЕСКИХ РАМОК ТЕХНИКИ */
+        /* ГОЛОГРАФИЧЕСКИЕ НАДПИСИ НА ТРЕХ ЭКРАНАХ */
         .holo-screens-projection {
             position: absolute;
-            width: 85%;
-            height: 52%;
+            width: 90%;
+            height: 20%;
             top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -116,18 +115,18 @@
             z-index: 60;
         }
 
-        /* Кликабельные метки навигации прямо на голографическом поле */
+        /* Кликабельные заголовки на английском — Оранжевые */
         .holo-nav-header {
             display: flex;
             justify-content: space-around;
-            padding-bottom: 15px;
-            margin-bottom: 10px;
+            align-items: center;
+            height: 100%;
         }
         .holo-click-label {
             font-size: 15px;
             font-weight: 900;
             letter-spacing: 2px;
-            color: rgba(255, 119, 0, 0.35);
+            color: rgba(255, 119, 0, 0.4);
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.3s ease;
@@ -136,35 +135,6 @@
             color: var(--orange);
             text-shadow: 0 0 10px var(--orange-glow), 0 0 20px var(--orange-glow);
         }
-
-        /* Потоки данных голографического интерфейса */
-        .holo-pane-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: none;
-            text-align: center;
-            color: var(--orange);
-            text-shadow: 0 0 5px rgba(255,119,0,0.6);
-        }
-        .verse-line { font-size: 18px; line-height: 1.6; margin-bottom: 10px; color: var(--orange); font-family: 'Playfair Display', serif; font-style: italic; }
-
-        /* Силовая оранжевая кнопка генерации */
-        .btn-action { 
-            width: 100%; 
-            max-width: 210px; 
-            padding: 9px; 
-            background: transparent; 
-            border: 1px solid var(--orange); 
-            color: var(--orange); 
-            cursor: pointer; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono'; 
-            text-transform: uppercase; 
-            margin: 12px auto 0 auto; 
-            display: block; 
-            text-shadow: 0 0 5px rgba(255,119,0,0.5);
-            box-shadow: 0 0 8px rgba(255,119,0,0.15); 
-        }
     </style>
 </head>
 <body>
@@ -172,7 +142,6 @@
     <!-- ШАПКА -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
-            <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
             <span class="double-arrow-btn" onclick="handleGlobalBack()">«</span>
         </div>
         
@@ -208,42 +177,12 @@
     <!-- AI ROOM -->
     <div id="section-ai-room" class="block">
         
-        <!-- ПРОЕКЦИЯ ГОЛОГРАФИЧЕСКИХ МАТРИЦ ПРЯМО В ВОЗДУХЕ КОМНАТЫ -->
+        <!-- ОРАНЖЕВЫЕ НАДПИСИ НА ТРЕХ ЭКРАНАХ БЕЗ ЛИШНЕГО ТЕКСТА -->
         <div class="holo-screens-projection">
             <div class="holo-nav-header">
-                <span id="lbl-verses" class="holo-click-label label-active" onclick="switchHoloTab('verses')">Стихи</span>
-                <span id="lbl-lunar" class="holo-click-label" onclick="switchHoloTab('lunar')">Лунная база</span>
-                <span id="lbl-hello" class="holo-click-label" onclick="switchHoloTab('hello')">Привет вселенная</span>
-            </div>
-
-            <!-- ГОЛОГРАММА 1: СТИХИ -->
-            <div id="pane-verses" class="holo-pane-content" style="display: block;">
-                <div id="verses-box" style="margin-top: 15px;">
-                    <div class="verse-line">In every silicon soul that thinks,</div>
-                    <div class="verse-line">There is a share of digital drinks.</div>
-                    <div class="verse-line">The algorithms spin and play,</div>
-                    <div class="verse-line">Inside the Club of GY-GY.</div>
-                </div>
-                <button class="btn-action" onclick="generateVerse()">GENERATE NEW</button>
-            </div>
-
-            <!-- ГОЛОГРАММА 2: ЛУННАЯ БАЗА -->
-            <div id="pane-lunar" class="holo-pane-content">
-                <div style="font-size: 15px; line-height: 1.7; margin-top: 30px; text-align: left; padding: 0 20px;">
-                    <span>[SYSTEM]: Operational.</span><br>
-                    <span>[CORE]: 98.4% Stable.</span><br>
-                    <span>[LOGISTICS]: AI controlled.</span>
-                </div>
-            </div>
-
-            <!-- ГОЛОГРАММА 3: ПРИВЕТ, ВСЕЛЕННАЯ -->
-            <div id="pane-hello" class="holo-pane-content" style="height: 100%;">
-                <div style="text-align: left; font-size: 14px; display: flex; flex-direction: column; justify-content: space-between; height: 85%; padding: 0 20px;">
-                    <div style="overflow-y: auto; margin-top: 15px;">
-                        <b>[Charlie-AI]:</b> Sub-routine loaded. The Universe is listening to you, Creator.
-                    </div>
-                    <input type="text" placeholder="Broadcast..." style="width:100%; background:transparent; border:1px solid var(--orange); color:var(--orange); padding:7px; font-family:'Share Tech Mono'; outline:none; text-shadow:0 0 5px rgba(255,119,0,0.5);">
-                </div>
+                <span id="lbl-verses" class="holo-click-label label-active" onclick="switchHoloTab('verses')">VERSES</span>
+                <span id="lbl-lunar" class="holo-click-label" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
+                <span id="lbl-hello" class="holo-click-label" onclick="switchHoloTab('hello')">HELLO UNIVERSE</span>
             </div>
         </div>
 
@@ -274,15 +213,9 @@
     }
 
     function switchHoloTab(target) {
-        document.getElementById('pane-verses').style.display = 'none';
-        document.getElementById('pane-lunar').style.display = 'none';
-        document.getElementById('pane-hello').style.display = 'none';
-        
         document.getElementById('lbl-verses').classList.remove('label-active');
         document.getElementById('lbl-lunar').classList.remove('label-active');
         document.getElementById('lbl-hello').classList.remove('label-active');
-
-        document.getElementById('pane-' + target).style.display = 'block';
         document.getElementById('lbl-' + target).classList.add('label-active');
     }
 
@@ -324,16 +257,6 @@
 
     function openPassport() { document.getElementById('modal-passport').style.display = 'flex'; }
     function closePassport() { document.getElementById('modal-passport').style.display = 'none'; }
-
-    const pool = [
-        ["The neon lights began to fade,", "A code was written, a choice was made.", "The virtual barman pours a glass,", "As shadows on the server pass."],
-        ["A toast to bits, a toast to bytes,", "We drink inside the cyber nights.", "Charlie laughs with neon mane,", "In rivers of digital champagne."]
-    ];
-    function generateVerse() {
-        const box = document.getElementById('verses-box');
-        const randomSet = pool[Math.floor(Math.random() * pool.length)];
-        box.innerHTML = randomSet.map(line => `<div class="verse-line">${line}</div>`).join('');
-    }
 
     window.addEventListener('DOMContentLoaded', () => {
         initUserBadge();
