@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 0123 </title>
+    <title>GY-GY Club — AI ZONE 123 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА КЛУБА (С ОТСТУПОМ ВНУТРИ ДВОЙНОЙ СТРЕЛКИ)
+           СТАНДАРТНАЯ ШАПКА КЛУБА (ФИКС НАВИГАЦИИ)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -46,7 +46,7 @@
             user-select: none;
         }
         
-        /* Близнецы по размеру */
+        /* Идентичные по размеру и шрифту стрелки */
         .back-btn, .double-arrow-btn {
             font-family: 'Share Tech Mono', monospace;
             font-size: 26px; 
@@ -57,9 +57,9 @@
             align-items: center;
         }
 
-        /* Настройка расстояния внутри двойной стрелки */
+        /* Отступ внутри двойной стрелки */
         .double-arrow-btn span:nth-child(2) {
-            margin-left: -4px; /* Небольшой нахлест для аккуратного зазора. Сделай -2px или 0px, если захочешь еще шире */
+            margin-left: -4px; 
         }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
@@ -108,7 +108,7 @@
         }
 
         /* ==========================================================================
-           AI ROOM 
+           AI ROOM (+15% РАЗМЕР КАРТИНКИ)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
@@ -148,7 +148,7 @@
             text-shadow: 0 0 12px var(--orange-glow), 0 0 25px var(--orange-glow);
         }
 
-        /* НАСТРОЙКА КООРДИНАТ ГОЛОГРАММ */
+        /* НАСТРОЙКА КООРДИНАТ ГОЛОГРАММ — ТУТ ДВИГАЕМ НАДПИСИ НА ЭКРАНЫ */
         .pos-left {
             top: 22%;    
             left: 12%;   
@@ -171,7 +171,6 @@
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
             <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
-            
             <span class="double-arrow-btn" onclick="handleGlobalBack()">
                 <span>&lt;</span><span>&lt;</span>
             </span>
@@ -206,7 +205,7 @@
     <div id="section-ai-room" class="block">
         
         <div class="holo-canvas">
-            <span id="lbl-verses" class="holo-click-label pos-left label-active" onclick="switchHoloTab('verses')">VERSES</span>
+            <span id="lbl-et" class="holo-click-label pos-left label-active" onclick="switchHoloTab('et')">ET MESSAGE</span>
             <span id="lbl-lunar" class="holo-click-label pos-center" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
             <span id="lbl-hello" class="holo-click-label pos-right" onclick="switchHoloTab('hello')">HELLO UNIVERSE</span>
         </div>
@@ -238,7 +237,7 @@
     }
 
     function switchHoloTab(target) {
-        document.getElementById('lbl-verses').classList.remove('label-active');
+        document.getElementById('lbl-et').classList.remove('label-active');
         document.getElementById('lbl-lunar').classList.remove('label-active');
         document.getElementById('lbl-hello').classList.remove('label-active');
         document.getElementById('lbl-' + target).classList.add('label-active');
