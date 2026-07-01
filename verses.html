@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 007 </title>
+    <title>GY-GY Club — AI ZONE 009 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -11,7 +11,7 @@
         :root { 
             --gold: #d4af37; 
             --orange: #ff7700;
-            --orange-glow: rgba(255, 119, 0, 0.6);
+            --orange-glow: rgba(255, 119, 0, 0.7);
         }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           ШАПКА КЛУБА С ОДИНАКОВОЙ ДВОЙНОЙ СТРЕЛКОЙ СЛЕВА
+           СТАНДАРТНАЯ ШАПКА КЛУБА (КАК НА INDEX)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,8 +39,16 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        .bar-left-nav { font-size: 26px; font-weight: 900; color: var(--gold); display: flex; align-items: center; }
-        .double-arrow-btn { cursor: pointer; letter-spacing: -3px; font-weight: 900; }
+        /* Стрелка возврата в стиле главной страницы */
+        .ui-back-arrow { 
+            font-size: 28px; 
+            font-weight: bold; 
+            color: var(--gold); 
+            cursor: pointer; 
+            display: inline-block;
+            line-height: 60px;
+            user-select: none;
+        }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
@@ -88,7 +96,7 @@
         }
 
         /* ==========================================================================
-           AI ROOM (ВИНТАЖНАЯ КОМНАТА С УМЕНЬШЕННЫМИ РАЗМЕРАМИ)
+           AI ROOM (ВИНТАЖНАЯ КОМНАТА С КРУПНЫМИ РАЗНЕСЕННЫМИ НАДПИСЯМИ)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
@@ -102,47 +110,57 @@
             bottom: 0;
         }
         
-        /* ГОЛОГРАФИЧЕСКИЕ НАДПИСИ НА ТРЕХ ЭКРАНАХ */
-        .holo-screens-projection {
+        /* Пространственная матрица для позиционирования */
+        .holo-canvas {
             position: absolute;
-            width: 90%;
-            height: 20%;
+            width: 100%;
+            height: 60%;
             top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
+            left: 0;
             z-index: 60;
         }
 
-        /* Кликабельные заголовки на английском — Оранжевые */
-        .holo-nav-header {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 100%;
-        }
+        /* Общие стили крупных оранжевых надписей */
         .holo-click-label {
-            font-size: 15px;
+            position: absolute;
+            font-size: 22px; /* Увеличенный размер */
             font-weight: 900;
             letter-spacing: 2px;
-            color: rgba(255, 119, 0, 0.4);
+            color: rgba(255, 119, 0, 0.45);
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.3s ease;
+            user-select: none;
         }
         .holo-click-label.label-active {
             color: var(--orange);
-            text-shadow: 0 0 10px var(--orange-glow), 0 0 20px var(--orange-glow);
+            text-shadow: 0 0 12px var(--orange-glow), 0 0 25px var(--orange-glow);
+        }
+
+        /* Разнесение экранов по уровням высоты (top) и сторонам (left/right) */
+        .pos-left {
+            top: 15%;
+            left: 8%;
+        }
+        
+        .pos-center {
+            top: 45%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .pos-right {
+            top: 20%;
+            right: 8%;
         }
     </style>
 </head>
 <body>
 
-    <!-- ШАПКА -->
+    <!-- ШАПКА КЛУБА -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
-            <span class="double-arrow-btn" onclick="handleGlobalBack()">«</span>
+            <span class="ui-back-arrow" onclick="handleGlobalBack()">«</span>
         </div>
         
         <div class="bar-center-badge-container">
@@ -169,21 +187,19 @@
     <!-- АУДИО -->
     <audio id="ambient-audio" src="sbridge_ambient.mp3" loop autoplay></audio>
 
-    <!-- СЕРВЕРНАЯ -->
+    <!-- ЭКРАН 0: СЕРВЕРНАЯ -->
     <div id="section-server" class="block" style="display: flex;">
         <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
     </div>
 
-    <!-- AI ROOM -->
+    <!-- ЭКРАН 1: AI ROOM -->
     <div id="section-ai-room" class="block">
         
-        <!-- ОРАНЖЕВЫЕ НАДПИСИ НА ТРЕХ ЭКРАНАХ БЕЗ ЛИШНЕГО ТЕКСТА -->
-        <div class="holo-screens-projection">
-            <div class="holo-nav-header">
-                <span id="lbl-verses" class="holo-click-label label-active" onclick="switchHoloTab('verses')">VERSES</span>
-                <span id="lbl-lunar" class="holo-click-label" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
-                <span id="lbl-hello" class="holo-click-label" onclick="switchHoloTab('hello')">HELLO UNIVERSE</span>
-            </div>
+        <!-- КРУПНЫЕ НАДПИСИ НА РАЗНЫХ УРОВНЯХ ВЫСОТЫ И ШИРИНЫ -->
+        <div class="holo-canvas">
+            <span id="lbl-verses" class="holo-click-label pos-left label-active" onclick="switchHoloTab('verses')">VERSES</span>
+            <span id="lbl-lunar" class="holo-click-label pos-center" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
+            <span id="lbl-hello" class="holo-click-label pos-right" onclick="switchHoloTab('hello')">HELLO UNIVERSE</span>
         </div>
 
     </div>
