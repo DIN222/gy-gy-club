@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE</title>
+    <title>GY-GY Club — AI ZONE 011 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -225,4 +225,54 @@
 
     function switchHoloTab(target) {
         document.getElementById('lbl-verses').classList.remove('label-active');
-        document.getElementById('lbl-lunar
+        document.getElementById('lbl-lunar').classList.remove('label-active');
+        document.getElementById('lbl-hello').classList.remove('label-active');
+        document.getElementById('lbl-' + target).classList.add('label-active');
+    }
+
+    function handleGlobalBack() {
+        if (isInAiRoom) {
+            document.getElementById('section-ai-room').style.display = 'none';
+            document.getElementById('section-server').style.display = 'flex';
+            isInAiRoom = false;
+        } else {
+            window.location.href = 'index.html';
+        }
+    }
+
+    function initUserBadge() {
+        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
+
+        const badgeFlagImg = document.getElementById('badge-flag-img');
+        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+
+        if (savedAvatar) {
+            const badgeImg = document.getElementById('badge-avatar-img');
+            const passImg = document.getElementById('pass-avatar-img');
+            if (badgeImg) badgeImg.src = savedAvatar;
+            if (passImg) passImg.src = savedAvatar;
+        }
+
+        if (currentID) {
+            const passIdVal = document.getElementById('pass-id-val');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (passIdVal) passIdVal.innerText = currentID;
+            if (passQrBox && typeof QRCode !== 'undefined') { 
+                passQrBox.innerHTML = ""; 
+                new QRCode(passQrBox, { text: currentID, width: 100, height: 100 }); 
+            }
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initUserBadge();
+        const audio = document.getElementById('ambient-audio');
+        if (audio) {
+            audio.addEventListener('canplaythrough', forcePlayAudio, { once: true });
+        }
+    });
+</script>
+</body>
+</html>
