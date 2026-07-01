@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 010 </title>
+    <title>GY-GY Club — AI ZONE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА КЛУБА (КОПИЯ С INDEX)
+           СТАНДАРТНАЯ ШАПКА КЛУБА
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,18 +39,17 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        /* Оригинальный блок навигации со стрелками из index */
         .bar-left-nav { 
-            font-size: 24px; 
+            font-size: 26px; /* Выровняли базовый размер */
             font-weight: 900; 
             color: var(--gold); 
             display: flex; 
             align-items: center; 
-            gap: 12px; 
+            gap: 14px; 
             user-select: none;
         }
         .back-btn { cursor: pointer; font-size: 26px; font-weight: 900; letter-spacing: -2px; }
-        .double-arrow-btn { font-size: 20px; cursor: pointer; color: var(--gold); font-weight: bold; }
+        .double-arrow-btn { font-size: 26px; cursor: pointer; color: var(--gold); font-weight: 900; letter-spacing: -3px; }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
@@ -98,7 +97,7 @@
         }
 
         /* ==========================================================================
-           AI ROOM (РАЗМЕР УВЕЛИЧЕН НА 15%)
+           AI ROOM (+15% К РАЗМЕРАМ КАРТИНКИ)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
@@ -106,13 +105,13 @@
             background-position: center;
             background-repeat: no-repeat;
             width: 100%;
-            max-width: 690px;   /* Стало больше на 15% (было 600px) */
-            max-height: 92vh;   /* Стало больше на 15% (было 80vh) */
+            max-width: 690px;   
+            max-height: 92vh;   
             margin: auto;
             bottom: 0;
         }
         
-        /* Пространственная матрица для позиционирования */
+        /* Пространственная матрица голограмм */
         .holo-canvas {
             position: absolute;
             width: 100%;
@@ -122,7 +121,6 @@
             z-index: 60;
         }
 
-        /* Крупные оранжевые надписи */
         .holo-click-label {
             position: absolute;
             font-size: 22px; 
@@ -139,27 +137,26 @@
             text-shadow: 0 0 12px var(--orange-glow), 0 0 25px var(--orange-glow);
         }
 
-        /* Геометрическое распределение по уровням, исключающее пересечения */
+        /* НАСТРОЙКА КООРДИНАТ ГОЛОГРАММ */
         .pos-left {
-            top: 15%;
-            left: 8%;
+            top: 22%;    
+            left: 12%;   
         }
         
         .pos-center {
-            top: 45%;
-            left: 50%;
+            top: 48%;    
+            left: 50%;   
             transform: translateX(-50%);
         }
 
         .pos-right {
-            top: 20%;
-            right: 8%;
+            top: 25%;    
+            right: 12%;  
         }
     </style>
 </head>
 <body>
 
-    <!-- ШАПКА КЛУБА (ПОЛНОЕ СООТВЕТСТВИЕ INDEX) -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
             <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
@@ -176,7 +173,6 @@
         <div class="bar-right-logo notranslate">GY-GY</div>
     </div>
 
-    <!-- ПАСПОРТ -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -187,18 +183,14 @@
         </div>
     </div>
 
-    <!-- АУДИО -->
     <audio id="ambient-audio" src="sbridge_ambient.mp3" loop autoplay></audio>
 
-    <!-- ЭКРАН 0: СЕРВЕРНАЯ -->
     <div id="section-server" class="block" style="display: flex;">
         <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
     </div>
 
-    <!-- ЭКРАН 1: AI ROOM -->
     <div id="section-ai-room" class="block">
         
-        <!-- ПРОСТРАНСТВЕННЫЙ ГОЛОГРАФИЧЕСКИЙ СЛОЙ -->
         <div class="holo-canvas">
             <span id="lbl-verses" class="holo-click-label pos-left label-active" onclick="switchHoloTab('verses')">VERSES</span>
             <span id="lbl-lunar" class="holo-click-label pos-center" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
@@ -233,57 +225,4 @@
 
     function switchHoloTab(target) {
         document.getElementById('lbl-verses').classList.remove('label-active');
-        document.getElementById('lbl-lunar').classList.remove('label-active');
-        document.getElementById('lbl-hello').classList.remove('label-active');
-        document.getElementById('lbl-' + target).classList.add('label-active');
-    }
-
-    function handleGlobalBack() {
-        if (isInAiRoom) {
-            document.getElementById('section-ai-room').style.display = 'none';
-            document.getElementById('section-server').style.display = 'flex';
-            isInAiRoom = false;
-        } else {
-            window.location.href = 'index.html';
-        }
-    }
-
-    function initUserBadge() {
-        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
-
-        const badgeFlagImg = document.getElementById('badge-flag-img');
-        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
-
-        if (savedAvatar) {
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = savedAvatar;
-            if (passImg) passImg.src = savedAvatar;
-        }
-
-        if (currentID) {
-            const passIdVal = document.getElementById('pass-id-val');
-            const passQrBox = document.getElementById('pass-qr-box');
-            if (passIdVal) passIdVal.innerText = currentID;
-            if (passQrBox && typeof QRCode !== 'undefined') { 
-                passQrBox.innerHTML = ""; 
-                new QRCode(passQrBox, { text: currentID, width: 100, height: 100 }); 
-            }
-        }
-    }
-
-    function openPassport() { document.getElementById('modal-passport').style.display = 'flex'; }
-    function closePassport() { document.getElementById('modal-passport').style.display = 'none'; }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        initUserBadge();
-        const audio = document.getElementById('ambient-audio');
-        if (audio) {
-            audio.addEventListener('canplaythrough', forcePlayAudio, { once: true });
-        }
-    });
-</script>
-</body>
-</html>
+        document.getElementById('lbl-lunar
