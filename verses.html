@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 014 </title>
+    <title>GY-GY Club — AI ZONE 015 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -130,7 +130,6 @@
             z-index: 60;
         }
 
-        /* ТЕПЕРЬ ВСЕ ГОЛОГРАММЫ СВЕТЯТСЯ МАКСИМАЛЬНО ИНТЕНСИВНО ПО УМОЛЧАНИЮ */
         .holo-click-label {
             position: absolute;
             font-size: 22px; 
@@ -144,27 +143,33 @@
             user-select: none;
         }
 
-        /* НАСТРОЙКА КООРДИНАТ ГОЛОГРАММ */
+        /* ==========================================================================
+           НАСТРОЙКА ВЕРТИКАЛИ НАДПИСЕЙ (МЕНЯЙ % У ПАРАМЕТРА TOP)
+           Меньше % — ВВЕРХ, Больше % — ВНИЗ
+           ========================================================================== */
+        
+        /* Левый экран (ET MESSAGE) */
         .pos-left {
-            top: 22%;    
+            top: 22%;    /* Сделай 15% чтобы поднять, или 30% чтобы опустить */
             left: 12%;   
         }
         
+        /* Центральный экран (LUNAR BASE) */
         .pos-center {
-            top: 48%;    
+            top: 48%;    /* Изменяй это значение для центральной надписи */
             left: 50%;   
             transform: translateX(-50%);
         }
 
+        /* Правый экран (HELLO UNIVERSE) */
         .pos-right {
-            top: 25%;    
+            top: 25%;    /* Изменяй это значение для правой надписи */
             right: 12%;  
         }
     </style>
 </head>
 <body>
 
-    <!-- ШАПКА КЛУБА -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
             <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
@@ -183,7 +188,6 @@
         <div class="bar-right-logo notranslate">GY-GY</div>
     </div>
 
-    <!-- ПАСПОРТ -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -194,19 +198,15 @@
         </div>
     </div>
 
-    <!-- АУДИО -->
     <audio id="ambient-audio" src="sbridge_ambient.mp3" loop autoplay></audio>
 
-    <!-- СЕРВЕРНАЯ -->
     <div id="section-server" class="block" style="display: flex;">
         <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
     </div>
 
-    <!-- AI ROOM -->
     <div id="section-ai-room" class="block">
         
         <div class="holo-canvas">
-            <!-- Убрали класс label-active, так как теперь все горят на 100% мощности -->
             <span id="lbl-et" class="holo-click-label pos-left" onclick="switchHoloTab('et')">ET MESSAGE</span>
             <span id="lbl-lunar" class="holo-click-label pos-center" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
             <span id="lbl-hello" class="holo-click-label pos-right" onclick="switchHoloTab('hello')">HELLO UNIVERSE</span>
@@ -238,8 +238,6 @@
         }, 150);
     }
 
-    /* Функция переключения вкладок остается рабочей на будущее, 
-       если ты захочешь добавлять сюда другие визуальные эффекты */
     function switchHoloTab(target) {
         console.log("Switched to tab: " + target);
     }
