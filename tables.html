@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club | Tables v1.5.15 </title>
+    <title>GY-GY Club | Tables v1.5.15</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
@@ -17,15 +17,29 @@
         }
         body.page-loaded { opacity: 1; }
 
-        /* СТАНДАРТНЫЕ СТРЕЛКИ НАВИГАЦИИ КЛУБА */
+        /* СТРЕЛКИ НАВИГАЦИИ (ФЛЕКС-БЛИЗНЕЦЫ С КОМФОРТНЫМ ЗАЗОРОМ) */
         .ui-nav-arrows {
             position: fixed; top: 15px; left: 20px; z-index: 6000; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900; 
-            cursor: pointer; color: var(--gold); user-select: none; line-height: 1;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            display: flex; gap: 20px; align-items: center; user-select: none;
         }
-        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item { 
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 26px; 
+            font-weight: 900; 
+            color: var(--gold); 
+            cursor: pointer; 
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            transition: opacity 0.2s; 
+        }
         .arrow-item:hover { opacity: 0.8; }
+        
+        /* Зазор внутри двойной стрелки */
+        .arrow-item span:nth-child(2) {
+            margin-left: -4px; 
+        }
 
         /* КЛУБНЫЙ ЛОГОТИП GY-GY */
         #ui-logo { position: fixed; top: 15px; right: 25px; z-index: 5000; color: var(--gold); font-size: 24px; font-weight: bold; letter-spacing: 5px; }
@@ -38,7 +52,7 @@
             overflow: hidden;
         }
         
-        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА (МАСШТАБИРУЕТСЯ ЦЕЛИКОМ С КОЛЬЦАМИ) */
+        /* МОНОЛИТНАЯ ВЕКТОРНАЯ МАТРИЦА */
         .table-scene {
             position: relative;
             width: 1000px; 
@@ -50,7 +64,7 @@
             transform-origin: center center;
         }
         
-        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ КОЛЬЦА С КЛИКОМ ПО ОДНОМУ ТАПУ */
+        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ КОЛЬЦА */
         .lamp-zone { 
             position: absolute; 
             width: 44px; height: 44px; 
@@ -65,7 +79,7 @@
         }
         .lamp-zone:hover { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 28px var(--violet); z-index: 500; }
 
-        /* ЮВЕЛИРНЫЕ НАСТРОЕННЫЕ КООРДИНАТЫ АБАЖУРОВ СТОЛОВ И СЦЕНЫ */
+        /* КООРДИНАТЫ АБАЖУРОВ СТОЛОВ И СЦЕНЫ */
         #table-1 { top: 396px; left: 330px; }   
         #table-2 { top: 344px; left: 419px; }   
         #table-3 { top: 303px; left: 438px; }   
@@ -74,13 +88,13 @@
         #table-6 { top: 396px; left: 659px; }   
         #mic-zone { top: 234px; left: 503px; } 
 
-      /* СТИЛЬНАЯ СЕРАЯ ДЫМЧАТАЯ ПОДСВЕТКА НАДПИСЕЙ (ПОВТОРЯЕТ БУКВЫ) */
+        /* СЕРАЯ ДЫМЧАТАЯ ПОДСВЕТКА НАДПИСЕЙ */
         .lamp-zone::after {
             content: attr(data-label);
             position: absolute; bottom: 100%; left: 50%; 
             transform: translateX(-50%) translateY(-14px); 
             background: rgba(10, 10, 10, 0.98); 
-            border: 1px solid #444; /* Графитовая сдержанная рамка */
+            border: 1px solid #444; 
             color: var(--gold);
             padding: 6px 12px; 
             font-size: 13px; 
@@ -90,20 +104,17 @@
             pointer-events: none; 
             transition: opacity 0.25s ease, transform 0.25s ease; 
             font-family: 'Share Tech Mono', monospace;
-            
-            /* Глубокая тень блока + серая пепельная дымка строго по контуру букв */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
             text-shadow: 0 0 4px rgba(150, 150, 150, 0.6), 0 0 8px rgba(100, 100, 100, 0.4); 
             z-index: 999999 !important;
         }
         
-        /* ПЛАВНОЕ ПРОЯВЛЕНИЕ ДЫМКА ПРИ НАВЕДЕНИИ */
         .lamp-zone:hover::after { 
             opacity: 1 !important; 
             transform: translateX(-50%) translateY(-20px); 
         }
 
-        /* ТОТАЛЬНЫЙ ДЕМОНТАЖ ГУГЛ-ПАНЕЛИ ИЗ ВИДИМОСТИ */
+        /* ТОТАЛЬНЫЙ ДЕМОНТАЖ ГУГЛ-ПАНЕЛИ */
         #google_translate_element, 
         .skiptranslate, 
         .goog-te-banner-frame, 
@@ -119,10 +130,10 @@
             pointer-events: none !important;
         }
         
-        /* Защита от гугловских сдвигов разметки */
         body { top: 0 !important; position: fixed !important; }
         .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-        /* СКВОЗНОЙ АВАТАР — ЖЕСТКИЙ ЦЕНТР */
+
+        /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed; top: 12px; left: 50% !important; transform: translateX(-50%) !important;
             margin: 0 !important; width: 42px; height: 42px; border-radius: 50%;
@@ -132,7 +143,6 @@
         }
         .ui-user-badge img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         
-        /* КЛУБНЫЙ МАРКЕР ФЛАГА НА АВАТАРЕ */
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px;
             width: 17px; height: 12px; object-fit: cover;
@@ -149,9 +159,12 @@
     
     <audio id="snd-ambient" loop><source src="bar_ambient.mp3"></audio>
     
+    <!-- НАВИГАЦИЯ С КОМФОРТНЫМ ЗАЗОРОМ ДЛЯ СТРЕЛОК -->
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="Core.backToBar()">&lt;</div>
-        <div class="arrow-item" onclick="Core.exitToEntrance()">&lt;&lt;</div>
+        <div class="arrow-item" onclick="Core.exitToEntrance()">
+            <span>&lt;</span><span>&lt;</span>
+        </div>
     </div>
     
     <div id="ui-logo" class="notranslate">GY-GY</div>
@@ -164,8 +177,13 @@
 
         <div class="table-scene">
             <div id="table-1" class="lamp-zone" data-label="TABLE 1: «Риск» (Стратегия)" onclick="Core.loadZone('risk.html')"></div>
+            
+            <!-- СТОЛ 2: Дуэль на цитатах (Баттл) -->
             <div id="table-2" class="lamp-zone" data-label="TABLE 2: «Дуэль на цитатах» (Баттл)" onclick="Core.loadZone('battle.html')"></div>
-            <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Анонимные Диалоги» (Рулетка)" onclick="Core.loadZone('anon.html')"></div>
+            
+            <!-- СТОЛ 3: Стихи (Поэзия) — файл сохранили старый (anon.html), меняем только вывеску -->
+            <div id="table-3" class="lamp-zone" data-label="TABLE 3: «Стихи» (Поэзия)" onclick="Core.loadZone('anon.html')"></div>
+            
             <div id="table-4" class="lamp-zone" data-label="TABLE 4: «Переводчик М / Ж»" onclick="Core.loadZone('translator.html')"></div>
             <div id="table-5" class="lamp-zone" data-label="TABLE 5: «Дуэль Комплиментов»" onclick="Core.loadZone('compliments.html')"></div>
             <div id="table-6" class="lamp-zone" data-label="TABLE 6: «Тень Барона» (vs ИИ)" onclick="Core.loadZone('baron.html')"></div>
@@ -174,11 +192,9 @@
         </div>
     </div>
 
- 
 <script>
         const Core = {
             init() {
-                // Включаем плавное проявление страницы столиков
                 document.body.classList.add('page-loaded');
 
                 const amb = document.getElementById('snd-ambient');
@@ -189,7 +205,6 @@
                     });
                 }
 
-                // 1. ОТДЕЛЬНЫЙ НЕЗАВИСИМЫЙ ПОДТЯГ ФЛАГА
                 let savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
                 if (savedFlag.includes('/')) {
                     savedFlag = savedFlag.split('/').pop().replace('.png', '');
@@ -200,7 +215,6 @@
                     badgeFlag.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
                 }
 
-                // 2. ОТДЕЛЬНЫЙ ПОДТЯГ АВАТАРА
                 const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
                 const badgeContainer = document.getElementById('global-user-badge');
                 
@@ -214,7 +228,6 @@
                 }
             },
 
-            // Клик по зоне — плавный Fade-Out и переход в мини-игру
             loadZone(url) {
                 document.body.classList.remove('page-loaded');
                 setTimeout(() => {
@@ -222,7 +235,6 @@
                 }, 500);
             },
 
-            // ОДИНАРНАЯ СТРЕЛА (<) — НАЗАД В БАР К КОНЮ
             backToBar() {
                 document.body.classList.remove('page-loaded');
                 setTimeout(() => {
@@ -230,27 +242,23 @@
                 }, 500);
             },
             
-            // ДВОЙНАЯ СТРЕЛА (<<) — ТОТАЛЬНЫЙ ВЫХОД К ЗАКРЫТОЙ ДВЕРИ
             exitToEntrance() {
                 document.body.classList.remove('page-loaded');
                 setTimeout(() => {
                     location.href = 'index.html'; 
                 }, 500);
             }
-        }; // КРИТИЧЕСКИЙ МАРКЕР СКРИПТА СТОЛОВ ДОБАВЛЕН .
+        };
 
-        // ЖЕЛЕЗНЫЙ АВТОПЕРЕВОД ПРИ ВХОДЕ В ЗАЛ
         function applySavedLanguageForPage() {
             let savedLang = (localStorage.getItem('gy_lang') || localStorage.getItem('gygy_lang') || 'en').toLowerCase();
             if (savedLang === 'ua') savedLang = 'uk';
 
             console.log(`[GY-GY Столики] Активация языка из памяти: ${savedLang}`);
 
-            // Прописываем куки, чтобы Google Translate сразу подхватил язык до рендеринга элементов
             document.cookie = "googtrans=/en/" + savedLang + "; path=/";
             document.cookie = "googtrans=/en/" + savedLang + "; domain=" + window.location.hostname + "; path=/";
 
-            // Страховочный пинок селектора, если куки не сработали мгновенно
             let attempts = 0;
             const checkSelectInterval = setInterval(() => {
                 const selectEl = document.querySelector('.goog-te-combo');
