@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 123 </title>
+    <title>GY-GY Club — AI ZONE 014 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -46,7 +46,6 @@
             user-select: none;
         }
         
-        /* Идентичные по размеру и шрифту стрелки */
         .back-btn, .double-arrow-btn {
             font-family: 'Share Tech Mono', monospace;
             font-size: 26px; 
@@ -57,7 +56,6 @@
             align-items: center;
         }
 
-        /* Отступ внутри двойной стрелки */
         .double-arrow-btn span:nth-child(2) {
             margin-left: -4px; 
         }
@@ -132,23 +130,21 @@
             z-index: 60;
         }
 
+        /* ТЕПЕРЬ ВСЕ ГОЛОГРАММЫ СВЕТЯТСЯ МАКСИМАЛЬНО ИНТЕНСИВНО ПО УМОЛЧАНИЮ */
         .holo-click-label {
             position: absolute;
             font-size: 22px; 
             font-weight: 900;
             letter-spacing: 2px;
-            color: rgba(255, 119, 0, 0.45);
+            color: var(--orange);
+            text-shadow: 0 0 12px var(--orange-glow), 0 0 25px var(--orange-glow);
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.3s ease;
             user-select: none;
         }
-        .holo-click-label.label-active {
-            color: var(--orange);
-            text-shadow: 0 0 12px var(--orange-glow), 0 0 25px var(--orange-glow);
-        }
 
-        /* НАСТРОЙКА КООРДИНАТ ГОЛОГРАММ — ТУТ ДВИГАЕМ НАДПИСИ НА ЭКРАНЫ */
+        /* НАСТРОЙКА КООРДИНАТ ГОЛОГРАММ */
         .pos-left {
             top: 22%;    
             left: 12%;   
@@ -168,6 +164,7 @@
 </head>
 <body>
 
+    <!-- ШАПКА КЛУБА -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
             <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
@@ -186,6 +183,7 @@
         <div class="bar-right-logo notranslate">GY-GY</div>
     </div>
 
+    <!-- ПАСПОРТ -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -196,16 +194,20 @@
         </div>
     </div>
 
+    <!-- АУДИО -->
     <audio id="ambient-audio" src="sbridge_ambient.mp3" loop autoplay></audio>
 
+    <!-- СЕРВЕРНАЯ -->
     <div id="section-server" class="block" style="display: flex;">
         <div class="invisible-door-clicker" onclick="unlockAndEnterRoom()"></div>
     </div>
 
+    <!-- AI ROOM -->
     <div id="section-ai-room" class="block">
         
         <div class="holo-canvas">
-            <span id="lbl-et" class="holo-click-label pos-left label-active" onclick="switchHoloTab('et')">ET MESSAGE</span>
+            <!-- Убрали класс label-active, так как теперь все горят на 100% мощности -->
+            <span id="lbl-et" class="holo-click-label pos-left" onclick="switchHoloTab('et')">ET MESSAGE</span>
             <span id="lbl-lunar" class="holo-click-label pos-center" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
             <span id="lbl-hello" class="holo-click-label pos-right" onclick="switchHoloTab('hello')">HELLO UNIVERSE</span>
         </div>
@@ -236,11 +238,10 @@
         }, 150);
     }
 
+    /* Функция переключения вкладок остается рабочей на будущее, 
+       если ты захочешь добавлять сюда другие визуальные эффекты */
     function switchHoloTab(target) {
-        document.getElementById('lbl-et').classList.remove('label-active');
-        document.getElementById('lbl-lunar').classList.remove('label-active');
-        document.getElementById('lbl-hello').classList.remove('label-active');
-        document.getElementById('lbl-' + target).classList.add('label-active');
+        console.log("Switched to tab: " + target);
     }
 
     function handleGlobalBack() {
