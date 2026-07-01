@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club — AI ZONE 009 </title>
+    <title>GY-GY Club — AI ZONE 010 </title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -21,7 +21,7 @@
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* ==========================================================================
-           СТАНДАРТНАЯ ШАПКА КЛУБА (КАК НА INDEX)
+           СТАНДАРТНАЯ ШАПКА КЛУБА (КОПИЯ С INDEX)
            ========================================================================== */
         .ui-top-standard-bar {
             position: fixed;
@@ -39,16 +39,18 @@
         }
         .ui-top-standard-bar * { pointer-events: auto; }
 
-        /* Стрелка возврата в стиле главной страницы */
-        .ui-back-arrow { 
-            font-size: 28px; 
-            font-weight: bold; 
+        /* Оригинальный блок навигации со стрелками из index */
+        .bar-left-nav { 
+            font-size: 24px; 
+            font-weight: 900; 
             color: var(--gold); 
-            cursor: pointer; 
-            display: inline-block;
-            line-height: 60px;
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
             user-select: none;
         }
+        .back-btn { cursor: pointer; font-size: 26px; font-weight: 900; letter-spacing: -2px; }
+        .double-arrow-btn { font-size: 20px; cursor: pointer; color: var(--gold); font-weight: bold; }
 
         .bar-center-badge-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .bar-center-badge { position: relative; width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #111; cursor: pointer; }
@@ -96,7 +98,7 @@
         }
 
         /* ==========================================================================
-           AI ROOM (ВИНТАЖНАЯ КОМНАТА С КРУПНЫМИ РАЗНЕСЕННЫМИ НАДПИСЯМИ)
+           AI ROOM (РАЗМЕР УВЕЛИЧЕН НА 15%)
            ========================================================================== */
         #section-ai-room {
             background-image: url('OIG2_vintage_tv_room_v2 (1).png');
@@ -104,8 +106,8 @@
             background-position: center;
             background-repeat: no-repeat;
             width: 100%;
-            max-width: 600px;  
-            max-height: 80vh;  
+            max-width: 690px;   /* Стало больше на 15% (было 600px) */
+            max-height: 92vh;   /* Стало больше на 15% (было 80vh) */
             margin: auto;
             bottom: 0;
         }
@@ -120,10 +122,10 @@
             z-index: 60;
         }
 
-        /* Общие стили крупных оранжевых надписей */
+        /* Крупные оранжевые надписи */
         .holo-click-label {
             position: absolute;
-            font-size: 22px; /* Увеличенный размер */
+            font-size: 22px; 
             font-weight: 900;
             letter-spacing: 2px;
             color: rgba(255, 119, 0, 0.45);
@@ -137,7 +139,7 @@
             text-shadow: 0 0 12px var(--orange-glow), 0 0 25px var(--orange-glow);
         }
 
-        /* Разнесение экранов по уровням высоты (top) и сторонам (left/right) */
+        /* Геометрическое распределение по уровням, исключающее пересечения */
         .pos-left {
             top: 15%;
             left: 8%;
@@ -157,10 +159,11 @@
 </head>
 <body>
 
-    <!-- ШАПКА КЛУБА -->
+    <!-- ШАПКА КЛУБА (ПОЛНОЕ СООТВЕТСТВИЕ INDEX) -->
     <div class="ui-top-standard-bar">
         <div class="bar-left-nav notranslate">
-            <span class="ui-back-arrow" onclick="handleGlobalBack()">«</span>
+            <span class="back-btn" onclick="handleGlobalBack()">&lt;</span>
+            <span class="double-arrow-btn" onclick="handleGlobalBack()">«</span>
         </div>
         
         <div class="bar-center-badge-container">
@@ -195,7 +198,7 @@
     <!-- ЭКРАН 1: AI ROOM -->
     <div id="section-ai-room" class="block">
         
-        <!-- КРУПНЫЕ НАДПИСИ НА РАЗНЫХ УРОВНЯХ ВЫСОТЫ И ШИРИНЫ -->
+        <!-- ПРОСТРАНСТВЕННЫЙ ГОЛОГРАФИЧЕСКИЙ СЛОЙ -->
         <div class="holo-canvas">
             <span id="lbl-verses" class="holo-click-label pos-left label-active" onclick="switchHoloTab('verses')">VERSES</span>
             <span id="lbl-lunar" class="holo-click-label pos-center" onclick="switchHoloTab('lunar')">LUNAR BASE</span>
