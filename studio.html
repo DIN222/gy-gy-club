@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.4 - STUDIO</title>
+    <title>GY-GY Club v4.5.30 - STUDIO</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style id="dynamic-zones-css">
@@ -36,7 +36,7 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ (СЛЕВА) */
+        /* НАВИГАЦИЯ (СЛЕВА) - Обычное золото */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -76,31 +76,33 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
-            background: rgba(214, 175, 55, 0.02); /* Легкий фон для удобства калибровки */
+            background: rgba(214, 175, 55, 0.02); /* Тонкая рамка-подсказка для калибровки */
         }
 
-        /* КРУПНАЯ ФИОЛЕТОВАЯ СТРЕЛКА С ХВОСТИКОМ ПО ЦЕНТРУ (ИЗ SVG) */
-        .arrow-svg {
-            width: 45px;
-            height: 45px;
-            fill: var(--violet);
-            filter: drop-shadow(0 0 8px var(--violet)) drop-shadow(-1px -1px 0 #000) drop-shadow(1px 1px 0 #000);
-            transition: all 0.3s ease;
-            pointer-events: none;
+        /* СТРЕЛКИ КАК В ХОЛЛЕ - ОСТРИЕМ ВВЕРХ С ХВОСТОМ ПО ЦЕНТРУ */
+        .cue-arrow-studio { 
+            color: var(--violet); 
+            font-size: 38px; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
+            pointer-events: none; 
+            user-select: none;
+            z-index: 10;
+            transition: opacity 0.2s, transform 0.2s;
         }
 
-        .studio-zone:hover .arrow-svg, .studio-zone.active .arrow-svg {
-            fill: #b066ff;
-            filter: drop-shadow(0 0 18px #b066ff) drop-shadow(-1px -1px 0 #000) drop-shadow(1px 1px 0 #000);
-            transform: scale(1.1);
+        .studio-zone:hover .cue-arrow-studio, .studio-zone.active .cue-arrow-studio { 
+            opacity: 0.8; 
+            transform: scale(1.05);
         }
 
-        /* СТАРТОВЫЕ ПОЗИЦИИ ЗОН ДЛЯ ТВОЕЙ НАСТРОЙКИ */
+        /* СТАРТОВЫЕ ТОЧКИ ДЛЯ ТВОЕЙ НАСТРОЙКИ */
         .zone-wear { top: 40vh; left: 15vw; width: 120px; height: 90px; }
         .zone-gifts { top: 40vh; left: 45vw; width: 120px; height: 90px; }
         .zone-vintage { top: 40vh; left: 75vw; width: 120px; height: 90px; }
 
-        /* ИНСТРУМЕНТ НАСТРОЙКИ */
+        /* ИНСТРУМЕНТ НАСТРОЙКИ (АДМИНКА) */
         #calibrator-panel {
             position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9); border: 2px solid var(--gold);
@@ -135,21 +137,15 @@
         <div class="ui-header-right notranslate">GY-GY</div>
 
         <div id="zone-wear" class="studio-zone zone-wear" onclick="handleZoneClick(event, 'wear')">
-            <svg class="arrow-svg" viewBox="0 0 24 24">
-                <path d="M12 2L4 10h5v10h6V10h5L12 2z"/>
-            </svg>
+            <span class="cue-arrow-studio">↑</span>
         </div>
 
         <div id="zone-gifts" class="studio-zone zone-gifts" onclick="handleZoneClick(event, 'gifts')">
-            <svg class="arrow-svg" viewBox="0 0 24 24">
-                <path d="M12 2L4 10h5v10h6V10h5L12 2z"/>
-            </svg>
+            <span class="cue-arrow-studio">↑</span>
         </div>
 
         <div id="zone-vintage" class="studio-zone zone-vintage" onclick="handleZoneClick(event, 'vintage')">
-            <svg class="arrow-svg" viewBox="0 0 24 24">
-                <path d="M12 2L4 10h5v10h6V10h5L12 2z"/>
-            </svg>
+            <span class="cue-arrow-studio">↑</span>
         </div>
     </div>
 
@@ -184,7 +180,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const savedAvatar = localStorage.getItem('gy_gy_avatar_data') || localStorage.getItem('user_avatar');
+            // Подтягиваем аватар из базы ядра
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
             if (savedAvatar) document.getElementById('header-avatar').src = savedAvatar;
             updateCSSOutput();
         });
