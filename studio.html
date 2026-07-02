@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.3 - STUDIO</title>
+    <title>GY-GY Club v4.5.30.4 - STUDIO</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style id="dynamic-zones-css">
@@ -76,30 +76,31 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
-            background: rgba(214, 175, 55, 0.02); /* Легкий фон для калибровки */
+            background: rgba(214, 175, 55, 0.02); /* Легкий фон для удобства калибровки */
         }
 
-        /* ФИОЛЕТОВЫЕ СТРЕЛОЧКИ КАК В ХОЛЛЕ (СТАЦИОНАРНЫЕ, ВВЕРХ) */
-        .arrow-item {
-            font-size: 42px; 
-            color: var(--violet);
-            font-weight: 900;
-            text-shadow: 0 0 10px var(--violet), -1px -1px 0 #000, 1px -1px 0 #000;
-            user-select: none;
+        /* КРУПНАЯ ФИОЛЕТОВАЯ СТРЕЛКА С ХВОСТИКОМ ПО ЦЕНТРУ (ИЗ SVG) */
+        .arrow-svg {
+            width: 45px;
+            height: 45px;
+            fill: var(--violet);
+            filter: drop-shadow(0 0 8px var(--violet)) drop-shadow(-1px -1px 0 #000) drop-shadow(1px 1px 0 #000);
+            transition: all 0.3s ease;
             pointer-events: none;
         }
 
-        .studio-zone:hover .arrow-item, .studio-zone.active .arrow-item {
-            color: #b066ff;
-            text-shadow: 0 0 20px #b066ff, 0 0 5px #000;
+        .studio-zone:hover .arrow-svg, .studio-zone.active .arrow-svg {
+            fill: #b066ff;
+            filter: drop-shadow(0 0 18px #b066ff) drop-shadow(-1px -1px 0 #000) drop-shadow(1px 1px 0 #000);
+            transform: scale(1.1);
         }
 
-        /* НАЧАЛЬНЫЕ КООРДИНАТЫ ЗОН (КОТОРЫЕ ТЫ БУДЕШЬ ИЗМЕНЯТЬ) */
-        .zone-wear { top: 40vh; left: 15vw; width: 120px; height: 80px; }
-        .zone-gifts { top: 40vh; left: 45vw; width: 120px; height: 80px; }
-        .zone-vintage { top: 40vh; left: 75vw; width: 120px; height: 80px; }
+        /* СТАРТОВЫЕ ПОЗИЦИИ ЗОН ДЛЯ ТВОЕЙ НАСТРОЙКИ */
+        .zone-wear { top: 40vh; left: 15vw; width: 120px; height: 90px; }
+        .zone-gifts { top: 40vh; left: 45vw; width: 120px; height: 90px; }
+        .zone-vintage { top: 40vh; left: 75vw; width: 120px; height: 90px; }
 
-        /* СТИЛИ ПАНЕЛИ ИНСТРУМЕНТА НАСТРОЙКИ */
+        /* ИНСТРУМЕНТ НАСТРОЙКИ */
         #calibrator-panel {
             position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9); border: 2px solid var(--gold);
@@ -115,7 +116,7 @@
         .cal-btn:hover { background: var(--gold); color: #000; }
         #css-output { 
             width: 100%; height: 60px; background: #111; color: #fff; 
-            font-size: 10px; border: 1px solid #44px; resize: none; margin-top: 5px;
+            font-size: 10px; border: 1px solid #444; resize: none; margin-top: 5px;
         }
     </style>
 </head>
@@ -134,21 +135,27 @@
         <div class="ui-header-right notranslate">GY-GY</div>
 
         <div id="zone-wear" class="studio-zone zone-wear" onclick="handleZoneClick(event, 'wear')">
-            <div class="arrow-item">▲</div>
+            <svg class="arrow-svg" viewBox="0 0 24 24">
+                <path d="M12 2L4 10h5v10h6V10h5L12 2z"/>
+            </svg>
         </div>
 
         <div id="zone-gifts" class="studio-zone zone-gifts" onclick="handleZoneClick(event, 'gifts')">
-            <div class="arrow-item">▲</div>
+            <svg class="arrow-svg" viewBox="0 0 24 24">
+                <path d="M12 2L4 10h5v10h6V10h5L12 2z"/>
+            </svg>
         </div>
 
         <div id="zone-vintage" class="studio-zone zone-vintage" onclick="handleZoneClick(event, 'vintage')">
-            <div class="arrow-item">▲</div>
+            <svg class="arrow-svg" viewBox="0 0 24 24">
+                <path d="M12 2L4 10h5v10h6V10h5L12 2z"/>
+            </svg>
         </div>
     </div>
 
     <div id="calibrator-panel" class="notranslate">
         <div class="cal-row">
-            <strong>ЗОНА: <span id="current-target" style="color:#fff;">ВЫБЕРИ СТРЕЛКУ КЛИКОМ</span></strong>
+            <strong>ЗОНА: <span id="current-target" style="color:#fff;">КЛИКНИ ПО СТРЕЛКЕ</span></strong>
             <button class="cal-btn" onclick="toggleEditMode()">Выйти из настройки</button>
         </div>
         <div class="cal-row">
@@ -161,7 +168,7 @@
             </div>
         </div>
         <div class="cal-row">
-            <span>Размер (W / H):</span>
+            <span>Размер поля (W / H):</span>
             <div>
                 <button class="cal-btn" onclick="moveZone('width', 5)">W+</button>
                 <button class="cal-btn" onclick="moveZone('width', -5)">W-</button>
@@ -176,31 +183,26 @@
     </div>
 
     <script>
-        // Подгрузка аватара
         document.addEventListener("DOMContentLoaded", function() {
             const savedAvatar = localStorage.getItem('gy_gy_avatar_data') || localStorage.getItem('user_avatar');
             if (savedAvatar) document.getElementById('header-avatar').src = savedAvatar;
             updateCSSOutput();
         });
 
-        // ЛОГИКА КАЛИБРАТОРА
         let activeZoneId = null;
-        let isEditMode = true; // По умолчанию включен режим расстановки
+        let isEditMode = true; 
         
         let coordinates = {
-            wear: { top: 40, left: 15, width: 120, height: 80 },
-            gifts: { top: 40, left: 45, width: 120, height: 80 },
-            vintage: { top: 40, left: 75, width: 120, height: 80 }
+            wear: { top: 40, left: 15, width: 120, height: 90 },
+            gifts: { top: 40, left: 45, width: 120, height: 90 },
+            vintage: { top: 40, left: 75, width: 120, height: 90 }
         };
 
         function handleZoneClick(e, type) {
             if (!isEditMode) {
-                // Если режим настройки выключен — обычный переход
                 selectCategory(type);
                 return;
             }
-            
-            // Если включен режим настройки — выбираем зону для перемещения
             e.preventDefault();
             activeZoneId = type;
             document.querySelectorAll('.studio-zone').forEach(z => z.classList.remove('active'));
@@ -212,7 +214,6 @@
             if (!activeZoneId) return;
             coordinates[activeZoneId][prop] += amount;
             
-            // Сразу применяем изменения на экране
             const el = document.getElementById(`zone-${activeZoneId}`);
             const unit = (prop === 'width' || prop === 'height') ? 'px' : (prop === 'top' ? 'vh' : 'vw');
             el.style[prop] = coordinates[activeZoneId][prop] + unit;
@@ -220,7 +221,6 @@
             updateCSSOutput();
         }
 
-        // Слушаем клавиатуру для точной подгонки стрелками
         window.addEventListener('keydown', function(e) {
             if (!activeZoneId || !isEditMode) return;
             if (e.key === 'ArrowUp') { e.preventDefault(); moveZone('top', -1); }
@@ -240,12 +240,11 @@
             isEditMode = false;
             document.getElementById('calibrator-panel').style.display = 'none';
             document.querySelectorAll('.studio-zone').forEach(z => {
-                z.style.background = 'rgba(0,0,0,0)'; // делаем клик-зоны полностью прозрачными
+                z.style.background = 'rgba(0,0,0,0)'; 
                 z.classList.remove('active');
             });
         }
 
-        // Логика работы готовых кнопок
         function selectCategory(type) {
             alert(`Переход в рабочий шаг локации: ${type.toUpperCase()}`);
         }
