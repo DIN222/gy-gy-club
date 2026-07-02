@@ -106,11 +106,11 @@
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-        .hall-interior .quote-text { 
+      .hall-interior .quote-text { 
             position: absolute; 
             top: 8vh; 
             left: 50%; 
-            transform: translateX(-50%); 
+            transform: translateX(-50%) translateZ(0); /* Включаем GPU-ускорение */
             width: 85%; 
             margin: 0; 
             text-align: center;
@@ -119,12 +119,15 @@
             color: var(--gold) !important;       
             font-size: 28px;
             font-weight: 700;
-            text-shadow: 
-                0 0 8px rgba(20, 20, 20, 1),
-                0 0 15px rgba(15, 15, 15, 1),
-                0 0 25px rgba(10, 10, 10, 1),
-                0 0 35px rgba(5, 5, 5, 1),
-                0 0 50px rgba(0, 0, 0, 1) !important;
+            
+            /* Защита для Safari и мобильных от мерцания */
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+
+            /* Вместо text-shadow делаем drop-shadow. Он ложится поверх любых тегов <font> */
+            filter: drop-shadow(0 0 8px rgba(15, 15, 15, 1))
+                    drop-shadow(0 0 15px rgba(10, 10, 10, 1))
+                    drop-shadow(0 0 30px rgba(0, 0, 0, 1));
         }
 
         .hall-door-target {
@@ -192,6 +195,11 @@
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
+        /* Возвращаем дымку, если Google Translate обернул буквы Холла в теги font */
+.hall-interior .quote-text font {
+    text-shadow: none !important; /* Убираем стандартный shadow, так как теперь работает filter */
+    color: var(--gold) !important;
+}
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
         
         /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
