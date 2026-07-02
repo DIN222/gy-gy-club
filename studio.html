@@ -1,14 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.1 - STUDIO</title>
+    <title>GY-GY Club v4.5.30.2 - STUDIO</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #d4af37; --violet: #8A2BE2; }
+        :root { 
+            --gold: #d4af37; 
+            --violet: #8A2BE2; 
+        }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
         html, body { 
@@ -22,7 +24,7 @@
             margin: 0; 
         }
 
-        /* Фоновое изображение Студии из репозитория */
+        /* Фоновое изображение Студии с твоими вывесками */
         .studio-page {
             position: fixed;
             inset: 0;
@@ -34,7 +36,7 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИОННЫЕ СТЕЛКИ (СЛЕВА) */
+        /* НАВИГАЦИОННЫЕ СТЕЛКИ ВОЗВРАТА (СЛЕВА) */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -46,68 +48,51 @@
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ЛОГОТИП GY-GY (СПРАВА) */
+        /* ЛОГОТИП GY-GY (СПРАВА — РЕВЕРСИРОВАН) */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
 
-        /* СЛОГАН */
-        .quote-text { 
-            position: absolute; 
-            top: 8vh; 
-            left: 50%; 
-            transform: translateX(-50%) translateZ(0); 
-            width: 85%; 
-            margin: 0; 
-            text-align: center;
-            font-family: 'Playfair Display', serif; 
-            font-style: italic; 
-            font-size: 28px; 
-            font-weight: 700;
-            color: var(--gold) !important;       
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 1)) drop-shadow(0 0 25px rgba(0, 0, 0, 1));
-        }
-
-        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (HOTSPOTS) */
+        /* АКТИВНЫЕ ЗОНЫ ПОВЕРХ ТВОИХ ВЫВЕСОК */
         .studio-zone {
             position: absolute;
             cursor: pointer;
-            border: 1px dashed rgba(214, 175, 55, 0.15); /* Едва заметный контур для отладки */
-            background: rgba(0, 0, 0, 0.02);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s ease;
             z-index: 100;
+            /* Сами зоны невидимы, они просто ловят клик */
+            background: rgba(0, 0, 0, 0); 
         }
 
-        /* Эффект наведения: золотое неоновое свечение */
-        .studio-zone:hover {
-            border: 1px solid var(--gold);
-            background: rgba(214, 175, 55, 0.08);
-            box-shadow: 0 0 20px rgba(214, 175, 55, 0.3);
-        }
-
-        .zone-label {
-            color: var(--gold);
-            font-size: 18px;
-            letter-spacing: 3px;
+        /* ФИОЛЕТОВЫЕ СТРЕЛКИ УКАЗАТЕЛИ */
+        .studio-arrow {
+            font-size: 32px;
+            color: var(--violet);
             font-weight: bold;
-            opacity: 0.3;
-            transition: opacity 0.3s, text-shadow 0.3s;
-            text-shadow: 0 0 5px #000;
+            text-shadow: 0 0 10px var(--violet), 0 0 3px #000;
+            margin-bottom: 10px; /* Стрелка висит чуть выше вывески */
+            animation: arrow-bounce 1.5s infinite ease-in-out;
+            user-select: none;
+            pointer-events: none; /* Чтобы стрелка не мешала клику по зоне */
         }
 
-        .studio-zone:hover .zone-label {
-            opacity: 1;
-            text-shadow: 0 0 10px var(--gold), 0 0 2px #000;
+        /* Анимация мягкого покачивания стрелок вверх-вниз */
+        @keyframes arrow-bounce {
+            0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 8px var(--violet)); }
+            50% { transform: translateY(-8px); filter: drop-shadow(0 0 15px var(--violet)); }
         }
 
-        /* Координаты зон на фоне (примерная разбивка на 3 вертикальные части) */
+        /* При наведении на зону стрелка горит ярче */
+        .studio-zone:hover .studio-arrow {
+            color: #b066ff;
+            text-shadow: 0 0 20px #b066ff, 0 0 5px #000;
+        }
+
+        /* Координаты зон и стрелок (подгони проценты под свои нарисованные вывески) */
         .zone-wear {
             top: 25vh;
             left: 5vw;
@@ -131,7 +116,6 @@
 
         /* Защита от автопереводчика */
         font { background-color: transparent !important; color: inherit !important; text-shadow: none !important; }
-        .quote-text font { color: inherit !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -144,30 +128,28 @@
 
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <div class="quote-text">Create. Monetize. Leave a trace.</div>
-
         <div class="studio-zone zone-wear" onclick="selectCategory('wear')">
-            <span class="zone-label">WEAR</span>
+            <div class="studio-arrow">▼</div>
         </div>
 
         <div class="studio-zone zone-gifts" onclick="selectCategory('gifts')">
-            <span class="zone-label">GIFTS</span>
+            <div class="studio-arrow">▼</div>
         </div>
 
         <div class="studio-zone zone-vintage" onclick="selectCategory('vintage')">
-            <span class="zone-label">VINTAGE</span>
+            <div class="studio-arrow">▼</div>
         </div>
     </div>
 
     <script>
         function selectCategory(type) {
-            console.log(`[GY-GY STUDIO] Selected: ${type}`);
+            console.log(`[GY-GY STUDIO] Переход в раздел: ${type}`);
             if (type === 'wear') {
-                alert('Opening Wear & Clothes Constructor...');
+                alert('Запуск конструктора одежды GY-GY Wear...');
             } else if (type === 'gifts') {
-                alert('Opening Modern Gifts & Gadgets Customizer...');
+                alert('Запуск кастомизатора подарков и гаджетов...');
             } else if (type === 'vintage') {
-                alert('Opening Vintage Upcycling & Flea Market Hub...');
+                alert('Вход на цифровой блошиный рынок...');
             }
         }
     </script>
