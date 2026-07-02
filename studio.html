@@ -1,1 +1,175 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club v4.5.30.1 - STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --gold: #d4af37; --violet: #8A2BE2; }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+            position: fixed; 
+            margin: 0; 
+        }
+
+        /* Фоновое изображение Студии из репозитория */
+        .studio-page {
+            position: fixed;
+            inset: 0;
+            background: url('studio_bg.jpg') center/cover no-repeat #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* НАВИГАЦИОННЫЕ СТЕЛКИ (СЛЕВА) */
+        .ui-nav-arrows {
+            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
+            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
+            cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
+        }
+        .arrow-item { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
+        .arrow-item:hover { opacity: 0.8; }
+
+        /* ЛОГОТИП GY-GY (СПРАВА) */
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+
+        /* СЛОГАН */
+        .quote-text { 
+            position: absolute; 
+            top: 8vh; 
+            left: 50%; 
+            transform: translateX(-50%) translateZ(0); 
+            width: 85%; 
+            margin: 0; 
+            text-align: center;
+            font-family: 'Playfair Display', serif; 
+            font-style: italic; 
+            font-size: 28px; 
+            font-weight: 700;
+            color: var(--gold) !important;       
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 1)) drop-shadow(0 0 25px rgba(0, 0, 0, 1));
+        }
+
+        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (HOTSPOTS) */
+        .studio-zone {
+            position: absolute;
+            cursor: pointer;
+            border: 1px dashed rgba(214, 175, 55, 0.15); /* Едва заметный контур для отладки */
+            background: rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+            z-index: 100;
+        }
+
+        /* Эффект наведения: золотое неоновое свечение */
+        .studio-zone:hover {
+            border: 1px solid var(--gold);
+            background: rgba(214, 175, 55, 0.08);
+            box-shadow: 0 0 20px rgba(214, 175, 55, 0.3);
+        }
+
+        .zone-label {
+            color: var(--gold);
+            font-size: 18px;
+            letter-spacing: 3px;
+            font-weight: bold;
+            opacity: 0.3;
+            transition: opacity 0.3s, text-shadow 0.3s;
+            text-shadow: 0 0 5px #000;
+        }
+
+        .studio-zone:hover .zone-label {
+            opacity: 1;
+            text-shadow: 0 0 10px var(--gold), 0 0 2px #000;
+        }
+
+        /* Координаты зон на фоне (примерная разбивка на 3 вертикальные части) */
+        .zone-wear {
+            top: 25vh;
+            left: 5vw;
+            width: 26vw;
+            height: 55vh;
+        }
+
+        .zone-gifts {
+            top: 20vh;
+            left: 37vw;
+            width: 26vw;
+            height: 60vh;
+        }
+
+        .zone-vintage {
+            top: 25vh;
+            right: 5vw;
+            width: 26vw;
+            height: 55vh;
+        }
+
+        /* Защита от автопереводчика */
+        font { background-color: transparent !important; color: inherit !important; text-shadow: none !important; }
+        .quote-text font { color: inherit !important; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="studio-page">
+        <div class="notranslate ui-nav-arrows">
+            <a href="index.html" class="arrow-item">&lt;</a>
+            <a href="index.html" class="arrow-item">&lt;&lt;</a>
+        </div>
+
+        <div class="ui-header-right notranslate">GY-GY</div>
+
+        <div class="quote-text">Create. Monetize. Leave a trace.</div>
+
+        <div class="studio-zone zone-wear" onclick="selectCategory('wear')">
+            <span class="zone-label">WEAR</span>
+        </div>
+
+        <div class="studio-zone zone-gifts" onclick="selectCategory('gifts')">
+            <span class="zone-label">GIFTS</span>
+        </div>
+
+        <div class="studio-zone zone-vintage" onclick="selectCategory('vintage')">
+            <span class="zone-label">VINTAGE</span>
+        </div>
+    </div>
+
+    <script>
+        function selectCategory(type) {
+            console.log(`[GY-GY STUDIO] Selected: ${type}`);
+            if (type === 'wear') {
+                alert('Opening Wear & Clothes Constructor...');
+            } else if (type === 'gifts') {
+                alert('Opening Modern Gifts & Gadgets Customizer...');
+            } else if (type === 'vintage') {
+                alert('Opening Vintage Upcycling & Flea Market Hub...');
+            }
+        }
+    </script>
+</body>
+</html>
