@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30 - STUDIO 018 </title>
+    <title>GY-GY Club v4.5.30 - STUDIO 019 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style id="dynamic-zones-css">
@@ -24,11 +24,11 @@
             margin: 0; 
         }
 
-        /* Фоновое изображение Студии */
+        /* Фоновое изображение Студии — отодвинуто на 5% от зрителя */
         .studio-page {
             position: fixed;
             inset: 0;
-            background: url('studio_bg.jpg') center/cover no-repeat #000;
+            background: url('studio_bg.jpg') center/95% no-repeat #000; /* Масштаб 95% отдаляет картинку */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -36,7 +36,7 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ (СЛЕВА) - Золотые стрелки из ядра */
+        /* НАВИГАЦИЯ (СЛЕВА) */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -48,7 +48,7 @@
         .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
         .back-arrow:hover { opacity: 0.8; }
 
-        /* СКВОЗНОЙ РЕАЛЬНЫЙ АВАТАР ПОЛЬЗОВАТЕЛЯ (ИЗ ХОЛЛА) */
+        /* СКВОЗНОЙ РЕАЛЬНЫЙ АВАТАР */
         .ui-header-center {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
             display: flex; align-items: center; justify-content: center;
@@ -60,11 +60,11 @@
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
 
-        /* ЛОГОТИП GY-GY (СПРАВА) */
+        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
             user-select: none;
         }
 
@@ -77,10 +77,10 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
-            background: rgba(214, 175, 55, 0.02); /* Тонкая рамка-подсказка для калибровки */
+            background: rgba(214, 175, 55, 0.02);
         }
 
-        /* СТРЕЛКИ КАК В ХОЛЛЕ - ОСТРИЕМ ВВЕРХ (↑) */
+        /* СТРЕЛКИ ИЗ ХОЛЛА (↑) */
         .cue-arrow-studio { 
             color: var(--violet); 
             font-size: 38px; 
@@ -98,7 +98,7 @@
             transform: scale(1.05);
         }
 
-        /* КООРДИНАТЫ ДЛЯ ТВОЕЙ НАСТРОЙКИ */
+        /* КООРДИНАТЫ ДЛЯ КАЛИБРОВКИ */
         .zone-wear { top: 40vh; left: 15vw; width: 120px; height: 90px; }
         .zone-gifts { top: 40vh; left: 45vw; width: 120px; height: 90px; }
         .zone-vintage { top: 40vh; left: 75vw; width: 120px; height: 90px; }
@@ -126,21 +126,17 @@
 <body oncontextmenu="return false;">
 
     <div class="studio-page">
-        <!-- Навигация возврата в Холл (изменяй index.html на имя файла ядра, если оно другое) -->
         <div class="notranslate ui-nav-arrows">
             <a href="index.html" class="back-arrow">&lt;</a>
             <a href="index.html" class="back-arrow">&lt;&lt;</a>
         </div>
 
-        <!-- Центр: Реальный аватар -->
         <div class="ui-header-center notranslate">
             <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
         </div>
 
-        <!-- Справа: Логотип -->
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <!-- Локации -->
         <div id="zone-wear" class="studio-zone zone-wear" onclick="handleZoneClick(event, 'wear')">
             <span class="cue-arrow-studio">↑</span>
         </div>
@@ -154,7 +150,6 @@
         </div>
     </div>
 
-    <!-- ИНСТРУМЕНТ НАСТРОЙКИ -->
     <div id="calibrator-panel" class="notranslate">
         <div class="cal-row">
             <strong>ЗОНА: <span id="current-target" style="color:#fff;">КЛИКНИ ПО СТРЕЛКЕ</span></strong>
@@ -186,7 +181,6 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Ищем реальный аватар по всей цепочке ключей твоего ядра
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -195,9 +189,8 @@
             
             if (savedAvatar && avatarEl) {
                 avatarEl.src = savedAvatar;
-                avatarEl.style.display = 'block'; // Показываем реальный аватар
+                avatarEl.style.display = 'block';
             } else if (avatarEl) {
-                // Если пустой заход без регистрации — ставим временную заглушку, чтобы не было битой картинки
                 avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23111'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
                 avatarEl.style.display = 'block';
             }
