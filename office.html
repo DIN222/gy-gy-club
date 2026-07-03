@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.5 - OFFICE</title>
+    <title>GY-GY Club v4.7.0 - MULTI-OFFICE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -20,260 +20,317 @@
             font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; 
         }
 
-        /* Задний план отодвинут на 5% */
         .office-page {
             position: fixed; inset: 0;
             background: url('office_bg.jpg') center/95% no-repeat #000;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 90px; z-index: 10;
+            padding-top: 80px; z-index: 10;
         }
 
-        /* ==========================================================================
-           ЭТАЛОННАЯ ВЕРХНЯЯ ПАНЕЛЬ ИЗ ЯДРА (СТРЕЛКИ СЛЕВА | АВАТАР ЦЕНТР | ЛОГО СПРАВА)
-           ========================================================================== */
+        /* МАТРИЧНЫЙ ХЕДЕР */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 1000000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            user-select: none;
+            cursor: pointer; color: var(--gold); text-shadow: -1px -1px 0 #000; user-select: none;
         }
-        .ui-nav-arrows a { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
-        .ui-nav-arrows a:hover { opacity: 0.8; }
+        .ui-nav-arrows a { text-decoration: none; color: var(--gold); }
         
-        .ui-header-center {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
-            display: flex; align-items: center; justify-content: center; user-select: none;
-        }
-        .user-avatar {
-            width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
-            object-fit: cover; background: #fff !important; display: block;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+        .ui-header-center { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000; }
+        .user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; }
+        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000000; font-size: 24px; letter-spacing: 5px; font-weight: bold; text-shadow: -1px -1px 0 #000; }
+
+        /* ИНТЕРФЕЙС УПРАВЛЕНИЯ */
+        .workspace-container {
+            display: flex; gap: 20px; width: 98%; max-width: 1400px; height: calc(100vh - 120px);
+            padding: 10px; margin-top: 10px;
         }
 
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            user-select: none;
-        }
-
-        /* КЛИЕНТСКАЯ ЗОНА */
-        .client-box {
-            width: 90%; max-width: 500px; background: var(--card-bg);
-            border: 2px solid var(--gold); padding: 25px; border-radius: 4px;
-            text-align: center; margin-top: 40px; box-shadow: 0 0 30px rgba(0,0,0,0.9);
-        }
-
-        /* ТРЕЛЛО-ПАНЕЛЬ (ДЛЯ ШЕФА) */
-        .trello-board {
-            display: flex; gap: 20px; width: 98%; max-width: 1400px; height: calc(100vh - 140px);
-            overflow-x: auto; padding: 10px; margin-top: 10px;
-        }
+        /* ДОСКА ТРЕЛЛО */
+        .trello-board { flex: 2; display: flex; gap: 15px; overflow-x: auto; }
         .trello-column {
-            flex: 0 0 300px; background: rgba(15, 15, 15, 0.95); border: 1px solid #333;
-            border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column;
-            max-height: 100%; padding: 10px;
+            flex: 0 0 250px; background: rgba(10, 10, 10, 0.95); border: 1px solid #333;
+            border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px;
         }
-        .column-header {
-            font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #fff;
-            padding-bottom: 10px; border-bottom: 1px solid #222; margin-bottom: 10px;
-            display: flex; justify-content: space-between;
-        }
+        .column-header { font-weight: bold; font-size: 13px; color: #fff; padding-bottom: 8px; border-bottom: 1px solid #222; margin-bottom: 10px; }
         .cards-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .trello-card {
-            background: #161616; border: 1px solid var(--gold); padding: 10px; border-radius: 3px;
-            cursor: grab; font-size: 12px; color: #ccc; transition: background 0.2s;
+        .trello-card { background: #161616; border: 1px solid var(--gold); padding: 8px; border-radius: 3px; font-size: 11px; color: #ccc; }
+        
+        /* МЕЖДУНАРОДНЫЙ ЧАТ С АВТОПЕРЕВОДОМ */
+        .global-chat-panel {
+            flex: 1; min-width: 320px; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--gold);
+            border-radius: 4px; display: flex; flex-direction: column; padding: 15px;
         }
-        .trello-card:hover { background: #222; color: #fff; }
-        .card-meta { font-size: 10px; color: var(--violet); margin-top: 5px; }
-
-        /* ИНПУТЫ И КНОПКИ */
-        .office-input {
-            background: #000; border: 1px solid var(--gold); color: #fff;
-            padding: 8px; font-family: inherit; font-size: 12px; width: 100%; margin-top: 5px;
-        }
-        .btn-office {
-            background: #111; border: 1px solid var(--gold); color: var(--gold);
-            padding: 8px 15px; cursor: pointer; font-family: inherit; font-size: 12px;
-            margin-top: 8px; width: 100%; transition: all 0.2s;
-        }
+        .chat-history { flex: 1; overflow-y: auto; border: 1px solid #222; background: #000; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .msg-block { font-size: 12px; padding: 6px 10px; border-radius: 4px; max-width: 85%; }
+        .msg-me { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--violet); align-self: flex-end; color: #fff; }
+        .msg-foreign { background: rgba(214, 175, 55, 0.1); border: 1px solid var(--gold); align-self: flex-start; color: #fff; }
+        .msg-meta { font-size: 9px; color: #888; margin-top: 4px; display: flex; justify-content: space-between; }
+        
+        /* УПРАВЛЕНИЕ ЧАТОМ */
+        .chat-controls { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .input-row { display: flex; gap: 5px; }
+        
+        .office-input { background: #000; border: 1px solid var(--gold); color: #fff; padding: 8px; font-family: inherit; font-size: 12px; width: 100%; }
+        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 12px; transition: all 0.2s; }
         .btn-office:hover { background: var(--gold); color: #000; }
         
-        /* Скрытая кнопка секретного входа для тебя */
-        .secret-trigger {
-            position: fixed; bottom: 5px; right: 5px; width: 15px; height: 15px;
-            cursor: pointer; opacity: 0.05; z-index: 999999;
-        }
+        /* Кнопка микрофона */
+        .btn-mic { background: #222; color: #ff3333; border: 1px solid #ff3333; }
+        .btn-mic.recording { background: #ff3333; color: #000; animation: blink 1s infinite; }
+
+        .client-box { width: 90%; max-width: 500px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; text-align: center; margin-top: 40px; }
+        .secret-trigger { position: fixed; bottom: 5px; right: 5px; width: 15px; height: 15px; cursor: pointer; opacity: 0.05; z-index: 999999; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="office-page">
-        <div class="notranslate ui-nav-arrows">
-            <a href="index.html">&lt;</a>
-            <a href="index.html">&lt;&lt;</a>
-        </div>
-        <div class="ui-header-center notranslate">
-            <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-        </div>
+        <div class="notranslate ui-nav-arrows"><a href="index.html">&lt;</a><a href="index.html">&lt;&lt;</a></div>
+        <div class="ui-header-center notranslate"><img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;"></div>
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;">
-            </div>
+        <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;"></div>
     </div>
 
     <div class="secret-trigger" onclick="triggerBossAuth()"></div>
 
     <script>
-        // Исходные демонстрационные задачи для твоего Trello
-        const defaultTasks = [
-            { id: 1, status: 'todo', text: 'Настроить n8n сценарий для триггеров', access: 'Шеф (Email)' },
-            { id: 2, status: 'progress', text: 'Разработка модуля Studio: калибровка', access: 'Ватрушкин (Тел)' },
-            { id: 3, status: 'done', text: 'Сквозной аватар с белым фоном', access: 'Все' }
-        ];
+        // Переключение твоего личного языка интерфейса/ввода
+        let myLang = 'ru'; // Измени на 'fr', если тестируешь за француза
 
-        // Загружаем сохраненные задачи или берем дефолтные
+        const defaultTasks = [
+            { id: 1, status: 'todo', text: 'Связать чат с n8n вебхуком', access: 'Шеф' },
+            { id: 2, status: 'progress', text: 'Тест голосового ввода (Web Speech)', access: 'Все' }
+        ];
         let tasks = JSON.parse(localStorage.getItem('gygy_trello_tasks')) || defaultTasks;
 
-        document.addEventListener("DOMContentLoaded", function() {
-            // Инициализация аватара
-            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
-            const avatarEl = document.getElementById('header-avatar');
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-                avatarEl.style.display = 'block';
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
-                avatarEl.style.display = 'block';
-            }
+        // Имитация базы данных сообщений в реальном времени
+        let chatMessages = [
+            { id: 1, sender: 'Jean (Partner)', lang: 'fr', text: 'Bonjour Patron! У нас готовы новые лекала для футболок.', trans: 'Привет Шеф! У нас готовы новые лекала для футболок.' },
+            { id: 2, sender: 'Ты (Шеф)', lang: 'ru', text: 'Отлично, запускай DTF печать тестового образца.', trans: 'Excellent, lancez l\'impression DTF du prototype.' }
+        ];
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
+            if (savedAvatar) document.getElementById('header-avatar').src = savedAvatar;
+            document.getElementById('header-avatar').style.display = 'block';
             renderOffice();
         });
 
-        // Функция рендеринга контента в зависимости от роли
         function renderOffice() {
             const root = document.getElementById('office-dynamic-root');
             const isBoss = localStorage.getItem('gygy_is_boss') === 'true';
 
             if (isBoss) {
-                // РЕНДЕР ТРЕЛЛО-ДОСКИ ДЛЯ ТЕБЯ (Для остальных этого кода вообще нет на экране)
                 root.innerHTML = `
-                    <div class="trello-board notranslate">
-                        <div class="trello-column">
-                            <div class="column-header">БЭКЛОГ <span>+</span></div>
-                            <div class="cards-container" id="col-todo" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')"></div>
-                            <input type="text" id="input-todo" class="office-input" placeholder="Новая задача...">
-                            <input type="text" id="access-todo" class="office-input" placeholder="Доступ (Тел/Email)...">
-                            <button class="btn-office" onclick="addTask('todo')">Добавить</button>
+                    <div class="workspace-container notranslate">
+                        <div class="trello-board">
+                            <div class="trello-column">
+                                <div class="column-header">БЭКЛОГ</div>
+                                <div class="cards-container" id="col-todo"></div>
+                                <input type="text" id="input-todo" class="office-input" placeholder="Задача...">
+                                <input type="text" id="access-todo" class="office-input" placeholder="Доступ...">
+                                <button class="btn-office" onclick="addTask('todo')">Добавить</button>
+                            </div>
+                            <div class="trello-column"><div class="column-header">В ПРОЦЕССЕ</div><div class="cards-container" id="col-progress"></div></div>
+                            <div class="trello-column">
+                                <div class="column-header">ГОТОВО</div>
+                                <div class="cards-container" id="col-done"></div>
+                                <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:auto;" onclick="exitBossMode()">Выход</button>
+                            </div>
                         </div>
 
-                        <div class="trello-column">
-                            <div class="column-header">В ПРОЦЕССЕ</div>
-                            <div class="cards-container" id="col-progress" ondragover="allowDrop(event)" ondrop="drop(event, 'progress')"></div>
-                        </div>
-
-                        <div class="trello-column">
-                            <div class="column-header">ЗАВЕРШЕНО</div>
-                            <div class="cards-container" id="col-done" ondragover="allowDrop(event)" ondrop="drop(event, 'done')"></div>
-                            <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:auto;" onclick="exitBossMode()">Выйти из управления</button>
+                        <div class="global-chat-panel">
+                            <div class="column-header" style="border-bottom: 1px solid var(--violet); padding-bottom:5px;">
+                                <span>INTER-CHAT [Язык: ${myLang.toUpperCase()}]</span>
+                                <select onchange="changeMyLang(this.value)" style="background:#000; color:var(--gold); border:1px solid var(--gold); font-size:10px;">
+                                    <option value="ru" ${myLang==='ru'?'selected':''}>Я говорю на RU</option>
+                                    <option value="fr" ${myLang==='fr'?'selected':''}>Я говорю на FR</option>
+                                </select>
+                            </div>
+                            <div class="chat-history" id="chat-box"></div>
+                            
+                            <div class="chat-controls">
+                                <div class="input-row">
+                                    <button id="mic-btn" class="btn-office btn-mic" onclick="toggleVoiceInput()">🎤</button>
+                                    <input type="text" id="chat-input" class="office-input" placeholder="Напишите или надиктуйте...">
+                                    <button class="btn-office" onclick="sendChatMessage()">Отправить</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
                 renderCards();
+                renderChat();
             } else {
-                // РЕНДЕР ОБЫЧНОГО ЮЗЕРСКОГО ИНТЕРФЕЙСА (ОФИЦИАЛЬНЫЙ БОТ-ИНФОРМАТОР)
-                const nickname = localStorage.getItem('gygy_nickname') || 'Резидент Клуба';
-                const uid = localStorage.getItem('gygy_digital_id') || 'Trace-ID-Undefined';
-                
                 root.innerHTML = `
                     <div class="client-box">
-                        <div style="font-size: 18px; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">ОФИЦИАЛЬНЫЙ ИНФОРМАТОР GY-GY</div>
-                        <p style="font-size: 13px; color: #aaa;">Здесь бот собирает официальные данные по твоей активности в клубе.</p>
-                        <div style="background:#111; padding: 10px; border: 1px dashed var(--gold); margin: 15px 0; text-align: left; font-size: 12px;">
-                            <div>• Статус: Авторизован в сети</div>
-                            <div>• Никнейм: <span style="color:var(--violet)">${nickname}</span></div>
-                            <div>• Твой ID: <span style="color:#fff">${uid}</span></div>
-                        </div>
-                        <button class="btn-office" onclick="alert('Заказы формируются. Бот проверяет фабрику...')">Статус моих принтов</button>
+                        <div style="font-size: 18px; color: #fff; margin-bottom: 15px;">ОФИЦИАЛЬНЫЙ ИНФОРМАТОР GY-GY</div>
+                        <p style="font-size: 12px;">Вы зашли как сотрудник/пользователь симуляции.</p>
+                        <button class="btn-office" onclick="alert('Доступ ограничен.')">Статус задач</button>
                     </div>
                 `;
             }
         }
 
-        /* ЛОГИКА ТРЕЛЛО-ДОСКИ */
-        function renderCards() {
-            document.getElementById('col-todo').innerHTML = '';
-            document.getElementById('col-progress').innerHTML = '';
-            document.getElementById('col-done').innerHTML = '';
+        /* ЛОГИКА АВТОПЕРЕВОДА В ЧАТЕ */
+        function renderChat() {
+            const box = document.getElementById('chat-box');
+            if (!box) return;
+            box.innerHTML = '';
 
-            tasks.forEach(task => {
+            chatMessages.forEach(m => {
+                const isMe = m.sender.includes('Ты') || (myLang === 'ru' && m.lang === 'ru') || (myLang === 'fr' && m.lang === 'fr');
+                const cls = isMe ? 'msg-me' : 'msg-foreign';
+                
+                // Главная фишка: если язык сообщения не совпадает с моим, я вижу ПЕРЕВЕДЕННЫЙ текст, а оригинал пишется снизу мелким шрифтом
+                const showText = m.lang === myLang ? m.text : m.trans;
+                const subText = m.lang === myLang ? '' : `[Оригинал: ${m.text}]`;
+
+                const msg = document.createElement('div');
+                msg.className = `msg-block ${cls}`;
+                msg.innerHTML = `
+                    <strong style="color:var(--gold); font-size:10px;">${m.sender}</strong>
+                    <div style="margin-top:2px;">${showText}</div>
+                    <div style="font-size:9px; color:#aaa; font-style:italic;">${subText}</div>
+                    <div class="msg-meta">
+                        <span>${m.lang.toUpperCase()} → ${myLang.toUpperCase()}</span>
+                        <span style="cursor:pointer;" onclick="speakText('${showText}', '${myLang}')">🔊 Слушать</span>
+                    </div>
+                `;
+                box.appendChild(msg);
+            });
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendChatMessage() {
+            const inp = document.getElementById('chat-input');
+            if (!inp.value.trim()) return;
+
+            const text = inp.value.trim();
+            
+            // Наш умный симулятор автоперевода. В продакшене тут будет фетч к API переводчика.
+            let translation = text;
+            if (myLang === 'ru') {
+                translation = "[Французский перевод]: " + text + " (s\'il vous plaît)";
+            } else {
+                translation = "[Русский перевод]: " + text + " (пожалуйста)";
+            }
+
+            chatMessages.push({
+                id: Date.now(),
+                sender: myLang === 'ru' ? 'Ты (Шеф)' : 'Jean (Partner)',
+                lang: myLang,
+                text: text,
+                trans: translation
+            });
+
+            inp.value = '';
+            renderChat();
+        }
+
+        function changeMyLang(val) {
+            myLang = val;
+            renderChat();
+        }
+
+        /* ==========================================================================
+           РАБОТА С МИКРОФОНОМ И ГОЛОСОМ (WEB SPEECH API)
+           ========================================================================== */
+        let recognition;
+        let isRecording = false;
+
+        function toggleVoiceInput() {
+            const micBtn = document.getElementById('mic-btn');
+            
+            // Проверяем, поддерживает ли браузер распознавание
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Ваш браузер не поддерживает голосовой ввод. Рекомендуется Chrome / Safari.");
+                return;
+            }
+
+            if (!recognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                // Задаем язык прослушивания в зависимости от того, кто говорит
+                recognition.lang = myLang === 'ru' ? 'ru-RU' : 'fr-FR'; 
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    isRecording = true;
+                    micBtn.classList.add('recording');
+                };
+
+                recognition.onresult = (event) => {
+                    const resultText = event.results[0][0].transcript;
+                    document.getElementById('chat-input').value = resultText;
+                };
+
+                recognition.onerror = (e) => {
+                    console.error(e);
+                    stopRecording();
+                };
+
+                recognition.onend = () => { stopRecording(); };
+            }
+
+            if (!isRecording) {
+                recognition.lang = myLang === 'ru' ? 'ru-RU' : 'fr-FR';
+                recognition.start();
+            } else {
+                recognition.stop();
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            const micBtn = document.getElementById('mic-btn');
+            if (micBtn) micBtn.classList.remove('recording');
+        }
+
+        // Озвучка сообщений (Голос из динамиков)
+        function speakText(text, lang) {
+            if (!window.speechSynthesis) return;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang === 'ru' ? 'ru-RU' : 'fr-FR';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /* ЛОГИКА ТРЕЛЛО КАРТОЧЕК */
+        function renderCards() {
+            ['todo', 'progress', 'done'].forEach(status => {
+                const container = document.getElementById(`col-${status}`);
+                if (container) container.innerHTML = '';
+            });
+            tasks.forEach(t => {
                 const card = document.createElement('div');
                 card.className = 'trello-card';
-                card.draggable = true;
-                card.id = `card-${task.id}`;
-                card.ondragstart = (e) => e.dataTransfer.setData("text/plain", task.id);
-                card.innerHTML = `
-                    <div>${task.text}</div>
-                    <div class="card-meta">Доступ: ${task.access || 'Не указан'}</div>
-                `;
-                
-                const container = document.getElementById(`col-${task.status}`);
-                if (container) container.appendChild(card);
+                card.innerHTML = `<div>${t.text}</div><div style="color:var(--violet);font-size:9px;margin-top:3px;">Кому: ${t.access}</div>`;
+                const col = document.getElementById(`col-${t.status}`);
+                if (col) col.appendChild(card);
             });
         }
 
         function addTask(status) {
-            const textInput = document.getElementById(`input-${status}`);
-            const accessInput = document.getElementById(`access-${status}`);
-            if (!textInput.value.trim()) return;
-
-            const newTask = {
-                id: Date.now(),
-                status: status,
-                text: textInput.value.trim(),
-                access: accessInput.value.trim() || 'Все'
-            };
-
-            tasks.push(newTask);
-            saveTasks();
-            renderCards();
-            textInput.value = '';
-            accessInput.value = '';
-        }
-
-        function allowDrop(e) { e.preventDefault(); }
-        function drop(e, newStatus) {
-            e.preventDefault();
-            const id = e.dataTransfer.getData("text/plain");
-            const task = tasks.find(t => t.id == id);
-            if (task) {
-                task.status = newStatus;
-                saveTasks();
-                renderCards();
-            }
-        }
-
-        function saveTasks() {
+            const txt = document.getElementById(`input-${status}`).value;
+            const acc = document.getElementById(`access-${status}`).value || 'Все';
+            if (!txt.trim()) return;
+            tasks.push({ id: Date.now(), status: status, text: txt, access: acc });
             localStorage.setItem('gygy_trello_tasks', JSON.stringify(tasks));
+            renderCards();
+            document.getElementById(`input-${status}`).value = '';
+            document.getElementById(`access-${status}`).value = '';
         }
 
-        /* СЕКРЕТНЫЙ ВХОД ДЛЯ ТЕБЯ */
         function triggerBossAuth() {
-            const pass = prompt("Доступ к Управлению. Введите ключ владельца:");
-            // Твой личный супер-пароль
-            if (pass === "gygy2026") {
-                localStorage.setItem('gygy_is_boss', 'true');
-                renderOffice();
-            } else {
-                alert("Неверный ключ симуляции.");
-            }
+            const pass = prompt("Введите ключ владельца:");
+            if (pass === "gygy2026") { localStorage.setItem('gygy_is_boss', 'true'); renderOffice(); }
         }
-
-        function exitBossMode() {
-            localStorage.setItem('gygy_is_boss', 'false');
-            renderOffice();
-        }
+        function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
     </script>
 </body>
 </html>
