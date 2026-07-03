@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.8.0 - PROTOCOL OFFICE</title>
+    <title>GY-GY Club v4.8.5 - PROTOCOL OFFICE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -24,54 +24,83 @@
             position: fixed; inset: 0;
             background: url('office_bg.jpg') center/95% no-repeat #000;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 80px; z-index: 10;
+            padding-top: 90px; z-index: 10;
         }
 
-        /* МОНОЛИТНАЯ ВЕРХНЯЯ ПАНЕЛЬ */
+        /* ==========================================================================
+           ЭТАЛОННАЯ ВЕРХНЯЯ ПАНЕЛЬ ИЗ ЯДРА (СТРЕЛКИ СЛЕВА | АВАТАР ЦЕНТР | ЛОГО СПРАВА)
+           ========================================================================== */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 1000000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); text-shadow: -1px -1px 0 #000; user-select: none;
+            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
         }
-        .ui-nav-arrows a { text-decoration: none; color: var(--gold); }
-        .ui-header-center { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000; }
-        .user-avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; }
-        .ui-header-right { position: fixed; top: 18px; right: 25px; z-index: 1000000; font-size: 24px; letter-spacing: 5px; font-weight: bold; text-shadow: -1px -1px 0 #000; }
+        .ui-nav-arrows a { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
+        .ui-nav-arrows a:hover { opacity: 0.8; }
+        
+        .ui-header-center {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
+            display: flex; align-items: center; justify-content: center; user-select: none;
+        }
+        
+        /* КОНТЕЙНЕРЫ АВАТАРОВ С ФЛАГАМИ */
+        .avatar-wrapper { position: relative; display: inline-block; flex-shrink: 0; }
+        .user-avatar {
+            border-radius: 50%; border: 2px solid var(--gold);
+            object-fit: cover; background: #fff !important; display: block;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+        }
+        .flag-badge { 
+            position: absolute; bottom: -2px; right: -2px; font-size: 10px; 
+            background: #000; border-radius: 50%; width: 15px; height: 15px; 
+            display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); 
+            z-index: 10; line-height: 1;
+        }
 
-        /* ИНТЕРФЕЙС */
-        .workspace-container { display: flex; gap: 20px; width: 98%; max-width: 1400px; height: calc(100vh - 120px); padding: 10px; margin-top: 10px; }
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
+        }
+
+        /* РАБОЧЕЕ ПРОСТРАНСТВО ШЕФА */
+        .workspace-container { display: flex; gap: 20px; width: 98%; max-width: 1400px; height: calc(100vh - 130px); padding: 10px; margin-top: 10px; }
+        
+        /* ДОСКА ТРЕЛЛО */
         .trello-board { flex: 1.5; display: flex; gap: 15px; overflow-x: auto; }
         .trello-column { flex: 0 0 240px; background: rgba(10, 10, 10, 0.95); border: 1px solid #333; border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px; }
         .column-header { font-weight: bold; font-size: 13px; color: #fff; padding-bottom: 8px; border-bottom: 1px solid #222; margin-bottom: 10px; }
         .cards-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .trello-card { background: #161616; border: 1px solid var(--gold); padding: 8px; border-radius: 3px; font-size: 11px; color: #ccc; }
         
-        /* КАНАЛ СВЯЗИ И ЧАТ */
-        .global-chat-panel { flex: 1.2; min-width: 340px; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 15px; }
+        /* КАНАЛ СВЯЗИ И ИНТЕР-ЧАТ */
+        .global-chat-panel { flex: 1.2; min-width: 350px; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 15px; }
         .chat-history { flex: 1; overflow-y: auto; border: 1px solid #222; background: #000; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
         
-        /* Блок сообщения */
+        /* Реплики в чате */
         .msg-container { display: flex; gap: 10px; align-items: flex-start; max-width: 85%; }
         .msg-container.my-side { align-self: flex-end; flex-direction: row-reverse; }
         .msg-container.foreign-side { align-self: flex-start; }
 
-        /* Контейнер аватара с флагом */
-        .avatar-wrapper { position: relative; width: 32px; height: 32px; flex-shrink: 0; }
-        .chat-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold); background: #fff; }
-        .flag-badge { position: absolute; bottom: -2px; right: -2px; font-size: 10px; background: #000; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); }
-
-        .msg-bubble { padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #fff; }
+        .msg-bubble { padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #fff; line-height: 1.4; }
         .my-side .msg-bubble { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--violet); }
         .foreign-side .msg-bubble { background: rgba(214, 175, 55, 0.1); border: 1px solid var(--gold); }
         
+        /* КНОПКИ И ИНПУТЫ */
         .chat-controls { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .input-row { display: flex; gap: 5px; }
         .office-input { background: #000; border: 1px solid var(--gold); color: #fff; padding: 8px; font-family: inherit; font-size: 12px; width: 100%; }
-        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 12px; transition: all 0.2s; }
+        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 12px; transition: all 0.2s; white-space: nowrap; }
         .btn-office:hover { background: var(--gold); color: #000; }
         
         .btn-mic { background: #222; color: #ff3333; border: 1px solid #ff3333; }
         .btn-mic.recording { background: #ff3333; color: #000; animation: blink 1s infinite; }
-        .client-box { width: 90%; max-width: 500px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; text-align: center; margin-top: 40px; }
+
+        /* Клиентская заглушка */
+        .client-box { width: 90%; max-width: 500px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin-top: 40px; box-shadow: 0 0 30px rgba(0,0,0,0.9); }
         .secret-trigger { position: fixed; bottom: 5px; right: 5px; width: 15px; height: 15px; cursor: pointer; opacity: 0.05; z-index: 999999; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
@@ -79,8 +108,16 @@
 <body oncontextmenu="return false;">
 
     <div class="office-page">
-        <div class="notranslate ui-nav-arrows"><a href="index.html">&lt;</a><a href="index.html">&lt;&lt;</a></div>
-        <div class="ui-header-center notranslate"><img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;"></div>
+        <div class="notranslate ui-nav-arrows">
+            <a href="index.html">&lt;</a>
+            <a href="index.html">&lt;&lt;</a>
+        </div>
+        <div class="ui-header-center notranslate">
+            <div class="avatar-wrapper" style="width: 42px; height: 42px;">
+                <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none; width: 100%; height: 100%;">
+                <div class="flag-badge" id="main-header-flag" style="font-size: 11px; width: 16px; height: 16px; bottom: -2px; right: -2px;">🇷🇺</div>
+            </div>
+        </div>
         <div class="ui-header-right notranslate">GY-GY</div>
 
         <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;"></div>
@@ -89,82 +126,109 @@
     <div class="secret-trigger" onclick="triggerBossAuth()"></div>
 
     <script>
-        // ДАННЫЕ ШЕФА (Твои настройки)
+        // ГЛОБАЛЬНЫЕ НАСТРОЙКИ ШЕФА
         let myLang = 'ru'; 
         let myPhone = '+79991112233';
-        let useAvatarInChat = true;
+        let useAvatarInChat = true; // Тумблер отображения паспорта (аватара + флага)
 
-        // БАЗА ДАННЫХ СОТРУДНИКОВ КЛУБА (Связано с первой страницей регистрации)
+        // ИМИТАЦИЯ БАЗЫ ДАННЫХ СОТРУДНИКОВ ИЗ ЗОНЫ РЕГИСТРАЦИИ КЛУБА
         const staffRegistry = {
             "+3361234567": { name: "Jean (Fabrique)", lang: "fr", flag: "🇫🇷", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" },
             "+1202555014": { name: "John (Developer)", lang: "en", flag: "🇺🇸", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" },
             "+7999000000": { name: "Алексей (Склад)", lang: "ru", flag: "🇷🇺", avatar: "" }
         };
 
-        // Текущий вызванный по телефону сотрудник
+        // Текущий вызванный по телефону канал связи
         let activeStaffPhone = "+3361234567"; 
 
-        // База сообщений
+        // База сообщений активной сессии
         let chatMessages = [
             { id: 1, phone: "+3361234567", text: "Bonjour Patron! У нас готовы новые лекала для худи.", trans: "Привет Шеф! У нас готовы новые лекала для худи." },
-            { id: 2, phone: "+79991112233", text: "Отлично, Жан. Проверь плотность ткани.", trans: "Excellent, Jean. Vérifiez la densité du tissu." }
+            { id: 2, phone: "+79991112233", text: "Отлично, Жан. Проверил плотность ткани?", trans: "Excellent, Jean. Avez-vous vérifié la densité du tissu?" }
         ];
 
+        // Исходные задачи для Trello
+        const defaultTasks = [
+            { id: 1, status: 'todo', text: 'Связать вебхуки n8n с таблицей заказов', access: '+3361234567' },
+            { id: 2, status: 'progress', text: 'Откалибровать модуль Studio', access: '+7999000000' }
+        ];
+        let tasks = JSON.parse(localStorage.getItem('gygy_trello_tasks')) || defaultTasks;
+
         document.addEventListener("DOMContentLoaded", function() {
+            // Подгружаем сквозной аватар Шефа
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
-            if (savedAvatar) document.getElementById('header-avatar').src = savedAvatar;
-            document.getElementById('header-avatar').style.display = 'block';
+            const avatarEl = document.getElementById('header-avatar');
+            if (savedAvatar && avatarEl) {
+                avatarEl.src = savedAvatar;
+                avatarEl.style.display = 'block';
+            } else if (avatarEl) {
+                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+                avatarEl.style.display = 'block';
+            }
+
+            // Ставим правильный стартовый флаг в хедер
+            updateHeaderFlag();
             renderOffice();
         });
 
+        function updateHeaderFlag() {
+            const flagEl = document.getElementById('main-header-flag');
+            if (flagEl) {
+                flagEl.innerText = (myLang === 'fr') ? '🇫🇷' : '🇷🇺';
+            }
+        }
+
+        // Главный рендер страницы
         function renderOffice() {
             const root = document.getElementById('office-dynamic-root');
             const isBoss = localStorage.getItem('gygy_is_boss') === 'true';
 
             if (isBoss) {
-                let currentStaff = staffRegistry[activeStaffPhone] || { name: "Неизвестный", lang: "ru", flag: "🏴‍☠️", avatar: "" };
+                let currentStaff = staffRegistry[activeStaffPhone] || { name: "Вне сети", lang: "ru", flag: "🏴‍☠️", avatar: "" };
 
                 root.innerHTML = `
                     <div class="workspace-container notranslate">
-                        <!-- ЛЕВАЯ ЧАСТЬ: ТВОЕ ТРЕЛЛО -->
                         <div class="trello-board">
                             <div class="trello-column">
                                 <div class="column-header">БЭКЛОГ И ПОРУЧЕНИЯ</div>
                                 <div class="cards-container" id="col-todo"></div>
                                 <input type="text" id="input-todo" class="office-input" placeholder="Задача...">
-                                <input type="text" id="access-todo" class="office-input" placeholder="Номер телефона...">
+                                <input type="text" id="access-todo" class="office-input" placeholder="Тел: +33...">
                                 <button class="btn-office" onclick="addTask('todo')">Поручить</button>
                             </div>
                             <div class="trello-column"><div class="column-header">В ПРОЦЕССЕ</div><div class="cards-container" id="col-progress"></div></div>
-                            <div class="trello-column"><div class="column-header">ГОТОВО</div><div class="cards-container" id="col-done"></div><button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:auto;" onclick="exitBossMode()">Выход</button></div>
+                            <div class="trello-column">
+                                <div class="column-header">ГОТОВО</div>
+                                <div class="cards-container" id="col-done"></div>
+                                <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:auto;" onclick="exitBossMode()">Закрыть пульт</button>
+                            </div>
                         </div>
 
-                        <!-- ПРАВАЯ ЧАСТЬ: ЗОНА ВЫЗОВА И ЧАТ -->
                         <div class="global-chat-panel">
                             <div class="column-header" style="border-bottom: 1px solid var(--violet); padding-bottom:5px; flex-direction: column; gap: 8px;">
-                                <!-- СЕЛЕКТОР / ВЫЗОВ ПО НОМЕРУ -->
                                 <div style="display:flex; width:100%; gap:5px;">
-                                    <input type="text" id="phone-search-input" class="office-input" value="${activeStaffPhone}" placeholder="Вызвать по тел: +33...">
+                                    <input type="text" id="phone-search-input" class="office-input" value="${activeStaffPhone}" placeholder="Вызвать номер: +33...">
                                     <button class="btn-office" onclick="callStaffByPhone()">ВЫЗВАТЬ</button>
                                 </div>
-                                <div style="font-size:11px; color:#fff; display:flex; align-items:center; gap:8px;">
-                                    <span>Активный канал: <strong>${currentStaff.name}</strong></span>
-                                    <span style="background:#222; padding:2px 6px; border:1px solid var(--gold); border-radius:3px;">Язык: ${currentStaff.lang.toUpperCase()} ${currentStaff.flag}</span>
+                                <div style="font-size:11px; color:#fff; display:flex; justify-content:space-between; width:100%; align-items:center;">
+                                    <div>Канал: <strong style="color:var(--gold)">${currentStaff.name}</strong></div>
+                                    <select onchange="changeMyLang(this.value)" style="background:#000; color:var(--gold); border:1px solid var(--gold); font-size:10px; font-family:inherit;">
+                                        <option value="ru" ${myLang==='ru'?'selected':''}>Я пишу на RU 🇷🇺</option>
+                                        <option value="fr" ${myLang==='fr'?'selected':''}>Я пишу на FR 🇫🇷</option>
+                                    </select>
                                 </div>
                             </div>
                             
                             <div class="chat-history" id="chat-box"></div>
                             
                             <div class="chat-controls">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <label style="font-size: 10px; color: #aaa; display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                                        <input type="checkbox" id="toggle-avatar-chat" ${useAvatarInChat ? 'checked' : ''} onchange="toggleAvatarUsage(this.checked)">
-                                        Показывать флаги и аватары
-                                    </label>
-                                </div>
+                                <label style="font-size: 10px; color: #aaa; display: flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; margin-bottom: 2px;">
+                                    <input type="checkbox" id="toggle-avatar-chat" ${useAvatarInChat ? 'checked' : ''} onchange="toggleAvatarUsage(this.checked)">
+                                    Отображать аватары и цифровые паспорта (флаги)
+                                </label>
                                 <div class="input-row">
                                     <button id="mic-btn" class="btn-office btn-mic" onclick="toggleVoiceInput()">🎤</button>
-                                    <input type="text" id="chat-input" class="office-input" placeholder="Говорите в микрофон или пишите...">
+                                    <input type="text" id="chat-input" class="office-input" placeholder="Говорите или пишите сообщение...">
                                     <button class="btn-office" onclick="sendChatMessage()">ОТПРАВИТЬ</button>
                                 </div>
                             </div>
@@ -174,10 +238,25 @@
                 renderCards();
                 renderChat();
             } else {
-                root.innerHTML = `<div class="client-box"><div style="font-size: 18px; color: #fff; margin-bottom: 15px;">ОФИЦИАЛЬНЫЙ ИНФОРМАТОР GY-GY</div><button class="btn-office" onclick="alert('Доступ закрыт.')">Войти</button></div>`;
+                // Вид по умолчанию для обычных посетителей (Бот-Информатор)
+                const nickname = localStorage.getItem('gygy_nickname') || 'Резидент Клуба';
+                const uid = localStorage.getItem('gygy_digital_id') || 'Trace-ID-Not-Found';
+                root.innerHTML = `
+                    <div class="client-box">
+                        <div style="font-size: 18px; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">ОФИЦИАЛЬНЫЙ ИНФОРМАТОР GY-GY</div>
+                        <p style="font-size: 13px; color: #aaa;">Служебный бот собирает официальные данные по вашей активности в клубе.</p>
+                        <div style="background:#111; padding: 12px; border: 1px dashed var(--gold); margin: 15px 0; text-align: left; font-size: 12px;">
+                            <div>• Сеть: Авторизован</div>
+                            <div>• Профиль: <span style="color:var(--violet)">${nickname}</span></div>
+                            <div>• Твой ID: <span style="color:#fff">${uid}</span></div>
+                        </div>
+                        <button class="btn-office" onclick="alert('Заказы формируются. Бот проверяет фабрику...')">Статус моих принтов</button>
+                    </div>
+                `;
             }
         }
 
+        /* ЛОГИКА МЕЖДУНАРОДНОГО ЧАТА */
         function renderChat() {
             const box = document.getElementById('chat-box');
             if (!box) return;
@@ -189,19 +268,19 @@
                 const isMe = m.phone === myPhone;
                 const sideClass = isMe ? 'my-side' : 'foreign-side';
                 
-                // Настройка перевода: если сообщение моё — оно на русском. Если чужое — я вижу перевод на русский.
+                // Настройка перевода
                 const textToShow = isMe ? m.text : (currentStaff.lang === myLang ? m.text : m.trans);
-                const subText = isMe ? '' : (currentStaff.lang === myLang ? '' : `[${currentStaff.lang.toUpperCase()}: ${m.text}]`);
+                const subText = isMe ? '' : (currentStaff.lang === myLang ? '' : `[${currentStaff.lang.toUpperCase()}]: ${m.text}`);
 
-                // Сборка аватара с флагом
+                // Сборка аватаров с паспортами флагов
                 let avatarSrc = isMe ? (localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img')) : currentStaff.avatar;
-                let flagSymbol = isMe ? "🇷🇺" : currentStaff.flag;
+                let flagSymbol = isMe ? (myLang === 'fr' ? '🇫🇷' : '🇷🇺') : currentStaff.flag;
 
                 let avatarHTML = '';
                 if (useAvatarInChat) {
                     avatarHTML = `
-                        <div class="avatar-wrapper">
-                            <img src="${avatarSrc || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\'><circle cx=\'16\' cy=\'16\' r=\'16\' fill=\'%23fff\'/></svg>'}" class="chat-avatar">
+                        <div class="avatar-wrapper" style="width: 32px; height: 32px;">
+                            <img src="${avatarSrc || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\'><circle cx=\'16\' cy=\'16\' r=\'16\' fill=\'%23fff\'/></svg>'}" class="user-avatar" style="width:100%; height:100%;">
                             <div class="flag-badge">${flagSymbol}</div>
                         </div>
                     `;
@@ -215,7 +294,7 @@
                         <div style="font-weight:bold; font-size:10px; color:var(--gold); margin-bottom:2px;">${isMe ? 'Ты (Шеф)' : currentStaff.name}</div>
                         <div>${textToShow}</div>
                         <div style="font-size:9px; color:#888; font-style:italic; margin-top:2px;">${subText}</div>
-                        <div style="font-size:8px; color:#555; text-align:right; margin-top:4px; cursor:pointer;" onclick="speakText('${textToShow}', '${myLang}')">🔊 Слушать</div>
+                        <div style="font-size:8px; color:var(--gold); text-align:right; margin-top:4px; cursor:pointer; user-select:none;" onclick="speakText('${textToShow}', '${myLang}')">🔊 Слушать</div>
                     </div>
                 `;
                 box.appendChild(msgContainer);
@@ -223,17 +302,16 @@
             box.scrollTop = box.scrollHeight;
         }
 
-        // ВЫЗОВ СОТРДУНИКА ПО НОМЕРУ ТЕЛЕФОНА
+        // Инициация вызова по номеру телефона
         function callStaffByPhone() {
             const phoneInput = document.getElementById('phone-search-input').value.trim();
             if (!phoneInput) return;
 
-            // Меняем активный канал связи
             activeStaffPhone = phoneInput;
             
-            // Очищаем историю чата под нового человека (или загружаем его историю)
+            // Сбрасываем историю под нового собеседника (в реале тут будет подгрузка логов)
             chatMessages = [
-                { id: Date.now(), phone: activeStaffPhone, text: "Соединение по защищенному протоколу установлено...", trans: "Connexion établie..." }
+                { id: Date.now(), phone: activeStaffPhone, text: "Защищенный мост связи активирован.", trans: "Pont de communication activé." }
             ];
 
             renderOffice();
@@ -246,12 +324,17 @@
             const text = inp.value.trim();
             let currentStaff = staffRegistry[activeStaffPhone] || { lang: 'en' };
 
-            // Имитация перевода для демонстрации
-            let translation = "[Перевод для " + currentStaff.lang.toUpperCase() + "]: " + text;
+            // Имитатор перевода для тестов
+            let translation = text;
+            if (myLang === 'ru') {
+                translation = "[FR перевод]: " + text + " (s'il vous plaît)";
+            } else {
+                translation = "[RU перевод]: " + text + " (пожалуйста)";
+            }
 
             chatMessages.push({
                 id: Date.now(),
-                phone: myPhone, // Мой номер
+                phone: myPhone,
                 text: text,
                 trans: translation
             });
@@ -260,24 +343,30 @@
             renderChat();
         }
 
+        function changeMyLang(val) {
+            myLang = val;
+            updateHeaderFlag(); // Меняем флаг и в шапке Офиса!
+            renderOffice();
+        }
+
         function toggleAvatarUsage(isChecked) {
             useAvatarInChat = isChecked;
             renderChat();
         }
 
-        /* ГОЛОСОВОЙ ДВИЖОК 🎤 */
+        /* ГОЛОСОВОЙ ИНСТРУМЕНТАРИЙ (WEB SPEECH API) 🎤 */
         let recognition;
         let isRecording = false;
 
         function toggleVoiceInput() {
             const micBtn = document.getElementById('mic-btn');
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) { alert("Микрофон не поддерживается браузером."); return; }
+            if (!SpeechRecognition) { alert("Ваш браузер заблокировал или не поддерживает Web Speech."); return; }
 
             if (!recognition) {
                 recognition = new SpeechRecognition();
                 recognition.continuous = false;
-                recognition.lang = 'ru-RU'; // Шеф всегда говорит по-русски
+                recognition.interimResults = false;
 
                 recognition.onstart = () => { isRecording = true; micBtn.classList.add('recording'); };
                 recognition.onresult = (e) => { document.getElementById('chat-input').value = e.results[0][0].transcript; };
@@ -285,18 +374,23 @@
                 recognition.onend = () => { stopRecording(); };
             }
 
-            if (!isRecording) recognition.start();
-            else recognition.stop();
+            if (!isRecording) {
+                // Шеф диктует на том языке, который выбран в селекторе чата
+                recognition.lang = myLang === 'ru' ? 'ru-RU' : 'fr-FR';
+                recognition.start();
+            } else {
+                recognition.stop();
+            }
         }
         function stopRecording() { isRecording = false; const micBtn = document.getElementById('mic-btn'); if (micBtn) micBtn.classList.remove('recording'); }
         function speakText(text, lang) { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(text); u.lang = lang === 'ru' ? 'ru-RU' : 'fr-FR'; window.speechSynthesis.speak(u); }
 
-        /* TRELLO */
+        /* ЛОГИКА КАНБАН ДОСКИ ТРЕЛЛО */
         function renderCards() {
             ['todo', 'progress', 'done'].forEach(s => document.getElementById(`col-${s}`).innerHTML = '');
             tasks.forEach(t => {
                 const card = document.createElement('div'); card.className = 'trello-card';
-                card.innerHTML = `<div>${t.text}</div><div style="color:var(--violet);font-size:9px;margin-top:3px;">Тел: ${t.access}</div>`;
+                card.innerHTML = `<div>${t.text}</div><div style="color:var(--violet); font-size:9px; margin-top:4px;">Исполнитель: ${t.access}</div>`;
                 const col = document.getElementById(`col-${t.status}`); if (col) col.appendChild(card);
             });
         }
@@ -310,7 +404,17 @@
             document.getElementById(`input-${status}`).value = '';
             document.getElementById(`access-${status}`).value = '';
         }
-        function triggerBossAuth() { const pass = prompt("Ключ:"); if (pass === "gygy2026") { localStorage.setItem('gygy_is_boss', 'true'); renderOffice(); } }
+
+        /* АВТОРИЗАЦИЯ ХОЗЯИНА КЛУБА */
+        function triggerBossAuth() {
+            const pass = prompt("Авторизация Владельца Симуляции. Введите Ключ:");
+            if (pass === "gygy2026") { 
+                localStorage.setItem('gygy_is_boss', 'true'); 
+                renderOffice(); 
+            } else {
+                alert("Доступ отклонен.");
+            }
+        }
         function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
     </script>
 </body>
