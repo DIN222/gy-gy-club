@@ -355,3 +355,47 @@
                 recognition = new SpeechRecognition();
                 recognition.continuous = false;
                 recognition.interimResults = false;
+                recognition.onstart = () => { isRecording = true; micBtn.classList.add('recording'); };
+                recognition.onresult = (e) => { document.getElementById('chat-input').value = e.results[0][0].transcript; };
+                recognition.onerror = () => { stopRecording(); };
+                recognition.onend = () => { stopRecording(); };
+            }
+
+            if (!isRecording) {
+                recognition.lang = myLang === 'ru' ? 'ru-RU' : 'fr-FR';
+                recognition.start();
+            } else {
+                recognition.stop();
+            }
+        }
+        function stopRecording() { isRecording = false; const micBtn = document.getElementById('mic-btn'); if (micBtn) micBtn.classList.remove('recording'); }
+        function speakText(text, lang) { if (!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(text); u.lang = lang === 'ru' ? 'ru-RU' : 'fr-FR'; window.speechSynthesis.speak(u); }
+
+        /* TRELLO */
+        function renderCards() {
+            ['todo', 'progress', 'done'].forEach(s => document.getElementById(`col-${s}`).innerHTML = '');
+            tasks.forEach(t => {
+                const card = document.createElement('div'); card.className = 'trello-card';
+                card.innerHTML = `<div>${t.text}</div><div style="color:var(--violet); font-size:9px; margin-top:4px;">Исполнитель: ${t.access}</div>`;
+                const col = document.getElementById(`col-${t.status}`); if (col) col.appendChild(card);
+            });
+        }
+        function addTask(status) {
+            const txt = document.getElementById(`input-${status}`).value;
+            const acc = document.getElementById(`access-${status}`).value || 'Все';
+            if (!txt.trim()) return;
+            tasks.push({ id: Date.now(), status: status, text: txt, access: acc });
+            localStorage.setItem('gygy_trello_tasks', JSON.stringify(tasks));
+            renderCards();
+            document.getElementById(`input-${status}`).value = '';
+            document.getElementById(`access-${status}`).value = '';
+        }
+
+        function triggerBossAuth() {
+            const pass = prompt("Ключ:");
+            if (pass === "gygy2026") { localStorage.setItem('gygy_is_boss', 'true'); renderOffice(); }
+        }
+        function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
+    </script>
+</body>
+</html>
