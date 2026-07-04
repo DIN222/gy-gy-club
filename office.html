@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.9.2 - PRIVATE FLAG OFFICE (STRICT LANG)</title>
+    <title>GY-GY Club v4.9.3 - OFFICE COMMAND CENTER</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -49,7 +49,6 @@
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* ГРАФИЧЕСКИЙ ФЛАГ ИЗ РЕГИСТРАЦИИ */
         .flag-badge { 
             position: absolute; bottom: -2px; right: -2px; font-size: 11px; 
             background: #000; border-radius: 50%; width: 16px; height: 16px; 
@@ -64,7 +63,7 @@
             user-select: none;
         }
 
-        /* РАБОЧАЯ ОБЛАСТЬ СИСТЕМЫ */
+        /* РАБОЧАЯ ОБЛАСТЬ */
         .workspace-container { display: flex; gap: 20px; width: 98%; max-width: 1400px; height: calc(100vh - 130px); padding: 10px; margin-top: 10px; }
         .trello-board { flex: 1.5; display: flex; gap: 15px; overflow-x: auto; }
         .trello-column { flex: 0 0 240px; background: rgba(10, 10, 10, 0.95); border: 1px solid #333; border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px; }
@@ -101,13 +100,11 @@
 <body oncontextmenu="return false;">
 
     <div class="office-page">
-        <!-- НАВИГАЦИЯ -->
         <div class="notranslate ui-nav-arrows">
             <a href="index.html">&lt;</a>
             <a href="index.html">&lt;&lt;</a>
         </div>
         
-        <!-- ЦЕНТРАЛЬНЫЙ ПАСПОРТ С НАСТОЯЩИМ ФЛАГОМ -->
         <div class="ui-header-center notranslate">
             <div class="avatar-wrapper" style="width: 42px; height: 42px;">
                 <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none; width: 100%; height: 100%;">
@@ -117,18 +114,15 @@
         
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <!-- ДИНАМИЧЕСКИЙ КОРЕНЬ ДЛЯ ЗАКРЫТОГО/ОТКРЫТОГО РЕЖИМА -->
         <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;"></div>
     </div>
 
-    <!-- Тайная зона авторизации в углу -->
     <div class="secret-trigger" onclick="triggerBossAuth()"></div>
 
     <script>
         let myPhone = '+12025550144'; 
         let useAvatarInChat = true; 
 
-        // СТРОГО: Берем сохраненные на 1 странице данные. Защита от сброса через международный en/🇺🇸
         let myBossFlag = localStorage.getItem('gygy_user_flag') || '🇺🇸';
         let myLang = localStorage.getItem('gygy_user_lang') || 'en';
 
@@ -149,7 +143,15 @@
         ];
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Аватарка
+            // АВТОМАТИЧЕСКИЙ ПРОПУСК В КОДЕ ДЛЯ ШЕФА
+            const currentNickname = (localStorage.getItem('gygy_nickname') || '').toLowerCase().trim();
+            
+            // Если ник содержит ключевые слова управления, пропуск активируется автоматически
+            if (currentNickname === 'шеф' || currentNickname === 'boss' || currentNickname === 'chief') {
+                localStorage.setItem('gygy_is_boss', 'true');
+            }
+
+            // Загрузка аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
             const avatarEl = document.getElementById('header-avatar');
             if (savedAvatar && avatarEl) {
@@ -201,8 +203,7 @@
                                 </div>
                                 <div style="font-size:11px; display:flex; justify-content:space-between; width:100%;">
                                     <div>Channel: <strong style="color:var(--gold)">${currentStaff.name}</strong></div>
-                                    <!-- Селектор удален. Профиль зафиксирован под выбор 1-й страницы -->
-                                    <div style="color:var(--gold)">Profile Profile: ${myBossFlag} (${myLang.toUpperCase()})</div>
+                                    <div style="color:var(--gold)">Profile: ${myBossFlag} (${myLang.toUpperCase()})</div>
                                 </div>
                             </div>
                             <div class="chat-history" id="chat-box"></div>
@@ -228,7 +229,7 @@
                             <div>• Profile: <span style="color:var(--violet)">${nickname}</span></div>
                             <div>• Access Status: <span style="color:#ff3333">Denied</span></div>
                         </div>
-                        <button class="btn-office" onclick="alert('Request sent to admin...')">Request Access</button>
+                        <button class="btn-office" onclick="triggerBossAuth()">Enter Management Key</button>
                     </div>
                 `;
             }
@@ -291,15 +292,24 @@
             renderCards(); document.getElementById(`input-${status}`).value = '';
         }
 
+        // РАБОТА С МАСТЕР-КЛЮЧОМ И ПРОПУСКАМИ
         function triggerBossAuth() {
-            const pass = prompt("Enter Access Key:");
-            if (pass === "gygy2026") { 
+            const pass = prompt("Enter Master Access Key (GYGY2026):");
+            if (pass === "GYGY2026" || pass === "gygy2026") { 
                 localStorage.setItem('gygy_is_boss', 'true'); 
+                // Сохраняем имя управления, чтобы при следующем заходе пускало без ввода ключа
+                if (!localStorage.getItem('gygy_nickname')) {
+                    localStorage.setItem('gygy_nickname', 'Boss');
+                }
                 renderOffice(); 
+            } else {
+                alert("Invalid Key. Access Denied.");
             }
         }
+        
         function exitBossMode() { 
             localStorage.setItem('gygy_is_boss', 'false'); 
+            localStorage.removeItem('gygy_nickname'); // Сброс триггера авто-входа
             renderOffice(); 
         }
     </script>
