@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.9 CORE</title>
+    <title>GY-GY Club v4.5.30.10 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <style>
+  <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -106,7 +106,7 @@
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-      .hall-interior .quote-text { 
+        .hall-interior .quote-text { 
             position: absolute; 
             top: 8vh; 
             left: 50%; 
@@ -196,10 +196,10 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         /* Возвращаем дымку, если Google Translate обернул буквы Холла в теги font */
-.hall-interior .quote-text font {
-    text-shadow: none !important; /* Убираем стандартный shadow, так как теперь работает filter */
-    color: var(--gold) !important;
-}
+        .hall-interior .quote-text font {
+            text-shadow: none !important; 
+            color: var(--gold) !important;
+        }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
         
         /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
@@ -218,6 +218,30 @@
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
+
+        /* ==================================================== */
+        /* ИНЖЕНЕРНЫЙ ФИЛЬТР БЕЛОГО ШУМА И АРТЕФАКТОВ РЕНДЕРИНГА */
+        /* ==================================================== */
+        .hall-interior .quote-text, 
+        .ui-user-badge, 
+        #id-label, 
+        #pass-id-val {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .hall-interior .quote-text font, 
+        #id-label font, 
+        #pass-id-val font {
+            text-shadow: none !important;
+            filter: none !important;
+            -webkit-font-smoothing: antialiased;
+        }
+        /* ==================================================== */
     </style>
 </head>
 <body oncontextmenu="return false;">
