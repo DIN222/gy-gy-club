@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.9.3 - OFFICE COMMAND CENTER</title>
+    <title>GY-GY Club v5.2.1 - MODERMECH TERMINAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -11,7 +11,8 @@
             --gold: #d4af37; 
             --violet: #8A2BE2; 
             --bg-dark: #000;
-            --card-bg: rgba(20, 20, 20, 0.95);
+            --card-bg: rgba(15, 15, 15, 0.98);
+            --border-color: #333;
         }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
@@ -24,10 +25,10 @@
             position: fixed; inset: 0;
             background: url('office_bg.jpg') center/95% no-repeat #000;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 90px; z-index: 10;
+            padding-top: 80px; z-index: 10;
         }
 
-        /* НАВИГАЦИЯ И ХЕДЕР */
+        /* НАВИГАЦИЯ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 10px !important; z-index: 1000000; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -44,9 +45,9 @@
         
         .avatar-wrapper { position: relative; display: inline-block; flex-shrink: 0; }
         .user-avatar {
-            border-radius: 50%; border: 2px solid var(--gold);
-            object-fit: cover; background: #fff !important; display: block;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            border-radius: 50%; border: 2px solid var(--violet);
+            object-fit: cover; display: block;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
         }
         
         .flag-badge { 
@@ -63,38 +64,50 @@
             user-select: none;
         }
 
-        /* РАБОЧАЯ ОБЛАСТЬ */
-        .workspace-container { display: flex; gap: 20px; width: 98%; max-width: 1400px; height: calc(100vh - 130px); padding: 10px; margin-top: 10px; }
-        .trello-board { flex: 1.5; display: flex; gap: 15px; overflow-x: auto; }
-        .trello-column { flex: 0 0 240px; background: rgba(10, 10, 10, 0.95); border: 1px solid #333; border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px; }
-        .column-header { font-weight: bold; font-size: 13px; color: #fff; padding-bottom: 8px; border-bottom: 1px solid #222; margin-bottom: 10px; }
-        .cards-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .trello-card { background: #161616; border: 1px solid var(--gold); padding: 8px; border-radius: 3px; font-size: 11px; color: #ccc; }
-        
-        .global-chat-panel { flex: 1.2; min-width: 350px; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 15px; }
-        .chat-history { flex: 1; overflow-y: auto; border: 1px solid #222; background: #000; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-        
-        .msg-container { display: flex; gap: 10px; align-items: flex-start; max-width: 85%; }
-        .msg-container.my-side { align-self: flex-end; flex-direction: row-reverse; }
-        .msg-container.foreign-side { align-self: flex-start; }
+        .workspace-container { 
+            display: flex; flex-direction: column; gap: 12px; 
+            width: 96%; max-width: 1400px; height: calc(100vh - 110px); 
+            padding: 10px; margin-top: 5px; overflow-y: auto;
+        }
 
-        .msg-bubble { padding: 8px 12px; border-radius: 4px; font-size: 12px; color: #fff; line-height: 1.4; }
-        .my-side .msg-bubble { background: rgba(138, 43, 226, 0.2); border: 1px solid var(--violet); }
-        .foreign-side .msg-bubble { background: rgba(214, 175, 55, 0.1); border: 1px solid var(--gold); }
+        /* СТРУКТУРА КЛУБА */
+        .structure-section {
+            background: rgba(10, 10, 10, 0.95); border: 1px solid var(--gold); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .structure-title {
+            font-size: 13px; font-weight: bold; color: #fff; letter-spacing: 1px; border-bottom: 1px dashed var(--gold); padding-bottom: 4px; display: flex; justify-content: space-between;
+        }
+        .tree-root { display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 12px; }
+        .tree-branches { display: flex; justify-content: center; gap: 15px; width: 100%; flex-wrap: wrap; }
+        .tree-node { background: #111; border: 1px solid #444; padding: 8px 12px; border-radius: 4px; text-align: center; min-width: 160px; cursor: pointer; transition: all 0.2s; }
+        .tree-node.boss-node { border-color: var(--violet); cursor: default; background: rgba(138, 43, 226, 0.05); }
+        .tree-node.active-node { border-color: var(--gold); background: rgba(214,175,55,0.05); }
+        .node-role { font-size: 9px; color: #888; letter-spacing: 1px; }
+        .node-name { font-size: 12px; font-weight: bold; color: #fff; margin: 2px 0; }
+        .node-status { font-size: 9px; color: var(--gold); }
+
+        /* РАБОЧИЕ ПАНЕЛИ */
+        .bottom-panels { display: flex; gap: 12px; min-height: 300px; width: 100%; }
+        .trello-column { flex: 1; background: rgba(10, 10, 10, 0.95); border: 1px solid var(--border-color); border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px; }
+        .column-header { font-weight: bold; font-size: 12px; color: #fff; padding-bottom: 6px; border-bottom: 1px solid #222; margin-bottom: 8px; }
+        .cards-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; min-height: 100px; }
+        .trello-card { background: #161616; border: 1px solid #333; padding: 8px; border-radius: 3px; font-size: 11px; color: #ccc; }
+
+        .global-chat-panel { flex: 1.2; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--border-color); border-top: 3px solid var(--violet); border-radius: 4px; display: flex; flex-direction: column; padding: 10px; }
+        .chat-history { flex: 1; overflow-y: auto; border: 1px solid #222; background: #000; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 150px; }
         
-        .chat-controls { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .input-row { display: flex; gap: 5px; }
-        .office-input { background: #000; border: 1px solid var(--gold); color: #fff; padding: 8px; font-family: inherit; font-size: 12px; width: 100%; }
-        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-family: inherit; font-size: 12px; transition: all 0.2s; white-space: nowrap; }
+        .msg-container { display: flex; gap: 8px; align-items: flex-start; max-width: 90%; }
+        .msg-container.my-side { align-self: flex-end; flex-direction: row-reverse; }
+        .msg-bubble { padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #fff; line-height: 1.3; }
+        .my-side .msg-bubble { background: rgba(138, 43, 226, 0.15); border: 1px solid var(--violet); }
+        .foreign-side .msg-bubble { background: rgba(214, 175, 55, 0.08); border: 1px solid var(--gold); }
+        
+        .office-input { background: #000; border: 1px solid #444; color: #fff; padding: 6px; font-family: inherit; font-size: 11px; width: 100%; margin-bottom: 4px; }
+        .office-input:focus { border-color: var(--gold); outline: none; }
+        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 11px; transition: all 0.2s; white-space: nowrap; }
         .btn-office:hover { background: var(--gold); color: #000; }
-        
-        /* ЗАГЛУШКА БЕЗ ДОСТУПА */
-        .client-box { width: 90%; max-width: 500px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin-top: 40px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
-        .secret-trigger { position: fixed; bottom: 5px; right: 5px; width: 20px; height: 20px; cursor: pointer; opacity: 0.02; z-index: 999999; }
-        
-        .btn-mic { background: #222; color: #ff3333; border: 1px solid #ff3333; }
-        .btn-mic.recording { background: #ff3333; color: #000; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .client-box { width: 90%; max-width: 500px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin: 40px auto 0 auto; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -106,76 +119,23 @@
         </div>
         
         <div class="ui-header-center notranslate">
-            <div class="avatar-wrapper" style="width: 42px; height: 42px;">
-                <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none; width: 100%; height: 100%;">
-                <div class="flag-badge" id="main-header-flag">🇺🇸</div>
+            <div class="avatar-wrapper" style="width: 46px; height: 46px;">
+                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех" style="width: 100%; height: 100%; onerror: this.style.display='none';">
+                <div class="flag-badge" id="main-header-flag">⚓</div>
             </div>
         </div>
         
         <div class="ui-header-right notranslate">GY-GY</div>
-
         <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;"></div>
     </div>
 
-    <div class="secret-trigger" onclick="triggerBossAuth()"></div>
-
     <script>
-        
-       <script>
-    let myPhone = '+12025550144'; 
-    let useAvatarInChat = true; 
-    let myLang = localStorage.getItem('gygy_user_lang') || 'en';
+        let myPhone = '+12025550144'; 
+        let useAvatarInChat = true; 
+        let myLang = localStorage.getItem('gygy_user_lang') || 'ru';
+        let myBossFlag = localStorage.getItem('gygy_user_flag') || '⚓'; 
+        let myNickname = localStorage.getItem('gygy_nickname') || 'МодерМех';
 
-    // Офис считывает то, с какими «номерами» корабль вошел в нашу гавань:
-    let myBossFlag = localStorage.getItem('gygy_user_flag') || '⚓'; // Если вдруг флаг не выбран, ставим дефолтный якорь Клуба
-    let myNickname = localStorage.getItem('gygy_nickname') || 'Анонимный Резидент';
-
-        const staffRegistry = {
-            "+3361234567": { name: "Jean (Fabrique)", lang: "fr", flag: "🇫🇷", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" },
-            "+1202555014": { name: "John (Developer)", lang: "en", flag: "🇺🇸", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" }
-        };
-
-        let activeStaffPhone = "+3361234567"; 
-
-        let chatMessages = [
-            { id: 1, phone: "+3361234567", text: "Bonjour Patron! У нас готовы новые лекала для худи.", trans: "Hello Boss! The new hoodie patterns are ready." },
-            { id: 2, phone: "+12025550144", text: "Excellent, Jean. Did you check the fabric density?", trans: "Excellent, Jean. Avez-vous vérifié la densité du tissu?" }
-        ];
-
-        let tasks = JSON.parse(localStorage.getItem('gygy_trello_tasks')) || [
-            { id: 1, status: 'todo', text: 'Connect n8n webhooks to orders table', access: '+3361234567' }
-        ];
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // АВТОМАТИЧЕСКИЙ ПРОПУСК В КОДЕ ДЛЯ ШЕФА
-            const currentNickname = (localStorage.getItem('gygy_nickname') || '').toLowerCase().trim();
-            
-            // Если ник содержит ключевые слова управления, пропуск активируется автоматически
-            if (currentNickname === 'шеф' || currentNickname === 'boss' || currentNickname === 'chief') {
-                localStorage.setItem('gygy_is_boss', 'true');
-            }
-
-            // Загрузка аватара
-            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
-            const avatarEl = document.getElementById('header-avatar');
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-                avatarEl.style.display = 'block';
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/></svg>";
-                avatarEl.style.display = 'block';
-            }
-
-            syncHeaderFlagDisplay();
-            renderOffice();
-        });
-
-        function syncHeaderFlagDisplay() {
-            const flagEl = document.getElementById('main-header-flag');
-            if (flagEl) flagEl.innerText = myBossFlag; 
-        }
-
-      // БАЗА ДАННЫХ БУДУЩИХ СТАТУСОВ МОДЕРМЕХА
         const futureStatuses = [
             "● Калибровка сингулярности",
             "● Модуляция хаоса: 94%",
@@ -183,128 +143,137 @@
             "● Пересборка ядер системы",
             "● Внутри Матрицы (Не будить)"
         ];
-        let currentStatusIndex = 0; // Начинаем с первого статуса
+        let currentStatusIndex = 0;
 
-        // Функция быстрой смены статуса при клике на главную ноду
+        const staffRegistry = {
+            "+3361234567": { name: "Jean (Production)", role: "Factory Manager", lang: "fr", flag: "🇫🇷" },
+            "+1202555014": { name: "John (Tech)", role: "Lead Developer", lang: "en", flag: "🇺🇸" }
+        };
+
+        let activeStaffPhone = "+3361234567"; 
+        let chatMessages = [
+            { id: 1, phone: "+3361234567", text: "Bonjour ModMech! Станки готовы.", trans: "Hello ModMech! Machines are ready." },
+            { id: 2, phone: "+12025550144", text: "Отлично. Начинаем прогрев.", trans: "Excellent. Starting warm-up." }
+        ];
+
+        let tasks = JSON.parse(localStorage.getItem('gygy_trello_tasks')) || [
+            { id: 1, text: 'Проверить калибровку DTF-принтера', status: 'todo' },
+            { id: 2, text: 'Прокинуть n8n вебхуки', status: 'todo' }
+        ];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Обновляем иконку в шапке, если она записана
+            const savedAvatar = localStorage.getItem('gygy_avatar') || 'avatar.jpg';
+            const imgEl = document.getElementById('header-avatar');
+            if (imgEl) imgEl.src = savedAvatar;
+
+            const flagEl = document.getElementById('main-header-flag');
+            if (flagEl) flagEl.innerText = myBossFlag;
+
+            renderOffice();
+        });
+
         function cycleStatus() {
             currentStatusIndex = (currentStatusIndex + 1) % futureStatuses.length;
             const statusEl = document.getElementById('moder-status');
-            if (statusEl) {
-                statusEl.innerText = futureStatuses[currentStatusIndex];
-            }
+            if (statusEl) statusEl.innerText = futureStatuses[currentStatusIndex];
         }
 
-        // ==========================================================================
-        // ГЛАВНАЯ ФУНКЦИЯ РЕНДЕРА ОФИСА (v5.2.0 - СТРУКТУРНАЯ ГАВАНЬ)
-        // ==========================================================================
+        function selectStaff(phone) { 
+            activeStaffPhone = phone; 
+            renderOffice(); 
+        }
+
         function renderOffice() {
             const root = document.getElementById('office-dynamic-root');
+            if (!root) return;
+            
             const hasAccess = localStorage.getItem('gygy_is_boss') === 'true';
 
             if (hasAccess) {
-                // Если доступ есть — разворачиваем полный терминал управления
-                let currentStaff = staffRegistry[activeStaffPhone] || { name: "External", lang: "en", flag: "🏴‍☠️", avatar: "" };
+                let currentStaff = staffRegistry[activeStaffPhone] || { name: "Offline", lang: "en", flag: "🏴‍☠️" };
                 
-                // ЗАЛИВАЕМ HTML-СТРУКТУРУ ТЕРМИНАЛА
                 root.innerHTML = `
                     <div class="workspace-container notranslate">
                         
                         <div class="structure-section">
                             <div class="structure-title">
                                 <div>CORE ARCHITECTURE // SYSTEM CONTROL</div>
-                                <div style="color: var(--violet); font-size:11px;">MODERMECH TERMINAL v5.2</div>
+                                <div style="color: var(--violet); font-size:11px;">MODERMECH TERMINAL v5.2.1</div>
                             </div>
                             <div class="tree-root">
-                                
-                                <div class="tree-node boss-node" onclick="cycleStatus()" title="Кликни для смены статуса">
+                                <div class="tree-node boss-node" onclick="cycleStatus()">
                                     <div class="node-role">Главный Инженер Гавани</div>
                                     <div class="node-name" style="color:var(--violet); font-size: 14px;">${myNickname.toUpperCase()}</div>
-                                    <div class="node-status" id="moder-status" style="color:#00ff00; font-weight: bold; cursor: pointer;">${futureStatuses[currentStatusIndex]}</div>
+                                    <div class="node-status" id="moder-status" style="color:#00ff00; font-weight: bold; cursor:pointer;">${futureStatuses[currentStatusIndex]}</div>
                                 </div>
-                                
                                 <div class="tree-branches">
                                     <div class="tree-node ${activeStaffPhone==='+3361234567'?'active-node':''}" onclick="selectStaff('+3361234567')">
-                                        <div class="node-role">Production (FR)</div>
-                                        <div class="node-name">Jean</div>
-                                        <div class="node-status" style="color:#00ff00">● Online</div>
+                                        <div class="node-role">Production (FR)</div><div class="node-name">Jean</div><div class="node-status" style="color:#00ff00">● Online</div>
                                     </div>
                                     <div class="tree-node ${activeStaffPhone==='+1202555014'?'active-node':''}" onclick="selectStaff('+1202555014')">
-                                        <div class="node-role">Tech & AI Room</div>
-                                        <div class="node-name">John</div>
-                                        <div class="node-status" style="color:var(--gold)">● In Code</div>
+                                        <div class="node-role">Tech Dev (US)</div><div class="node-name">John</div><div class="node-status" style="color:var(--gold)">● In Code</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bottom-panels" style="display: flex; gap: 12px; flex: 1; min-height: 0;">
-                            
-                            <div class="trello-column" style="flex: 1; background: rgba(10, 10, 10, 0.95); border: 1px solid var(--border-color); border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px;">
-                                <div class="column-header">PROJECT TASKS & PIPELINE</div>
-                                <div class="cards-container" id="col-todo" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
-                                <div style="display:flex; gap:4px; margin-top:5px;">
+                        <div class="bottom-panels">
+                            <div class="trello-column">
+                                <div class="column-header">PROJECT TASKS</div>
+                                <div class="cards-container" id="col-todo"></div>
+                                <div style="margin-top:auto; padding-top:10px;">
                                     <input type="text" id="input-todo" class="office-input" placeholder="New task...">
-                                    <button class="btn-office" onclick="addTask('todo')">+</button>
+                                    <button class="btn-office" style="width:100%" onclick="addTask()">Добавить</button>
                                 </div>
-                                <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:10px; font-size:10px;" onclick="exitBossMode()">Exit Terminal</button>
+                                <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:10px; font-size:10px;" onclick="exitBossMode()">Log Out</button>
                             </div>
 
-                            <div class="global-chat-panel" style="flex: 1.2; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--border-color); border-top: 3px solid var(--violet); border-radius: 4px; display: flex; flex-direction: column; padding: 10px;">
-                                <div class="column-header" style="border-bottom: 1px solid #222; padding-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
-                                    <div>Secure Line: <strong style="color:var(--gold)">${currentStaff.name}</strong></div>
-                                    <div style="font-size:10px; color:#888;">Lang: ${currentStaff.flag}</div>
+                            <div class="global-chat-panel">
+                                <div class="column-header" style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div>ШЛЮЗ: <strong style="color:var(--gold)">${currentStaff.name}</strong></div>
+                                    <div style="font-size:10px;">Канал: ${currentStaff.flag}</div>
                                 </div>
-                                <div class="chat-history" id="chat-box" style="flex: 1; overflow-y: auto; border: 1px solid #222; background: #000; padding: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
-                                <div class="chat-controls">
-                                    <div class="input-row" style="display:flex; gap:4px;">
-                                        <input type="text" id="chat-input" class="office-input" placeholder="Encrypt message...">
-                                        <button class="btn-office" onclick="sendChatMessage()">SEND</button>
-                                    </div>
+                                <div class="chat-history" id="chat-box"></div>
+                                <div style="display:flex; gap:4px; margin-top:10px;">
+                                    <input type="text" id="chat-input" class="office-input" placeholder="Encrypt message...">
+                                    <button class="btn-office" onclick="sendChatMessage()">SEND</button>
                                 </div>
                             </div>
-
                         </div>
+
                     </div>
                 `;
                 renderCards();
                 renderChat();
             } else {
-                // Если доступа нет — выводим закрытый информационный блок-заглушку
                 const nickname = localStorage.getItem('gygy_nickname') || 'Club Resident';
                 root.innerHTML = `
                     <div class="client-box notranslate">
                         <div style="font-size: 18px; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">GY-GY INFORMATOR</div>
-                        <p style="font-size: 13px; color: #aaa;">Restricted area. The Command Center terminal is available only to verified founders.</p>
-                        <div style="background:#111; padding: 12px; border: 1px dashed var(--gold); margin: 15px 0; text-align: left; font-size: 12px;">
+                        <p style="font-size: 13px; color: #aaa;">Terminal is restricted.</p>
+                        <div style="background:#111; padding: 12px; border: 1px dashed var(--gold); margin: 15px 0; text-align: left;">
                             <div>• ID Trace: <span style="color:var(--violet)">${nickname}</span></div>
                             <div>• Status: <span style="color:#ff3333">Access Denied</span></div>
                         </div>
-                        <button class="btn-office" onclick="triggerBossAuth()">Enter Management Key</button>
+                        <button class="btn-office" onclick="triggerBossAuth()">Enter Key</button>
                     </div>
                 `;
             }
         }
 
         function renderChat() {
-            const box = document.getElementById('chat-box');
-            if (!box) return; box.innerHTML = '';
-            let currentStaff = staffRegistry[activeStaffPhone] || { name: "Anonymous", lang: "en", flag: "🏴‍☠️", avatar: "" };
+            const box = document.getElementById('chat-box'); if (!box) return; box.innerHTML = '';
+            let currentStaff = staffRegistry[activeStaffPhone] || { name: "Staff", lang: "en", flag: "🏴‍☠️" };
 
             chatMessages.forEach(m => {
                 const isMe = m.phone === myPhone;
                 const textToShow = isMe ? m.text : (currentStaff.lang === myLang ? m.text : m.trans);
-                let avatarSrc = isMe ? (localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img')) : currentStaff.avatar;
-                let flagSymbol = isMe ? myBossFlag : currentStaff.flag;
-
                 const msgContainer = document.createElement('div');
                 msgContainer.className = `msg-container ${isMe ? 'my-side' : 'foreign-side'}`;
                 msgContainer.innerHTML = `
-                    <div class="avatar-wrapper" style="width: 32px; height: 32px;">
-                        <img src="${avatarSrc || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\'><circle cx=\'16\' cy=\'16\' r=\'16\' fill=\'%23fff\'/></svg>'}" class="user-avatar" style="width:100%; height:100%;">
-                        <div class="flag-badge">${flagSymbol}</div>
-                    </div>
                     <div class="msg-bubble">
-                        <div style="font-weight:bold; font-size:10px; color:var(--gold); margin-bottom:2px;">${isMe ? 'You' : currentStaff.name}</div>
+                        <div style="font-weight:bold; font-size:9px; color:var(--gold);">${isMe ? myNickname : currentStaff.name}</div>
                         <div>${textToShow}</div>
                     </div>
                 `;
@@ -314,54 +283,34 @@
         }
 
         function sendChatMessage() {
-            const inp = document.getElementById('chat-input');
-            if (!inp || !inp.value.trim()) return;
+            const inp = document.getElementById('chat-input'); if (!inp || !inp.value.trim()) return;
             chatMessages.push({ id: Date.now(), phone: myPhone, text: inp.value.trim(), trans: inp.value.trim() });
             inp.value = ''; renderChat();
         }
 
-        function callStaffByPhone() {
-            activeStaffPhone = document.getElementById('phone-search-input').value.trim();
-            renderOffice();
-        }
-
         function renderCards() {
-            ['todo', 'progress', 'done'].forEach(s => { const el = document.getElementById(`col-${s}`); if (el) el.innerHTML = ''; });
+            const col = document.getElementById('col-todo'); if (!col) return; col.innerHTML = '';
             tasks.forEach(t => {
                 const card = document.createElement('div'); card.className = 'trello-card';
-                card.innerHTML = `<div>${t.text}</div>`;
-                const col = document.getElementById(`col-${t.status}`); if (col) col.appendChild(card);
+                card.innerHTML = `<div>${t.text}</div>`; col.appendChild(card);
             });
         }
 
-        function addTask(status) {
-            const txt = document.getElementById(`input-${status}`).value;
-            if (!txt.trim()) return;
-            tasks.push({ id: Date.now(), status: status, text: txt, access: 'All' });
+        function addTask() {
+            const txt = document.getElementById('input-todo').value; if (!txt.trim()) return;
+            tasks.push({ id: Date.now(), text: txt, status: 'todo' });
             localStorage.setItem('gygy_trello_tasks', JSON.stringify(tasks));
-            renderCards(); document.getElementById(`input-${status}`).value = '';
+            renderCards(); document.getElementById('input-todo').value = '';
         }
 
-        // РАБОТА С МАСТЕР-КЛЮЧОМ И ПРОПУСКАМИ
         function triggerBossAuth() {
-            const pass = prompt("Enter Master Access Key (GYGY2026):");
+            const pass = prompt("Key:");
             if (pass === "GYGY2026" || pass === "gygy2026") { 
                 localStorage.setItem('gygy_is_boss', 'true'); 
-                // Сохраняем имя управления, чтобы при следующем заходе пускало без ввода ключа
-                if (!localStorage.getItem('gygy_nickname')) {
-                    localStorage.setItem('gygy_nickname', 'Boss');
-                }
                 renderOffice(); 
-            } else {
-                alert("Invalid Key. Access Denied.");
             }
         }
-        
-        function exitBossMode() { 
-            localStorage.setItem('gygy_is_boss', 'false'); 
-            localStorage.removeItem('gygy_nickname'); // Сброс триггера авто-входа
-            renderOffice(); 
-        }
+        function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
     </script>
 </body>
 </html>
