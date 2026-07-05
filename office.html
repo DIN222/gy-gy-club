@@ -120,11 +120,15 @@
     <div class="secret-trigger" onclick="triggerBossAuth()"></div>
 
     <script>
-        let myPhone = '+12025550144'; 
-        let useAvatarInChat = true; 
+        
+       <script>
+    let myPhone = '+12025550144'; 
+    let useAvatarInChat = true; 
+    let myLang = localStorage.getItem('gygy_user_lang') || 'en';
 
-        let myBossFlag = localStorage.getItem('gygy_user_flag') || '🇺🇸';
-        let myLang = localStorage.getItem('gygy_user_lang') || 'en';
+    // Офис считывает то, с какими «номерами» корабль вошел в нашу гавань:
+    let myBossFlag = localStorage.getItem('gygy_user_flag') || '⚓'; // Если вдруг флаг не выбран, ставим дефолтный якорь Клуба
+    let myNickname = localStorage.getItem('gygy_nickname') || 'Анонимный Резидент';
 
         const staffRegistry = {
             "+3361234567": { name: "Jean (Fabrique)", lang: "fr", flag: "🇫🇷", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" },
@@ -171,63 +175,109 @@
             if (flagEl) flagEl.innerText = myBossFlag; 
         }
 
+      // БАЗА ДАННЫХ БУДУЩИХ СТАТУСОВ МОДЕРМЕХА
+        const futureStatuses = [
+            "● Калибровка сингулярности",
+            "● Модуляция хаоса: 94%",
+            "● Правлю таймлайн проекта",
+            "● Пересборка ядер системы",
+            "● Внутри Матрицы (Не будить)"
+        ];
+        let currentStatusIndex = 0; // Начинаем с первого статуса
+
+        // Функция быстрой смены статуса при клике на главную ноду
+        function cycleStatus() {
+            currentStatusIndex = (currentStatusIndex + 1) % futureStatuses.length;
+            const statusEl = document.getElementById('moder-status');
+            if (statusEl) {
+                statusEl.innerText = futureStatuses[currentStatusIndex];
+            }
+        }
+
+        // ==========================================================================
+        // ГЛАВНАЯ ФУНКЦИЯ РЕНДЕРА ОФИСА (v5.2.0 - СТРУКТУРНАЯ ГАВАНЬ)
+        // ==========================================================================
         function renderOffice() {
             const root = document.getElementById('office-dynamic-root');
             const hasAccess = localStorage.getItem('gygy_is_boss') === 'true';
 
             if (hasAccess) {
-                let currentStaff = staffRegistry[activeStaffPhone] || { name: "Offline", lang: "en", flag: "🏴‍☠️", avatar: "" };
+                // Если доступ есть — разворачиваем полный терминал управления
+                let currentStaff = staffRegistry[activeStaffPhone] || { name: "External", lang: "en", flag: "🏴‍☠️", avatar: "" };
+                
+                // ЗАЛИВАЕМ HTML-СТРУКТУРУ ТЕРМИНАЛА
                 root.innerHTML = `
                     <div class="workspace-container notranslate">
-                        <div class="trello-board">
-                            <div class="trello-column">
-                                <div class="column-header">BACKLOG & TASKS</div>
-                                <div class="cards-container" id="col-todo"></div>
-                                <input type="text" id="input-todo" class="office-input" placeholder="Task...">
-                                <input type="text" id="access-todo" class="office-input" placeholder="Phone...">
-                                <button class="btn-office" onclick="addTask('todo')">Assign</button>
+                        
+                        <div class="structure-section">
+                            <div class="structure-title">
+                                <div>CORE ARCHITECTURE // SYSTEM CONTROL</div>
+                                <div style="color: var(--violet); font-size:11px;">MODERMECH TERMINAL v5.2</div>
                             </div>
-                            <div class="trello-column"><div class="column-header">IN PROGRESS</div><div class="cards-container" id="col-progress"></div></div>
-                            <div class="trello-column">
-                                <div class="column-header">DONE</div>
-                                <div class="cards-container" id="col-done"></div>
-                                <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:auto;" onclick="exitBossMode()">Log Out</button>
+                            <div class="tree-root">
+                                
+                                <div class="tree-node boss-node" onclick="cycleStatus()" title="Кликни для смены статуса">
+                                    <div class="node-role">Главный Инженер Гавани</div>
+                                    <div class="node-name" style="color:var(--violet); font-size: 14px;">${myNickname.toUpperCase()}</div>
+                                    <div class="node-status" id="moder-status" style="color:#00ff00; font-weight: bold; cursor: pointer;">${futureStatuses[currentStatusIndex]}</div>
+                                </div>
+                                
+                                <div class="tree-branches">
+                                    <div class="tree-node ${activeStaffPhone==='+3361234567'?'active-node':''}" onclick="selectStaff('+3361234567')">
+                                        <div class="node-role">Production (FR)</div>
+                                        <div class="node-name">Jean</div>
+                                        <div class="node-status" style="color:#00ff00">● Online</div>
+                                    </div>
+                                    <div class="tree-node ${activeStaffPhone==='+1202555014'?'active-node':''}" onclick="selectStaff('+1202555014')">
+                                        <div class="node-role">Tech & AI Room</div>
+                                        <div class="node-name">John</div>
+                                        <div class="node-status" style="color:var(--gold)">● In Code</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="global-chat-panel">
-                            <div class="column-header" style="border-bottom: 1px solid var(--violet); padding-bottom:5px; flex-direction: column; gap: 8px;">
-                                <div style="display:flex; width:100%; gap:5px;">
-                                    <input type="text" id="phone-search-input" class="office-input" value="${activeStaffPhone}">
-                                    <button class="btn-office" onclick="callStaffByPhone()">CALL</button>
+                        <div class="bottom-panels" style="display: flex; gap: 12px; flex: 1; min-height: 0;">
+                            
+                            <div class="trello-column" style="flex: 1; background: rgba(10, 10, 10, 0.95); border: 1px solid var(--border-color); border-top: 3px solid var(--gold); border-radius: 4px; display: flex; flex-direction: column; padding: 10px;">
+                                <div class="column-header">PROJECT TASKS & PIPELINE</div>
+                                <div class="cards-container" id="col-todo" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
+                                <div style="display:flex; gap:4px; margin-top:5px;">
+                                    <input type="text" id="input-todo" class="office-input" placeholder="New task...">
+                                    <button class="btn-office" onclick="addTask('todo')">+</button>
                                 </div>
-                                <div style="font-size:11px; display:flex; justify-content:space-between; width:100%;">
-                                    <div>Channel: <strong style="color:var(--gold)">${currentStaff.name}</strong></div>
-                                    <div style="color:var(--gold)">Profile: ${myBossFlag} (${myLang.toUpperCase()})</div>
+                                <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin-top:10px; font-size:10px;" onclick="exitBossMode()">Exit Terminal</button>
+                            </div>
+
+                            <div class="global-chat-panel" style="flex: 1.2; background: rgba(15, 15, 15, 0.95); border: 1px solid var(--border-color); border-top: 3px solid var(--violet); border-radius: 4px; display: flex; flex-direction: column; padding: 10px;">
+                                <div class="column-header" style="border-bottom: 1px solid #222; padding-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+                                    <div>Secure Line: <strong style="color:var(--gold)">${currentStaff.name}</strong></div>
+                                    <div style="font-size:10px; color:#888;">Lang: ${currentStaff.flag}</div>
+                                </div>
+                                <div class="chat-history" id="chat-box" style="flex: 1; overflow-y: auto; border: 1px solid #222; background: #000; padding: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
+                                <div class="chat-controls">
+                                    <div class="input-row" style="display:flex; gap:4px;">
+                                        <input type="text" id="chat-input" class="office-input" placeholder="Encrypt message...">
+                                        <button class="btn-office" onclick="sendChatMessage()">SEND</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="chat-history" id="chat-box"></div>
-                            <div class="chat-controls">
-                                <div class="input-row">
-                                    <button id="mic-btn" class="btn-office btn-mic" onclick="toggleVoiceInput()">🎤</button>
-                                    <input type="text" id="chat-input" class="office-input" placeholder="Message...">
-                                    <button class="btn-office" onclick="sendChatMessage()">SEND</button>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 `;
                 renderCards();
                 renderChat();
             } else {
+                // Если доступа нет — выводим закрытый информационный блок-заглушку
                 const nickname = localStorage.getItem('gygy_nickname') || 'Club Resident';
                 root.innerHTML = `
                     <div class="client-box notranslate">
                         <div style="font-size: 18px; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">GY-GY INFORMATOR</div>
-                        <p style="font-size: 13px; color: #aaa;">Restricted access. The Office terminal is only available to authorized management personnel.</p>
+                        <p style="font-size: 13px; color: #aaa;">Restricted area. The Command Center terminal is available only to verified founders.</p>
                         <div style="background:#111; padding: 12px; border: 1px dashed var(--gold); margin: 15px 0; text-align: left; font-size: 12px;">
-                            <div>• Profile: <span style="color:var(--violet)">${nickname}</span></div>
-                            <div>• Access Status: <span style="color:#ff3333">Denied</span></div>
+                            <div>• ID Trace: <span style="color:var(--violet)">${nickname}</span></div>
+                            <div>• Status: <span style="color:#ff3333">Access Denied</span></div>
                         </div>
                         <button class="btn-office" onclick="triggerBossAuth()">Enter Management Key</button>
                     </div>
