@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.10 CORE</title>
+    <title>GY-GY Club v4.5.30.11 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -402,7 +402,6 @@
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
-    // КЛИК ПО ЯЗЫКУ: Сохраняем и мгновенно переводим
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
@@ -420,16 +419,14 @@
         if (langListContainer) langListContainer.style.display = 'none';
         renderLangList();
         
-        // Переводим интерфейс "на лету"
         forceTriggerGoogleTranslate(lang.code);
     }
 
-    // Внутренний пушер для виджета Google
     function forceTriggerGoogleTranslate(langCode) {
         if (window.langTimer) clearInterval(window.langTimer);
         let attempts = 0;
         window.langTimer = setInterval(() => {
-            const selectEl = document.querySelectorAll('.goog-te-combo');
+            const selectEl = document.querySelector('.goog-te-combo');
             if (selectEl) {
                 clearInterval(window.langTimer);
                 if (selectEl.value === langCode) return;
@@ -475,6 +472,7 @@
     }
 
     function checkAndFillRegistrationForm() {
+        // Подтягиваем сохраненный аватар (если юзер загружал свой) или берем обновленный дефолтный из репозитория
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
@@ -536,19 +534,12 @@
         window.location.href = 'studio.html';
     }
 
-    // УМНЫЙ ШЛЮЗ В ОФИС (Заменяет старую функцию)
     function enterOffice(event) {
         if (event && event.preventDefault) event.preventDefault();
-        
-        // Достаем никнейм, который ввел юзер на этапе регистрации/генерации ID
         const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-        
-        // Если имя совпадает с твоим главным аккаунтом МодерМеха
         if (currentNickname.toLowerCase() === 'модермех') {
             safeStorageSet('gygy_is_boss', 'true');
         }
-        
-        // Отправляем в терминал Офиса
         window.location.href = 'office.html';
     }
 
@@ -556,8 +547,6 @@
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
         if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-        
-        // Исправлено: Вместо алерта отправляем функцию умного шлюзования
         if (nextId === 'block-office') { enterOffice(); return; }
 
         const targetBlock = document.getElementById(nextId);
@@ -620,14 +609,22 @@
         }
     }
 
+    // ОБНОВЛЕННАЯ ГЕНЕРАЦИЯ ЦИФРОВОГО СЛЕДА АВАТАРА
     function generateAvatar() {
+        // Рандомим цвет бэкграунда, но сохраняем премиальный темный/золотой баланс
         const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        // Твой новый оптимизированный SVG-каркас (без лишнего шума пикселей)
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
+        
+        // Если у тебя в корне лежит статичный файл (например, avatar.png), можно раскомментировать строку ниже:
+        // currentUserImage = 'avatar.png';
+        
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
-        const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = 'none';
-        const pp = document.getElementById('pp'); if (pp) pp.style.display = 'none';
-        const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = 'block';
+        
+        const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
+        const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
+        const pp = document.getElementById('pp'); if (pp) pp.style.display = "none";
+        const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "block";
     }
 
     function saveUserProfile() {
