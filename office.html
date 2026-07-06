@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.5.0 - NUMBERED TERMINAL SYSTEM</title>
+    <title>GY-GY Club v5.5.0 - PRODUCTION CARD INDEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -32,9 +32,395 @@
             overflow-x: hidden;
         }
 
-        /* НАВИГАЦИЯ (СТРЕЛОЧКИ НАЗАД) */
+        /* НАВИГАЦИЯ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 15px; z-index: 1000000; 
             display: flex; gap: 20px; font-size: 24px; font-weight: 900 !important; 
             cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -1px; 
-            text-shadow: -1px -1px 0 #000
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
+        }
+        .ui-nav-arrows a { text-decoration: none; color: var(--gold); }
+        
+        /* ЦЕНТРИРОВАННАЯ ШАПКА */
+        .ui-header-center {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
+            display: flex; align-items: center; justify-content: center; user-select: none;
+            width: 50px; height: 50px;
+        }
+        
+        .avatar-wrapper { 
+            position: relative; 
+            width: 44px !important; height: 44px !important; 
+            flex-shrink: 0 !important; 
+        }
+        .user-avatar {
+            width: 44px !important; height: 44px !important;
+            border-radius: 50%; border: 2px solid var(--violet);
+            object-fit: cover !important; display: block;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+            flex-shrink: 0 !important;
+        }
+        
+        .flag-badge { 
+            position: absolute !important; bottom: -2px !important; right: -2px !important; font-size: 11px; 
+            background: #000; border-radius: 2px; width: 18px !important; height: 13px !important; 
+            display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); 
+            z-index: 100; line-height: 1; pointer-events: none; overflow: hidden; padding: 0;
+        }
+
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 3px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
+        }
+
+        /* КОНТЕЙНЕР СТЕКА КАРТОЧЕК */
+        .workspace-container { 
+            display: flex; flex-direction: column; gap: 8px; 
+            width: 100%; max-width: 480px; margin-top: 5px;
+        }
+
+        /* СТРУКТУРА КАРТОЧКИ */
+        .index-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+        }
+
+        /* СВЕРНУТЫЕ КАРТОЧКИ */
+        .index-card.collapsed-card {
+            border-left: 3px solid #555;
+            cursor: pointer;
+        }
+        .index-card.collapsed-card:hover { border-left-color: var(--gold); background: rgba(20,20,20,0.95); }
+        
+        .index-card.collapsed-card .card-body,
+        .index-card.collapsed-card .card-footer {
+            display: none !important;
+        }
+
+        /* АКТИВНАЯ КАРТОЧКА */
+        .index-card.active-card {
+            border-left: 4px solid var(--gold);
+            margin-bottom: 5px;
+        }
+
+        /* ШАПКА КАРТОЧКИ С ИНПУТОМ */
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 0, 0, 0.4); padding: 10px 12px;
+            border-bottom: 1px dashed #222;
+            gap: 10px;
+        }
+        
+        .card-title-input {
+            background: transparent; border: none; color: #fff;
+            font-family: inherit; font-size: 13px; font-weight: bold;
+            letter-spacing: 1px; flex: 1; padding: 2px 0;
+            min-width: 0;
+        }
+        .card-title-input:focus {
+            color: var(--gold); outline: none; border-bottom: 1px solid var(--gold);
+        }
+
+        .card-title-static {
+            font-size: 13px; font-weight: bold; color: #aaa; letter-spacing: 1px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+            min-width: 0;
+        }
+        .index-card.collapsed-card:hover .card-title-static { color: #fff; }
+
+        .card-number { font-size: 10px; color: #555; font-weight: bold; flex-shrink: 0; }
+        .active-card .card-number { color: var(--gold); }
+
+        /* ТЕЛО КАРТОЧКИ И ЗОНА СЛЕДОВ */
+        .card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .card-staff-zone {
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 36px;
+        }
+        
+        .assigned-avatar {
+            position: relative; width: 34px !important; height: 34px !important; flex-shrink: 0;
+        }
+        .assigned-avatar img {
+            width: 34px !important; height: 34px !important; border-radius: 50%; border: 1px solid var(--violet); object-fit: cover; display: block;
+        }
+        .btn-remove-staff {
+            position: absolute; top: -4px; right: -4px; width: 14px; height: 14px;
+            background: #ff3333; color: #fff; border-radius: 50%; font-size: 10px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            border: 1px solid #000; font-weight: bold; z-index: 5;
+        }
+
+        .btn-add-trigger {
+            width: 34px; height: 34px; border-radius: 50%; border: 1px dashed var(--gold);
+            display: flex; align-items: center; justify-content: center; color: var(--gold);
+            font-size: 16px; cursor: pointer; background: rgba(0,0,0,0.3); flex-shrink: 0;
+        }
+
+        .card-footer { display: flex; justify-content: flex-end; padding: 0 12px 12px 12px; }
+
+        /* ОКНО КОНСПИРАТИВНОЙ РЕГИСТРАЦИИ */
+        .registration-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000000;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .registration-zone {
+            background: #111; border: 2px solid var(--gold); border-radius: 6px;
+            width: 100%; max-width: 400px; padding: 20px; text-align: center;
+        }
+        .reg-zone-title { font-size: 13px; color: #fff; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        
+        .avatar-pool {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 20px 0;
+        }
+        .pool-item { position: relative; width: 46px !important; height: 46px !important; flex-shrink: 0; }
+        .pool-item img { width: 46px !important; height: 46px !important; border-radius: 50%; border: 2px solid #555; object-fit: cover; display: block; }
+        .pool-item:hover img { border-color: var(--gold); }
+
+        /* КНОПКИ ТЕРМИНАЛА */
+        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 5px 14px; cursor: pointer; font-family: inherit; font-size: 11px; border-radius: 3px; }
+        .btn-office:hover { background: var(--gold); color: #000; }
+        .client-box { width: 95%; max-width: 400px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin: 40px auto 0 auto; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div class="office-page">
+        <div class="notranslate ui-nav-arrows">
+            <a href="index.html">&lt;</a>
+            <a href="index.html">&lt;&lt;</a>
+        </div>
+        
+        <div class="ui-header-center notranslate">
+            <div class="avatar-wrapper">
+                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="Резидент">
+                <div class="flag-badge" id="main-header-flag">⚓</div>
+            </div>
+        </div>
+        
+        <div class="ui-header-right notranslate">GY-GY</div>
+        
+        <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;"></div>
+    </div>
+
+    <div id="registration-overlay" class="registration-overlay" onclick="closeRegistrationZone()">
+        <div class="registration-zone" onclick="event.stopPropagation()">
+            <div class="reg-zone-title">ЗОНА СИНХРОНИЗАЦИИ // ЦИФРОВОЙ СЛЕД</div>
+            <div class="avatar-pool" id="avatar-pool"></div>
+            <button class="btn-office" onclick="closeRegistrationZone()">ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <script>
+        let myBossFlag = localStorage.getItem('gygy_user_flag') || '⚓'; 
+        let currentTargetCardId = null;
+        let activeCardId = parseInt(localStorage.getItem('gygy_active_card_id')) || 1;
+
+        // Архитектура 6 карточек
+        let functionalCards = JSON.parse(localStorage.getItem('gygy_office_cards')) || [
+            { id: 1, title: "УПРАВЛЕНИЕ СТАНКАМИ // PRODUCTION", staff: ["avatar.jpg"] },
+            { id: 2, title: "КАЛИБРОВКА DTF И ЦВЕТОПЕРЕДАЧА", staff: [] },
+            { id: 3, title: "ВЕБХУКИ N8N & СЕРВЕРНАЯ КУХНЯ", staff: [] },
+            { id: 4, title: "ЛОГИСТИКА И ЗОЛОТОЙ ТРЕУГОЛЬНИК LILLE", staff: [] },
+            { id: 5, title: "БАЗА ДАННЫХ AIRTABLE & ЭМО-ФИЛЬТРЫ", staff: [] },
+            { id: 6, title: "МОДУЛЯЦИЯ СИНГУЛЯРНОСТИ И ХАОСА", staff: [] }
+        ];
+
+        const availableAvatars = [
+            "avatar.jpg",
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=60", 
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=60"
+        ];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
+            const imgEl = document.getElementById('header-avatar');
+            
+            if (imgEl) {
+                if (savedAvatar) {
+                    imgEl.src = savedAvatar;
+                } else {
+                    imgEl.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60";
+                }
+                imgEl.onerror = function() {
+                    this.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60";
+                };
+            }
+
+            if(savedAvatar && !availableAvatars.includes(savedAvatar)) {
+                availableAvatars.unshift(savedAvatar);
+            }
+
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag');
+            const flagEl = document.getElementById('main-header-flag');
+            if (flagEl) {
+                if (savedFlag && savedFlag !== '⚓') {
+                    flagEl.innerHTML = `<img src="https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png" style="width:100%; height:100%; object-fit:cover; display:block;">`;
+                } else {
+                    flagEl.innerText = myBossFlag;
+                }
+            }
+
+            renderOffice();
+        });
+
+        function renderOffice() {
+            const root = document.getElementById('office-dynamic-root');
+            if (!root) return;
+            
+            const hasAccess = localStorage.getItem('gygy_is_boss') === 'true';
+
+            if (hasAccess) {
+                let cardsHTML = '';
+                
+                functionalCards.forEach(card => {
+                    const isActive = card.id === activeCardId;
+                    
+                    if (isActive) {
+                        let staffAvatarsHTML = '';
+                        card.staff.forEach((src, index) => {
+                            staffAvatarsHTML += `
+                                <div class="assigned-avatar">
+                                    <img src="${src}">
+                                    <div class="btn-remove-staff" onclick="event.stopPropagation(); removeStaff(${card.id}, ${index})">×</div>
+                                </div>
+                            `;
+                        });
+
+                        cardsHTML += `
+                            <div class="index-card active-card notranslate">
+                                <div class="card-header">
+                                    <input type="text" class="card-title-input" value="${card.title}" 
+                                           onchange="updateCardTitle(${card.id}, this.value)" 
+                                           onclick="event.stopPropagation()">
+                                    <div class="card-number">NO. 0${card.id}</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-staff-zone">
+                                        ${staffAvatarsHTML}
+                                        <div class="btn-add-trigger" onclick="openRegistrationZone(${card.id})">+</div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn-office" onclick="triggerCardChat(${card.id})">ЧАТ</button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        cardsHTML += `
+                            <div class="index-card collapsed-card notranslate" onclick="switchActiveCard(${card.id})">
+                                <div class="card-header">
+                                    <div class="card-title-static">${card.title}</div>
+                                    <div class="card-number">NO. 0${card.id}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                root.innerHTML = `
+                    <div class="workspace-container">
+                        ${cardsHTML}
+                        <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin: 20px auto 0 auto; font-size:10px; display:block;" onclick="exitBossMode()">Log Out Terminal</button>
+                    </div>
+                `;
+            } else {
+                root.innerHTML = `
+                    <div class="client-box notranslate">
+                        <div style="font-size: 18px; color: #fff; margin-bottom: 15px; letter-spacing: 2px;">GY-GY INFORMATOR</div>
+                        <p style="font-size: 13px; color: #aaa;">Terminal is restricted.</p>
+                        <button class="btn-office" onclick="triggerBossAuth()">Enter Key</button>
+                    </div>
+                `;
+            }
+        }
+
+        function switchActiveCard(cardId) {
+            activeCardId = cardId;
+            localStorage.setItem('gygy_active_card_id', activeCardId);
+            renderOffice();
+        }
+
+        function updateCardTitle(cardId, newTitle) {
+            const card = functionalCards.find(c => c.id === cardId);
+            if (card) {
+                card.title = newTitle.toUpperCase();
+                saveCardsState();
+                renderOffice();
+            }
+        }
+
+        function openRegistrationZone(cardId) {
+            currentTargetCardId = cardId;
+            const overlay = document.getElementById('registration-overlay');
+            const pool = document.getElementById('avatar-pool');
+            if (!overlay || !pool) return;
+
+            pool.innerHTML = '';
+            availableAvatars.forEach(src => {
+                const div = document.createElement('div');
+                div.className = 'pool-item';
+                div.innerHTML = `<img src="${src}">`;
+                div.onclick = () => selectAvatarToCard(src);
+                pool.appendChild(div);
+            });
+
+            overlay.style.display = 'flex';
+        }
+
+        function closeRegistrationZone() {
+            const overlay = document.getElementById('registration-overlay');
+            if (overlay) overlay.style.display = 'none';
+            currentTargetCardId = null;
+        }
+
+        function selectAvatarToCard(imgSrc) {
+            if (!currentTargetCardId) return;
+            const card = functionalCards.find(c => c.id === currentTargetCardId);
+            
+            if (card && !card.staff.includes(imgSrc)) {
+                card.staff.push(imgSrc);
+                saveCardsState();
+                renderOffice();
+            }
+            closeRegistrationZone();
+        }
+
+        function removeStaff(cardId, index) {
+            const card = functionalCards.find(c => c.id === cardId);
+            if (card) {
+                card.staff.splice(index, 1);
+                saveCardsState();
+                renderOffice();
+            }
+        }
+
+        function saveCardsState() {
+            localStorage.setItem('gygy_office_cards', JSON.stringify(functionalCards));
+        }
+
+        function triggerCardChat(cardId) {
+            const card = functionalCards.find(c => c.id === cardId);
+            alert(`[Шлюз шифрования] Подключение к чату узла:\n"${card.title}"`);
+        }
+
+        function triggerBossAuth() {
+            const pass = prompt("Key:");
+            if (pass === "GYGY2026" || pass === "gygy2026") { 
+                localStorage.setItem('gygy_is_boss', 'true'); 
+                renderOffice(); 
+            }
+        }
+        function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
+    </script>
+</body>
+</html>
