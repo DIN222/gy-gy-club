@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.3.0 - CARD INDEX TERMINAL</title>
+    <title>GY-GY Club v5.4.0 - INTERACTIVE CARD INDEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -11,7 +11,7 @@
             --gold: #d4af37; 
             --violet: #8A2BE2; 
             --bg-dark: #000;
-            --card-bg: rgba(15, 15, 15, 0.95);
+            --card-bg: rgba(15, 15, 15, 0.96);
             --border-color: #333;
         }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -66,34 +66,70 @@
             user-select: none;
         }
 
-        /* КАРТОТЕКА (МОБИЛЬНЫЙ СТЕК) */
+        /* КОНТЕЙНЕР КАРТОТЕКИ */
         .workspace-container { 
-            display: flex; flex-direction: column; gap: 16px; 
-            width: 100%; max-width: 600px; margin-top: 5px;
+            display: flex; flex-direction: column; gap: 8px; 
+            width: 100%; max-width: 500px; margin-top: 5px;
         }
 
+        /* БАЗОВАЯ КАРТОЧКА */
         .index-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-left: 4px solid var(--gold);
             border-radius: 6px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: transform 0.2s, border-color 0.2s;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            transition: all 0.25s ease-in-out;
         }
-        .index-card:hover { border-color: var(--gold); }
 
+        /* СВЕРНУТОЕ СОСТОЯНИЕ (Только кликабельный заголовок) */
+        .index-card.collapsed-card {
+            border-left: 3px solid #555;
+            cursor: pointer;
+        }
+        .index-card.collapsed-card:hover { border-left-color: var(--gold); background: rgba(20,20,20,0.95); }
+        
+        .index-card.collapsed-card .card-body,
+        .index-card.collapsed-card .card-footer {
+            display: none !important;
+        }
+
+        /* РАЗВЕРНУТОЕ СОСТОЯНИЕ (Активная карточка) */
+        .index-card.active-card {
+            border-left: 4px solid var(--gold);
+            margin-bottom: 10px;
+        }
+
+        /* ШАПКА КАРТОЧКИ */
         .card-header {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px dashed #444; padding-bottom: 6px;
+            background: rgba(0, 0, 0, 0.4); padding: 10px 12px;
+            border-bottom: 1px dashed #222;
         }
-        .card-title { font-size: 14px; font-weight: bold; color: #fff; letter-spacing: 1px; }
-        .card-number { font-size: 11px; color: #666; }
+        
+        /* ИНПУТ РЕДАКТИРОВАНИЯ НАЗВАНИЯ */
+        .card-title-input {
+            background: transparent; border: none; color: #fff;
+            font-family: inherit; font-size: 13px; font-weight: bold;
+            letter-spacing: 1px; width: 80%; padding: 2px 0;
+        }
+        .card-title-input:focus {
+            color: var(--gold); outline: none; border-bottom: 1px solid var(--gold);
+        }
+        /* Статичный заголовок для свернутых карточек */
+        .card-title-static {
+            font-size: 13px; font-weight: bold; color: #aaa; letter-spacing: 1px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 85%;
+        }
+        .index-card.collapsed-card:hover .card-title-static { color: #fff; }
 
-        /* ЗОНА АВАТАРОВ В КАРТОЧКЕ */
+        .card-number { font-size: 10px; color: #555; font-weight: bold; }
+        .active-card .card-number { color: var(--gold); }
+
+        /* ТЕЛО КАРТОЧКИ */
+        .card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        
+        /* ЗОНА АВАТАРОВ */
         .card-staff-zone {
             display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 36px;
         }
@@ -114,14 +150,12 @@
         .btn-add-trigger {
             width: 34px; height: 34px; border-radius: 50%; border: 1px dashed var(--gold);
             display: flex; align-items: center; justify-content: center; color: var(--gold);
-            font-size: 18px; cursor: pointer; background: rgba(0,0,0,0.3); transition: all 0.2s;
+            font-size: 16px; cursor: pointer; background: rgba(0,0,0,0.3);
         }
-        .btn-add-trigger:hover { background: var(--gold); color: #000; }
 
-        /* НИЖНЯЯ ПАНЕЛЬ КАРТОЧКИ */
-        .card-footer { display: flex; justify-content: flex-end; margin-top: 4px; }
+        .card-footer { display: flex; justify-content: flex-end; padding: 0 12px 12px 12px; }
 
-        /* ОКНО ОНЛАЙН-РЕГИСТРАЦИИ (ЗОНА ВЫБОРА АВАТАРОВ) */
+        /* ОКНО ОНЛАЙН-РЕГИСТРАЦИИ */
         .registration-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000000;
             display: none; align-items: center; justify-content: center; padding: 20px;
@@ -135,15 +169,12 @@
         .avatar-pool {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 20px 0;
         }
-        .pool-item {
-            position: relative; width: 50px; height: 50px; cursor: pointer; transition: transform 0.2s;
-        }
-        .pool-item:hover { transform: scale(1.1); }
+        .pool-item { position: relative; width: 50px; height: 50px; cursor: pointer; }
         .pool-item img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #555; object-fit: cover; }
         .pool-item:hover img { border-color: var(--gold); }
 
-        /* ОБЩИЕ КОМПОНЕНТЫ */
-        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 6px 14px; cursor: pointer; font-family: inherit; font-size: 11px; transition: all 0.2s; border-radius: 3px; }
+        /* КНОПКИ */
+        .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 5px 14px; cursor: pointer; font-family: inherit; font-size: 11px; border-radius: 3px; }
         .btn-office:hover { background: var(--gold); color: #000; }
         .client-box { width: 95%; max-width: 450px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin: 40px auto 0 auto; }
     </style>
@@ -158,7 +189,7 @@
         
         <div class="ui-header-center notranslate">
             <div class="avatar-wrapper" style="width: 46px; height: 46px;">
-                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех" style="width: 100%; height: 100%;" onerror="this.style.display='none';">
+                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех" onerror="this.style.display='none';">
                 <div class="flag-badge" id="main-header-flag">⚓</div>
             </div>
         </div>
@@ -170,12 +201,8 @@
 
     <div id="registration-overlay" class="registration-overlay" onclick="closeRegistrationZone()">
         <div class="registration-zone" onclick="event.stopPropagation()">
-            <div class="reg-zone-title">ЗОНА СИНХРОНИЗАЦИИ // ВЫБОР ЦИФРОВОГО СЛЕДА</div>
-            <div style="font-size: 11px; color: #888;">Выберите аватар для привязки к функциональному узлу</div>
-            
-            <div class="avatar-pool" id="avatar-pool">
-                </div>
-            
+            <div class="reg-zone-title">ЗОНА СИНХРОНИЗАЦИИ // ЦИФРОВОЙ СЛЕД</div>
+            <div class="avatar-pool" id="avatar-pool"></div>
             <button class="btn-office" onclick="closeRegistrationZone()">ЗАКРЫТЬ</button>
         </div>
     </div>
@@ -183,8 +210,11 @@
     <script>
         let myBossFlag = localStorage.getItem('gygy_user_flag') || '⚓'; 
         let currentTargetCardId = null;
+        
+        // Храним ID активной (развернутой) карточки. По умолчанию — первая.
+        let activeCardId = parseInt(localStorage.getItem('gygy_active_card_id')) || 1;
 
-        // Заготовки для 6 функциональных карточек картотеки
+        // Набор из 6 функциональных настраиваемых карточек
         let functionalCards = JSON.parse(localStorage.getItem('gygy_office_cards')) || [
             { id: 1, title: "УПРАВЛЕНИЕ СТАНКАМИ // PRODUCTION", staff: ["avatar.jpg"] },
             { id: 2, title: "КАЛИБРОВКА DTF И ЦВЕТОПЕРЕДАЧА", staff: [] },
@@ -194,21 +224,18 @@
             { id: 6, title: "МОДУЛЯЦИЯ СИНГУЛЯРНОСТИ И ХАОСА", staff: [] }
         ];
 
-        // Обезличенный пул аватаров в зоне регистрации (никаких надписей "сотрудник")
         const availableAvatars = [
-            "avatar.jpg", // Твой аватар
+            "avatar.jpg",
             "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=60", 
             "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=60",
             "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=60"
         ];
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Подгрузка аватара и флага в шапку
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || 'avatar.jpg';
             const imgEl = document.getElementById('header-avatar');
             if (imgEl) imgEl.src = savedAvatar;
 
-            // Если в кэше есть кастомный аватар, добавляем его в начало пула выбора
             if(savedAvatar && !availableAvatars.includes(savedAvatar)) {
                 availableAvatars.unshift(savedAvatar);
             }
@@ -236,39 +263,56 @@
                 let cardsHTML = '';
                 
                 functionalCards.forEach(card => {
-                    let staffAvatarsHTML = '';
-                    card.staff.forEach((src, index) => {
-                        staffAvatarsHTML += `
-                            <div class="assigned-avatar">
-                                <img src="${src}">
-                                <div class="btn-remove-staff" onclick="event.stopPropagation(); removeStaff(${card.id}, ${index})">×</div>
+                    const isActive = card.id === activeCardId;
+                    
+                    if (isActive) {
+                        // Генерация содержимого для активной (развернутой) карточки
+                        let staffAvatarsHTML = '';
+                        card.staff.forEach((src, index) => {
+                            staffAvatarsHTML += `
+                                <div class="assigned-avatar">
+                                    <img src="${src}">
+                                    <div class="btn-remove-staff" onclick="event.stopPropagation(); removeStaff(${card.id}, ${index})">×</div>
+                                </div>
+                            `;
+                        });
+
+                        cardsHTML += `
+                            <div class="index-card active-card notranslate">
+                                <div class="card-header">
+                                    <input type="text" class="card-title-input" value="${card.title}" 
+                                           onchange="updateCardTitle(${card.id}, this.value)" 
+                                           onclick="event.stopPropagation()">
+                                    <div class="card-number">NO. 0${card.id}</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-staff-zone">
+                                        ${staffAvatarsHTML}
+                                        <div class="btn-add-trigger" onclick="openRegistrationZone(${card.id})">+</div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn-office" onclick="triggerCardChat(${card.id})">ЧАТ</button>
+                                </div>
                             </div>
                         `;
-                    });
-
-                    cardsHTML += `
-                        <div class="index-card notranslate">
-                            <div class="card-header">
-                                <div class="card-title">${card.title}</div>
-                                <div class="card-number">CARD NO. 0${card.id}</div>
+                    } else {
+                        // Генерация свернутой карточки (только кликабельная плашка-название)
+                        cardsHTML += `
+                            <div class="index-card collapsed-card notranslate" onclick="switchActiveCard(${card.id})">
+                                <div class="card-header">
+                                    <div class="card-title-static">${card.title}</div>
+                                    <div class="card-number">NO. 0${card.id}</div>
+                                </div>
                             </div>
-                            
-                            <div class="card-staff-zone">
-                                ${staffAvatarsHTML}
-                                <div class="btn-add-trigger" title="Зайти в зону регистрации" onclick="openRegistrationZone(${card.id})">+</div>
-                            </div>
-                            
-                            <div class="card-footer">
-                                <button class="btn-office" onclick="triggerCardChat(${card.id})">ЧАТ</button>
-                            </div>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
 
                 root.innerHTML = `
                     <div class="workspace-container">
                         ${cardsHTML}
-                        <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin: 15px auto 0 auto; font-size:10px; display:block;" onclick="exitBossMode()">Log Out Terminal</button>
+                        <button class="btn-office" style="border-color:#ff3333; color:#ff3333; margin: 20px auto 0 auto; font-size:10px; display:block;" onclick="exitBossMode()">Log Out Terminal</button>
                     </div>
                 `;
             } else {
@@ -282,7 +326,24 @@
             }
         }
 
-        // РАБОТА С ЗОНОЙ РЕГИСТРАЦИИ (ВЫБОР АВАТАРОВ)
+        // Переключение активной карточки местами
+        function switchActiveCard(cardId) {
+            activeCardId = cardId;
+            localStorage.setItem('gygy_active_card_id', activeCardId);
+            renderOffice();
+        }
+
+        // Функция изменения названия карточки «на лету»
+        function updateCardTitle(cardId, newTitle) {
+            const card = functionalCards.find(c => c.id === cardId);
+            if (card) {
+                card.title = newTitle.toUpperCase();
+                saveCardsState();
+                renderOffice();
+            }
+        }
+
+        // ЗОНА ОНЛАЙН-РЕГИСТРАЦИИ АВАТАРОВ
         function openRegistrationZone(cardId) {
             currentTargetCardId = cardId;
             const overlay = document.getElementById('registration-overlay');
@@ -293,7 +354,7 @@
             availableAvatars.forEach(src => {
                 const div = document.createElement('div');
                 div.className = 'pool-item';
-                div.innerHTML = `<img src="${src}">`;
+                div.innerHTML = `<img src="${src}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
                 div.onclick = () => selectAvatarToCard(src);
                 pool.appendChild(div);
             });
