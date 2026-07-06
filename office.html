@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.2.2 - MODERMECH TERMINAL</title>
+    <title>GY-GY Club v5.2.3 - MODERMECH TERMINAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -50,11 +50,12 @@
             box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
         }
         
+        /* Исправленный контейнер флага для идеальной посадки картинки */
         .flag-badge { 
-            position: absolute; bottom: -2px; right: -2px; font-size: 11px; 
-            background: #000; border-radius: 50%; width: 16px; height: 16px; 
+            position: absolute !important; bottom: -2px !important; right: -2px !important; font-size: 11px; 
+            background: #000; border-radius: 2px; width: 18px !important; height: 13px !important; 
             display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); 
-            z-index: 10; line-height: 1; pointer-events: none;
+            z-index: 10; line-height: 1; pointer-events: none; overflow: hidden; padding: 0;
         }
 
         .ui-header-right { 
@@ -120,7 +121,7 @@
         
         <div class="ui-header-center notranslate">
             <div class="avatar-wrapper" style="width: 46px; height: 46px;">
-                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех" style="width: 100%; height: 100%; onerror: this.style.display='none';">
+                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех" style="width: 100%; height: 100%;" onerror="this.style.display='none';">
                 <div class="flag-badge" id="main-header-flag">⚓</div>
             </div>
         </div>
@@ -162,13 +163,22 @@
         ];
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Обновляем иконку в шапке, если она записана
-            const savedAvatar = localStorage.getItem('gygy_avatar') || 'avatar.jpg';
+            // 1. Сквозная подгрузка аватара из хранилища Клуба
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || 'avatar.jpg';
             const imgEl = document.getElementById('header-avatar');
             if (imgEl) imgEl.src = savedAvatar;
 
+            // 2. Умная обработка флага: emoji-якорь или полноценный графический флаг страны
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag');
             const flagEl = document.getElementById('main-header-flag');
-            if (flagEl) flagEl.innerText = myBossFlag;
+            
+            if (flagEl) {
+                if (savedFlag && savedFlag !== '⚓') {
+                    flagEl.innerHTML = `<img src="https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png" style="width:100%; height:100%; object-fit:cover; display:block;">`;
+                } else {
+                    flagEl.innerText = myBossFlag;
+                }
+            }
 
             renderOffice();
         });
@@ -312,37 +322,5 @@
         }
         function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
     </script>
-    <script type="text/javascript">
-(function syncOfficePassport() {
-    console.log("[GY-GY] Синхронизация кабинета МодерМеха...");
-    
-    // 1. Вытягиваем данные из хранилища Клуба
-    const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
-    const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag');
-
-    // 2. Обновляем аватарку, если она сохранена в кэше
-    if (savedAvatar) {
-        const headerAvatar = document.getElementById('header-avatar');
-        if (headerAvatar) {
-            headerAvatar.src = savedAvatar;
-        }
-    }
-
-    // 3. Превращаем текстовый якорь в динамический флаг страны
-    if (savedFlag) {
-        const flagBadge = document.getElementById('main-header-flag');
-        if (flagBadge) {
-            // Очищаем якорь и вставляем темплейт флага
-            flagBadge.innerHTML = `<img src="https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png" 
-                                        style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 2px;">`;
-            // Убираем лишние текстовые стили, если они мешают картинке
-            flagBadge.style.display = 'block';
-            flagBadge.style.lineHeight = '1';
-            flagBadge.style.padding = '0';
-            flagBadge.style.overflow = 'hidden';
-        }
-    }
-})();
-</script>
 </body>
 </html>
