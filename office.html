@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.4.0 - INTERACTIVE CARD INDEX</title>
+    <title>GY-GY Club v5.4.1 - FIXED INTERACTIVE CARD INDEX</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -19,6 +19,7 @@
         html, body { 
             width: 100%; height: 100%; background: var(--bg-dark); color: var(--gold); 
             font-family: 'Share Tech Mono', monospace; margin: 0; padding: 0;
+            overflow-x: hidden;
         }
 
         .office-page {
@@ -27,41 +28,51 @@
             min-height: 100vh;
             background: url('office_bg.jpg') center/cover no-repeat #000;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding: 80px 10px 30px 10px; z-index: 10;
+            padding: 85px 12px 30px 12px; z-index: 10;
+            overflow-x: hidden;
         }
 
-        /* НАВИГАЦИЯ */
+        /* НАВИГАЦИЯ (ФИКС СДВИГА) */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 15px; z-index: 1000000; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px; 
+            display: flex; gap: 20px; font-size: 24px; font-weight: 900 !important; 
+            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -1px; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
         .ui-nav-arrows a { text-decoration: none; color: var(--gold); }
         
+        /* ЖЕСТКИЙ ЦЕНТРИРОВАННЫЙ КОНТЕЙНЕР ДЛЯ ШАПКИ */
         .ui-header-center {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
             display: flex; align-items: center; justify-content: center; user-select: none;
+            width: 50px; height: 50px;
         }
         
-        .avatar-wrapper { position: relative; display: inline-block; flex-shrink: 0; }
+        /* КУПИРОВАНИЕ РАЗМЕРОВ АВАТАРА */
+        .avatar-wrapper { 
+            position: relative; 
+            width: 44px !important; height: 44px !important; 
+            flex-shrink: 0 !important; 
+        }
         .user-avatar {
+            width: 44px !important; height: 44px !important;
             border-radius: 50%; border: 2px solid var(--violet);
-            object-fit: cover; display: block;
+            object-fit: cover !important; display: block;
             box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+            flex-shrink: 0 !important;
         }
         
         .flag-badge { 
             position: absolute !important; bottom: -2px !important; right: -2px !important; font-size: 11px; 
             background: #000; border-radius: 2px; width: 18px !important; height: 13px !important; 
             display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); 
-            z-index: 10; line-height: 1; pointer-events: none; overflow: hidden; padding: 0;
+            z-index: 100; line-height: 1; pointer-events: none; overflow: hidden; padding: 0;
         }
 
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            font-size: 24px; letter-spacing: 3px; font-weight: bold; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
@@ -69,7 +80,7 @@
         /* КОНТЕЙНЕР КАРТОТЕКИ */
         .workspace-container { 
             display: flex; flex-direction: column; gap: 8px; 
-            width: 100%; max-width: 500px; margin-top: 5px;
+            width: 100%; max-width: 480px; margin-top: 5px;
         }
 
         /* БАЗОВАЯ КАРТОЧКА */
@@ -79,10 +90,11 @@
             border-radius: 6px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            transition: all 0.25s ease-in-out;
+            transition: all 0.2s ease-in-out;
+            width: 100%;
         }
 
-        /* СВЕРНУТОЕ СОСТОЯНИЕ (Только кликабельный заголовок) */
+        /* СВЕРНУТОЕ СОСТОЯНИЕ */
         .index-card.collapsed-card {
             border-left: 3px solid #555;
             cursor: pointer;
@@ -94,10 +106,10 @@
             display: none !important;
         }
 
-        /* РАЗВЕРНУТОЕ СОСТОЯНИЕ (Активная карточка) */
+        /* РАЗВЕРНУТОЕ СОСТОЯНИЕ */
         .index-card.active-card {
             border-left: 4px solid var(--gold);
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         /* ШАПКА КАРТОЧКИ */
@@ -105,52 +117,56 @@
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(0, 0, 0, 0.4); padding: 10px 12px;
             border-bottom: 1px dashed #222;
+            gap: 10px;
         }
         
         /* ИНПУТ РЕДАКТИРОВАНИЯ НАЗВАНИЯ */
         .card-title-input {
             background: transparent; border: none; color: #fff;
             font-family: inherit; font-size: 13px; font-weight: bold;
-            letter-spacing: 1px; width: 80%; padding: 2px 0;
+            letter-spacing: 1px; flex: 1; padding: 2px 0;
+            min-width: 0;
         }
         .card-title-input:focus {
             color: var(--gold); outline: none; border-bottom: 1px solid var(--gold);
         }
-        /* Статичный заголовок для свернутых карточек */
+
+        /* СТАТИЧНЫЙ ЗАГЛОВАК СВЕРНУТЫХ КАРТОЧКЕК */
         .card-title-static {
             font-size: 13px; font-weight: bold; color: #aaa; letter-spacing: 1px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 85%;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+            min-width: 0;
         }
         .index-card.collapsed-card:hover .card-title-static { color: #fff; }
 
-        .card-number { font-size: 10px; color: #555; font-weight: bold; }
+        .card-number { font-size: 10px; color: #555; font-weight: bold; flex-shrink: 0; }
         .active-card .card-number { color: var(--gold); }
 
         /* ТЕЛО КАРТОЧКИ */
         .card-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
         
-        /* ЗОНА АВАТАРОВ */
+        /* ЗОНА ВНУТРЕННИХ АВАТАРОВ */
         .card-staff-zone {
             display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 36px;
         }
         
         .assigned-avatar {
-            position: relative; width: 34px; height: 34px;
+            position: relative; width: 34px !important; height: 34px !important; flex-shrink: 0;
         }
         .assigned-avatar img {
-            width: 100%; height: 100%; border-radius: 50%; border: 1px solid var(--violet); object-fit: cover;
+            width: 34px !important; height: 34px !important; border-radius: 50%; border: 1px solid var(--violet); object-fit: cover; display: block;
         }
         .btn-remove-staff {
             position: absolute; top: -4px; right: -4px; width: 14px; height: 14px;
             background: #ff3333; color: #fff; border-radius: 50%; font-size: 10px;
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            border: 1px solid #000; font-weight: bold;
+            border: 1px solid #000; font-weight: bold; z-index: 5;
         }
 
         .btn-add-trigger {
             width: 34px; height: 34px; border-radius: 50%; border: 1px dashed var(--gold);
             display: flex; align-items: center; justify-content: center; color: var(--gold);
-            font-size: 16px; cursor: pointer; background: rgba(0,0,0,0.3);
+            font-size: 16px; cursor: pointer; background: rgba(0,0,0,0.3); flex-shrink: 0;
         }
 
         .card-footer { display: flex; justify-content: flex-end; padding: 0 12px 12px 12px; }
@@ -164,41 +180,46 @@
             background: #111; border: 2px solid var(--gold); border-radius: 6px;
             width: 100%; max-width: 400px; padding: 20px; text-align: center;
         }
-        .reg-zone-title { font-size: 14px; color: #fff; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        .reg-zone-title { font-size: 13px; color: #fff; margin-bottom: 15px; letter-spacing: 1px; border-bottom: 1px solid #333; padding-bottom: 8px; }
         
         .avatar-pool {
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 20px 0;
         }
-        .pool-item { position: relative; width: 50px; height: 50px; cursor: pointer; }
-        .pool-item img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #555; object-fit: cover; }
+        .pool-item { position: relative; width: 46px !important; height: 46px !important; flex-shrink: 0; }
+        .pool-item img { width: 46px !important; height: 46px !important; border-radius: 50%; border: 2px solid #555; object-fit: cover; display: block; }
         .pool-item:hover img { border-color: var(--gold); }
 
         /* КНОПКИ */
         .btn-office { background: #111; border: 1px solid var(--gold); color: var(--gold); padding: 5px 14px; cursor: pointer; font-family: inherit; font-size: 11px; border-radius: 3px; }
         .btn-office:hover { background: var(--gold); color: #000; }
-        .client-box { width: 95%; max-width: 450px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin: 40px auto 0 auto; }
+        .client-box { width: 95%; max-width: 400px; background: var(--card-bg); border: 2px solid var(--gold); padding: 25px; border-radius: 4px; text-align: center; margin: 40px auto 0 auto; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="office-page">
+        <!-- НАВИГАЦИЯ -->
         <div class="notranslate ui-nav-arrows">
             <a href="index.html">&lt;</a>
             <a href="index.html">&lt;&lt;</a>
         </div>
         
+        <!-- СТРОГИЙ БАДЖ ЮЗЕРА (ФИКС) -->
         <div class="ui-header-center notranslate">
-            <div class="avatar-wrapper" style="width: 46px; height: 46px;">
-                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех" onerror="this.style.display='none';">
+            <div class="avatar-wrapper">
+                <img id="header-avatar" class="user-avatar" src="avatar.jpg" alt="МодерМех">
                 <div class="flag-badge" id="main-header-flag">⚓</div>
             </div>
         </div>
         
+        <!-- ЛОГО -->
         <div class="ui-header-right notranslate">GY-GY</div>
         
+        <!-- ТЕРМИНАЛ КАРТОТЕКИ -->
         <div id="office-dynamic-root" style="width: 100%; display: flex; justify-content: center;"></div>
     </div>
 
+    <!-- СКРЫТАЯ ЗОНА РЕГИСТРАЦИИ -->
     <div id="registration-overlay" class="registration-overlay" onclick="closeRegistrationZone()">
         <div class="registration-zone" onclick="event.stopPropagation()">
             <div class="reg-zone-title">ЗОНА СИНХРОНИЗАЦИИ // ЦИФРОВОЙ СЛЕД</div>
@@ -210,11 +231,8 @@
     <script>
         let myBossFlag = localStorage.getItem('gygy_user_flag') || '⚓'; 
         let currentTargetCardId = null;
-        
-        // Храним ID активной (развернутой) карточки. По умолчанию — первая.
         let activeCardId = parseInt(localStorage.getItem('gygy_active_card_id')) || 1;
 
-        // Набор из 6 функциональных настраиваемых карточек
         let functionalCards = JSON.parse(localStorage.getItem('gygy_office_cards')) || [
             { id: 1, title: "УПРАВЛЕНИЕ СТАНКАМИ // PRODUCTION", staff: ["avatar.jpg"] },
             { id: 2, title: "КАЛИБРОВКА DTF И ЦВЕТОПЕРЕДАЧА", staff: [] },
@@ -232,9 +250,19 @@
         ];
 
         document.addEventListener("DOMContentLoaded", function() {
-            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || 'avatar.jpg';
+            let savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
             const imgEl = document.getElementById('header-avatar');
-            if (imgEl) imgEl.src = savedAvatar;
+            
+            if (imgEl) {
+                if (savedAvatar) {
+                    imgEl.src = savedAvatar;
+                } else {
+                    imgEl.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60";
+                }
+                imgEl.onerror = function() {
+                    this.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=60";
+                };
+            }
 
             if(savedAvatar && !availableAvatars.includes(savedAvatar)) {
                 availableAvatars.unshift(savedAvatar);
@@ -266,7 +294,6 @@
                     const isActive = card.id === activeCardId;
                     
                     if (isActive) {
-                        // Генерация содержимого для активной (развернутой) карточки
                         let staffAvatarsHTML = '';
                         card.staff.forEach((src, index) => {
                             staffAvatarsHTML += `
@@ -297,7 +324,6 @@
                             </div>
                         `;
                     } else {
-                        // Генерация свернутой карточки (только кликабельная плашка-название)
                         cardsHTML += `
                             <div class="index-card collapsed-card notranslate" onclick="switchActiveCard(${card.id})">
                                 <div class="card-header">
@@ -326,14 +352,12 @@
             }
         }
 
-        // Переключение активной карточки местами
         function switchActiveCard(cardId) {
             activeCardId = cardId;
             localStorage.setItem('gygy_active_card_id', activeCardId);
             renderOffice();
         }
 
-        // Функция изменения названия карточки «на лету»
         function updateCardTitle(cardId, newTitle) {
             const card = functionalCards.find(c => c.id === cardId);
             if (card) {
@@ -343,7 +367,6 @@
             }
         }
 
-        // ЗОНА ОНЛАЙН-РЕГИСТРАЦИИ АВАТАРОВ
         function openRegistrationZone(cardId) {
             currentTargetCardId = cardId;
             const overlay = document.getElementById('registration-overlay');
@@ -354,7 +377,7 @@
             availableAvatars.forEach(src => {
                 const div = document.createElement('div');
                 div.className = 'pool-item';
-                div.innerHTML = `<img src="${src}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                div.innerHTML = `<img src="${src}">`;
                 div.onclick = () => selectAvatarToCard(src);
                 pool.appendChild(div);
             });
