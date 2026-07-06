@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.2.1 - MODERMECH TERMINAL</title>
+    <title>GY-GY Club v5.2.2 - MODERMECH TERMINAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -312,5 +312,37 @@
         }
         function exitBossMode() { localStorage.setItem('gygy_is_boss', 'false'); renderOffice(); }
     </script>
+    <script type="text/javascript">
+(function syncOfficePassport() {
+    console.log("[GY-GY] Синхронизация кабинета МодерМеха...");
+    
+    // 1. Вытягиваем данные из хранилища Клуба
+    const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
+    const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag');
+
+    // 2. Обновляем аватарку, если она сохранена в кэше
+    if (savedAvatar) {
+        const headerAvatar = document.getElementById('header-avatar');
+        if (headerAvatar) {
+            headerAvatar.src = savedAvatar;
+        }
+    }
+
+    // 3. Превращаем текстовый якорь в динамический флаг страны
+    if (savedFlag) {
+        const flagBadge = document.getElementById('main-header-flag');
+        if (flagBadge) {
+            // Очищаем якорь и вставляем темплейт флага
+            flagBadge.innerHTML = `<img src="https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png" 
+                                        style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 2px;">`;
+            // Убираем лишние текстовые стили, если они мешают картинке
+            flagBadge.style.display = 'block';
+            flagBadge.style.lineHeight = '1';
+            flagBadge.style.padding = '0';
+            flagBadge.style.overflow = 'hidden';
+        }
+    }
+})();
+</script>
 </body>
 </html>
