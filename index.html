@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.15 CORE</title>
+    <title>GY-GY Club v4.5.30.16 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-  <style>
     <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
@@ -485,7 +484,6 @@ body:has(#block-entrance.active) #lang-switcher {
     }
 
     function checkAndFillRegistrationForm() {
-        // Подтягиваем сохраненный аватар (если юзер загружал свой) или берем обновленный дефолтный из репозитория
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
@@ -541,7 +539,14 @@ body:has(#block-entrance.active) #lang-switcher {
                 if (badge) badge.style.display = 'block';
             }
         }
-    }
+
+        const activeBlock = document.querySelector('.block.active');
+        const langSwitcher = document.getElementById('lang-switcher');
+        if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
+            langSwitcher.style.display = 'flex';
+            langSwitcher.style.opacity = '1';
+        }
+    } 
 
     function enterStudio() {
         window.location.href = 'studio.html';
@@ -568,15 +573,6 @@ body:has(#block-entrance.active) #lang-switcher {
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
 
-        if (nextId === 'block-entrance') {
-            const mainDoor = document.getElementById('main-door');
-            if (mainDoor) mainDoor.classList.remove('door-exploded');
-            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
-            if (badge) badge.style.display = 'none';
-        } else {
-            if (badge && currentUserImage) badge.style.display = 'block';
-        }
-
         document.querySelectorAll('.block').forEach(b => {
             b.classList.remove('active');
             b.style.display = 'none';
@@ -584,6 +580,16 @@ body:has(#block-entrance.active) #lang-switcher {
 
         targetBlock.style.display = 'flex';
         
+        if (nextId === 'block-entrance') {
+            const mainDoor = document.getElementById('main-door');
+            if (mainDoor) mainDoor.classList.remove('door-exploded');
+            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
+            if (badge) badge.style.display = 'none';
+        } else {
+            if (badge && currentUserImage) badge.style.display = 'block';
+            if (langSwitcher) { langSwitcher.style.display = 'none'; }
+        }
+
         setTimeout(() => {
             targetBlock.classList.add('active');
             const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
@@ -622,16 +628,9 @@ body:has(#block-entrance.active) #lang-switcher {
         }
     }
 
-    // ОБНОВЛЕННАЯ ГЕНЕРАЦИЯ ЦИФРОВОГО СЛЕДА АВАТАРА
     function generateAvatar() {
-        // Рандомим цвет бэкграунда, но сохраняем премиальный темный/золотой баланс
         const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        // Твой новый оптимизированный SVG-каркас (без лишнего шума пикселей)
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
-        
-        // Если у тебя в корне лежит статичный файл (например, avatar.png), можно раскомментировать строку ниже:
-        // currentUserImage = 'avatar.png';
-        
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
         
         const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
@@ -682,6 +681,13 @@ body:has(#block-entrance.active) #lang-switcher {
 
         checkAndFillRegistrationForm();
         renderLangList();
+
+        const activeBlock = document.querySelector('.block.active');
+        const langSwitcher = document.getElementById('lang-switcher');
+        if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
+            langSwitcher.style.display = 'flex';
+            langSwitcher.style.opacity = '1';
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const targetBlock = urlParams.get('go'); 
