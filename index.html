@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.17 CORE</title>
+    <title>GY-GY Club v4.5.30.18 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; margin: 0; padding: 0; }
         body, button, input, div, img, span { pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; }
 
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        /* ==================================================== */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ (LEFT) & ЛОГОТИП (RIGHT)            */
+        /* ==================================================== */
         .lang-frame-locked {
             position: fixed; top: 15px; left: 15px; z-index: 9999999; 
             width: 180px; height: 40px; border: 2px solid var(--gold); 
@@ -31,25 +33,29 @@
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed !important; top: 18px !important; right: 25px !important; z-index: 1000000 !important; 
             font-size: 24px !important; letter-spacing: 3px !important; font-weight: bold !important; user-select: none !important;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
-        /* СКВОЗНОЙ АВАТАР */
+        /* ==================================================== */
+        /* ПРЕМИАЛЬНЫЙ СКВОЗНОЙ АВАТАР (БЕЗ ФИОЛЕТОВОГО КОЛЬЦА) */
+        /* ==================================================== */
         .ui-user-badge {
             position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
-            border: 2px solid var(--violet, #8A2BE2) !important; background: #111;
-            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5) !important; z-index: 1000000 !important; cursor: pointer; display: none;
+            border: 2px solid var(--gold) !important; background: transparent !important; /* Выжгли фиолетовый и черный фон */
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important; z-index: 1000000 !important; cursor: pointer; display: none;
         }
-        .ui-user-badge .badge-img { width: 44px !important; height: 44px !important; border-radius: 50% !important; object-fit: cover !important; flex-shrink: 0 !important; display: block !important; background-color: #fff; }
+        .ui-user-badge .badge-img { 
+            width: 100% !important; height: 100% !important; border-radius: 50% !important; object-fit: cover !important; 
+            flex-shrink: 0 !important; display: block !important; background: transparent !important; border: none !important;
+        }
         .ui-user-badge .badge-flag {
             position: absolute !important; bottom: -2px !important; right: -2px !important;
             width: 18px !important; height: 13px !important; object-fit: cover !important;
-            border: 1px solid var(--gold, #d4af37) !important; border-radius: 2px !important; z-index: 1000002 !important; display: block !important; background: #000 !important;
+            border: 1px solid var(--gold) !important; border-radius: 2px !important; z-index: 1000002 !important; display: block !important; background: #000 !important;
         }
 
         /* ПАСПОРТ */
@@ -58,7 +64,7 @@
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
 
-        /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ СТРАНИЦ */
+        /* ИЗОЛЯЦИЯ И СИНХРОНИЗАЦИЯ БЛОКОВ СТРАНИЦ */
         .block { 
             position: fixed; 
             inset: 0; 
@@ -77,22 +83,23 @@
             z-index: 5000 !important; 
         }
 
-        /* ФИКС СЛОГАНА (ВЫРАВНИВАНИЕ И ИЗОЛЯЦИЯ) */
+        /* ФИКС СЛОГАНА (ИДЕАЛЬНЫЙ ЦЕНТР) */
         .quote-text { 
             font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; 
             text-align: center !important; width: 100% !important; max-width: 90vw !important; margin: 10px auto 30px auto !important; 
-            text-shadow: 2px 2px 4px #000; display: block !important;
+            text-shadow: 2px 2px 4px #000; display: block !important; color: var(--gold);
         }
         
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
+        .btn-gy:hover { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         body { top: 0 !important; }
-        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
-        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
-        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
+        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; align-items: center !important; }
+        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; text-align: center !important; }
+        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin: 0 auto 2vh auto !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); display: block; }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
@@ -107,29 +114,28 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
-        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+        /* ==================================================== */
+        /* ХОЛЛ И КОРРЕКТИРОВКА НАДПИСЕЙ ПО ЦЕНТРУ              */
+        /* ==================================================== */
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; align-items: center !important; justify-content: center !important; }
+        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .hall-interior .quote-text { 
-            position: absolute; 
-            top: 8vh; 
-            left: 50%; 
-            transform: translateX(-50%) translateZ(0); /* Включаем GPU-ускорение */
-            width: 85%; 
-            margin: 0; 
-            text-align: center;
-            padding: 0;
+            position: absolute !important; 
+            top: 8vh !important; 
+            left: 50% !important; 
+            transform: translateX(-50%) translateZ(0) !important; /* Идеальное центрирование без ухода вправо */
+            width: 85% !important; 
+            margin: 0 auto !important; 
+            text-align: center !important;
+            padding: 0 !important;
             background: transparent !important;
             color: var(--gold) !important;       
             font-size: 28px;
             font-weight: 700;
             
-            /* Защита для Safari и мобильных от мерцания */
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-
-            /* Вместо text-shadow делаем drop-shadow. Он ложится поверх любых тегов <font> */
             filter: drop-shadow(0 0 8px rgba(15, 15, 15, 1))
                     drop-shadow(0 0 15px rgba(10, 10, 10, 1))
                     drop-shadow(0 0 30px rgba(0, 0, 0, 1));
@@ -141,7 +147,6 @@
             background: transparent;
         }
 
-        /* Интерактивные зоны стрелок в Холле */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -170,7 +175,6 @@
         }
         .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
 
-        /* Выплывающие подменю для стрелок Холла */
         .manifest-btn-box { 
             position: absolute; 
             bottom: -50px; 
@@ -186,7 +190,7 @@
         }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
-        /* Защита от сдвигов перевода Google */
+        /* ЗАЩИТА ОТ СДВИГОВ И ПЕРЕВОДЧИКА GOOGLE */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
@@ -200,22 +204,19 @@
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
-        /* Возвращаем дымку, если Google Translate обернул буквы Холла в теги font */
         .hall-interior .quote-text font {
             text-shadow: none !important; 
             color: var(--gold) !important;
         }
         #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
       
-      /* ПРИНУДИТЕЛЬНО ПОКАЗЫВАТЬ ЯЗЫКОВОЙ БЛОК НА СТРАНИЦЕ ВХОДА (У ДВЕРИ) */
-body:has(#block-entrance.active) #lang-switcher {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-}
+        body:has(#block-entrance.active) #lang-switcher {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
         
-        /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
         #main-door {
             display: block;
             height: calc(50vh + 20px);
@@ -232,9 +233,7 @@ body:has(#block-entrance.active) #lang-switcher {
             opacity: 0 !important;
         }
 
-        /* ==================================================== */
-        /* ИНЖЕНЕРНЫЙ ФИЛЬТР БЕЛОГО ШУМА И АРТЕФАКТОВ РЕНДЕРИНГА */
-        /* ==================================================== */
+        /* АНТИБЛИК И СГЛАЖИВАНИЕ */
         .hall-interior .quote-text, 
         .ui-user-badge, 
         #id-label, 
