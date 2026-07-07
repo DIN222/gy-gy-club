@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.13 CORE</title>
+    <title>GY-GY Club v4.5.30.14 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
   <style>
+    <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -33,24 +34,23 @@
 
         /* ЛОГОТИП GY-GY */
         .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            position: fixed !important; top: 18px !important; right: 25px !important; z-index: 1000000 !important; 
+            font-size: 24px !important; letter-spacing: 3px !important; font-weight: bold !important; user-select: none !important;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer; display: none;
+            position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
+            width: 50px !important; height: 50px !important; border-radius: 50% !important;
+            border: 2px solid var(--violet, #8A2BE2) !important; background: #111;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5) !important; z-index: 1000000 !important; cursor: pointer; display: none;
         }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
+        .ui-user-badge .badge-img { width: 44px !important; height: 44px !important; border-radius: 50% !important; object-fit: cover !important; flex-shrink: 0 !important; display: block !important; background-color: #fff; }
         .ui-user-badge .badge-flag {
-            position: absolute; bottom: -2px; right: -4px;
-            width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+            position: absolute !important; bottom: -2px !important; right: -2px !important;
+            width: 18px !important; height: 13px !important; object-fit: cover !important;
+            border: 1px solid var(--gold, #d4af37) !important; border-radius: 2px !important; z-index: 1000002 !important; display: block !important; background: #000 !important;
         }
 
         /* ПАСПОРТ */
@@ -78,7 +78,13 @@
             z-index: 5000 !important; 
         }
 
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+        /* ФИКС СЛОГАНА (ВЫРАВНИВАНИЕ И ИЗОЛЯЦИЯ) */
+        .quote-text { 
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; 
+            text-align: center !important; width: 100% !important; max-width: 90vw !important; margin: 10px auto 30px auto !important; 
+            text-shadow: 2px 2px 4px #000; display: block !important;
+        }
+        
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
@@ -241,73 +247,7 @@
             filter: none !important;
             -webkit-font-smoothing: antialiased;
         }
-        /* ==================================================== */
     </style>
-    /* Жесткая стабилизация бейджа юзера на главной */
-    .ui-user-badge {
-        position: fixed !important;
-        top: 12px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        z-index: 1000000 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 50px !important;
-        height: 50px !important;
-    }
-
-    /* Защита от раздувания картинки аватара */
-    .badge-img {
-        width: 44px !important;
-        height: 44px !important;
-        border-radius: 50% !important;
-        border: 2px solid var(--violet, #8A2BE2) !important;
-        object-fit: cover !important;
-        flex-shrink: 0 !important;
-        display: block !important;
-        box-shadow: 0 0 10px rgba(138, 43, 226, 0.5) !important;
-    }
-
-    /* Флаг на аватарке */
-    .badge-flag {
-        position: absolute !important;
-        bottom: -2px !important;
-        right: -2px !important;
-        width: 18px !important;
-        height: 13px !important;
-        border: 1px solid var(--gold, #d4af37) !important;
-        border-radius: 2px !important;
-        object-fit: cover !important;
-        z-index: 1000002 !important;
-        display: block !important;
-        background: #000 !important;
-    }
-
-    /* Фикс логотипа GY-GY */
-    .ui-header-right {
-        position: fixed !important;
-        top: 18px !important;
-        right: 25px !important;
-        z-index: 1000000 !important;
-        font-size: 24px !important;
-        letter-spacing: 3px !important;
-        font-weight: bold !important;
-        user-select: none !important;
-    }
-
-    /* ФИКС СЛОГАНА (ВЫРАВНИВАНИЕ И ИЗОЛЯЦИЯ) */
-    .quote-text {
-        width: 100% !important;
-        max-width: 90vw !important;
-        text-align: center !important;
-        margin: 10px auto !important;
-        font-family: 'Share Tech Mono', monospace !important;
-        color: var(--gold) !important;
-        letter-spacing: 1px !important;
-        display: block !important;
-    }
-</style>
 </head>
 <body oncontextmenu="return false;">
 
