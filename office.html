@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office 004 </title>
+    <title>GY-GY Club - Office 005 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -29,58 +29,75 @@
             margin: 0; 
         }
 
-        /* КОМПАКТНАЯ ВЕРХНЯЯ ЛИНЕЙКА УПРАВЛЕНИЯ */
-        .office-top-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 90vw;
-            max-width: 500px;
-            margin: 2vh auto 1.5vh auto;
-            z-index: 100000;
+        /* ==================================================== */
+        /* СТАНДАРТНАЯ ВЕРХНЯЯ ПАНЕЛЬ (СТРЕЛКИ | АВАТАР | ЛОГО)  */
+        /* ==================================================== */
+        .office-top-bar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px; background: #000; z-index: 1000000;
         }
 
-        .ui-back-btn {
-            font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: all 0.3s;
+        /* Слева: Стрелки */
+        .ui-nav-arrows {
+            display: flex; gap: 20px; font-size: 26px; font-weight: 900; cursor: pointer; user-select: none;
         }
-        .ui-back-btn:hover { text-shadow: 0 0 8px var(--gold); }
+        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
 
+        /* Центр: Премиальный аватар */
+        .ui-user-badge {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            width: 48px; height: 48px; border-radius: 50%;
+            border: 2px solid var(--gold); background: transparent;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35); cursor: pointer;
+        }
+        .ui-user-badge .badge-img { 
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; 
+        }
+        .ui-user-badge .badge-flag {
+            position: absolute; bottom: -2px; right: -2px;
+            width: 18px; height: 13px; object-fit: cover;
+            border: 1px solid var(--gold); border-radius: 2px; background: #000;
+        }
+
+        /* Справа: Логотип */
         .ui-header-right { 
-            font-size: 22px; letter-spacing: 2px; font-weight: bold; user-select: none;
+            font-size: 24px; letter-spacing: 3px; font-weight: bold; user-select: none;
         }
 
-        /* ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ КОМНАТ (ТАБЫ 1-6) */
-        .office-tabs-panel { 
-            display: flex; 
-            gap: 8px; 
+        /* ==================================================== */
+        /* ОСНОВНОЙ КОНТЕЙНЕР ОФИСА                             */
+        /* ==================================================== */
+        .office-chats-container { 
+            width: 90vw; max-width: 500px; height: 82vh; 
+            border: 2px solid var(--gold); background: rgba(0, 0, 0, 0.9); 
+            margin: 90px auto 0 auto; position: relative; box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); 
         }
         
+        .office-chat-page { position: absolute; inset: 0; display: none; flex-direction: column; padding: 15px; }
+        .office-chat-page.active { display: flex !important; }
+
+        /* ВНУТРЕННЯЯ ПАНЕЛЬ НОМЕРОВ (ТАБЫ 1-6 ВНУТРИ РАМКИ) */
+        .office-internal-tabs {
+            display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; border-bottom: 1px solid rgba(214, 175, 55, 0.3); padding-bottom: 12px;
+        }
         .tab-num {
-            width: 36px; height: 36px; border: 2px solid var(--gold); background: #000; color: var(--gold);
-            font-family: 'Share Tech Mono', monospace; font-size: 16px; font-weight: 900; cursor: pointer;
+            flex-grow: 1; height: 34px; border: 1px solid var(--gold); background: #000; color: var(--gold);
+            font-family: 'Share Tech Mono', monospace; font-size: 15px; font-weight: 900; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
         }
         .tab-num:hover, .tab-num.active {
             background: #000 !important; color: var(--gold) !important; border-color: var(--gold) !important;
             text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
-            box-shadow: 0 0 10px rgba(214, 175, 55, 0.4);
+            box-shadow: 0 0 8px rgba(214, 175, 55, 0.4);
         }
-
-        /* ГЛАВНЫЙ КОНТЕЙНЕР */
-        .office-chats-container { 
-            width: 90vw; max-width: 500px; height: 78vh; 
-            border: 2px solid var(--gold); background: rgba(0, 0, 0, 0.9); 
-            margin: 0 auto; position: relative; box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); 
-        }
-        
-        .office-chat-page { position: absolute; inset: 0; display: none; flex-direction: column; padding: 15px; }
-        .office-chat-page.active { display: flex !important; }
         
         /* РЕДАКТИРУЕМОЕ НАЗВАНИЕ КОМНАТЫ */
-        .room-title-container { margin-bottom: 10px; min-height: 30px; display: flex; align-items: center; }
-        .room-title { font-size: 20px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed transparent; transition: all 0.2s; }
+        .room-title-container { margin-bottom: 10px; min-height: 28px; display: flex; align-items: center; }
+        .room-title { font-size: 18px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed transparent; transition: all 0.2s; }
         .room-title:hover { border-color: var(--gold); text-shadow: 0 0 5px var(--gold); }
-        .room-title-input { background: #000; border: 1px solid var(--gold); color: var(--gold); font-family: 'Share Tech Mono'; font-size: 18px; padding: 2px 6px; width: 100%; outline: none; }
+        .room-title-input { background: #000; border: 1px solid var(--gold); color: var(--gold); font-family: 'Share Tech Mono'; font-size: 16px; padding: 2px 6px; width: 100%; outline: none; }
 
         /* СТАНДАРТНАЯ КОМПОНОВКА ЧАТА */
         .chat-history { flex-grow: 1; overflow-y: auto; border: 1px solid rgba(214, 175, 55, 0.3); padding: 10px; margin-bottom: 12px; background: #000; }
@@ -105,7 +122,7 @@
         .btn-send { padding: 0 15px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono'; font-weight: 900; transition: all 0.3s; }
         .btn-send:hover { background: #000 !important; color: var(--gold) !important; text-shadow: 0 0 8px var(--gold); box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); }
 
-        /* ВСПЛЫВАЮЩИЙ СЕЛЕКТОР АВАТАРОВ (ИЗ ЗОНЫ РЕГИСТРАЦИИ) */
+        /* СЕЛЕКТОР АВАТАРОВ */
         .avatar-selector-popup {
             display: none; position: absolute; bottom: 50px; left: 0; background: #000; 
             border: 2px solid var(--gold); padding: 10px; gap: 8px; grid-template-columns: repeat(4, 40px); z-index: 2000;
@@ -122,30 +139,47 @@
 </head>
 <body>
 
-    <div class="office-top-line">
-        <div class="ui-back-btn" onclick="goBack()">&lt; BACK</div>
+    <!-- СТАНДАРТНАЯ ВЕРХНЯЯ ПАНЕЛЬ -->
+    <div class="office-top-bar">
+        <!-- Слева стрелки навигации -->
+        <div class="ui-nav-arrows">
+            <span class="arrow-item" onclick="goBack()">&lt;&lt;</span>
+            <span class="arrow-item" onclick="goBack()">&lt;</span>
+        </div>
         
-        <div class="office-tabs-panel">
-            <div class="tab-num active" onclick="switchOfficePage(1)">1</div>
-            <div class="tab-num" onclick="switchOfficePage(2)">2</div>
-            <div class="tab-num" onclick="switchOfficePage(3)">3</div>
-            <div class="tab-num" onclick="switchOfficePage(4)">4</div>
-            <div class="tab-num" onclick="switchOfficePage(5)">5</div>
-            <div class="tab-num" onclick="switchOfficePage(6)">6</div>
+        <!-- Посредине аватар -->
+        <div class="ui-user-badge">
+            <img src="avatar_placeholder.jpg" class="badge-img" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=MainUser'">
+            <img src="flag_placeholder.png" class="badge-flag" onerror="this.style.display='none'">
         </div>
 
+        <!-- Справа лого -->
         <div class="ui-header-right">GY-GY</div>
     </div>
 
+    <!-- КОНТЕЙНЕР КОМНАТ -->
     <div class="office-chats-container">
         
+        <!-- Генерация 6 изолированных страниц -->
         <script>
             for (let i = 1; i <= 6; i++) {
                 document.write(`
                     <div id="office-page-${i}" class="office-chat-page ${i === 1 ? 'active' : ''}">
+                        
+                        <!-- Внутренние Номера Комнат внутри рамки -->
+                        <div class="office-internal-tabs">
+                            <div class="tab-num ${i===1?'active':''}" data-tab="1" onclick="switchOfficePage(1)">1</div>
+                            <div class="tab-num ${i===2?'active':''}" data-tab="2" onclick="switchOfficePage(2)">2</div>
+                            <div class="tab-num ${i===3?'active':''}" data-tab="3" onclick="switchOfficePage(3)">3</div>
+                            <div class="tab-num ${i===4?'active':''}" data-tab="4" onclick="switchOfficePage(4)">4</div>
+                            <div class="tab-num ${i===5?'active':''}" data-tab="5" onclick="switchOfficePage(5)">5</div>
+                            <div class="tab-num ${i===6?'active':''}" data-tab="6" onclick="switchOfficePage(6)">6</div>
+                        </div>
+
                         <div class="room-title-container">
                             <div class="room-title" id="title-text-${i}" onclick="editRoomTitle(${i})">CHANNEL 0${i}</div>
                         </div>
+
                         <div class="chat-history" id="chat-history-${i}">
                             <div class="chat-message">
                                 <img src="https://api.dicebear.com/7.x/bottts/svg?seed=system" class="msg-avatar">
@@ -155,6 +189,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="chat-input-zone">
                             <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User1" class="current-user-avatar-btn" id="current-avatar-btn-${i}" onclick="toggleAvatarPopup(${i})">
                             
@@ -176,27 +211,34 @@
     </div>
 
     <script>
-        // Глобальный кеш выбранных аватаров для каждой комнаты
         const userAvatars = { 1: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 2: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 3: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 4: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 5: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 6: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1' };
 
-        // Переключение комнат
+        // Переключение комнат по внутренним номерам
         function switchOfficePage(pageNum) {
-            document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.office-chat-page').forEach(page => {
                 page.classList.remove('active');
-                // Закрываем поп-апы аватаров при уходе из комнаты
                 const popup = page.querySelector('.avatar-selector-popup');
                 if(popup) popup.classList.remove('active');
             });
 
-            const tabs = document.querySelectorAll('.tab-num');
-            if(tabs[pageNum - 1]) tabs[pageNum - 1].classList.add('active');
-
+            // Показываем нужную страницу чата
             const activePage = document.getElementById(`office-page-${pageNum}`);
             if(activePage) activePage.classList.add('active');
+
+            // Синхронизируем состояние активной кнопки-цифры на открывшейся странице
+            document.querySelectorAll('.office-chat-page').forEach(page => {
+                const tabs = page.querySelectorAll('.tab-num');
+                tabs.forEach(tab => {
+                    if(parseInt(tab.getAttribute('data-tab')) === pageNum) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+            });
         }
 
-        // Редактирование названия комнаты
+        // Редактирование названия
         function editRoomTitle(roomNum) {
             const titleText = document.getElementById(`title-text-${roomNum}`);
             const currentName = titleText.innerText;
@@ -220,20 +262,16 @@
             input.addEventListener('keydown', (e) => { if(e.key === 'Enter') saveTitle(); });
         }
 
-        // Открытие/закрытие панели аватаров
         function toggleAvatarPopup(roomNum) {
-            const popup = document.getElementById(`avatar-popup-${roomNum}`);
-            popup.classList.toggle('active');
+            document.getElementById(`avatar-popup-${roomNum}`).classList.toggle('active');
         }
 
-        // Выбор аватара
         function selectAvatar(roomNum, avatarUrl) {
             userAvatars[roomNum] = avatarUrl;
             document.getElementById(`current-avatar-btn-${roomNum}`).src = avatarUrl;
             document.getElementById(`avatar-popup-${roomNum}`).classList.remove('active');
         }
 
-        // Отправка сообщений со стандартной разметкой
         function sendMessage(roomNum) {
             const input = document.getElementById(`chat-input-${roomNum}`);
             const text = input.value.trim();
