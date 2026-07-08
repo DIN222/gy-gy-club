@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.2</title>
+    <title>GY-GY Club - Office v9.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -49,18 +49,22 @@
         .ui-user-badge {
             position: fixed !important; top: 10px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
-            border: 2px solid var(--gold) !important; background: transparent !important;
+            border: 2px solid var(--gold) !important; background: #111 !important;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.35) !important; z-index: 1000000 !important; 
             cursor: pointer; 
-            display: flex !important; /* Перебиваем display: none из index.html */
+            display: flex !important; 
             align-items: center; justify-content: center;
         }
         .ui-user-badge:hover { transform: translateX(-50%) scale(1.05) !important; box-shadow: 0 0 20px var(--gold) !important; }
         
-        /* Твои внутренние классы для аватара и флага */
+        /* Внутренние классы для аватара и флага */
         .ui-user-badge .badge-img { 
-            width: 100% !important; height: 100% !important; border-radius: 50% !important; object-fit: cover !important; 
-            flex-shrink: 0 !important; display: block !important; background: transparent !important; border: none !important; 
+            width: 100% !important; height: 100% !important; border-radius: 50% !important;
+            flex-shrink: 0 !important; display: flex !important; align-items: center; justify-content: center;
+            background: transparent !important; border: none !important; overflow: hidden;
+        }
+        .ui-user-badge .badge-img img {
+            width: 100% !important; height: 100% !important; object-fit: cover !important; display: block !important;
         }
         .ui-user-badge .badge-flag {
             position: absolute !important; bottom: -2px !important; right: -2px !important;
@@ -173,7 +177,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.2</span>
+            <span class="version-text">v9.3</span>
         </div>
     </div>
 
@@ -236,19 +240,29 @@
             4: `<svg class="avatar-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
         };
 
-        // ВЫТАЛКИВАЕМ АВАТАР ИЗ ЛЮБОГО КЛЮЧА ХРАНИЛИЩА
+        // ВСЕЯДНЫЙ СКАНИРУЮЩИЙ ДВИЖОК
         function syncAndRenderAvatar() {
-            let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'selectedAvatar'];
+            let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'selectedAvatar', 'userAvatar'];
             let foundHTML = "";
             
             for (let key of keys) {
                 let data = localStorage.getItem(key);
                 if (data) {
                     data = data.trim();
+                    
+                    // Вариант А: В памяти лежит чистый SVG код
                     if (data.includes('<svg') || data.includes('<SVG') || data.includes('viewBox')) {
                         foundHTML = data;
                         break;
                     }
+                    
+                    // Вариант Б: В памяти лежит ссылка (http/https) или base64 картинка
+                    if (data.includes('data:image') || data.includes('http://') || data.includes('https://') || data.includes('.png') || data.includes('.jpg')) {
+                        foundHTML = `<img src="${data}" alt="Avatar">`;
+                        break;
+                    }
+                    
+                    // Вариант В: В памяти лежит просто ID цифра (строкой или числом)
                     let numericId = parseInt(data.replace(/[^0-9]/g, ''));
                     if (numericId >= 1 && numericId <= 4) {
                         foundHTML = avatarCodes[numericId];
@@ -257,22 +271,30 @@
                 }
             }
 
-            if (!foundHTML) foundHTML = avatarCodes[1]; // Дефолтный Золотой
+            // ЖЕСТКИЙ ПРИНУДИТЕЛЬНЫЙ ФЛЭШБЕК: Если вообще ничего не раскопали — ставим дефолт
+            if (!foundHTML) {
+                foundHTML = avatarCodes[1]; 
+            }
 
-            // Вставляем строго внутрь .badge-img, как хочет разметка index.html
+            // Монтируем в контейнер
             document.getElementById('badge-avatar-inside').innerHTML = foundHTML;
             
-            // Заодно проверяем флаг страны (если сохранен)
-            let savedFlag = localStorage.getItem('userFlag') || localStorage.getItem('countryFlag');
+            // Проверяем флаг страны
+            let savedFlag = localStorage.getItem('userFlag') || localStorage.getItem('countryFlag') || localStorage.getItem('flag');
             let flagDiv = document.getElementById('badge-flag-inside');
             if (savedFlag) {
-                flagDiv.innerHTML = savedFlag;
+                if (savedFlag.includes('<') || savedFlag.includes('data:image') || savedFlag.length > 4) {
+                    flagDiv.innerHTML = savedFlag;
+                } else {
+                    flagDiv.innerText = savedFlag; // Если там эмодзи флага
+                }
                 flagDiv.style.display = 'block';
             }
             
             return foundHTML;
         }
 
+        // Запуск при инициализации страницы
         let currentAvatarHTML = syncAndRenderAvatar();
 
         function toggleTopAvatarSelector() {
@@ -282,6 +304,7 @@
         function changeGlobalAvatar(id) {
             let code = avatarCodes[id];
             
+            // Записываем сразу во все популярные ключи, чтобы index.html гарантированно поймал апдейт
             localStorage.setItem('userAvatarID', id); 
             localStorage.setItem('avatarID', id); 
             localStorage.setItem('avatar', code);
