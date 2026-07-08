@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.6</title>
+    <title>GY-GY Club - Office v9.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -58,9 +58,11 @@
         }
         .ui-user-badge:hover { transform: translateX(-50%) scale(1.05) !important; box-shadow: 0 0 20px var(--gold) !important; }
         
+        /* Жесткий оверрайд для контента внутри круга, чтобы никакой дежурный софт не пробил */
         .ui-user-badge svg, .ui-user-badge img { 
             width: 100% !important; height: 100% !important; 
             display: block !important; object-fit: cover !important;
+            min-width: 100% !important; min-height: 100% !important;
         }
 
         /* Панель быстрого выбора аватара */
@@ -140,14 +142,17 @@
 </head>
 <body class="notranslate">
 
+    <!-- STANDARD TOP BAR -->
     <div class="office-top-bar">
         <div class="ui-nav-arrows">
             <span class="arrow-item" onclick="goBack()">&lt;</span>
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
+        <!-- ИНТЕГРАЦИЯ ТВОЕГО ПРЕМИАЛЬНОГО СКВОЗНОГО АВАТАРА -->
         <div class="ui-user-badge" onclick="toggleTopAvatarSelector()" id="global-user-badge">
-            </div>
+            <!-- Сюда инжектируется боевой аватар -->
+        </div>
 
         <div class="top-avatar-selector" id="top-avatar-popup">
             <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
@@ -158,7 +163,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.6</span>
+            <span class="version-text">v9.7</span>
         </div>
     </div>
 
@@ -208,6 +213,7 @@
         </script>
     </div>
 
+    <!-- УЛЬТРА-ФОРСАЖ ОТРИСОВКИ ДЛЯ V9.7 -->
     <script>
         const avatarCodes = {
             1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" style="fill:#d4af37 !important;" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" style="fill:#d4af37 !important;" fill="#d4af37"/></svg>`,
@@ -219,36 +225,23 @@
         function parseDataToHTML(raw) {
             if (!raw) return "";
             let data = raw.trim();
-
-            // Если это чистый SVG код
-            if (data.includes('<svg') || data.includes('<SVG') || data.includes('viewBox')) {
-                return data;
-            }
-            // Если ссылка или base64
+            if (data.includes('<svg') || data.includes('<SVG') || data.includes('viewBox')) return data;
             if (data.includes('data:image') || data.includes('http') || data.includes('.png') || data.includes('.jpg')) {
-                return `<img src="${data}">`;
+                return `<img src="${data}" style="width:100%!important;height:100%!important;object-fit:cover!important;">`;
             }
-            // Если простая цифра ID
             let numericId = parseInt(data.replace(/[^0-9]/g, ''));
-            if (numericId >= 1 && numericId <= 4) {
-                return avatarCodes[numericId];
-            }
+            if (numericId >= 1 && numericId <= 4) return avatarCodes[numericId];
             return "";
         }
 
         function extractAvatarFromStorage() {
-            // Список всех возможных текстовых ключей
             let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'selectedAvatar', 'userAvatar', 'currentAvatar', 'user', 'session', 'profile'];
-            
             for (let key of keys) {
                 let item = localStorage.getItem(key);
                 if (!item) continue;
-
-                // 1. Проверяем, вдруг это строка, закодированная в JSON объект
                 if (item.startsWith('{') && item.endsWith('}')) {
                     try {
                         let obj = JSON.parse(item);
-                        // Ищем аватар внутри свойств объекта
                         let subFields = ['avatar', 'avatarHTML', 'avatarID', 'userAvatar', 'img', 'photo', 'icon'];
                         for (let sub of subFields) {
                             if (obj[sub]) {
@@ -258,26 +251,31 @@
                         }
                     } catch(e) {}
                 }
-
-                // 2. Если это обычная строка данных
                 let result = parseDataToHTML(item);
                 if (result) return result;
             }
-
-            // Жесткий дефолт, если хранилище абсолютно стерильно
             return avatarCodes[1];
         }
 
+        // Принудительное выжигание правильного аватара в DOM
         function forceRenderAvatar() {
             let finalHTML = extractAvatarFromStorage();
             const badgeElement = document.getElementById('global-user-badge');
             if (badgeElement) {
-                badgeElement.innerHTML = finalHTML;
+                // Если внутри оказался чужой аватар или пусто, жестко перезаписываем
+                if (badgeElement.innerHTML !== finalHTML) {
+                    badgeElement.innerHTML = finalHTML;
+                }
             }
             return finalHTML;
         }
 
+        // Запускаем мгновенно
         let currentAvatarHTML = forceRenderAvatar();
+
+        // ЦИКЛИЧЕСКИЙ КОНТРОЛЬ (Решает проблему Офиса):
+        // Каждые 300 мс проверяем круг и не даем дежурному аватарку перехватить приоритет
+        setInterval(forceRenderAvatar, 300);
 
         function toggleTopAvatarSelector() {
             document.getElementById('top-avatar-popup').classList.toggle('active');
@@ -285,13 +283,10 @@
 
         function changeGlobalAvatar(id) {
             let code = avatarCodes[id];
-            
-            // Пишем во все ключевые ячейки
             localStorage.setItem('userAvatarID', id); 
             localStorage.setItem('avatarID', id); 
             localStorage.setItem('avatar', code);
             localStorage.setItem('userAvatar', code);
-            
             currentAvatarHTML = forceRenderAvatar();
             document.getElementById('top-avatar-popup').classList.remove('active');
         }
@@ -299,7 +294,6 @@
         function switchOfficePage(pageNum) {
             document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.office-chat-page').forEach(page => page.classList.remove('active'));
-
             document.getElementById(`tab-btn-${pageNum}`).classList.add('active');
             document.getElementById(`office-page-${pageNum}`).classList.add('active');
             document.getElementById('top-avatar-popup').classList.remove('active');
@@ -309,21 +303,17 @@
             const titleText = document.getElementById(`title-text-${roomNum}`);
             const currentName = titleText.innerText;
             const container = titleText.parentElement;
-
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'room-title-input';
             input.value = currentName;
-
             container.innerHTML = '';
             container.appendChild(input);
             input.focus();
-
             function saveTitle() {
                 const newName = input.value.trim() || `ROOM 0${roomNum}`;
                 container.innerHTML = `<div class="room-title" id="title-text-${roomNum}" onclick="editRoomTitle(${roomNum})">${newName}</div>`;
             }
-
             input.addEventListener('blur', saveTitle);
             input.addEventListener('keydown', (e) => { if(e.key === 'Enter') saveTitle(); });
         }
@@ -353,7 +343,6 @@
         function consultStaff(roomNum) {
             const history = document.getElementById(`chat-history-${roomNum}`);
             const currentRoomName = document.getElementById(`title-text-${roomNum}`).innerText;
-            
             const notifyDiv = document.createElement('div');
             notifyDiv.className = 'chat-message';
             notifyDiv.innerHTML = `
