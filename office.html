@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office 006 </title>
+    <title>GY-GY Club - Office 008 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -49,17 +49,25 @@
         .ui-user-badge {
             position: absolute; left: 50%; transform: translateX(-50%);
             width: 48px; height: 48px; border-radius: 50%;
-            border: 2px solid var(--gold); background: transparent;
+            border: 2px solid var(--gold); background: #111;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.35); cursor: pointer;
+            transition: transform 0.2s;
         }
+        .ui-user-badge:hover { transform: left: 50% scale(1.05); box-shadow: 0 0 20px var(--gold); }
         .ui-user-badge .badge-img { 
             width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; 
         }
-        .ui-user-badge .badge-flag {
-            position: absolute; bottom: -2px; right: -2px;
-            width: 18px; height: 13px; object-fit: cover;
-            border: 1px solid var(--gold); border-radius: 2px; background: #000;
+
+        /* Выпадающая панель выбора аватара (прямо под верхним аватаром) */
+        .top-avatar-selector {
+            display: none; position: absolute; top: 65px; left: 50%; transform: translateX(-50%);
+            background: #000; border: 2px solid var(--gold); padding: 8px; gap: 8px;
+            grid-template-columns: repeat(4, 40px); z-index: 2000000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
+        .top-avatar-selector.active { display: grid; }
+        .popup-avatar-option { width: 40px; height: 40px; border: 1px solid rgba(214, 175, 55, 0.4); border-radius: 50%; cursor: pointer; object-fit: cover; background: #222; }
+        .popup-avatar-option:hover { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); }
 
         .ui-header-right { 
             font-size: 24px; letter-spacing: 3px; font-weight: bold; user-select: none;
@@ -84,7 +92,6 @@
             font-family: 'Share Tech Mono', monospace; font-size: 16px; font-weight: 900; cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
         }
-        /* При клике цвет меняется на сверхинтенсивный */
         .tab-num:hover, .tab-num.active {
             background: #000 !important; color: var(--gold) !important; border-color: var(--gold) !important;
             text-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold) !important; 
@@ -117,9 +124,6 @@
         .btn-action { height: 40px; padding: 0 12px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono'; font-weight: 900; font-size: 12px; transition: all 0.3s; text-transform: uppercase; }
         .btn-action:hover { background: #000 !important; color: var(--gold) !important; text-shadow: 0 0 8px var(--gold); box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); }
 
-        /* Индивидуальный акцент для кнопки консультации сотрудника */
-        .btn-consult { border-color: var(--gold); opacity: 0.9; }
-
         /* Изоляция от переводчика Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
@@ -135,10 +139,21 @@
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
-        <!-- Посредине: Круглый аватар из регистрации -->
-        <div class="ui-user-badge">
-            <img src="avatar_placeholder.jpg" class="badge-img" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=MainUser'">
-            <img src="flag_placeholder.png" class="badge-flag" onerror="this.style.display='none'">
+        <!-- Посредине: Круглый интерактивный аватар -->
+        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User1" id="global-user-avatar" class="badge-img">
+        </div>
+
+        <!-- Выпадающая панель выбора аватаров (Зона регистрации) -->
+        <div class="top-avatar-selector" id="top-avatar-popup">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User1" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User1')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User2" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User2')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User3" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User3')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User4" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User4')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User5" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User5')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User6" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User6')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User7" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User7')">
+            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User8" class="popup-avatar-option" onclick="changeGlobalAvatar('https://api.dicebear.com/7.x/identicon/svg?seed=User8')">
         </div>
 
         <!-- Справа: Логотип -->
@@ -158,7 +173,7 @@
             <div class="tab-num" id="tab-btn-6" onclick="switchOfficePage(6)">6</div>
         </div>
 
-        <!-- Контент изолированных каналов (подгружается динамически по клику на табы) -->
+        <!-- Контент изолированных каналов -->
         <script>
             for (let i = 1; i <= 6; i++) {
                 document.write(`
@@ -180,10 +195,10 @@
                             </div>
                         </div>
 
-                        <!-- Инпуты, Отправка и кнопка Консультации с сотрудником -->
+                        <!-- Инпуты, Отправка и кнопка Консультации -->
                         <div class="chat-input-zone">
                             <input type="text" id="chat-input-${i}" placeholder="Type question..." onkeydown="if(event.key==='Enter') sendMessage(${i})">
-                            <button class="btn-action btn-consult" onclick="consultStaff(${i})">CONSULT</button>
+                            <button class="btn-action" onclick="consultStaff(${i})">CONSULT</button>
                             <button class="btn-action" onclick="sendMessage(${i})">SEND</button>
                         </div>
                     </div>
@@ -194,15 +209,31 @@
     </div>
 
     <script>
+        // Текущий аватар пользователя по умолчанию
+        let currentGlobalAvatar = 'https://api.dicebear.com/7.x/identicon/svg?seed=User1';
+
+        // Открытие/закрытие панели аватаров под верхним аватаром
+        function toggleTopAvatarSelector() {
+            document.getElementById('top-avatar-popup').classList.toggle('active');
+        }
+
+        // Выбор аватара
+        function changeGlobalAvatar(newAvatarUrl) {
+            currentGlobalAvatar = newAvatarUrl;
+            document.getElementById('global-user-avatar').src = newAvatarUrl;
+            document.getElementById('top-avatar-popup').classList.remove('active');
+        }
+
         // Переключение комнат
         function switchOfficePage(pageNum) {
-            // Гасим все табы и скрываем страницы
             document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.office-chat-page').forEach(page => page.classList.remove('active'));
 
-            // Зажигаем выбранный таб интенсивным неоном и открываем чат
             document.getElementById(`tab-btn-${pageNum}`).classList.add('active');
             document.getElementById(`office-page-${pageNum}`).classList.add('active');
+            
+            // Закрываем меню аватаров при переключении комнат на всякий случай
+            document.getElementById('top-avatar-popup').classList.remove('active');
         }
 
         // Редактирование названий комнат
@@ -240,7 +271,7 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message';
             messageDiv.innerHTML = `
-                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=MainUser" class="msg-avatar">
+                <img src="${currentGlobalAvatar}" class="msg-avatar">
                 <div class="msg-content">
                     <span class="msg-username">You</span>
                     <span class="msg-text">${text}</span>
@@ -252,7 +283,7 @@
             history.scrollTop = history.scrollHeight;
         }
 
-        // Кнопка CONSULT (Обсуждение с конкретным сотрудником)
+        // Кнопка CONSULT (Обсуждение с сотрудником)
         function consultStaff(roomNum) {
             const history = document.getElementById(`chat-history-${roomNum}`);
             const currentRoomName = document.getElementById(`title-text-${roomNum}`).innerText;
@@ -273,11 +304,11 @@
         }
 
         function goBack() {
-            window.location.href = 'index.html'; // Шаг назад (в Холл)
+            window.location.href = 'index.html';
         }
 
         function goToStart() {
-            window.location.href = 'index.html'; // В самое начало
+            window.location.href = 'index.html';
         }
     </script>
 </body>
