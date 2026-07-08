@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.7</title>
+    <title>GY-GY Club - Office v9.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -44,25 +44,21 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
 
-        /* ИНТЕГРАЦИЯ ТВОЕГО ПРЕМИАЛЬНОГО СКВОЗНОГО АВАТАРА */
+        /* РОДНОЙ СТИЛЬ БАДЖА С ПОЛНЫМ ИГНОРИРОВАНИЕМ ВНЕШНИХ СТИЛЕЙ */
         .ui-user-badge {
             position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
             border: 2px solid var(--gold) !important; background: #111 !important;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.35) !important; z-index: 1000000 !important; 
-            cursor: pointer; 
-            display: flex !important; 
-            align-items: center !important; justify-content: center !important;
-            overflow: hidden !important;
-            opacity: 1 !important; visibility: visible !important;
+            cursor: pointer; display: flex !important; align-items: center !important; justify-content: center !important;
+            overflow: hidden !important; opacity: 1 !important; visibility: visible !important;
         }
         .ui-user-badge:hover { transform: translateX(-50%) scale(1.05) !important; box-shadow: 0 0 20px var(--gold) !important; }
         
-        /* Жесткий оверрайд для контента внутри круга, чтобы никакой дежурный софт не пробил */
+        /* Защита внутренностей баджа */
         .ui-user-badge svg, .ui-user-badge img { 
             width: 100% !important; height: 100% !important; 
             display: block !important; object-fit: cover !important;
-            min-width: 100% !important; min-height: 100% !important;
         }
 
         /* Панель быстрого выбора аватара */
@@ -77,14 +73,10 @@
         .popup-avatar-option { 
             width: 40px; height: 40px; border: 1px solid rgba(214, 175, 55, 0.4); 
             border-radius: 50%; cursor: pointer; background: #222;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
-        .popup-avatar-option:hover { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); }
 
-        .ui-header-right { 
-            display: flex; flex-direction: column; align-items: flex-end; user-select: none;
-        }
+        .ui-header-right { display: flex; flex-direction: column; align-items: flex-end; user-select: none; }
         .logo-text { font-size: 24px; letter-spacing: 3px; font-weight: bold; line-height: 1; }
         .version-text { font-size: 10px; color: rgba(214, 175, 55, 0.5); letter-spacing: 1px; margin-top: 2px; }
 
@@ -108,51 +100,39 @@
         }
         .tab-num:hover, .tab-num.active {
             background: #000 !important; color: var(--gold) !important; border-color: var(--gold) !important;
-            text-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold) !important; 
-            box-shadow: 0 0 12px rgba(214, 175, 55, 0.6) !important;
+            text-shadow: 0 0 10px var(--gold) !important; box-shadow: 0 0 12px rgba(214, 175, 55, 0.6) !important;
         }
         
         .office-chat-page { display: none; flex-direction: column; flex-grow: 1; }
         .office-chat-page.active { display: flex !important; }
 
         .room-title-container { margin-bottom: 10px; min-height: 28px; display: flex; align-items: center; }
-        .room-title { font-size: 18px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed transparent; transition: all 0.2s; }
-        .room-title:hover { border-color: var(--gold); text-shadow: 0 0 5px var(--gold); }
-        .room-title-input { background: #000; border: 1px solid var(--gold); color: var(--gold); font-family: 'Share Tech Mono'; font-size: 16px; padding: 2px 6px; width: 100%; outline: none; }
+        .room-title { font-size: 18px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed transparent; }
 
         .chat-history { flex-grow: 1; overflow-y: auto; border: 1px solid rgba(214, 175, 55, 0.3); padding: 10px; margin-bottom: 12px; background: #000; }
-        
         .chat-message { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
         .msg-avatar-holder { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--gold); background: #222; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
         .msg-content { display: flex; flex-direction: column; }
         .msg-username { font-size: 11px; color: rgba(214, 175, 55, 0.6); margin-bottom: 2px; font-weight: bold; }
         .msg-text { font-size: 14px; color: #fff; word-break: break-all; }
 
-        .chat-input-zone { display: flex; gap: 6px; position: relative; }
+        .chat-input-zone { display: flex; gap: 6px; }
         .chat-input-zone input { flex-grow: 1; background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 0 12px; font-family: 'Share Tech Mono'; outline: none; font-size: 14px; height: 40px; }
+        .btn-action { height: 40px; padding: 0 12px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono'; font-weight: 900; font-size: 12px; text-transform: uppercase; }
         
-        .btn-action { height: 40px; padding: 0 12px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono'; font-weight: 900; font-size: 12px; transition: all 0.3s; text-transform: uppercase; }
-        .btn-action:hover { background: #000 !important; color: var(--gold) !important; text-shadow: 0 0 8px var(--gold); box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); }
-
-        /* STRICT ANTI-TRANSLATE SHIELD */
-        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0px !important; }
-        font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
+        .notranslate goog-te-banner-frame, .skiptranslate { display: none !important; }
     </style>
 </head>
 <body class="notranslate">
 
-    <!-- STANDARD TOP BAR -->
     <div class="office-top-bar">
         <div class="ui-nav-arrows">
             <span class="arrow-item" onclick="goBack()">&lt;</span>
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
-        <!-- ИНТЕГРАЦИЯ ТВОЕГО ПРЕМИАЛЬНОГО СКВОЗНОГО АВАТАРА -->
-        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()" id="global-user-badge">
-            <!-- Сюда инжектируется боевой аватар -->
-        </div>
+        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()">
+            </div>
 
         <div class="top-avatar-selector" id="top-avatar-popup">
             <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
@@ -163,7 +143,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.7</span>
+            <span class="version-text">v9.9</span>
         </div>
     </div>
 
@@ -177,43 +157,29 @@
             <div class="tab-num" id="tab-btn-6" onclick="switchOfficePage(6)">6</div>
         </div>
 
-        <script>
-            const staffIcons = [
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="25" y="25" width="50" height="50" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="40" cy="45" r="6" fill="#8A2BE2"/><circle cx="60" cy="45" r="6" fill="#8A2BE2"/><path d="M35 65 L65 65" stroke="#8A2BE2" stroke-width="4"/></svg>`,
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="35" fill="none" stroke="#8A2BE2" stroke-width="4"/><path d="M30 40 L45 55 L30 70 M70 40 L55 55 L70 70" stroke="#8A2BE2" stroke-width="4" fill="none"/></svg>`,
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><polygon points="50,15 85,75 15,75" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="50" cy="55" r="8" fill="#8A2BE2"/></svg>`,
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="20" y="30" width="60" height="40" rx="10" fill="none" stroke="#8A2BE2" stroke-width="4"/><line x1="35" y1="50" x2="65" y2="50" stroke="#8A2BE2" stroke-width="4"/></svg>`,
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="30" fill="#8A2BE2"/><line x1="50" y1="10" x2="50" y2="90" stroke="#000" stroke-width="4"/></svg>`,
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><path d="M20 20 L80 80 M80 20 L20 80" stroke="#8A2BE2" stroke-width="6"/><circle cx="50" cy="50" r="15" fill="#000" stroke="#8A2BE2" stroke-width="3"/></svg>`
-            ];
-
-            for (let i = 1; i <= 6; i++) {
-                document.write(`
-                    <div id="office-page-${i}" class="office-chat-page ${i === 1 ? 'active' : ''}">
-                        <div class="room-title-container">
-                            <div class="room-title" id="title-text-${i}" onclick="editRoomTitle(${i})">ROOM 0${i}</div>
-                        </div>
-                        <div class="chat-history" id="chat-history-${i}">
-                            <div class="chat-message">
-                                <div class="msg-avatar-holder">${staffIcons[i-1]}</div>
-                                <div class="msg-content">
-                                    <span class="msg-username">OFFICE ASSISTANT</span>
-                                    <span class="msg-text">Channel ${i} secure link online. How can I help you today?</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chat-input-zone">
-                            <input type="text" id="chat-input-${i}" placeholder="Type question..." onkeydown="if(event.key==='Enter') sendMessage(${i})">
-                            <button class="btn-action" onclick="consultStaff(${i})">CONSULT</button>
-                            <button class="btn-action" onclick="sendMessage(${i})">SEND</button>
-                        </div>
+        <div id="office-page-1" class="office-chat-page active">
+            <div class="room-title-container">
+                <div class="room-title" id="title-text-1" onclick="editRoomTitle(1)">ROOM 01 | AI CORE</div>
+            </div>
+            <div class="chat-history" id="chat-history-1">
+                <div class="chat-message">
+                    <div class="msg-avatar-holder">
+                        <svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="25" y="25" width="50" height="50" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="40" cy="45" r="6" fill="#8A2BE2"/><circle cx="60" cy="45" r="6" fill="#8A2BE2"/><path d="M35 65 L65 65" stroke="#8A2BE2" stroke-width="4"/></svg>
                     </div>
-                `);
-            }
-        </script>
+                    <div class="msg-content">
+                        <span class="msg-username">SYSTEM ASSISTANT</span>
+                        <span class="msg-text">Внутренний шлюз Офиса v9.9 активирован. Подключаю MutationObserver для защиты аватара...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-zone">
+                <input type="text" id="chat-input-1" placeholder="Задать вопрос ИИ-Ядру..." onkeydown="if(event.key==='Enter') sendMessage(1)">
+                <button class="btn-action" onclick="consultStaff(1)">КОНСУЛЬТАЦИЯ</button>
+                <button class="btn-action" onclick="sendMessage(1)">ОТПРАВИТЬ</button>
+            </div>
+        </div>
     </div>
 
-    <!-- УЛЬТРА-ФОРСАЖ ОТРИСОВКИ ДЛЯ V9.7 -->
     <script>
         const avatarCodes = {
             1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" style="fill:#d4af37 !important;" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" style="fill:#d4af37 !important;" fill="#d4af37"/></svg>`,
@@ -222,140 +188,107 @@
             4: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6" style="stroke:#d4af37 !important;"/><circle cx="50" cy="50" r="10" style="fill:#8A2BE2 !important;" fill="#8A2BE2"/></svg>`
         };
 
-        function parseDataToHTML(raw) {
-            if (!raw) return "";
-            let data = raw.trim();
-            if (data.includes('<svg') || data.includes('<SVG') || data.includes('viewBox')) return data;
-            if (data.includes('data:image') || data.includes('http') || data.includes('.png') || data.includes('.jpg')) {
-                return `<img src="${data}" style="width:100%!important;height:100%!important;object-fit:cover!important;">`;
-            }
-            let numericId = parseInt(data.replace(/[^0-9]/g, ''));
-            if (numericId >= 1 && numericId <= 4) return avatarCodes[numericId];
-            return "";
-        }
-
-        function extractAvatarFromStorage() {
-            let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'selectedAvatar', 'userAvatar', 'currentAvatar', 'user', 'session', 'profile'];
+        function getTargetAvatar() {
+            let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'userAvatar', 'currentAvatar'];
             for (let key of keys) {
-                let item = localStorage.getItem(key);
-                if (!item) continue;
-                if (item.startsWith('{') && item.endsWith('}')) {
-                    try {
-                        let obj = JSON.parse(item);
-                        let subFields = ['avatar', 'avatarHTML', 'avatarID', 'userAvatar', 'img', 'photo', 'icon'];
-                        for (let sub of subFields) {
-                            if (obj[sub]) {
-                                let result = parseDataToHTML(String(obj[sub]));
-                                if (result) return result;
-                            }
-                        }
-                    } catch(e) {}
+                let data = localStorage.getItem(key);
+                if (data) {
+                    data = data.trim();
+                    if (data.includes('<svg') || data.includes('viewBox')) return data;
+                    if (data.includes('data:image') || data.includes('http')) return `<img src="${data}">`;
+                    let num = parseInt(data.replace(/[^0-9]/g, ''));
+                    if (num >= 1 && num <= 4) return avatarCodes[num];
                 }
-                let result = parseDataToHTML(item);
-                if (result) return result;
             }
             return avatarCodes[1];
         }
 
-        // Принудительное выжигание правильного аватара в DOM
-        function forceRenderAvatar() {
-            let finalHTML = extractAvatarFromStorage();
-            const badgeElement = document.getElementById('global-user-badge');
-            if (badgeElement) {
-                // Если внутри оказался чужой аватар или пусто, жестко перезаписываем
-                if (badgeElement.innerHTML !== finalHTML) {
-                    badgeElement.innerHTML = finalHTML;
+        // --- КЛЮЧЕВОЙ РАЗДЕЛ v9.9 ---
+        
+        // Эта функция жестко вставляет правильный аватар
+        function applyCorrectAvatar() {
+            let activeAvatarHTML = getTargetAvatar();
+            let badges = document.querySelectorAll('.ui-user-badge');
+            badges.forEach(badge => {
+                // Если контент отличается, заменяем
+                if (badge.innerHTML.trim() !== activeAvatarHTML.trim()) {
+                    badge.innerHTML = activeAvatarHTML;
                 }
-            }
-            return finalHTML;
+            });
         }
 
-        // Запускаем мгновенно
-        let currentAvatarHTML = forceRenderAvatar();
+        // Настраиваем MutationObserver для отслеживания любых изменений внутри .ui-user-badge
+        const observerConfig = { childList: true, subtree: true, characterData: true };
+        
+        const avatarObserver = new MutationObserver((mutationsList) => {
+            // Как только произошло ЛЮБОЕ изменение, мы временно отключаем наблюдатель,
+            // вставляем правильный аватар и включаем обратно.
+            // Это предотвращает бесконечный цикл.
+            avatarObserver.disconnect();
+            applyCorrectAvatar();
+            startObserving();
+        });
 
-        // ЦИКЛИЧЕСКИЙ КОНТРОЛЬ (Решает проблему Офиса):
-        // Каждые 300 мс проверяем круг и не даем дежурному аватарку перехватить приоритет
-        setInterval(forceRenderAvatar, 300);
-
-        function toggleTopAvatarSelector() {
-            document.getElementById('top-avatar-popup').classList.toggle('active');
+        function startObserving() {
+            let badges = document.querySelectorAll('.ui-user-badge');
+            badges.forEach(badge => {
+                avatarObserver.observe(badge, observerConfig);
+            });
         }
+
+        // Первичный запуск
+        applyCorrectAvatar(); // Вставляем сразу
+        startObserving();    // Начинаем следить
+
+        // На всякий случай оставляем setInterval, но реже, для страховки если Observer промахнется
+        setInterval(applyCorrectAvatar, 1000);
+
+        // --- ОСТАЛЬНОЙ ФУНКЦИОНАЛ ---
+
+        function toggleTopAvatarSelector() { document.getElementById('top-avatar-popup').classList.toggle('active'); }
 
         function changeGlobalAvatar(id) {
             let code = avatarCodes[id];
-            localStorage.setItem('userAvatarID', id); 
-            localStorage.setItem('avatarID', id); 
+            localStorage.setItem('userAvatarID', id);
+            localStorage.setItem('avatarID', id);
             localStorage.setItem('avatar', code);
             localStorage.setItem('userAvatar', code);
-            currentAvatarHTML = forceRenderAvatar();
+            applyCorrectAvatar();
             document.getElementById('top-avatar-popup').classList.remove('active');
         }
 
-        function switchOfficePage(pageNum) {
-            document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.office-chat-page').forEach(page => page.classList.remove('active'));
-            document.getElementById(`tab-btn-${pageNum}`).classList.add('active');
-            document.getElementById(`office-page-${pageNum}`).classList.add('active');
-            document.getElementById('top-avatar-popup').classList.remove('active');
+        function switchOfficePage(num) { 
+            if (num !== 1) alert(`Переключение на ROOM 0${num}. Функция в разработке согласно архитектурному плану!`);
         }
 
-        function editRoomTitle(roomNum) {
-            const titleText = document.getElementById(`title-text-${roomNum}`);
+        function editRoomTitle(num) {
+            const titleText = document.getElementById(`title-text-${num}`);
             const currentName = titleText.innerText;
             const container = titleText.parentElement;
             const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'room-title-input';
-            input.value = currentName;
-            container.innerHTML = '';
-            container.appendChild(input);
-            input.focus();
-            function saveTitle() {
-                const newName = input.value.trim() || `ROOM 0${roomNum}`;
-                container.innerHTML = `<div class="room-title" id="title-text-${roomNum}" onclick="editRoomTitle(${roomNum})">${newName}</div>`;
-            }
-            input.addEventListener('blur', saveTitle);
-            input.addEventListener('keydown', (e) => { if(e.key === 'Enter') saveTitle(); });
+            input.type = 'text'; input.className = 'room-title-input'; input.value = currentName;
+            container.innerHTML = ''; container.appendChild(input); input.focus();
+            function save() { container.innerHTML = `<div class="room-title" id="title-text-${num}" onclick="editRoomTitle(${num})">${input.value.trim() || 'ROOM 01'}</div>`; }
+            input.addEventListener('blur', save);
+            input.addEventListener('keydown', (e) => { if(e.key === 'Enter') save(); });
         }
 
-        function sendMessage(roomNum) {
-            const input = document.getElementById(`chat-input-${roomNum}`);
-            const text = input.value.trim();
-            if (!text) return;
-
-            const history = document.getElementById(`chat-history-${roomNum}`);
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message';
-            
-            messageDiv.innerHTML = `
-                <div class="msg-avatar-holder" style="display:flex;align-items:center;justify-content:center;overflow:hidden;">${currentAvatarHTML}</div>
-                <div class="msg-content">
-                    <span class="msg-username">You</span>
-                    <span class="msg-text">${text}</span>
-                </div>
-            `;
-
-            history.appendChild(messageDiv);
-            input.value = '';
-            history.scrollTop = history.scrollHeight;
+        function sendMessage(num) {
+            const input = document.getElementById(`chat-input-${num}`);
+            if (!input.value.trim()) return;
+            const history = document.getElementById(`chat-history-${num}`);
+            const msg = document.createElement('div');
+            msg.className = 'chat-message';
+            msg.innerHTML = `<div class="msg-avatar-holder">${getTargetAvatar()}</div><div class="msg-content"><span class="msg-username">You</span><span class="msg-text">${input.value.trim()}</span></div>`;
+            history.appendChild(msg); input.value = ''; history.scrollTop = history.scrollHeight;
         }
 
-        function consultStaff(roomNum) {
-            const history = document.getElementById(`chat-history-${roomNum}`);
-            const currentRoomName = document.getElementById(`title-text-${roomNum}`).innerText;
-            const notifyDiv = document.createElement('div');
-            notifyDiv.className = 'chat-message';
-            notifyDiv.innerHTML = `
-                <div class="msg-avatar-holder">${staffIcons[roomNum-1]}</div>
-                <div class="msg-content">
-                    <span class="msg-username" style="color:var(--violet);">SYSTEM NOTICE</span>
-                    <span class="msg-text" style="color:var(--gold); font-style:italic;">
-                        Connecting dedicated specialist to discuss your specific question regarding "${currentRoomName}"...
-                    </span>
-                </div>
-            `;
-            history.appendChild(notifyDiv);
-            history.scrollTop = history.scrollHeight;
+        function consultStaff(num) {
+            const history = document.getElementById(`chat-history-${num}`);
+            const msg = document.createElement('div');
+            msg.className = 'chat-message';
+            msg.innerHTML = `<div class="msg-avatar-holder"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="25" y="25" width="50" height="50" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="40" cy="45" r="6" fill="#8A2BE2"/><circle cx="60" cy="45" r="6" fill="#8A2BE2"/><path d="M35 65 L65 65" stroke="#8A2BE2" stroke-width="4"/></svg></div><div class="msg-content"><span class="msg-username" style="color:var(--violet);">SYSTEM</span><span class="msg-text" style="color:var(--gold);font-style:italic;">Запрос обрабатывается AI-Ядром Офиса...</span></div>`;
+            history.appendChild(msg); history.scrollTop = history.scrollHeight;
         }
 
         function goBack() { window.location.href = 'index.html'; }
