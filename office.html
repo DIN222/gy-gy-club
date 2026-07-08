@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.9</title>
+    <title>GY-GY Club - Office v9.9.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -30,7 +30,7 @@
         }
 
         /* ==================================================== */
-        /* STANDARD TOP BAR WITH CORRECT ARROWS & VERSION       */
+        /* STANDARD TOP BAR                                     */
         /* ==================================================== */
         .office-top-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 70px;
@@ -44,7 +44,7 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
 
-        /* РОДНОЙ СТИЛЬ БАДЖА С ПОЛНЫМ ИГНОРИРОВАНИЕМ ВНЕШНИХ СТИЛЕЙ */
+        /* РОДНОЙ СТИЛЬ БАДЖА ИЗ СТУДИИ */
         .ui-user-badge {
             position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
@@ -55,7 +55,6 @@
         }
         .ui-user-badge:hover { transform: translateX(-50%) scale(1.05) !important; box-shadow: 0 0 20px var(--gold) !important; }
         
-        /* Защита внутренностей баджа */
         .ui-user-badge svg, .ui-user-badge img { 
             width: 100% !important; height: 100% !important; 
             display: block !important; object-fit: cover !important;
@@ -131,8 +130,7 @@
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
-        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()">
-            </div>
+        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()"></div>
 
         <div class="top-avatar-selector" id="top-avatar-popup">
             <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
@@ -143,7 +141,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.9</span>
+            <span class="version-text">v9.9.2</span>
         </div>
     </div>
 
@@ -168,7 +166,7 @@
                     </div>
                     <div class="msg-content">
                         <span class="msg-username">SYSTEM ASSISTANT</span>
-                        <span class="msg-text">Внутренний шлюз Офиса v9.9 активирован. Подключаю MutationObserver для защиты аватара...</span>
+                        <span class="msg-text">Внутренний шлюз Офиса v9.9.2 активирован. Аватар импортирован по методу Студии.</span>
                     </div>
                 </div>
             </div>
@@ -182,10 +180,10 @@
 
     <script>
         const avatarCodes = {
-            1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" style="fill:#d4af37 !important;" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" style="fill:#d4af37 !important;" fill="#d4af37"/></svg>`,
-            2: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" style="fill:#8A2BE2 !important;" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" style="fill:#8A2BE2 !important;" fill="#8A2BE2"/></svg>`,
-            3: `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="40" style="fill:#d4af37 !important;" fill="#d4af37"/><path d="M10 90 L30 65 L70 65 L90 90 Z" style="fill:#d4af37 !important;" fill="#d4af37"/></svg>`,
-            4: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6" style="stroke:#d4af37 !important;"/><circle cx="50" cy="50" r="10" style="fill:#8A2BE2 !important;" fill="#8A2BE2"/></svg>`
+            1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg>`,
+            2: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" fill="#8A2BE2"/></svg>`,
+            3: `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="40" fill="#d4af37"/><path d="M10 90 L30 65 L70 65 L90 90 Z" fill="#d4af37"/></svg>`,
+            4: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
         };
 
         function getTargetAvatar() {
@@ -200,50 +198,23 @@
                     if (num >= 1 && num <= 4) return avatarCodes[num];
                 }
             }
-            return avatarCodes[1];
+            return avatarCodes[1]; // Премиальный дефолт
         }
 
-        // --- КЛЮЧЕВОЙ РАЗДЕЛ v9.9 ---
-        
-        // Эта функция жестко вставляет правильный аватар
         function applyCorrectAvatar() {
             let activeAvatarHTML = getTargetAvatar();
             let badges = document.querySelectorAll('.ui-user-badge');
             badges.forEach(badge => {
-                // Если контент отличается, заменяем
                 if (badge.innerHTML.trim() !== activeAvatarHTML.trim()) {
                     badge.innerHTML = activeAvatarHTML;
                 }
             });
         }
 
-        // Настраиваем MutationObserver для отслеживания любых изменений внутри .ui-user-badge
-        const observerConfig = { childList: true, subtree: true, characterData: true };
-        
-        const avatarObserver = new MutationObserver((mutationsList) => {
-            // Как только произошло ЛЮБОЕ изменение, мы временно отключаем наблюдатель,
-            // вставляем правильный аватар и включаем обратно.
-            // Это предотвращает бесконечный цикл.
-            avatarObserver.disconnect();
-            applyCorrectAvatar();
-            startObserving();
-        });
-
-        function startObserving() {
-            let badges = document.querySelectorAll('.ui-user-badge');
-            badges.forEach(badge => {
-                avatarObserver.observe(badge, observerConfig);
-            });
-        }
-
-        // Первичный запуск
-        applyCorrectAvatar(); // Вставляем сразу
-        startObserving();    // Начинаем следить
-
-        // На всякий случай оставляем setInterval, но реже, для страховки если Observer промахнется
-        setInterval(applyCorrectAvatar, 1000);
-
-        // --- ОСТАЛЬНОЙ ФУНКЦИОНАЛ ---
+        // Чистый вызов сразу при чтении скрипта и дубли на загрузку
+        applyCorrectAvatar();
+        document.addEventListener('DOMContentLoaded', applyCorrectAvatar);
+        window.addEventListener('load', applyCorrectAvatar);
 
         function toggleTopAvatarSelector() { document.getElementById('top-avatar-popup').classList.toggle('active'); }
 
