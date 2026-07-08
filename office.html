@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office  002 </title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+    <title>GY-GY Club - Office 003 </title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root { 
@@ -29,147 +29,91 @@
             margin: 0; 
         }
 
-        /* ПОСТОЯННЫЕ АТРИБУТЫ СТРАНИЦЫ (БРЕНДИНГ GY-GY) */
-        .ui-header-right { 
-            position: fixed !important; top: 18px !important; right: 25px !important; z-index: 1000000 !important; 
-            font-size: 24px !important; letter-spacing: 3px !important; font-weight: bold !important; user-select: none !important;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            cursor: pointer;
-        }
-
-        /* ПОСТОЯННАЯ КНОПКА ВОЗВРАТА */
-        .ui-back-btn {
-            position: fixed !important; top: 18px !important; left: 25px !important; z-index: 1000000 !important;
-            font-size: 24px !important; font-weight: bold !important; cursor: pointer; user-select: none !important;
-            transition: all 0.3s;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-        }
-        .ui-back-btn:hover {
-            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important;
-        }
-
-        /* СТИЛЬ ЗАГОЛОВКА */
-        .quote-text { 
-            font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; 
-            text-align: center !important; width: 100% !important; max-width: 90vw !important; margin: 10px auto 30px auto !important; 
-            text-shadow: 2px 2px 4px #000; display: block !important; color: var(--gold);
-        }
-
-        /* ПРОСТРАНСТВО ОФИСА (СТРОГО В ЭКРАНЕ) */
-        #block-office {
-            width: 100%;
-            height: 100vh;
+        /* КОМПАКТНАЯ ВЕРХНЯЯ ЛИНЕЙКА УПРАВЛЕНИЯ */
+        .office-top-line {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding-top: 10vh;
-            padding-bottom: 4vh;
-            overflow: hidden;
+            justify-content: space-between;
+            width: 90vw;
+            max-width: 500px;
+            margin: 2vh auto 1.5vh auto;
+            z-index: 100000;
         }
 
-        /* ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ СТРАНИЦ (ТАБЫ 1-6) */
+        .ui-back-btn {
+            font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: all 0.3s;
+        }
+        .ui-back-btn:hover { text-shadow: 0 0 8px var(--gold); }
+
+        .ui-header-right { 
+            font-size: 22px; letter-spacing: 2px; font-weight: bold; user-select: none;
+        }
+
+        /* ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ КОМНАТ (ТАБЫ 1-6) */
         .office-tabs-panel { 
-            display: flex; 
-            gap: 12px; 
-            margin-bottom: 20px; 
-            z-index: 100; 
-        }
-        
-        .tab-num {
-            width: 42px; 
-            height: 42px; 
-            border: 2px solid var(--gold); 
-            background: #000; 
-            color: var(--gold);
-            font-family: 'Share Tech Mono', monospace; 
-            font-size: 18px; 
-            font-weight: 900; 
-            cursor: pointer;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: all 0.3s ease;
-            text-shadow: 0 0 2px rgba(214, 175, 55, 0.3);
-        }
-        
-        /* Фирменное неоновое свечение букв без изменения черного фона */
-        .tab-num:hover, .tab-num.active {
-            background: #000 !important; 
-            color: var(--gold) !important; 
-            border-color: var(--gold) !important;
-            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
-            box-shadow: 0 0 12px rgba(214, 175, 55, 0.5);
-        }
-
-        /* КОНТЕЙНЕР ДЛЯ АКТИВНОГО ЧАТА */
-        .office-chats-container { 
-            width: 90vw; 
-            max-width: 500px; 
-            height: 55vh; 
-            border: 2px solid var(--gold); 
-            background: rgba(0, 0, 0, 0.9); 
-            position: relative; 
-            box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); 
-        }
-        
-        .office-chat-page { 
-            position: absolute; 
-            inset: 0; 
-            display: none; 
-            flex-direction: column; 
-            padding: 15px; 
-        }
-        .office-chat-page.active { 
-            display: flex !important; 
-        }
-        
-        /* ИНТЕРФЕЙС СТРАНИЦЫ ЧАТА */
-        .chat-history { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            border: 1px solid rgba(214, 175, 55, 0.3); 
-            padding: 10px; 
-            margin-bottom: 12px; 
-            font-size: 14px; 
-            text-align: left; 
-            background: #000;
-        }
-        
-        .chat-input-zone { 
             display: flex; 
             gap: 8px; 
         }
         
-        .chat-input-zone input { 
-            flex-grow: 1; 
-            background: #000; 
-            border: 1px solid var(--gold); 
-            color: var(--gold); 
-            padding: 10px 12px; 
-            font-family: 'Share Tech Mono', monospace; 
-            outline: none; 
-            font-size: 14px;
+        .tab-num {
+            width: 36px; height: 36px; border: 2px solid var(--gold); background: #000; color: var(--gold);
+            font-family: 'Share Tech Mono', monospace; font-size: 16px; font-weight: 900; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+        }
+        .tab-num:hover, .tab-num.active {
+            background: #000 !important; color: var(--gold) !important; border-color: var(--gold) !important;
+            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
+            box-shadow: 0 0 10px rgba(214, 175, 55, 0.4);
+        }
+
+        /* ГЛАВНЫЙ КОНТЕЙНЕР */
+        .office-chats-container { 
+            width: 90vw; max-width: 500px; height: 78vh; 
+            border: 2px solid var(--gold); background: rgba(0, 0, 0, 0.9); 
+            margin: 0 auto; position: relative; box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); 
         }
         
-        /* КНОПКА ОТПРАВКИ (БЕЗ ЖЕЛТОЙ ЗАЛИВКИ ФОНА) */
-        .btn-send { 
-            padding: 0 20px; 
-            background: #000; 
-            border: 1px solid var(--gold); 
-            color: var(--gold); 
-            cursor: pointer; 
-            font-family: 'Share Tech Mono', monospace; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            transition: all 0.3s; 
+        .office-chat-page { position: absolute; inset: 0; display: none; flex-direction: column; padding: 15px; }
+        .office-chat-page.active { display: flex !important; }
+        
+        /* РЕДАКТИРУЕМОЕ НАЗВАНИЕ КОМНАТЫ */
+        .room-title-container { margin-bottom: 10px; min-height: 30px; display: flex; align-items: center; }
+        .room-title { font-size: 20px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed transparent; transition: all 0.2s; }
+        .room-title:hover { border-color: var(--gold); text-shadow: 0 0 5px var(--gold); }
+        .room-title-input { background: #000; border: 1px solid var(--gold); color: var(--gold); font-family: 'Share Tech Mono'; font-size: 18px; padding: 2px 6px; width: 100%; outline: none; }
+
+        /* СТАНДАРТНАЯ КОМПОНОВКА ЧАТА */
+        .chat-history { flex-grow: 1; overflow-y: auto; border: 1px solid rgba(214, 175, 55, 0.3); padding: 10px; margin-bottom: 12px; background: #000; }
+        
+        .chat-message { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+        .msg-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; background: #222; }
+        .msg-content { display: flex; flex-direction: column; }
+        .msg-username { font-size: 11px; color: rgba(214, 175, 55, 0.6); margin-bottom: 2px; font-weight: bold; }
+        .msg-text { font-size: 14px; color: #fff; word-break: break-all; }
+
+        /* ЗОНА ВВОДА И ВЫБОРА АВАТАРА */
+        .chat-input-zone { display: flex; gap: 8px; position: relative; }
+        
+        .current-user-avatar-btn { 
+            width: 40px; height: 40px; border: 1px solid var(--gold); border-radius: 50%; 
+            cursor: pointer; object-fit: cover; background: #111; transition: transform 0.2s;
         }
-        .btn-send:hover { 
-            background: #000 !important;
-            color: var(--gold) !important;
-            text-shadow: 0 0 8px var(--gold); 
-            box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); 
+        .current-user-avatar-btn:hover { transform: scale(1.05); box-shadow: 0 0 8px var(--gold); }
+
+        .chat-input-zone input { flex-grow: 1; background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 0 12px; font-family: 'Share Tech Mono'; outline: none; font-size: 14px; }
+        
+        .btn-send { padding: 0 15px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono'; font-weight: 900; transition: all 0.3s; }
+        .btn-send:hover { background: #000 !important; color: var(--gold) !important; text-shadow: 0 0 8px var(--gold); box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); }
+
+        /* ВСПЛЫВАЮЩИЙ СЕЛЕКТОР АВАТАРОВ (ИЗ ЗОНЫ РЕГИСТРАЦИИ) */
+        .avatar-selector-popup {
+            display: none; position: absolute; bottom: 50px; left: 0; background: #000; 
+            border: 2px solid var(--gold); padding: 10px; gap: 8px; grid-template-columns: repeat(4, 40px); z-index: 2000;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
+        .avatar-selector-popup.active { display: grid; }
+        .popup-avatar-option { width: 40px; height: 40px; border: 1px solid rgba(214, 175, 55, 0.4); border-radius: 50%; cursor: pointer; object-fit: cover; }
+        .popup-avatar-option:hover { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); }
 
         /* Изоляция от переводчика Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
@@ -178,12 +122,9 @@
 </head>
 <body>
 
-    <div class="ui-back-btn" onclick="goBack()">&lt; BACK</div>
-    <div class="ui-header-right">GY-GY</div>
-
-    <div id="block-office">
-        <div class="quote-text">OFFICE CHANNELS</div>
-
+    <div class="office-top-line">
+        <div class="ui-back-btn" onclick="goBack()">&lt; BACK</div>
+        
         <div class="office-tabs-panel">
             <div class="tab-num active" onclick="switchOfficePage(1)">1</div>
             <div class="tab-num" onclick="switchOfficePage(2)">2</div>
@@ -193,79 +134,131 @@
             <div class="tab-num" onclick="switchOfficePage(6)">6</div>
         </div>
 
-        <div class="office-chats-container">
-            
-            <div id="office-page-1" class="office-chat-page active">
-                <div class="chat-history">--- CHANNEL 01 SYSTEM ONLINE ---</div>
-                <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to channel 1...">
-                    <button class="btn-send">SEND</button>
-                </div>
-            </div>
+        <div class="ui-header-right">GY-GY</div>
+    </div>
 
-            <div id="office-page-2" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 02 SYSTEM ONLINE ---</div>
-                <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to channel 2...">
-                    <button class="btn-send">SEND</button>
-                </div>
-            </div>
+    <div class="office-chats-container">
+        
+        <script>
+            for (let i = 1; i <= 6; i++) {
+                document.write(`
+                    <div id="office-page-${i}" class="office-chat-page ${i === 1 ? 'active' : ''}">
+                        <div class="room-title-container">
+                            <div class="room-title" id="title-text-${i}" onclick="editRoomTitle(${i})">CHANNEL 0${i}</div>
+                        </div>
+                        <div class="chat-history" id="chat-history-${i}">
+                            <div class="chat-message">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=system" class="msg-avatar">
+                                <div class="msg-content">
+                                    <span class="msg-username">SYSTEM Bot</span>
+                                    <span class="msg-text">Secure connection established on Room ${i}.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-zone">
+                            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User1" class="current-user-avatar-btn" id="current-avatar-btn-${i}" onclick="toggleAvatarPopup(${i})">
+                            
+                            <div class="avatar-selector-popup" id="avatar-popup-${i}">
+                                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User1" class="popup-avatar-option" onclick="selectAvatar(${i}, 'https://api.dicebear.com/7.x/identicon/svg?seed=User1')">
+                                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User2" class="popup-avatar-option" onclick="selectAvatar(${i}, 'https://api.dicebear.com/7.x/identicon/svg?seed=User2')">
+                                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User3" class="popup-avatar-option" onclick="selectAvatar(${i}, 'https://api.dicebear.com/7.x/identicon/svg?seed=User3')">
+                                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=User4" class="popup-avatar-option" onclick="selectAvatar(${i}, 'https://api.dicebear.com/7.x/identicon/svg?seed=User4')">
+                            </div>
 
-            <div id="office-page-3" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 03 SYSTEM ONLINE ---</div>
-                <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to channel 3...">
-                    <button class="btn-send">SEND</button>
-                </div>
-            </div>
+                            <input type="text" id="chat-input-${i}" placeholder="Message..." onkeydown="if(event.key==='Enter') sendMessage(${i})">
+                            <button class="btn-send" onclick="sendMessage(${i})">SEND</button>
+                        </div>
+                    </div>
+                `);
+            }
+        </script>
 
-            <div id="office-page-4" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 04 SYSTEM ONLINE ---</div>
-                <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to channel 4...">
-                    <button class="btn-send">SEND</button>
-                </div>
-            </div>
-
-            <div id="office-page-5" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 05 SYSTEM ONLINE ---</div>
-                <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to channel 5...">
-                    <button class="btn-send">SEND</button>
-                </div>
-            </div>
-
-            <div id="office-page-6" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 06 SYSTEM ONLINE ---</div>
-                <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to channel 6...">
-                    <button class="btn-send">SEND</button>
-                </div>
-            </div>
-
-        </div>
     </div>
 
     <script>
-        // Функция переключения активной страницы чата
-        function switchOfficePage(pageNum) {
-            // Снимаем подсветку со всех номеров панелей
-            document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
-            // Скрываем все страницы чатов
-            document.querySelectorAll('.office-chat-page').forEach(page => page.classList.remove('active'));
+        // Глобальный кеш выбранных аватаров для каждой комнаты
+        const userAvatars = { 1: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 2: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 3: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 4: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 5: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1', 6: 'https://api.dicebear.com/7.x/identicon/svg?seed=User1' };
 
-            // Включаем нужный номер
+        // Переключение комнат
+        function switchOfficePage(pageNum) {
+            document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.office-chat-page').forEach(page => {
+                page.classList.remove('active');
+                // Закрываем поп-апы аватаров при уходе из комнаты
+                const popup = page.querySelector('.avatar-selector-popup');
+                if(popup) popup.classList.remove('active');
+            });
+
             const tabs = document.querySelectorAll('.tab-num');
             if(tabs[pageNum - 1]) tabs[pageNum - 1].classList.add('active');
 
-            // Отображаем нужный чат
             const activePage = document.getElementById(`office-page-${pageNum}`);
             if(activePage) activePage.classList.add('active');
         }
 
-        // Функция возврата на предыдущий уровень (в Холл)
+        // Редактирование названия комнаты
+        function editRoomTitle(roomNum) {
+            const titleText = document.getElementById(`title-text-${roomNum}`);
+            const currentName = titleText.innerText;
+            const container = titleText.parentElement;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'room-title-input';
+            input.value = currentName;
+
+            container.innerHTML = '';
+            container.appendChild(input);
+            input.focus();
+
+            function saveTitle() {
+                const newName = input.value.trim() || `CHANNEL 0${roomNum}`;
+                container.innerHTML = `<div class="room-title" id="title-text-${roomNum}" onclick="editRoomTitle(${roomNum})">${newName}</div>`;
+            }
+
+            input.addEventListener('blur', saveTitle);
+            input.addEventListener('keydown', (e) => { if(e.key === 'Enter') saveTitle(); });
+        }
+
+        // Открытие/закрытие панели аватаров
+        function toggleAvatarPopup(roomNum) {
+            const popup = document.getElementById(`avatar-popup-${roomNum}`);
+            popup.classList.toggle('active');
+        }
+
+        // Выбор аватара
+        function selectAvatar(roomNum, avatarUrl) {
+            userAvatars[roomNum] = avatarUrl;
+            document.getElementById(`current-avatar-btn-${roomNum}`).src = avatarUrl;
+            document.getElementById(`avatar-popup-${roomNum}`).classList.remove('active');
+        }
+
+        // Отправка сообщений со стандартной разметкой
+        function sendMessage(roomNum) {
+            const input = document.getElementById(`chat-input-${roomNum}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const history = document.getElementById(`chat-history-${roomNum}`);
+            const avatar = userAvatars[roomNum];
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = `
+                <img src="${avatar}" class="msg-avatar">
+                <div class="msg-content">
+                    <span class="msg-username">You</span>
+                    <span class="msg-text">${text}</span>
+                </div>
+            `;
+
+            history.appendChild(messageDiv);
+            input.value = '';
+            history.scrollTop = history.scrollHeight;
+        }
+
         function goBack() {
-            window.location.href = 'index.html'; // Или пропиши нужный переход, например 'hall.html'
+            window.location.href = 'index.html';
         }
     </script>
 </body>
