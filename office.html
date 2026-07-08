@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v8.5</title>
+    <title>GY-GY Club - Office v8.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -58,6 +58,23 @@
         .ui-user-badge:hover { transform: left: 50% scale(1.05); box-shadow: 0 0 20px var(--gold); }
         
         .avatar-svg { width: 100%; height: 100%; display: block; }
+
+        /* Pop-up Selector Panel (Registration zone fallback) */
+        .top-avatar-selector {
+            display: none; position: absolute; top: 65px; left: 50%; transform: translateX(-50%);
+            background: #000; border: 2px solid var(--gold); padding: 8px; gap: 8px;
+            grid-template-columns: repeat(4, 40px); z-index: 2000000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .top-avatar-selector.active { display: grid; }
+        
+        .popup-avatar-option { 
+            width: 40px; height: 40px; border: 1px solid rgba(214, 175, 55, 0.4); 
+            border-radius: 50%; cursor: pointer; background: #222;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        .popup-avatar-option:hover { border-color: var(--gold); box-shadow: 0 0 8px var(--gold); }
 
         /* GY-GY Logo with Version System */
         .ui-header-right { 
@@ -131,12 +148,19 @@
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
-        <div class="ui-user-badge" id="global-user-badge">
+        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()" id="global-user-badge">
             </div>
+
+        <div class="top-avatar-selector" id="top-avatar-popup">
+            <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
+            <div class="popup-avatar-option" onclick="changeGlobalAvatar(2)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="18" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" fill="#8A2BE2"/></svg></div>
+            <div class="popup-avatar-option" onclick="changeGlobalAvatar(3)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="30" y="20" width="40" height="40" fill="#d4af37"/><path d="M10 90 L30 65 L70 65 L90 90 Z" fill="#d4af37"/></svg></div>
+            <div class="popup-avatar-option" onclick="changeGlobalAvatar(4)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg></div>
+        </div>
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v8.5</span>
+            <span class="version-text">v8.7</span>
         </div>
     </div>
 
@@ -199,8 +223,23 @@
             4: `<svg class="avatar-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
         };
 
-        let savedAvatarID = localStorage.getItem('userAvatarID') || 1;
+        // SAFE IMPORT SYSTEM WITH GUARANTEED FALLBACK
+        let savedAvatarID = localStorage.getItem('userAvatarID') || localStorage.getItem('avatarID') || localStorage.getItem('savedAvatar') || 1;
+        
+        // Render current avatar right away
         document.getElementById('global-user-badge').innerHTML = avatarCodes[savedAvatarID];
+
+        function toggleTopAvatarSelector() {
+            document.getElementById('top-avatar-popup').classList.toggle('active');
+        }
+
+        // Change avatar manually and sync to storage
+        function changeGlobalAvatar(id) {
+            savedAvatarID = id;
+            localStorage.setItem('userAvatarID', id); 
+            document.getElementById('global-user-badge').innerHTML = avatarCodes[id];
+            document.getElementById('top-avatar-popup').classList.remove('active');
+        }
 
         function switchOfficePage(pageNum) {
             document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
@@ -208,6 +247,7 @@
 
             document.getElementById(`tab-btn-${pageNum}`).classList.add('active');
             document.getElementById(`office-page-${pageNum}`).classList.add('active');
+            document.getElementById('top-avatar-popup').classList.remove('active');
         }
 
         function editRoomTitle(roomNum) {
