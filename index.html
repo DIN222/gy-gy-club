@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.22 CORE</title>
+    <title>GY-GY Club v4.5.30.23 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -38,7 +38,7 @@
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
-        /* ПРЕМИАЛЬНЫЙ СКВОЗНОЙ АВАТАР (ФИОЛЕТОВЫЙ ВЫЖЖЕН ПОЛНОСТЬЮ) */
+        /* ПРЕМИАЛЬНЫЙ СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
@@ -96,10 +96,18 @@
 
         body { top: 0 !important; }
         
-        /* ЖЕСТКАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ (БЕЗ ВЫХОДА ЗА ЭКРАН) */
-        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; align-items: center !important; max-height: 100vh !important; overflow: hidden !important; }
-        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; text-align: center !important; }
-        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin: 0 auto 2vh auto !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); display: block; }
+        /* ЖЕСТКАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ (СТРОГО В ПРЕДЕЛАХ ЭКРАНА) */
+        #block-welcome { 
+            justify-content: center !important; 
+            padding-top: 4vh !important; 
+            padding-bottom: 4vh !important;
+            align-items: center !important; 
+            height: 100vh !important;
+            max-height: 100vh !important; 
+            overflow: hidden !important; 
+        }
+        #block-welcome .quote-text { margin-top: 0 !important; margin-bottom: 2vh !important; font-size: 24px; text-align: center !important; }
+        #block-welcome img { max-height: 38vh !important; width: auto; object-fit: contain; margin: 0 auto 2vh auto !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); display: block; }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
@@ -108,7 +116,7 @@
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             pointer-events: auto !important; user-select: none; display: none;
         }
         .arrow-item { transition: opacity 0.2s; }
@@ -119,7 +127,6 @@
         /* ==================================================== */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         
-        /* Идеальная фиксированная сетка для стрелок */
         .hall-interior { 
             position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2;
             display: block !important; 
@@ -170,16 +177,20 @@
             display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; 
         }
         
-        /* ПОЛНАЯ ИЗОЛЯЦИЯ КНОПОК МАНИФЕСТА ОТ ЖЕЛТОГО ХОВЕРА */
+        /* ИЗОЛИРОВАННЫЕ КНОПКИ МАНИФЕСТА (ЧИСТОЕ ЗОЛОТО + ИНТЕНСИВНОЕ СВЕЧЕНИЕ БУКВ) */
         .btn-manifest { 
             width: 100% !important; min-width: auto !important; padding: 6px 0 !important; 
             font-size: 12px !important; margin: 0 !important; background: #000 !important; 
-            color: var(--violet) !important; border: 1px solid var(--violet) !important;
+            color: var(--gold) !important; border: 1px solid var(--gold) !important;
             box-shadow: 0 4px 10px rgba(0,0,0,0.9) !important; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono'; transition: all 0.3s;
+            text-shadow: 0 0 2px rgba(214, 175, 55, 0.3);
         }
         .btn-manifest:hover { 
-            background: var(--violet) !important; color: #000 !important; 
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.6) !important; 
+            background: #000 !important; 
+            color: var(--gold) !important;
+            border-color: var(--gold) !important;
+            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; /* Интенсивное неоновое свечение самих букв */
+            box-shadow: 0 4px 15px rgba(214, 175, 55, 0.4) !important; 
         }
         
         /* ЗАЩИТА ОТ СДВИГОВ И ПЕРЕВОДЧИКА GOOGLE */
