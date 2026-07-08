@@ -3,276 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY SYSTEM 001 </title>
+    <title>GY-GY Club - Office  002 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
+        :root { 
+            --gold: #d4af37; 
+            --violet: #8A2BE2; 
+        }
         
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        * { 
+            -webkit-tap-highlight-color: transparent !important; 
+            box-sizing: border-box; 
+        }
         body, button, input, div, img, span { pointer-events: auto !important; }
-        img { -webkit-user-drag: none !important; }
 
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
-        
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
-        .lang-frame-locked {
-            position: fixed; top: 15px; left: 15px; z-index: 9999999; 
-            width: 180px; height: 40px; border: 2px solid var(--gold); 
-            background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 12px;
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+            position: fixed; 
+            margin: 0; 
         }
-        .lang-dropdown-adaptive {
-            display: none; position: absolute; top: 44px; left: -2px; 
-            width: 180px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
-            max-height: 70vh; overflow-y: auto;
-        }
-        .lang-item { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; line-height: 1; }
-        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
-        .flag-icon { width: 22px; margin-right: 12px; }
 
-        /* ЛОГОТИП GY-GY */
+        /* ПОСТОЯННЫЕ АТРИБУТЫ СТРАНИЦЫ (БРЕНДИНГ GY-GY) */
         .ui-header-right { 
             position: fixed !important; top: 18px !important; right: 25px !important; z-index: 1000000 !important; 
             font-size: 24px !important; letter-spacing: 3px !important; font-weight: bold !important; user-select: none !important;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-        }
-        
-        /* ПРЕМИАЛЬНЫЙ СКВОЗНОЙ АВАТАР */
-        .ui-user-badge {
-            position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
-            width: 50px !important; height: 50px !important; border-radius: 50% !important;
-            border: 2px solid var(--gold) !important; background: transparent !important;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35) !important; z-index: 1000000 !important; cursor: pointer; display: none;
-        }
-        .ui-user-badge .badge-img { 
-            width: 100% !important; height: 100% !important; border-radius: 50% !important; object-fit: cover !important; 
-            flex-shrink: 0 !important; display: block !important; background: transparent !important; border: none !important; 
-        }
-        .ui-user-badge .badge-flag {
-            position: absolute !important; bottom: -2px !important; right: -2px !important;
-            width: 18px !important; height: 13px !important; object-fit: cover !important;
-            border: 1px solid var(--gold) !important; border-radius: 2px !important; z-index: 1000002 !important; display: block !important; background: #000 !important;
+            cursor: pointer;
         }
 
-        /* ПАСПОРТ */
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
-
-        /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ СТРАНИЦ */
-        .block { 
-            position: fixed; 
-            inset: 0; 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            background: #000; 
-            z-index: 10; 
-            opacity: 0; 
-            transition: opacity 0.5s ease-in-out; 
+        /* ПОСТОЯННАЯ КНОПКА ВОЗВРАТА */
+        .ui-back-btn {
+            position: fixed !important; top: 18px !important; left: 25px !important; z-index: 1000000 !important;
+            font-size: 24px !important; font-weight: bold !important; cursor: pointer; user-select: none !important;
+            transition: all 0.3s;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
-        .block.active { 
-            display: flex !important; 
-            opacity: 1 !important; 
-            z-index: 5000 !important; 
+        .ui-back-btn:hover {
+            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important;
         }
 
-        /* ФИКС СЛОГАНА */
+        /* СТИЛЬ ЗАГОЛОВКА */
         .quote-text { 
             font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; 
             text-align: center !important; width: 100% !important; max-width: 90vw !important; margin: 10px auto 30px auto !important; 
             text-shadow: 2px 2px 4px #000; display: block !important; color: var(--gold);
         }
+
+        /* ПРОСТРАНСТВО ОФИСА (СТРОГО В ЭКРАНЕ) */
+        #block-office {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 10vh;
+            padding-bottom: 4vh;
+            overflow: hidden;
+        }
+
+        /* ПАНЕЛЬ ПЕРЕКЛЮЧЕНИЯ СТРАНИЦ (ТАБЫ 1-6) */
+        .office-tabs-panel { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 20px; 
+            z-index: 100; 
+        }
         
-        /* ЕДИНЫЙ ПРЕМИАЛЬНЫЙ СТИЛЬ ДЛЯ ВСЕХ КНОПОК GY-GY (БЕЗ ЖЕЛТОЙ ЗАЛИВКИ ФОНА) */
-        .btn-gy { 
-            min-width: 270px; padding: 14px; background: #000; 
-            border: 2px solid var(--gold); color: var(--gold); cursor: pointer; 
-            text-transform: uppercase; font-weight: 900; margin: 8px 0; 
-            font-family: 'Share Tech Mono'; transition: all 0.3s;
+        .tab-num {
+            width: 42px; 
+            height: 42px; 
+            border: 2px solid var(--gold); 
+            background: #000; 
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace; 
+            font-size: 18px; 
+            font-weight: 900; 
+            cursor: pointer;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s ease;
             text-shadow: 0 0 2px rgba(214, 175, 55, 0.3);
         }
-        .btn-gy:hover { 
+        
+        /* Фирменное неоновое свечение букв без изменения черного фона */
+        .tab-num:hover, .tab-num.active {
             background: #000 !important; 
             color: var(--gold) !important; 
             border-color: var(--gold) !important;
             text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
-            box-shadow: 0 0 15px rgba(214, 175, 55, 0.5) !important; 
+            box-shadow: 0 0 12px rgba(214, 175, 55, 0.5);
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ АКТИВНОГО ЧАТА */
+        .office-chats-container { 
+            width: 90vw; 
+            max-width: 500px; 
+            height: 55vh; 
+            border: 2px solid var(--gold); 
+            background: rgba(0, 0, 0, 0.9); 
+            position: relative; 
+            box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); 
         }
         
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-
-        body { top: 0 !important; }
+        .office-chat-page { 
+            position: absolute; 
+            inset: 0; 
+            display: none; 
+            flex-direction: column; 
+            padding: 15px; 
+        }
+        .office-chat-page.active { 
+            display: flex !important; 
+        }
         
-        /* ЖЕСТКАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ (СТРОГО В ПРЕДЕЛАХ ЭКРАНА) */
-        #block-welcome { 
-            justify-content: center !important; 
-            padding-top: 4vh !important; 
-            padding-bottom: 4vh !important;
-            align-items: center !important; 
-            height: 100vh !important;
-            max-height: 100vh !important; 
-            overflow: hidden !important; 
+        /* ИНТЕРФЕЙС СТРАНИЦЫ ЧАТА */
+        .chat-history { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            border: 1px solid rgba(214, 175, 55, 0.3); 
+            padding: 10px; 
+            margin-bottom: 12px; 
+            font-size: 14px; 
+            text-align: left; 
+            background: #000;
         }
-        #block-welcome .quote-text { margin-top: 0 !important; margin-bottom: 2vh !important; font-size: 24px; text-align: center !important; }
-        #block-welcome img { max-height: 38vh !important; width: auto; object-fit: contain; margin: 0 auto 2vh auto !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); display: block; }
-        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
-
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
-        .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            pointer-events: auto !important; user-select: none; display: none;
-        }
-        .arrow-item { transition: opacity 0.2s; }
-        .arrow-item:hover { opacity: 0.8; }
-
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ СТРЕЛКИ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
-        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; display: block !important; }
         
-        .hall-interior .quote-text { 
-            position: absolute !important; top: 8vh !important; left: 50% !important; transform: translateX(-50%) translateZ(0) !important;
-            width: 85% !important; margin: 0 auto !important; text-align: center !important; padding: 0 !important; background: transparent !important; color: var(--gold) !important;       
-            font-size: 28px; font-weight: 700; -webkit-backface-visibility: hidden; backface-visibility: hidden;
-            filter: drop-shadow(0 0 8px rgba(15, 15, 15, 1)) drop-shadow(0 0 15px rgba(10, 10, 10, 1)) drop-shadow(0 0 30px rgba(0, 0, 0, 1));
+        .chat-input-zone { 
+            display: flex; 
+            gap: 8px; 
         }
-
-        .hall-door-target { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; cursor: pointer; z-index: 5; background: transparent; }
-
-        .painting-zone {
-            position: absolute; top: 25vh; width: 6vw; height: 12vh; cursor: pointer; z-index: 6; background: transparent;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .painting-left { left: 23vw; }
-        .painting-right { right: 23vw; }
-
-        .cue-arrow-hall { 
-            color: var(--violet); font-size: 38px; font-weight: 900; font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); pointer-events: none; user-select: none; z-index: 10; transition: opacity 0.2s;
-        }
-        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
-
-        .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         
-        /* ИЗОЛИРОВАННЫЕ КНОПКИ МАНИФЕСТА (ЧИСТОЕ ЗОЛОТО + ИНТЕНСИВНОЕ СВЕЧЕНИЕ БУКВ) */
-        .btn-manifest { 
-            width: 100% !important; min-width: auto !important; padding: 6px 0 !important; 
-            font-size: 12px !important; margin: 0 !important; background: #000 !important; 
-            color: var(--gold) !important; border: 1px solid var(--gold) !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.9) !important; text-transform: uppercase; font-weight: 900; font-family: 'Share Tech Mono'; transition: all 0.3s;
-            text-shadow: 0 0 2px rgba(214, 175, 55, 0.3);
+        .chat-input-zone input { 
+            flex-grow: 1; 
+            background: #000; 
+            border: 1px solid var(--gold); 
+            color: var(--gold); 
+            padding: 10px 12px; 
+            font-family: 'Share Tech Mono', monospace; 
+            outline: none; 
+            font-size: 14px;
         }
-        .btn-manifest:hover { 
-            background: #000 !important; color: var(--gold) !important; border-color: var(--gold) !important;
-            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
-            box-shadow: 0 4px 15px rgba(214, 175, 55, 0.4) !important; 
+        
+        /* КНОПКА ОТПРАВКИ (БЕЗ ЖЕЛТОЙ ЗАЛИВКИ ФОНА) */
+        .btn-send { 
+            padding: 0 20px; 
+            background: #000; 
+            border: 1px solid var(--gold); 
+            color: var(--gold); 
+            cursor: pointer; 
+            font-family: 'Share Tech Mono', monospace; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            transition: all 0.3s; 
+        }
+        .btn-send:hover { 
+            background: #000 !important;
+            color: var(--gold) !important;
+            text-shadow: 0 0 8px var(--gold); 
+            box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); 
         }
 
-        /* ==================================================== */
-        /* СТИЛИ СТРАНИЦЫ ОФИСА И КОМПАКТНЫХ ЧАТОВ             */
-        /* ==================================================== */
-        #block-office { justify-content: flex-start !important; padding-top: 8vh !important; height: 100vh !important; max-height: 100vh !important; overflow: hidden !important; }
-        .office-tabs-panel { display: flex; gap: 10px; margin-bottom: 20px; z-index: 100; }
-        
-        .tab-num {
-            width: 40px; height: 40px; border: 2px solid var(--gold); background: #000; color: var(--gold);
-            font-family: 'Share Tech Mono', monospace; font-size: 18px; font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
-            text-shadow: 0 0 2px rgba(214, 175, 55, 0.3);
-        }
-        .tab-num:hover, .tab-num.active {
-            background: #000; color: var(--gold); border-color: var(--gold);
-            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold); box-shadow: 0 0 12px rgba(214, 175, 55, 0.5);
-        }
-
-        .office-chats-container { width: 90vw; max-width: 500px; height: 60vh; border: 2px solid var(--gold); background: rgba(0, 0, 0, 0.8); position: relative; box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); }
-        .office-chat-page { position: absolute; inset: 0; display: none; flex-direction: column; padding: 15px; }
-        .office-chat-page.active { display: flex !important; }
-        .chat-history { flex-grow: 1; overflow-y: auto; border: 1px solid rgba(214, 175, 55, 0.3); padding: 10px; margin-bottom: 10px; font-size: 14px; text-align: left; }
-        .chat-input-zone { display: flex; gap: 8px; }
-        .chat-input-zone input { flex-grow: 1; background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 8px 12px; font-family: 'Share Tech Mono', monospace; outline: none; }
-        .chat-input-zone .btn-send { padding: 8px 15px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono', monospace; font-weight: 900; text-transform: uppercase; transition: all 0.3s; }
-        .chat-input-zone .btn-send:hover { text-shadow: 0 0 8px var(--gold); box-shadow: 0 0 10px rgba(214, 175, 55, 0.4); }
-        
-        /* ЗАЩИТА ОТ СДВИГОВ И ПЕРЕВОДЧИКА GOOGLE */
+        /* Изоляция от переводчика Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
-        body.page-loaded { opacity: 1 !important; }
-        
-        body:has(#block-welcome.active) #lang-switcher,
-        body:has(#block-identity.active) #lang-switcher,
-        body:has(#block-office.active) #lang-switcher,
-        body:has(#block-hall.active) #lang-switcher { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
-        
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
-        .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
-        .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
-        .hall-interior .quote-text font { text-shadow: none !important; color: var(--gold) !important; }
-        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
-      
-        body:has(#block-entrance.active) #lang-switcher { display: flex !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
-        
-        #main-door { display: block; height: calc(50vh + 20px); width: auto; max-width: 100%; object-fit: contain; margin: 0 auto; transform: scale(1); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; }
-        .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
-
-        /* АНТИБЛИК И СГЛАЖИВАНИЕ */
-        .hall-interior .quote-text, .ui-user-badge, #id-label, #pass-id-val { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-        .hall-interior .quote-text font, #id-label font, #pass-id-val font { text-shadow: none !important; filter: none !important; -webkit-font-smoothing: antialiased; }
     </style>
 </head>
-<body class="page-loaded">
+<body>
 
-    <!-- ЛОГОТИП И НАВИГАЦИЯ -->
+    <div class="ui-back-btn" onclick="goBack()">&lt; BACK</div>
     <div class="ui-header-right">GY-GY</div>
-    <div class="ui-user-badge" id="user-avatar-badge">
-        <img src="avatar_placeholder.jpg" class="badge-img" id="user-avatar-img">
-        <img src="flag_placeholder.png" class="badge-flag" id="user-avatar-flag">
-    </div>
 
-    <!-- БЛОК 1: ДОБРО ПОЖАЛОВАТЬ -->
-    <div id="block-welcome" class="block active">
-        <div class="quote-text">WELCOME TO THE SYSTEM</div>
-        <img src="welcome_logo.png" alt="Logo">
-        <button class="btn-gy">ENTER SYSTEM</button>
-    </div>
+    <div id="block-office">
+        <div class="quote-text">OFFICE CHANNELS</div>
 
-    <!-- БЛОК 2: ИДЕНТИФИКАЦИЯ (РЕГИСТРАЦИЯ) -->
-    <div id="block-identity" class="block">
-        <div class="quote-text">IDENTITY VERIFICATION</div>
-        <button class="btn-gy" id="id-label">CONFIRM ID</button>
-    </div>
-
-    <!-- БЛОК 3: ХОЛЛ -->
-    <div id="block-hall" class="block">
-        <div class="hall-interior">
-            <div class="quote-text">THE GRAND HALL</div>
-            
-            <div class="painting-zone painting-left">
-                <span class="cue-arrow-hall">&lt;</span>
-                <div class="manifest-btn-box"><button class="btn-manifest">MANIFEST 1</button></div>
-            </div>
-
-            <div class="hall-door-target"></div>
-
-            <div class="painting-zone painting-right">
-                <span class="cue-arrow-hall">&gt;</span>
-                <div class="manifest-btn-box"><button class="btn-manifest">MANIFEST 2</button></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- БЛОК 4: ОФИС (С КОМПАКТНЫМИ ТАБАМИ-ЧАТАМИ) -->
-    <div id="block-office" class="block">
-        <div class="quote-text">OFFICE SYSTEMS</div>
-
-        <!-- Компактная числовая панель управления -->
         <div class="office-tabs-panel">
             <div class="tab-num active" onclick="switchOfficePage(1)">1</div>
             <div class="tab-num" onclick="switchOfficePage(2)">2</div>
@@ -282,72 +193,80 @@
             <div class="tab-num" onclick="switchOfficePage(6)">6</div>
         </div>
 
-        <!-- Контейнер изолированных чатов -->
         <div class="office-chats-container">
+            
             <div id="office-page-1" class="office-chat-page active">
-                <div class="chat-history">--- CHANNEL 01 ACTIVE ---</div>
+                <div class="chat-history">--- CHANNEL 01 SYSTEM ONLINE ---</div>
                 <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to room 1...">
+                    <input type="text" placeholder="Type message to channel 1...">
                     <button class="btn-send">SEND</button>
                 </div>
             </div>
+
             <div id="office-page-2" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 02 ACTIVE ---</div>
+                <div class="chat-history">--- CHANNEL 02 SYSTEM ONLINE ---</div>
                 <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to room 2...">
+                    <input type="text" placeholder="Type message to channel 2...">
                     <button class="btn-send">SEND</button>
                 </div>
             </div>
+
             <div id="office-page-3" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 03 ACTIVE ---</div>
+                <div class="chat-history">--- CHANNEL 03 SYSTEM ONLINE ---</div>
                 <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to room 3...">
+                    <input type="text" placeholder="Type message to channel 3...">
                     <button class="btn-send">SEND</button>
                 </div>
             </div>
+
             <div id="office-page-4" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 04 ACTIVE ---</div>
+                <div class="chat-history">--- CHANNEL 04 SYSTEM ONLINE ---</div>
                 <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to room 4...">
+                    <input type="text" placeholder="Type message to channel 4...">
                     <button class="btn-send">SEND</button>
                 </div>
             </div>
+
             <div id="office-page-5" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 05 ACTIVE ---</div>
+                <div class="chat-history">--- CHANNEL 05 SYSTEM ONLINE ---</div>
                 <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to room 5...">
+                    <input type="text" placeholder="Type message to channel 5...">
                     <button class="btn-send">SEND</button>
                 </div>
             </div>
+
             <div id="office-page-6" class="office-chat-page">
-                <div class="chat-history">--- CHANNEL 06 ACTIVE ---</div>
+                <div class="chat-history">--- CHANNEL 06 SYSTEM ONLINE ---</div>
                 <div class="chat-input-zone">
-                    <input type="text" placeholder="Type message to room 6...">
+                    <input type="text" placeholder="Type message to channel 6...">
                     <button class="btn-send">SEND</button>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- СКРИПТЫ СИСТЕМЫ -->
     <script>
-        // Логика табов и изолированных чатов в Офисе
+        // Функция переключения активной страницы чата
         function switchOfficePage(pageNum) {
+            // Снимаем подсветку со всех номеров панелей
             document.querySelectorAll('.tab-num').forEach(tab => tab.classList.remove('active'));
+            // Скрываем все страницы чатов
             document.querySelectorAll('.office-chat-page').forEach(page => page.classList.remove('active'));
 
+            // Включаем нужный номер
             const tabs = document.querySelectorAll('.tab-num');
             if(tabs[pageNum - 1]) tabs[pageNum - 1].classList.add('active');
 
+            // Отображаем нужный чат
             const activePage = document.getElementById(`office-page-${pageNum}`);
             if(activePage) activePage.classList.add('active');
         }
 
-        // Временный отладочный клик по логотипу для перехода в Офис (чтобы протестировать)
-        document.querySelector('.ui-header-right').addEventListener('click', () => {
-            document.querySelectorAll('.block').forEach(b => b.classList.remove('active'));
-            document.getElementById('block-office').classList.add('active');
-        });
+        // Функция возврата на предыдущий уровень (в Холл)
+        function goBack() {
+            window.location.href = 'index.html'; // Или пропиши нужный переход, например 'hall.html'
+        }
     </script>
 </body>
 </html>
