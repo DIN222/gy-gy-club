@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v8.8</title>
+    <title>GY-GY Club - Office v8.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -160,7 +160,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v8.8</span>
+            <span class="version-text">v8.9</span>
         </div>
     </div>
 
@@ -178,7 +178,8 @@
         <script>
             const staffIcons = [
                 `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="25" y="25" width="50" height="50" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="40" cy="45" r="6" fill="#8A2BE2"/><circle cx="60" cy="45" r="6" fill="#8A2BE2"/><path d="M35 65 L65 65" stroke="#8A2BE2" stroke-width="4"/></svg>`,
-                `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="35" fill="none" stroke="#8A2BE2" stroke-width="4"/><path d="M30 40 L45 55 L30 70 M70 40 L55 55 L70 70" stroke="#8A2BE2" stroke-width="4" fill="none"/></svg>`,
+                `
+<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="35" fill="none" stroke="#8A2BE2" stroke-width="4"/><path d="M30 40 L45 55 L30 70 M70 40 L55 55 L70 70" stroke="#8A2BE2" stroke-width="4" fill="none"/></svg>`,
                 `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><polygon points="50,15 85,75 15,75" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="50" cy="55" r="8" fill="#8A2BE2"/></svg>`,
                 `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="20" y="30" width="60" height="40" rx="10" fill="none" stroke="#8A2BE2" stroke-width="4"/><line x1="35" y1="50" x2="65" y2="50" stroke="#8A2BE2" stroke-width="4"/></svg>`,
                 `<svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="30" fill="#8A2BE2"/><line x1="50" y1="10" x2="50" y2="90" stroke="#000" stroke-width="4"/></svg>`,
@@ -223,20 +224,32 @@
             4: `<svg class="avatar-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
         };
 
-        // SAFE IMPORT SYSTEM WITH GUARANTEED FALLBACK
-        let savedAvatarID = localStorage.getItem('userAvatarID') || localStorage.getItem('avatarID') || localStorage.getItem('savedAvatar') || 1;
+        // UNIFIED EXTRACTION FROM LOCALSTORAGE
+        function getRegisteredAvatar() {
+            let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'selectedAvatar'];
+            for (let key of keys) {
+                let val = localStorage.getItem(key);
+                if (val) {
+                    let cleaned = parseInt(val.toString().replace(/[^0-9]/g, ''));
+                    if (cleaned >= 1 && cleaned <= 4) return cleaned;
+                }
+            }
+            return 1;
+        }
+
+        let savedAvatarID = getRegisteredAvatar();
         
-        // Render current avatar right away
+        // Instant visual mount
         document.getElementById('global-user-badge').innerHTML = avatarCodes[savedAvatarID];
 
         function toggleTopAvatarSelector() {
             document.getElementById('top-avatar-popup').classList.toggle('active');
         }
 
-        // Change avatar manually and sync to storage
         function changeGlobalAvatar(id) {
             savedAvatarID = id;
             localStorage.setItem('userAvatarID', id); 
+            localStorage.setItem('avatarID', id); 
             document.getElementById('global-user-badge').innerHTML = avatarCodes[id];
             document.getElementById('top-avatar-popup').classList.remove('active');
         }
