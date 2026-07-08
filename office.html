@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.0</title>
+    <title>GY-GY Club - Office v9.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -45,21 +45,32 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
 
-        /* Premium Registration Avatar Dynamic Frame */
+        /* ИНТЕГРАЦИЯ ТВОЕГО ПРЕМИАЛЬНОГО СКВОЗНОГО АВАТАРА */
         .ui-user-badge {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            width: 48px; height: 48px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35); cursor: pointer;
-            transition: transform 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
+            position: fixed !important; top: 10px !important; left: 50% !important; transform: translateX(-50%) !important;
+            width: 50px !important; height: 50px !important; border-radius: 50% !important;
+            border: 2px solid var(--gold) !important; background: transparent !important;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35) !important; z-index: 1000000 !important; 
+            cursor: pointer; 
+            display: flex !important; /* Перебиваем display: none из index.html */
+            align-items: center; justify-content: center;
         }
-        .ui-user-badge:hover { transform: left: 50% scale(1.05); box-shadow: 0 0 20px var(--gold); }
+        .ui-user-badge:hover { transform: translateX(-50%) scale(1.05) !important; box-shadow: 0 0 20px var(--gold) !important; }
+        
+        /* Твои внутренние классы для аватара и флага */
+        .ui-user-badge .badge-img { 
+            width: 100% !important; height: 100% !important; border-radius: 50% !important; object-fit: cover !important; 
+            flex-shrink: 0 !important; display: block !important; background: transparent !important; border: none !important; 
+        }
+        .ui-user-badge .badge-flag {
+            position: absolute !important; bottom: -2px !important; right: -2px !important;
+            width: 18px !important; height: 13px !important; object-fit: cover !important;
+            border: 1px solid var(--gold) !important; border-radius: 2px !important; z-index: 1000002 !important; display: block !important; background: #000 !important;
+        }
         
         .avatar-svg { width: 100%; height: 100%; display: block; }
 
-        /* Pop-up Selector Panel (Registration zone fallback) */
+        /* Pop-up Selector Panel */
         .top-avatar-selector {
             display: none; position: absolute; top: 65px; left: 50%; transform: translateX(-50%);
             background: #000; border: 2px solid var(--gold); padding: 8px; gap: 8px;
@@ -149,7 +160,9 @@
         </div>
         
         <div class="ui-user-badge" onclick="toggleTopAvatarSelector()" id="global-user-badge">
-            </div>
+            <div class="badge-img" id="badge-avatar-inside"></div>
+            <div class="badge-flag" id="badge-flag-inside" style="display:none;"></div>
+        </div>
 
         <div class="top-avatar-selector" id="top-avatar-popup">
             <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
@@ -160,7 +173,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.0</span>
+            <span class="version-text">v9.2</span>
         </div>
     </div>
 
@@ -223,42 +236,57 @@
             4: `<svg class="avatar-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
         };
 
-        // PARSE RAW SVG DATA OR CLEAN ID
-        function getRegisteredAvatar() {
+        // ВЫТАЛКИВАЕМ АВАТАР ИЗ ЛЮБОГО КЛЮЧА ХРАНИЛИЩА
+        function syncAndRenderAvatar() {
             let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'selectedAvatar'];
+            let foundHTML = "";
+            
             for (let key of keys) {
-                let val = localStorage.getItem(key);
-                if (val) {
-                    // Check if it's already an SVG string stored by index.html
-                    if (val.includes('<svg') || val.includes('viewBox')) {
-                        if (val.includes('#8A2BE2') && val.includes('rect')) return 2; // Fallbacks to maps
-                        if (val.includes('rect')) return 3;
-                        if (val.includes('stroke-width')) return 4;
-                        return 1;
+                let data = localStorage.getItem(key);
+                if (data) {
+                    data = data.trim();
+                    if (data.includes('<svg') || data.includes('<SVG') || data.includes('viewBox')) {
+                        foundHTML = data;
+                        break;
                     }
-                    let cleaned = parseInt(val.toString().replace(/[^0-9]/g, ''));
-                    if (cleaned >= 1 && cleaned <= 4) return cleaned;
+                    let numericId = parseInt(data.replace(/[^0-9]/g, ''));
+                    if (numericId >= 1 && numericId <= 4) {
+                        foundHTML = avatarCodes[numericId];
+                        break;
+                    }
                 }
             }
-            return 1;
+
+            if (!foundHTML) foundHTML = avatarCodes[1]; // Дефолтный Золотой
+
+            // Вставляем строго внутрь .badge-img, как хочет разметка index.html
+            document.getElementById('badge-avatar-inside').innerHTML = foundHTML;
+            
+            // Заодно проверяем флаг страны (если сохранен)
+            let savedFlag = localStorage.getItem('userFlag') || localStorage.getItem('countryFlag');
+            let flagDiv = document.getElementById('badge-flag-inside');
+            if (savedFlag) {
+                flagDiv.innerHTML = savedFlag;
+                flagDiv.style.display = 'block';
+            }
+            
+            return foundHTML;
         }
 
-        let savedAvatarID = getRegisteredAvatar();
-        
-        // Final mounting line
-        document.getElementById('global-user-badge').innerHTML = avatarCodes[savedAvatarID];
+        let currentAvatarHTML = syncAndRenderAvatar();
 
         function toggleTopAvatarSelector() {
             document.getElementById('top-avatar-popup').classList.toggle('active');
         }
 
         function changeGlobalAvatar(id) {
-            savedAvatarID = id;
+            let code = avatarCodes[id];
+            
             localStorage.setItem('userAvatarID', id); 
             localStorage.setItem('avatarID', id); 
-            // Save raw SVG too just in case index.html expects it
-            localStorage.setItem('avatar', avatarCodes[id]);
-            document.getElementById('global-user-badge').innerHTML = avatarCodes[id];
+            localStorage.setItem('avatar', code);
+            
+            currentAvatarHTML = syncAndRenderAvatar();
             document.getElementById('top-avatar-popup').classList.remove('active');
         }
 
@@ -304,7 +332,7 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message';
             messageDiv.innerHTML = `
-                <div class="msg-avatar-holder">${avatarCodes[savedAvatarID]}</div>
+                <div class="msg-avatar-holder">${currentAvatarHTML}</div>
                 <div class="msg-content">
                     <span class="msg-username">You</span>
                     <span class="msg-text">${text}</span>
