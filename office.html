@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.9.2</title>
+    <title>GY-GY Club - Office v9.9.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -44,7 +44,7 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
 
-        /* РОДНОЙ СТИЛЬ БАДЖА ИЗ СТУДИИ */
+        /* БАДЖ АВАТАРА */
         .ui-user-badge {
             position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
@@ -130,7 +130,7 @@
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
-        <div class="ui-user-badge" onclick="toggleTopAvatarSelector()"></div>
+        <div class="ui-user-badge" id="main-badge" onclick="toggleTopAvatarSelector()"></div>
 
         <div class="top-avatar-selector" id="top-avatar-popup">
             <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
@@ -141,7 +141,7 @@
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.9.2</span>
+            <span class="version-text">v9.9.3</span>
         </div>
     </div>
 
@@ -161,12 +161,11 @@
             </div>
             <div class="chat-history" id="chat-history-1">
                 <div class="chat-message">
-                    <div class="msg-avatar-holder">
-                        <svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="25" y="25" width="50" height="50" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="40" cy="45" r="6" fill="#8A2BE2"/><circle cx="60" cy="45" r="6" fill="#8A2BE2"/><path d="M35 65 L65 65" stroke="#8A2BE2" stroke-width="4"/></svg>
-                    </div>
+                    <div class="msg-avatar-holder" id="sys-msg-avatar">
+                        </div>
                     <div class="msg-content">
                         <span class="msg-username">SYSTEM ASSISTANT</span>
-                        <span class="msg-text">Внутренний шлюз Офиса v9.9.2 активирован. Аватар импортирован по методу Студии.</span>
+                        <span class="msg-text">Внутренний шлюз Офиса v9.9.3 стабилен. Аватар зафиксирован прямой подстраховкой.</span>
                     </div>
                 </div>
             </div>
@@ -198,23 +197,33 @@
                     if (num >= 1 && num <= 4) return avatarCodes[num];
                 }
             }
-            return avatarCodes[1]; // Премиальный дефолт
+            // ПРЯМАЯ ПОДСТРАХОВКА: Если хранилище пустое — возвращаем дефолтный золотой аватар №1
+            return avatarCodes[1]; 
         }
 
         function applyCorrectAvatar() {
             let activeAvatarHTML = getTargetAvatar();
-            let badges = document.querySelectorAll('.ui-user-badge');
-            badges.forEach(badge => {
-                if (badge.innerHTML.trim() !== activeAvatarHTML.trim()) {
-                    badge.innerHTML = activeAvatarHTML;
-                }
-            });
+            
+            // Заполняем главный круг
+            let badge = document.getElementById('main-badge');
+            if (badge && badge.innerHTML.trim() !== activeAvatarHTML.trim()) {
+                badge.innerHTML = activeAvatarHTML;
+            }
+
+            // Заполняем аватарку бота в истории, если она пустая
+            let sysMsg = document.getElementById('sys-msg-avatar');
+            if (sysMsg && !sysMsg.innerHTML.trim()) {
+                sysMsg.innerHTML = avatarCodes[2]; // Фиолетовый системный робот
+            }
         }
 
-        // Чистый вызов сразу при чтении скрипта и дубли на загрузку
+        // Выполняем отрисовку на всех этапах загрузки страницы
         applyCorrectAvatar();
         document.addEventListener('DOMContentLoaded', applyCorrectAvatar);
         window.addEventListener('load', applyCorrectAvatar);
+
+        // Мягкий интервал для обновления, если пользователь переключит аватар на ходу
+        setInterval(applyCorrectAvatar, 500);
 
         function toggleTopAvatarSelector() { document.getElementById('top-avatar-popup').classList.toggle('active'); }
 
@@ -258,7 +267,7 @@
             const history = document.getElementById(`chat-history-${num}`);
             const msg = document.createElement('div');
             msg.className = 'chat-message';
-            msg.innerHTML = `<div class="msg-avatar-holder"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="25" y="25" width="50" height="50" fill="none" stroke="#8A2BE2" stroke-width="4"/><circle cx="40" cy="45" r="6" fill="#8A2BE2"/><circle cx="60" cy="45" r="6" fill="#8A2BE2"/><path d="M35 65 L65 65" stroke="#8A2BE2" stroke-width="4"/></svg></div><div class="msg-content"><span class="msg-username" style="color:var(--violet);">SYSTEM</span><span class="msg-text" style="color:var(--gold);font-style:italic;">Запрос обрабатывается AI-Ядром Офиса...</span></div>`;
+            msg.innerHTML = `<div class="msg-avatar-holder">${avatarCodes[2]}</div><div class="msg-content"><span class="msg-username" style="color:var(--violet);">SYSTEM</span><span class="msg-text" style="color:var(--gold);font-style:italic;">Запрос обрабатывается AI-Ядром Офиса...</span></div>`;
             history.appendChild(msg); history.scrollTop = history.scrollHeight;
         }
 
