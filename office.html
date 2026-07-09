@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.9.6 </title>
+    <title>GY-GY Club - Office v9.9.7 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -249,14 +249,36 @@
             history.appendChild(msg); input.value = ''; history.scrollTop = history.scrollHeight;
         }
 
-        function consultStaff(num) {
-            const history = document.getElementById(`chat-history-${num}`);
-            const msg = document.createElement('div');
-            msg.className = 'chat-message';
-            msg.innerHTML = `<div class="msg-avatar-holder">${avatarCodes[2]}</div><div class="msg-content"><span class="msg-username" style="color:var(--violet);">SYSTEM</span><span class="msg-text" style="color:var(--gold);font-style:italic;">Запрос обрабатывается AI-Ядром Офиса...</span></div>`;
-            history.appendChild(msg); history.scrollTop = history.scrollHeight;
-        }
-
+       function consultStaff(num) {
+    const history = document.getElementById(`chat-history-${num}`);
+    
+    // Массив случайных ответов ИИ-сотрудника
+    const aiPhrases = [
+        "Запрос принят. Код перебираю, костыли выпрямляю. Подождите пару наносекунд...",
+        "Я изучил архитектурный план GY-GY. Мой вердикт: маловато юмора, добавьте ещё гифок!",
+        "Внимание! Обнаружен критический уровень серьёзности в чате. Снижаю до безопасного минимума.",
+        "Консультация платная. С вас один лайк на GitHub Pages и три добрых слова.",
+        "Ваш запрос обработан моим левым полушарием. Правое в данный момент заказывает цифровое пиво.",
+        "Интеграция со Студией прошла успешно. Теперь я вижу ваш аватар и одобряю этот выбор!",
+        "Всё под контролем. Главное — не нажимайте F5, пока я держу этот сервер на честном слове."
+    ];
+    
+    // Выбираем случайную фразу
+    const randomPhrase = aiPhrases[Math.floor(Math.random() * aiPhrases.length)];
+    
+    const msg = document.createElement('div');
+    msg.className = 'chat-message';
+    msg.innerHTML = `
+        <div class="msg-avatar-holder">${avatarCodes[2]}</div>
+        <div class="msg-content">
+            <span class="msg-username" style="color:var(--violet);">AI_USER_BOT (Сотрудник)</span>
+            <span class="msg-text" style="color:var(--gold); font-style: italic;">${randomPhrase}</span>
+        </div>
+    `;
+    
+    history.appendChild(msg);
+    history.scrollTop = history.scrollHeight;
+}
         function goBack() { window.location.href = 'index.html'; }
         function goToStart() { window.location.href = 'index.html'; }
     </script>
