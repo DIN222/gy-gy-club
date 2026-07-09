@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.30 CORE</title>
+    <title>GY-GY Club v4.5.30.31 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -328,34 +328,37 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
-    <div id="block-hall" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: flex !important; z-index: 10;">
+  <div id="block-hall" class="block">
+        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: flex !important; z-index: 1000000;">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
-        <div class="hall-interior" style="position: relative;">
-            <div class="quote-text">In every joke there is a share of whisky</div>
+        
+        <div class="hall-interior" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2;">
+            <div class="quote-text" style="position: absolute !important; top: 18vh !important; left: 50% !important; transform: translateX(-50%) !important; width: 85% !important; margin: 0 auto !important; text-align: center !important; font-size: 28px; font-weight: 700; color: var(--gold) !important; filter: drop-shadow(0 0 15px #000); z-index: 10;">
+                In every joke there is a share of whisky
+            </div>
             
-            <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
+            <div class="painting-zone painting-left" style="position: absolute; top: 35vh; left: 23vw; width: 6vw; height: 15vh; cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 100%; text-align: center;" onclick="toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                     </div>
                 </div>
-
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
-                    <span class="cue-arrow-hall">→</span>
+                <div style="position: absolute; bottom: -30px; width: 100%;" onclick="event.stopPropagation(); toggleManifest('manifest-office')">
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')">OFFICE</button>
                     </div>
                 </div>
             </div>
                 
-            <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
-                <span class="cue-arrow-hall">←</span>
-                <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
+            <div class="painting-zone painting-right" style="position: absolute; top: 35vh; right: 23vw; width: 6vw; height: 15vh; cursor: pointer; z-index: 20; display: flex; align-items: center; justify-content: center;" onclick="toggleManifest('manifest-right')">
+                <div style="width: 100%; text-align: center;">
+                    <span class="cue-arrow-hall">←</span>
+                    <div id="manifest-right" class="manifest-btn-box" data-opened="false">
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); if(typeof enterStudio === 'function'){ enterStudio(); } else { portalTransition('block-studio'); }">STUDIO</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -363,11 +366,10 @@
         <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
             <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
             <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
-                <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
+                <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet);">↑</span>
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
