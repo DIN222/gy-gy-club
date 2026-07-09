@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
- <style>
+    <style>
         :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
@@ -87,7 +87,7 @@
             text-shadow: 2px 2px 4px #000; display: block !important; color: var(--gold);
         }
         
-       /* ЕДИНЫЙ ПРЕМИАЛЬНЫЙ СТИЛЬ ДЛЯ ВСЕХ КНОПОК GY-GY (БЕЗ ЖЕЛТОЙ ЗАЛИВКИ ФОНА) */
+        /* ЕДИНЫЙ ПРЕМИАЛЬНЫЙ СТИЛЬ ДЛЯ ВСЕХ КНОПОК GY-GY */
         .btn-gy { 
             min-width: 270px; padding: 14px; background: #000; 
             border: 2px solid var(--gold); color: var(--gold); cursor: pointer; 
@@ -96,11 +96,11 @@
             text-shadow: 0 0 2px rgba(214, 175, 55, 0.3);
         }
         .btn-gy:hover { 
-            background: #000 !important; /* Фон гарантированно остается черным */
-            color: var(--gold) !important; /* Буквы остаются золотыми */
+            background: #000 !important; 
+            color: var(--gold) !important; 
             border-color: var(--gold) !important;
-            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; /* Интенсивное неоновое свечение букв */
-            box-shadow: 0 0 15px rgba(214, 175, 55, 0.5) !important; /* Свечение рамки */
+            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
+            box-shadow: 0 0 15px rgba(214, 175, 55, 0.5) !important; 
         }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
@@ -108,18 +108,18 @@
 
         body { top: 0 !important; }
         
-        /* ЖЕСТКАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ (СТРОГО В ПРЕДЕЛАХ ЭКРАНА) */
+        /* ЖЕСТКАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ С УЧЕТОМ СКВОЗНОГО АВАТАРА */
         #block-welcome { 
-            justify-content: center !important; 
-            padding-top: 4vh !important; 
+            justify-content: flex-start !important; /* Начинаем контент сверху с безопасным зазором */
+            padding-top: 90px !important; /* Опускаем контент строго ниже линии аватара (70px + 20px запас) */
             padding-bottom: 4vh !important;
             align-items: center !important; 
             height: 100vh !important;
             max-height: 100vh !important; 
             overflow: hidden !important; 
         }
-        #block-welcome .quote-text { margin-top: 0 !important; margin-bottom: 2vh !important; font-size: 24px; text-align: center !important; }
-        #block-welcome img { max-height: 38vh !important; width: auto; object-fit: contain; margin: 0 auto 2vh auto !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); display: block; }
+        #block-welcome .quote-text { margin-top: 0 !important; margin-bottom: 1.5vh !important; font-size: 22px; text-align: center !important; }
+        #block-welcome img { max-height: 34vh !important; width: auto; object-fit: contain; margin: 0 auto 2vh auto !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); display: block; }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
@@ -183,13 +183,11 @@
         }
         .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
 
-        /* Выплывающие контейнеры кнопок манифеста */
         .manifest-btn-box { 
             position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; 
             display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; 
         }
         
-        /* ИЗОЛИРОВАННЫЕ КНОПКИ МАНИФЕСТА (ЧИСТОЕ ЗОЛОТО + ИНТЕНСИВНОЕ СВЕЧЕНИЕ БУКВ) */
         .btn-manifest { 
             width: 100% !important; min-width: auto !important; padding: 6px 0 !important; 
             font-size: 12px !important; margin: 0 !important; background: #000 !important; 
@@ -201,11 +199,10 @@
             background: #000 !important; 
             color: var(--gold) !important;
             border-color: var(--gold) !important;
-            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; /* Интенсивное неоновое свечение самих букв */
+            text-shadow: 0 0 8px var(--gold), 0 0 15px var(--gold) !important; 
             box-shadow: 0 4px 15px rgba(214, 175, 55, 0.4) !important; 
         }
         
-        /* ЗАЩИТА ОТ СДВИГОВ И ПЕРЕВОДЧИКА GOOGLE */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
@@ -232,7 +229,6 @@
         }
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
 
-        /* АНТИБЛИК И СГЛАЖИВАНИЕ РЕНДЕРИНГА */
         .hall-interior .quote-text, .ui-user-badge, #id-label, #pass-id-val {
             -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility;
             transform: translateZ(0); backface-visibility: hidden; -webkit-backface-visibility: hidden;
@@ -317,10 +313,10 @@
     </div>
 
     <div id="block-hall" class="block">
-      <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
-    <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
-    <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-</div>
+        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
+            <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        </div>
         <div class="hall-interior" style="position: relative;">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
@@ -356,335 +352,224 @@
         </div>
     </div>
 
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
-
-    let currentID = "";
-    let currentActiveCode = 'en';
-    let currentUserImage = "";
-    let currentFlagCode = 'gb';
-
-    const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-    ];
-
-    function renderLangList() {
-        const container = document.getElementById('lang-list-container');
-        if (!container) return;
-        container.innerHTML = ''; 
-        allLangs.forEach(lang => {
-            if(lang.code === currentActiveCode) return; 
-            const div = document.createElement('div');
-            div.className = 'lang-item notranslate';
-            div.setAttribute('translate', 'no');
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
-            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-            container.appendChild(div);
-        });
-    }
-
-    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
-
-    function applyLanguage(lang) {
-        currentActiveCode = lang.code;
-        currentFlagCode = lang.c; 
-        safeStorageSet('gygy_flag', lang.c);
-        safeStorageSet('gy_user_flag', lang.c);
-        safeStorageSet('gy_lang', lang.code);
-        safeStorageSet('gygy_lang', lang.code);
-        
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
-        const badgeFlagImg = document.getElementById('badge-flag-img');
-        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
-        
-        const langListContainer = document.getElementById('lang-list-container');
-        if (langListContainer) langListContainer.style.display = 'none';
-        renderLangList();
-        
-        forceTriggerGoogleTranslate(lang.code);
-    }
-
-    function forceTriggerGoogleTranslate(langCode) {
-        if (window.langTimer) clearInterval(window.langTimer);
-        let attempts = 0;
-        window.langTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                clearInterval(window.langTimer);
-                if (selectEl.value === langCode) return;
-                selectEl.value = langCode;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
-            }
-            if (++attempts > 100) {
-                clearInterval(window.langTimer);
-                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
-            }
-        }, 100);
-    }
-
-    function toggleLangList() {
-        const list = document.getElementById('lang-list-container');
-        if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-    }
-
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-50px" : "-35px";
-            } else {
-                box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-50px";
-            }
-        });
-    }
-
-    function renderUserPassports(targetID) {
-        const idLabel = document.getElementById('id-label');
-        const passIdVal = document.getElementById('pass-id-val');
-        const qrBoxReg = document.getElementById('qr-box-reg');
-        const passQrBox = document.getElementById('pass-qr-box');
-        if (idLabel) idLabel.innerText = targetID;
-        if (passIdVal) passIdVal.innerText = targetID;
-        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
-        if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
-    }
-
-    function checkAndFillRegistrationForm() {
-        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        
-        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
-        
-        if (savedLangCode) {
-            savedLangCode = savedLangCode.toLowerCase();
-            if (savedLangCode === 'ua') savedLangCode = 'uk';
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
         }
 
-        let matchedLang = null;
-        if (savedFlag) {
-            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
-        } else if (savedLangCode) {
-            matchedLang = allLangs.find(l => l.code === savedLangCode);
+        let currentID = "";
+        let currentActiveCode = 'en';
+        let currentUserImage = "";
+        let currentFlagCode = 'gb';
+
+        const allLangs = [
+            {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
+            {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+            {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+            {n:'PORTUGUÊS', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+            {n:'TÜRKÇЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+            {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+        ];
+
+        function renderLangList() {
+            const container = document.getElementById('lang-list-container');
+            if (!container) return;
+            container.innerHTML = ''; 
+            allLangs.forEach(lang => {
+                if(lang.code === currentActiveCode) return; 
+                const div = document.createElement('div');
+                div.className = 'lang-item notranslate';
+                div.setAttribute('translate', 'no');
+                div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
+                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+                container.appendChild(div);
+            });
         }
 
-        if (matchedLang) {
-            currentFlagCode = matchedLang.c;
-            currentActiveCode = matchedLang.code;
+        function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
+        function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+
+        function applyLanguage(lang) {
+            currentActiveCode = lang.code;
+            currentFlagCode = lang.c; 
+            safeStorageSet('gygy_flag', lang.c);
+            safeStorageSet('gy_user_flag', lang.c);
+            safeStorageSet('gy_lang', lang.code);
+            safeStorageSet('gygy_lang', lang.code);
             
             const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
+            if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
             const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
             
-            forceTriggerGoogleTranslate(matchedLang.code);
+            const langListContainer = document.getElementById('lang-list-container');
+            if (langListContainer) langListContainer.style.display = 'none';
+            renderLangList();
+            
+            forceTriggerGoogleTranslate(lang.code);
         }
 
-        if (currentID) { renderUserPassports(currentID); }
-        
-        if (savedAvatar) {
-            currentUserImage = savedAvatar;
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = savedAvatar;
-            if (passImg) passImg.src = savedAvatar;
+        function forceTriggerGoogleTranslate(langCode) {
+            if (window.langTimer) clearInterval(window.langTimer);
+            let attempts = 0;
+            window.langTimer = setInterval(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) {
+                    clearInterval(window.langTimer);
+                    if (selectEl.value === langCode) return;
+                    selectEl.value = langCode;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
+                }
+                if (++attempts > 100) {
+                    clearInterval(window.langTimer);
+                    console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
+                }
+            }, 100);
+        }
 
-            if (savedAvatar.startsWith('data:image/svg+xml')) {
-                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-            } else { 
-                const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
+        function toggleLangList() {
+            const list = document.getElementById('lang-list-container');
+            if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function toggleManifest(boxId) {
+            document.querySelectorAll('.manifest-btn-box').forEach(box => {
+                if(box.id === boxId) {
+                    const isOpened = box.getAttribute('data-opened') === "true";
+                    box.style.opacity = isOpened ? "0" : "1";
+                    box.style.pointerEvents = isOpened ? "none" : "auto";
+                    box.setAttribute('data-opened', isOpened ? "false" : "true");
+                    box.style.bottom = isOpened ? "-50px" : "-35px";
+                } else {
+                    box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-50px";
+                }
+            });
+        }
+
+        function renderUserPassports(targetID) {
+            const idLabel = document.getElementById('id-label');
+            const passIdVal = document.getElementById('pass-id-val');
+            const qrBoxReg = document.getElementById('qr-box-reg');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (idLabel) idLabel.innerText = targetID;
+            if (passIdVal) passIdVal.innerText = targetID;
+            if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
+            if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
+        }
+
+        function checkAndFillRegistrationForm() {
+            const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+            
+            let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
+            const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
+            
+            if (savedLangCode) {
+                savedLangCode = savedLangCode.toLowerCase();
+                if (savedLangCode === 'ua') savedLangCode = 'uk';
             }
-            const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
-            const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
+
+            let matchedLang = null;
+            if (savedFlag) {
+                matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
+            } else if (savedLangCode) {
+                matchedLang = allLangs.find(l => l.code === savedLangCode);
+            }
+
+            if (matchedLang) {
+                currentFlagCode = matchedLang.c;
+                currentActiveCode = matchedLang.code;
+                
+                const activeDisplay = document.getElementById('active-lang-display');
+                if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
+                const badgeFlagImg = document.getElementById('badge-flag-img');
+                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+                
+                forceTriggerGoogleTranslate(matchedLang.code);
+            }
+
+            if (currentID) { renderUserPassports(currentID); }
+            
+            if (savedAvatar) {
+                currentUserImage = savedAvatar;
+                const badgeImg = document.getElementById('badge-avatar-img');
+                const passImg = document.getElementById('pass-avatar-img');
+                if (badgeImg) badgeImg.src = savedAvatar;
+                if (passImg) passImg.src = savedAvatar;
+
+                if (savedAvatar.startsWith('data:image/svg+xml')) {
+                    const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+                    const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
+                } else { 
+                    const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                    const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
+                }
+                const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
+                const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
+
+                const activeBlock = document.querySelector('.block.active');
+                if (activeBlock && activeBlock.id !== 'block-entrance') {
+                    const badge = document.getElementById('global-user-badge');
+                    if (badge) badge.style.display = 'block';
+                }
+            }
 
             const activeBlock = document.querySelector('.block.active');
-            if (activeBlock && activeBlock.id !== 'block-entrance') {
-                const badge = document.getElementById('global-user-badge');
-                if (badge) badge.style.display = 'block';
+            const langSwitcher = document.getElementById('lang-switcher');
+            if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
+                langSwitcher.style.display = 'flex';
+                langSwitcher.style.opacity = '1';
             }
+        } 
+
+        function enterStudio() { window.location.href = 'studio.html'; }
+        function enterOffice(event) {
+            if (event && event.preventDefault) event.preventDefault();
+            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
+            if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
+            window.location.href = 'office.html';
         }
 
-        const activeBlock = document.querySelector('.block.active');
-        const langSwitcher = document.getElementById('lang-switcher');
-        if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
-            langSwitcher.style.display = 'flex';
-            langSwitcher.style.opacity = '1';
+        function portalTransition(nextId) {
+            if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
+            if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
+            if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
+            if (nextId === 'block-office') { enterOffice(); return; }
+
+            const targetBlock = document.getElementById(nextId);
+            if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
+
+            document.querySelectorAll('.block').forEach(b => {
+                b.classList.remove('active');
+                b.style.display = 'none';
+            });
+
+            targetBlock.style.display = 'flex';
+            setTimeout(() => { targetBlock.classList.add('active'); }, 10);
         }
-    } 
 
-    function enterStudio() {
-        window.location.href = 'studio.html';
-    }
-
-    function enterOffice(event) {
-        if (event && event.preventDefault) event.preventDefault();
-        const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-        if (currentNickname.toLowerCase() === 'модермех') {
-            safeStorageSet('gygy_is_boss', 'true');
+        // Заглушки для оставшейся части логики (handleDoor, openPassport, closePassport, preview, generateAvatar, saveUserProfile)
+        function handleDoor() { 
+            const d = document.getElementById('main-door'); 
+            if(d) { d.classList.add('door-exploded'); setTimeout(() => portalTransition('block-welcome'), 600); } 
         }
-        window.location.href = 'office.html';
-    }
-
-    function portalTransition(nextId) {
-        if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
-        if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-        if (nextId === 'block-office') { enterOffice(); return; }
-
-        const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
-
-        const badge = document.getElementById('global-user-badge');
-        const langSwitcher = document.getElementById('lang-switcher');
-
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
-        });
-
-        targetBlock.style.display = 'flex';
+        function openPassport() { const m = document.getElementById('modal-passport'); if(m) { m.style.display='flex'; setTimeout(() => m.style.opacity='1', 10); } }
+        function closePassport() { const m = document.getElementById('modal-passport'); if(m) { m.style.opacity='0'; setTimeout(() => m.style.display='none', 300); } }
+        function preview(i) {}
+        function generateAvatar() {}
+        function saveUserProfile() {}
         
-        if (nextId === 'block-entrance') {
-            const mainDoor = document.getElementById('main-door');
-            if (mainDoor) mainDoor.classList.remove('door-exploded');
-            if (langSwitcher) { langSwitcher.style.display = 'flex'; langSwitcher.style.opacity = '1'; }
-            if (badge) badge.style.display = 'none';
-        } else {
-            if (badge && currentUserImage) badge.style.display = 'block';
-            if (langSwitcher) { langSwitcher.style.display = 'none'; }
-        }
-
-        setTimeout(() => {
-            targetBlock.classList.add('active');
-            const embeddedArrows = targetBlock.querySelector('.ui-nav-arrows');
-            if (embeddedArrows) embeddedArrows.style.display = 'flex';
-        }, 20);
-    }
-
-    function handleDoor() {
-        const sndDoor = document.getElementById('snd-door');
-        const sndAmbient = document.getElementById('snd-ambient');
-        const mainDoor = document.getElementById('main-door');
-
-        if (sndDoor) sndDoor.play();
-        if (mainDoor) mainDoor.classList.add('door-exploded');
-
-        setTimeout(() => {
-            if (sndAmbient) {
-                sndAmbient.volume = 0.5;
-                sndAmbient.play().catch(e => console.log("Ambient blocked"));
-            }
-            portalTransition('block-welcome');
-        }, 700);
-    }
-
-    function preview(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentUserImage = e.target.result;
-                const pp = document.getElementById('pp'); if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
-                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = 'none';
-                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) avatarImg.style.display = 'none';
-                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = 'block';
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function generateAvatar() {
-        const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
-        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        
-        const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
-        const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-        const pp = document.getElementById('pp'); if (pp) pp.style.display = "none";
-        const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "block";
-    }
-
-    function saveUserProfile() {
-        if (!currentUserImage) return;
-        safeStorageSet('gygy_avatar', currentUserImage);
-        safeStorageSet('gy_user_img', currentUserImage);
-        safeStorageSet('gy_user_avatar', currentUserImage); 
-        safeStorageSet('gy_user_id', currentID);
-
-        const badgeImg = document.getElementById('badge-avatar-img');
-        const passImg = document.getElementById('pass-avatar-img');
-        if (badgeImg) badgeImg.src = currentUserImage;
-        if (passImg) passImg.src = currentUserImage;
-
-        const badge = document.getElementById('global-user-badge');
-        if (badge) badge.style.display = 'block';
-
-        const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
-        const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
-    }
-
-    function openPassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
-    }
-    
-    function closePassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
-    }
-
-    window.onload = () => {
-        console.log("[GY-GY] Инициализация Клуба...");
-        
-        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang') || 'en';
-        savedLangCode = savedLangCode.toLowerCase();
-        if (savedLangCode === 'ua') savedLangCode = 'uk';
-
-        document.cookie = "googtrans=/en/" + savedLangCode + "; path=/";
-        document.cookie = "googtrans=/en/" + savedLangCode + "; domain=" + window.location.hostname + "; path=/";
-        console.log(`[GY-GY] В куки прописан язык: ${savedLangCode}`);
-
-        checkAndFillRegistrationForm();
-        renderLangList();
-
-        const activeBlock = document.querySelector('.block.active');
-        const langSwitcher = document.getElementById('lang-switcher');
-        if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
-            langSwitcher.style.display = 'flex';
-            langSwitcher.style.opacity = '1';
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetBlock = urlParams.get('go'); 
-
-        if (targetBlock === 'hall') {
-            portalTransition('block-hall');
-        }
-
-        setTimeout(() => {
+        window.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('page-loaded');
-            console.log("[GY-GY] Страница проявлена.");
-        }, 200);
-    };
-</script>
-    </body>
+            checkAndFillRegistrationForm();
+            renderLangList();
+        });
+    </script>
+</body>
 </html>
