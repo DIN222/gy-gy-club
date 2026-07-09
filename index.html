@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.26 CORE</title>
+    <title>GY-GY Club v4.5.30.27 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -108,18 +108,17 @@
 
         body { top: 0 !important; }
         
-      /* БЕЗОПАСНАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ */
+        /* БЕЗОПАСНАЯ ИЗОЛЯЦИЯ ЗОНЫ ПРИВЕТСТВИЯ */
         #block-welcome { 
             justify-content: center !important; 
             height: 100vh !important; 
             padding-bottom: 4vh !important;
-            padding-top: 60px !important; /* Мягко освобождаем место под аватар сверху */
-            overflow: visible !important; /* Возвращаем видимость стрелкам и аватару */
+            padding-top: 60px !important; 
+            overflow: visible !important; 
         }
         
-        /* Сдвигаем текстовый блок и картинку внутри приветствия, не ломая навигацию */
         #block-welcome .quote-text { 
-            margin-top: 20px !important; /* Дополнительный отступ сверху для текста */
+            margin-top: 20px !important; 
             margin-bottom: 1.5vh !important; 
             font-size: 22px; 
             text-align: center !important; 
@@ -136,21 +135,20 @@
             margin: 4px 0 !important; 
             padding: 12px !important; 
         }
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
+
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ (ВОЗВРАЩЕНО ОТОБРАЖЕНИЕ КЛАССА) */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            pointer-events: auto !important; user-select: none; display: none;
+            pointer-events: auto !important; user-select: none; display: flex !important; /* Убран display: none */
         }
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
 
-        /* ==================================================== */
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ СТРЕЛКИ                         */
-        /* ==================================================== */
+        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ СТРЕЛКИ */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         
         .hall-interior { 
@@ -221,6 +219,7 @@
         body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
         
+        /* УБРАНЫ ЖЕСТКИЕ ПРАВИЛА СКРЫТИЯ АВАТАРА И СТРЕЛОК ДЛЯ ЭТИХ СТРАНИЦ */
         body:has(#block-welcome.active) #lang-switcher,
         body:has(#block-identity.active) #lang-switcher,
         body:has(#block-hall.active) #lang-switcher {
@@ -231,7 +230,7 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         .hall-interior .quote-text font { text-shadow: none !important; color: var(--gold) !important; }
-        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
+        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !hidden; transition: none !important; }
       
         body:has(#block-entrance.active) #lang-switcher {
             display: flex !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
@@ -327,7 +326,7 @@
     </div>
 
     <div id="block-hall" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
+        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: flex !important; z-index: 10;">
             <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
             <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
         </div>
@@ -517,73 +516,4 @@
                 if (badgeImg) badgeImg.src = savedAvatar;
                 if (passImg) passImg.src = savedAvatar;
 
-                if (savedAvatar.startsWith('data:image/svg+xml')) {
-                    const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                    const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-                } else { 
-                    const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                    const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
-                }
-                const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
-                const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
-
-                const activeBlock = document.querySelector('.block.active');
-                if (activeBlock && activeBlock.id !== 'block-entrance') {
-                    const badge = document.getElementById('global-user-badge');
-                    if (badge) badge.style.display = 'block';
-                }
-            }
-
-            const activeBlock = document.querySelector('.block.active');
-            const langSwitcher = document.getElementById('lang-switcher');
-            if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
-                langSwitcher.style.display = 'flex';
-                langSwitcher.style.opacity = '1';
-            }
-        } 
-
-        function enterStudio() { window.location.href = 'studio.html'; }
-        function enterOffice(event) {
-            if (event && event.preventDefault) event.preventDefault();
-            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-            if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
-            window.location.href = 'office.html';
-        }
-
-        function portalTransition(nextId) {
-            if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
-            if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-            if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-            if (nextId === 'block-office') { enterOffice(); return; }
-
-            const targetBlock = document.getElementById(nextId);
-            if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
-
-            document.querySelectorAll('.block').forEach(b => {
-                b.classList.remove('active');
-                b.style.display = 'none';
-            });
-
-            targetBlock.style.display = 'flex';
-            setTimeout(() => { targetBlock.classList.add('active'); }, 10);
-        }
-
-        // Заглушки для оставшейся части логики (handleDoor, openPassport, closePassport, preview, generateAvatar, saveUserProfile)
-        function handleDoor() { 
-            const d = document.getElementById('main-door'); 
-            if(d) { d.classList.add('door-exploded'); setTimeout(() => portalTransition('block-welcome'), 600); } 
-        }
-        function openPassport() { const m = document.getElementById('modal-passport'); if(m) { m.style.display='flex'; setTimeout(() => m.style.opacity='1', 10); } }
-        function closePassport() { const m = document.getElementById('modal-passport'); if(m) { m.style.opacity='0'; setTimeout(() => m.style.display='none', 300); } }
-        function preview(i) {}
-        function generateAvatar() {}
-        function saveUserProfile() {}
-        
-        window.addEventListener('DOMContentLoaded', () => {
-            document.body.classList.add('page-loaded');
-            checkAndFillRegistrationForm();
-            renderLangList();
-        });
-    </script>
-</body>
-</html>
+                if (savedAvatar
