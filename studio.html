@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30 - STUDIO 024</title>
+    <title>GY-GY Club v4.5.31 - STUDIO 024 </title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style id="dynamic-zones-css">
@@ -64,7 +64,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
             user-select: none;
         }
 
@@ -78,7 +78,6 @@
             justify-content: center;
             z-index: 100;
             background: rgba(214, 175, 55, 0.02);
-            transform: translate(-50%, -50%); /* Центрирование зон по координатам */
         }
 
         /* СТРЕЛКИ ИЗ ХОЛЛА (↑) */
@@ -99,11 +98,10 @@
             transform: scale(1.05);
         }
 
-        /* НАСТРОЕННЫЕ КООРДИНАТЫ ПО УМОЛЧАНИЮ */
-        .zone-wear { top: 24vh; left: 29vw; width: 120px; height: 90px; }
-        .zone-gifts { top: 11vh; left: 55vw; width: 120px; height: 90px; }
-        .zone-vintage { top: 4vh; left: 78vw; width: 120px; height: 90px; }
-        
+        /* ЗДЕСЬ БУДУТ ТВОИ НАСТРОЕННЫЕ КООРДИНАТЫ ИЗ ПУЛЬТА */
+      .zone-wear { top: 24vh; left: 29vw; width: 120px; height: 90px; }
+      .zone-gifts { top: 11vh; left: 55vw; width: 120px; height: 90px; }
+      .zone-vintage { top: 4vh; left: 78vw; width: 120px; height: 90px; }
         /* ИНСТРУМЕНТ НАСТРОЙКИ */
         #calibrator-panel {
             position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
@@ -113,7 +111,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
         #calibrator-panel.hide-panel {
-            display: none !important;
+            display: none !important; /* Жесткое скрытие блока */
         }
         .cal-row { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
         .cal-btn { 
@@ -145,11 +143,11 @@
             <span class="cue-arrow-studio">↑</span>
         </div>
 
-        <div id="zone-gifts" class="studio-zone zone-gifts" onclick="event.stopPropagation(); handleZoneClick(event, 'gifts')">
+        <div id="zone-gifts" class="studio-zone zone-gifts" onclick="handleZoneClick(event, 'gifts')">
             <span class="cue-arrow-studio">↑</span>
         </div>
 
-        <div id="zone-vintage" class="studio-zone zone-vintage" onclick="event.stopPropagation(); handleZoneClick(event, 'vintage')">
+        <div id="zone-vintage" class="studio-zone zone-vintage" onclick="handleZoneClick(event, 'vintage')">
             <span class="cue-arrow-studio">↑</span>
         </div>
     </div>
@@ -198,24 +196,16 @@
                 avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
                 avatarEl.style.display = 'block';
             }
-            
-            // Проверка URL: если нет ?edit=1, панель скрывается автоматически при загрузке
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('edit') !== '1') {
-                toggleEditMode();
-            } else {
-                updateCSSOutput();
-            }
+            updateCSSOutput();
         });
 
         let activeZoneId = null;
         let isEditMode = true; 
         
-        // Синхронизировал начальные данные калибратора с классами CSS
         let coordinates = {
-            wear: { top: 24, left: 29, width: 120, height: 90 },
-            gifts: { top: 11, left: 55, width: 120, height: 90 },
-            vintage: { top: 4, left: 78, width: 120, height: 90 }
+            wear: { top: 40, left: 15, width: 120, height: 90 },
+            gifts: { top: 40, left: 45, width: 120, height: 90 },
+            vintage: { top: 40, left: 75, width: 120, height: 90 }
         };
 
         function handleZoneClick(e, type) {
@@ -258,8 +248,8 @@
 
         function toggleEditMode() {
             isEditMode = false;
-            const panel = document.getElementById('calibrator-panel');
-            if (panel) panel.classList.add('hide-panel');
+            // Принудительно прячем пульт с экрана с помощью специального CSS-класса
+            document.getElementById('calibrator-panel').classList.add('hide-panel');
             document.querySelectorAll('.studio-zone').forEach(z => {
                 z.style.background = 'rgba(0,0,0,0)'; 
                 z.classList.remove('active');
@@ -267,10 +257,7 @@
         }
 
         function selectCategory(type) {
-            // Маршруты для перехода по страницам GY-GY Студии
-            if (type === 'wear') window.location.href = 'atelie.html';
-            if (type === 'gifts') window.location.href = 'gifts.html';
-            if (type === 'vintage') window.location.href = 'vintage.html';
+            alert(`Переход в рабочий шаг локации: ${type.toUpperCase()}`);
         }
     </script>
 </body>
