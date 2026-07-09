@@ -136,14 +136,14 @@
             padding: 12px !important; 
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ (ВОЗВРАЩЕНО ОТОБРАЖЕНИЕ КЛАССА) */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            pointer-events: auto !important; user-select: none; display: flex !important; /* Убран display: none */
+            pointer-events: auto !important; user-select: none; display: flex !important;
         }
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.8; }
@@ -216,10 +216,10 @@
         }
         
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
-        body.page-loaded { opacity: 1 !important; }
         
-        /* УБРАНЫ ЖЕСТКИЕ ПРАВИЛА СКРЫТИЯ АВАТАРА И СТРЕЛОК ДЛЯ ЭТИХ СТРАНИЦ */
+        /* БЕЗОПАСНЫЙ СТАРТ: Убрали opacity: 0, чтобы избежать черного экрана при сбоях JS */
+        body { top: 0 !important; background-color: #000 !important; }
+        
         body:has(#block-welcome.active) #lang-switcher,
         body:has(#block-identity.active) #lang-switcher,
         body:has(#block-hall.active) #lang-switcher {
@@ -230,7 +230,7 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         .hall-interior .quote-text font { text-shadow: none !important; color: var(--gold) !important; }
-        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !hidden; transition: none !important; }
+        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
       
         body:has(#block-entrance.active) #lang-switcher {
             display: flex !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
@@ -516,4 +516,102 @@
                 if (badgeImg) badgeImg.src = savedAvatar;
                 if (passImg) passImg.src = savedAvatar;
 
-                if (savedAvatar
+                if (savedAvatar.startsWith('data:image/svg+xml')) {
+                    const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+                    const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
+                } else { 
+                    const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                    const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
+                }
+                const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
+                const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
+
+                const activeBlock = document.querySelector('.block.active');
+                if (activeBlock && activeBlock.id !== 'block-entrance') {
+                    const badge = document.getElementById('global-user-badge');
+                    if (badge) badge.style.display = 'block';
+                }
+            }
+
+            const activeBlock = document.querySelector('.block.active');
+            const langSwitcher = document.getElementById('lang-switcher');
+            if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
+                langSwitcher.style.display = 'flex';
+                langSwitcher.style.opacity = '1';
+            }
+        } 
+
+        function enterStudio() { window.location.href = 'studio.html'; }
+        
+        function enterOffice(event) {
+            if (event && event.preventDefault) event.preventDefault();
+            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
+            if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
+            window.location.href = 'office.html';
+        }
+
+        function portalTransition(nextId) {
+            if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
+            if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
+            if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
+            if (nextId === 'block-office') { enterOffice(); return; }
+
+            const currentActive = document.querySelector('.block.active');
+            const targetBlock = document.getElementById(nextId);
+            
+            if (currentActive && targetBlock) {
+                currentActive.classList.remove('active');
+                targetBlock.classList.add('active');
+                
+                const badge = document.getElementById('global-user-badge');
+                if (badge) {
+                    if (nextId !== 'block-entrance' && currentUserImage) {
+                        badge.style.display = 'block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAndFillRegistrationForm();
+            renderLangList();
+        });
+
+        function openPassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+        }
+        function closePassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
+        }
+        function handleDoor() {
+            const door = document.getElementById('main-door');
+            const snd = document.getElementById('snd-door');
+            if (snd) snd.play().catch(()=>{});
+            if (door) {
+                door.classList.add('door-exploded');
+                setTimeout(() => { portalTransition('block-welcome'); }, 600);
+            }
+        }
+        
+        // Временные рабочие обработчики, чтобы не падал JS
+        function generateAvatar() { 
+            const mockSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23d4af37"/></svg>';
+            safeStorageSet('gygy_avatar', mockSvg);
+            checkAndFillRegistrationForm();
+        }
+        function saveUserProfile() { 
+            if(!currentID) {
+                currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+                safeStorageSet('gygy_id', currentID);
+            }
+            alert('Профиль сохранен! ID: ' + currentID);
+            checkAndFillRegistrationForm();
+        }
+        function preview(input) { console.log('Файл выбран'); }
+    </script>
+</body>
+</html>
