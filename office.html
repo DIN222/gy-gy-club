@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.9.3</title>
+    <title>GY-GY Club - Office v9.9.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -44,35 +44,19 @@
         .arrow-item { transition: opacity 0.2s; }
         .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
 
-        /* БАДЖ АВАТАРА */
+        /* ЧИСТЫЙ БАДЖ ДЛЯ ВЫВОДА АВАТАРА ИЗ РЕГИСТРАЦИИ */
         .ui-user-badge {
             position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
             width: 50px !important; height: 50px !important; border-radius: 50% !important;
             border: 2px solid var(--gold) !important; background: #111 !important;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.35) !important; z-index: 1000000 !important; 
-            cursor: pointer; display: flex !important; align-items: center !important; justify-content: center !important;
+            display: flex !important; align-items: center !important; justify-content: center !important;
             overflow: hidden !important; opacity: 1 !important; visibility: visible !important;
         }
-        .ui-user-badge:hover { transform: translateX(-50%) scale(1.05) !important; box-shadow: 0 0 20px var(--gold) !important; }
         
         .ui-user-badge svg, .ui-user-badge img { 
             width: 100% !important; height: 100% !important; 
             display: block !important; object-fit: cover !important;
-        }
-
-        /* Панель быстрого выбора аватара */
-        .top-avatar-selector {
-            display: none; position: absolute; top: 65px; left: 50%; transform: translateX(-50%);
-            background: #000; border: 2px solid var(--gold); padding: 8px; gap: 8px;
-            grid-template-columns: repeat(4, 40px); z-index: 2000000;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-        .top-avatar-selector.active { display: grid; }
-        
-        .popup-avatar-option { 
-            width: 40px; height: 40px; border: 1px solid rgba(214, 175, 55, 0.4); 
-            border-radius: 50%; cursor: pointer; background: #222;
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
 
         .ui-header-right { display: flex; flex-direction: column; align-items: flex-end; user-select: none; }
@@ -130,18 +114,11 @@
             <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
         </div>
         
-        <div class="ui-user-badge" id="main-badge" onclick="toggleTopAvatarSelector()"></div>
-
-        <div class="top-avatar-selector" id="top-avatar-popup">
-            <div class="popup-avatar-option" onclick="changeGlobalAvatar(1)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg></div>
-            <div class="popup-avatar-option" onclick="changeGlobalAvatar(2)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="35" r="18" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" fill="#8A2BE2"/></svg></div>
-            <div class="popup-avatar-option" onclick="changeGlobalAvatar(3)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><rect x="30" y="20" width="40" height="40" fill="#d4af37"/><path d="M10 90 L30 65 L70 65 L90 90 Z" fill="#d4af37"/></svg></div>
-            <div class="popup-avatar-option" onclick="changeGlobalAvatar(4)"><svg viewBox="0 0 100 100" style="width:100%;height:100%;"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg></div>
-        </div>
+        <div class="ui-user-badge" id="main-badge"></div>
 
         <div class="ui-header-right">
             <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.9.3</span>
+            <span class="version-text">v9.9.5</span>
         </div>
     </div>
 
@@ -161,11 +138,10 @@
             </div>
             <div class="chat-history" id="chat-history-1">
                 <div class="chat-message">
-                    <div class="msg-avatar-holder" id="sys-msg-avatar">
-                        </div>
+                    <div class="msg-avatar-holder" id="sys-msg-avatar"></div>
                     <div class="msg-content">
                         <span class="msg-username">SYSTEM ASSISTANT</span>
-                        <span class="msg-text">Внутренний шлюз Офиса v9.9.3 стабилен. Аватар зафиксирован прямой подстраховкой.</span>
+                        <span class="msg-text">Внутренний шлюз Офиса v9.9.5 запущен. Лишние селекторы аватаров полностью ликвидированы.</span>
                     </div>
                 </div>
             </div>
@@ -178,13 +154,13 @@
     </div>
 
     <script>
+        // Стандартные ассеты для подстраховки
         const avatarCodes = {
             1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg>`,
-            2: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" fill="#8A2BE2"/></svg>`,
-            3: `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="40" fill="#d4af37"/><path d="M10 90 L30 65 L70 65 L90 90 Z" fill="#d4af37"/></svg>`,
-            4: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
+            2: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" fill="#8A2BE2"/></svg>`
         };
 
+        // Берем ровно то, что было выбрано в зоне регистрации
         function getTargetAvatar() {
             let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'userAvatar', 'currentAvatar'];
             for (let key of keys) {
@@ -194,48 +170,29 @@
                     if (data.includes('<svg') || data.includes('viewBox')) return data;
                     if (data.includes('data:image') || data.includes('http')) return `<img src="${data}">`;
                     let num = parseInt(data.replace(/[^0-9]/g, ''));
-                    if (num >= 1 && num <= 4) return avatarCodes[num];
+                    if (num === 1 || num === 3) return avatarCodes[1];
+                    if (num === 2 || num === 4) return avatarCodes[2];
                 }
             }
-            // ПРЯМАЯ ПОДСТРАХОВКА: Если хранилище пустое — возвращаем дефолтный золотой аватар №1
-            return avatarCodes[1]; 
+            return avatarCodes[1]; // Дефолт на крайний случай
         }
 
         function applyCorrectAvatar() {
             let activeAvatarHTML = getTargetAvatar();
-            
-            // Заполняем главный круг
             let badge = document.getElementById('main-badge');
             if (badge && badge.innerHTML.trim() !== activeAvatarHTML.trim()) {
                 badge.innerHTML = activeAvatarHTML;
             }
-
-            // Заполняем аватарку бота в истории, если она пустая
             let sysMsg = document.getElementById('sys-msg-avatar');
             if (sysMsg && !sysMsg.innerHTML.trim()) {
-                sysMsg.innerHTML = avatarCodes[2]; // Фиолетовый системный робот
+                sysMsg.innerHTML = avatarCodes[2];
             }
         }
 
-        // Выполняем отрисовку на всех этапах загрузки страницы
+        // Четкий запуск без конфликтов
         applyCorrectAvatar();
         document.addEventListener('DOMContentLoaded', applyCorrectAvatar);
         window.addEventListener('load', applyCorrectAvatar);
-
-        // Мягкий интервал для обновления, если пользователь переключит аватар на ходу
-        setInterval(applyCorrectAvatar, 500);
-
-        function toggleTopAvatarSelector() { document.getElementById('top-avatar-popup').classList.toggle('active'); }
-
-        function changeGlobalAvatar(id) {
-            let code = avatarCodes[id];
-            localStorage.setItem('userAvatarID', id);
-            localStorage.setItem('avatarID', id);
-            localStorage.setItem('avatar', code);
-            localStorage.setItem('userAvatar', code);
-            applyCorrectAvatar();
-            document.getElementById('top-avatar-popup').classList.remove('active');
-        }
 
         function switchOfficePage(num) { 
             if (num !== 1) alert(`Переключение на ROOM 0${num}. Функция в разработке согласно архитектурному плану!`);
