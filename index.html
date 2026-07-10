@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.50 CORE</title>
+    <title>GY-GY Club v4.5.30.51 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -555,83 +555,83 @@
         if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
     }
 
-    function checkAndFillRegistrationForm() {
-        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        
-        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
-        
-        if (savedLangCode) {
-            savedLangCode = savedLangCode.toLowerCase();
-            if (savedLangCode === 'ua') savedLangCode = 'uk';
-        }
-
-        let matchedLang = null;
-        if (savedFlag) {
-            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
-        } else if (savedLangCode) {
-            matchedLang = allLangs.find(l => l.code === savedLangCode);
-        }
-
-        if (matchedLang) {
-            currentFlagCode = matchedLang.c;
-            currentActiveCode = matchedLang.code;
-            
-            const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-            
-            forceTriggerGoogleTranslate(matchedLang.code);
-        }
-
-        if (currentID) { renderUserPassports(currentID); }
-        
-        if (savedAvatar) {
-            currentUserImage = savedAvatar;
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = savedAvatar;
-            if (passImg) passImg.src = savedAvatar;
-
-            if (savedAvatar.startsWith('data:image/svg+xml')) {
-                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-            } else { 
-                const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
-            }
-            const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
-            const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
-
-            const activeBlock = document.querySelector('.block.active');
-            if (activeBlock && activeBlock.id !== 'block-entrance') {
-                const badge = document.getElementById('global-user-badge');
-                if (badge) badge.style.display = 'block';
-            }
-        }
-
-        const activeBlock = document.querySelector('.block.active');
-        const langSwitcher = document.getElementById('lang-switcher');
-        if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
-            langSwitcher.style.display = 'flex';
-            langSwitcher.style.opacity = '1';
-        }
-    } 
-
-    function enterStudio() { 
-        portalTransition('block-studio'); 
-    }
+function checkAndFillRegistrationForm() {
+    const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+    currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
     
-    function enterOffice(event) {
-        if (event && event.preventDefault) event.preventDefault();
-        const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-        if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
-        window.location.href = 'office.html';
+    let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
+    const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
+    
+    if (savedLangCode) {
+        savedLangCode = savedLangCode.toLowerCase();
+        if (savedLangCode === 'ua') savedLangCode = 'uk';
     }
 
-   Мfunction portalTransition(blockId) {
+    let matchedLang = null;
+    if (savedFlag) {
+        matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
+    } else if (savedLangCode) {
+        matchedLang = allLangs.find(l => l.code === savedLangCode);
+    }
+
+    if (matchedLang) {
+        currentFlagCode = matchedLang.c;
+        currentActiveCode = matchedLang.code;
+        
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
+        const badgeFlagImg = document.getElementById('badge-flag-img');
+        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+        
+        forceTriggerGoogleTranslate(matchedLang.code);
+    }
+
+    if (currentID) { renderUserPassports(currentID); }
+    
+    const activeBlock = document.querySelector('.block.active');
+
+    if (savedAvatar) {
+        currentUserImage = savedAvatar;
+        const badgeImg = document.getElementById('badge-avatar-img');
+        const passImg = document.getElementById('pass-avatar-img');
+        if (badgeImg) badgeImg.src = savedAvatar;
+        if (passImg) passImg.src = savedAvatar;
+
+        if (savedAvatar.startsWith('data:image/svg+xml')) {
+            const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+            const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
+        } else { 
+            const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+            const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
+        }
+        const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
+        const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
+
+        if (activeBlock && activeBlock.id !== 'block-entrance') {
+            const badge = document.getElementById('global-user-badge');
+            if (badge) badge.style.display = 'block';
+        }
+    }
+
+    const langSwitcher = document.getElementById('lang-switcher');
+    if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
+        langSwitcher.style.display = 'flex';
+        langSwitcher.style.opacity = '1';
+    }
+} 
+
+function enterStudio() { 
+    portalTransition('block-studio'); 
+}
+
+function enterOffice(event) {
+    if (event && event.preventDefault) event.preventDefault();
+    const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
+    if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
+    window.location.href = 'office.html';
+}
+
+function portalTransition(blockId) {
     // Ищем элементы аккуратно
     const langSwitcher = document.getElementById('lang-switcher'); 
     const mainNavArrows = document.getElementById('nav-hall') || document.querySelector('.ui-nav-arrows');
@@ -660,12 +660,11 @@
     }
 
     // БЕЗОПАСНОЕ ПЕРЕКЛЮЧЕНИЕ БЛОКОВ
-    // Перебираем все комнаты и прячем их, только если они существуют
     document.querySelectorAll('.block').forEach(b => {
         if (b && b.style) b.style.display = 'none';
     });
     
-    // Открываем целевую страницу (Приветствие, Студию или Холл)
+    // Открываем целевую страницу
     const targetBlock = document.getElementById(blockId);
     if (targetBlock && targetBlock.style) {
         targetBlock.style.display = 'block';
@@ -674,42 +673,43 @@
         console.warn(`[GY-GY] Критическая ошибка: Блок с id="${blockId}" не найден в HTML разметке!`);
     }
 }
-    function openPassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+
+function openPassport() {
+    const modal = document.getElementById('modal-passport');
+    if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+}
+
+function closePassport() {
+    const modal = document.getElementById('modal-passport');
+    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
+}
+
+function handleDoor() {
+    const door = document.getElementById('main-door');
+    const snd = document.getElementById('snd-door');
+    if (snd) snd.play().catch(()=>{});
+    if (door) {
+        door.classList.add('door-exploded');
+        setTimeout(() => { portalTransition('block-welcome'); }, 600);
     }
-    
-    function closePassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
+}
+
+function generateAvatar() { 
+    const mockSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23d4af37"/></svg>';
+    safeStorageSet('gygy_avatar', mockSvg);
+    checkAndFillRegistrationForm();
+}
+
+function saveUserProfile() { 
+    if(!currentID) {
+        currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+        safeStorageSet('gygy_id', currentID);
     }
-    
-    function handleDoor() {
-        const door = document.getElementById('main-door');
-        const snd = document.getElementById('snd-door');
-        if (snd) snd.play().catch(()=>{});
-        if (door) {
-            door.classList.add('door-exploded');
-            setTimeout(() => { portalTransition('block-welcome'); }, 600);
-        }
-    }
-    
-    function generateAvatar() { 
-        const mockSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23d4af37"/></svg>';
-        safeStorageSet('gygy_avatar', mockSvg);
-        checkAndFillRegistrationForm();
-    }
-    
-    function saveUserProfile() { 
-        if(!currentID) {
-            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
-            safeStorageSet('gygy_id', currentID);
-        }
-        alert('Профиль сохранен! ID: ' + currentID);
-        checkAndFillRegistrationForm();
-    }
-    
-    function preview(input) { console.log('Файл выбран'); }
+    alert('Профиль сохранен! ID: ' + currentID);
+    checkAndFillRegistrationForm();
+}
+
+function preview(input) { console.log('Файл выбран'); }
 </script>
 </body>
 </html>
