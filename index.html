@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.49 CORE</title>
+    <title>GY-GY Club v4.5.30.50 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -631,47 +631,49 @@
         window.location.href = 'office.html';
     }
 
-    function portalTransition(blockId) {
-        const langSwitcher = document.getElementById('lang-switcher'); 
-        const mainNavArrows = document.getElementById('nav-hall') || document.querySelector('.ui-nav-arrows');
+   Мfunction portalTransition(blockId) {
+    // Ищем элементы аккуратно
+    const langSwitcher = document.getElementById('lang-switcher'); 
+    const mainNavArrows = document.getElementById('nav-hall') || document.querySelector('.ui-nav-arrows');
 
-        if (blockId === 'block-studio') {
-            // Для Студии: жестко скрываем языковую панель lang-switcher
-            if (langSwitcher) langSwitcher.style.setProperty('display', 'none', 'important');
-            
-            // Гарантируем, что стрелки навигации видны и активны поверх фона
-            if (mainNavArrows) {
-                mainNavArrows.style.setProperty('display', 'flex', 'important');
-                mainNavArrows.style.setProperty('z-index', '9999999', 'important');
-            }
-        } else {
-            // При возврате в Холл или на Вход — возвращаем элементы Клуба на места
-            if (langSwitcher) {
-                if (blockId === 'block-entrance' || blockId === 'block-hall') {
-                    langSwitcher.style.display = 'flex';
-                } else {
-                    langSwitcher.style.display = 'none';
-                }
-            }
-            if (mainNavArrows) {
-                mainNavArrows.style.display = 'flex';
+    // Логика переключения под Студию
+    if (blockId === 'block-studio') {
+        if (langSwitcher && langSwitcher.style) {
+            langSwitcher.style.setProperty('display', 'none', 'important');
+        }
+        if (mainNavArrows && mainNavArrows.style) {
+            mainNavArrows.style.setProperty('display', 'flex', 'important');
+            mainNavArrows.style.setProperty('z-index', '9999999', 'important');
+        }
+    } else {
+        // При возврате в Холл, Приветствие или на Вход
+        if (langSwitcher && langSwitcher.style) {
+            if (blockId === 'block-entrance' || blockId === 'block-hall' || blockId === 'block-welcome') {
+                langSwitcher.style.display = 'flex';
+            } else {
+                langSwitcher.style.display = 'none';
             }
         }
-
-        // Переключение блоков комнат
-        document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
-        
-        const targetBlock = document.getElementById(blockId);
-        if (targetBlock) {
-            targetBlock.style.display = 'block';
+        if (mainNavArrows && mainNavArrows.style) {
+            mainNavArrows.style.display = 'flex';
         }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        checkAndFillRegistrationForm();
-        renderLangList();
+    // БЕЗОПАСНОЕ ПЕРЕКЛЮЧЕНИЕ БЛОКОВ
+    // Перебираем все комнаты и прячем их, только если они существуют
+    document.querySelectorAll('.block').forEach(b => {
+        if (b && b.style) b.style.display = 'none';
     });
-
+    
+    // Открываем целевую страницу (Приветствие, Студию или Холл)
+    const targetBlock = document.getElementById(blockId);
+    if (targetBlock && targetBlock.style) {
+        targetBlock.style.display = 'block';
+        console.log(`[GY-GY] Успешный переход на блок: ${blockId}`);
+    } else {
+        console.warn(`[GY-GY] Критическая ошибка: Блок с id="${blockId}" не найден в HTML разметке!`);
+    }
+}
     function openPassport() {
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
