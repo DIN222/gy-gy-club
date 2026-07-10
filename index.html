@@ -81,6 +81,7 @@
 
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
+        .btn-gy:hover { background: var(--gold); color: #000; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
@@ -184,15 +185,9 @@
         body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
         
-        /* Спрячем переключатель на тех экранах, где он по логике не нужен (на входе) */
-        body:has(#block-entrance.active) #lang-switcher {
-            display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important;
-        }
-        
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
-        #lang-switcher.force-hide { display: none !important; opacity: 0 !important; visibility: hidden !important; transition: none !important; }
         
         /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
         #main-door {
@@ -204,6 +199,7 @@
             margin: 0 auto; 
             transform: scale(1);
             transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
+            cursor: pointer;
         }
 
         .door-exploded {
@@ -224,7 +220,7 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
 
-    <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: none;">
+    <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
             <span class="notranslate" translate="no">ENGLISH</span>
@@ -315,8 +311,8 @@
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
@@ -489,7 +485,6 @@
         window.location.href = 'studio.html'; 
     }
 
-    // Умный обработчик шага назад для сквозных стрелок Клуба
     function handleNavigationBack() {
         if (currentBlockId === 'block-hall') {
             portalTransition('block-identity');
@@ -517,21 +512,19 @@
         const targetBlock = document.getElementById(nextId);
         if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
 
-        currentBlockId = nextId; // Запоминаем где мы
+        currentBlockId = nextId;
 
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
         const navArrows = document.getElementById('club-nav-arrows');
 
-        // Логика управления элементами верхней панели
+        // Логика управления элементами верхней панели (Языки теперь ВСЕГДА flex)
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
             if (mainDoor) mainDoor.classList.remove('door-exploded');
-            if (langSwitcher) langSwitcher.style.display = 'none';
             if (navArrows) navArrows.style.display = 'none';
             if (badge) badge.style.display = 'none';
         } else {
-            if (langSwitcher) langSwitcher.style.display = 'flex';
             if (navArrows) navArrows.style.display = 'flex';
             if (badge && currentUserImage) badge.style.display = 'block';
         }
@@ -610,43 +603,27 @@
 
     function openPassport() {
         const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+        if (modal) { 
+            modal.style.display = 'flex'; 
+            setTimeout(() => { modal.style.opacity = '1'; }, 10); 
+        }
     }
-    
+
     function closePassport() {
         const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
     }
 
-    window.onload = () => {
-        console.log("[GY-GY] Инициализация Клуба...");
-        
-        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang') || 'en';
-        savedLangCode = savedLangCode.toLowerCase();
-        if (savedLangCode === 'ua') savedLangCode = 'uk';
-
-        document.cookie = "googtrans=/en/" + savedLangCode + "; path=/";
-        document.cookie = "googtrans=/en/" + savedLangCode + "; domain=" + window.location.hostname + "; path=/";
-        console.log(`[GY-GY] В куки прописан язык: ${savedLangCode}`);
-
-        checkAndFillRegistrationForm();
+    // Первичная настройка при полной загрузке страницы
+    window.addEventListener('load', () => {
         renderLangList();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetBlock = urlParams.get('go'); 
-
-        if (targetBlock === 'hall') {
-            portalTransition('block-hall');
-        }
-
-        setTimeout(() => {
-            document.body.classList.add('page-loaded');
-            console.log("[GY-GY] Страница проявлена.");
-        }, 200);
-    };
+        checkAndFillRegistrationForm();
+        document.body.classList.add('page-loaded');
+    });
 </script>
-
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
