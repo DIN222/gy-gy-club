@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.44 CORE</title>
+    <title>GY-GY Club v4.5.30.45 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -582,30 +582,36 @@
             window.location.href = 'office.html';
         }
 
-        function portalTransition(nextId) {
-            if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
-            if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-            if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-            if (nextId === 'block-office') { enterOffice(); return; }
+      function portalTransition(blockId) {
+    // 1. Находим сквозные элементы Клуба на главной странице
+    // (Убедись, что ID/классы совпадают с твоей главной разметкой)
+    const mainLangPanel = document.querySelector('.ui-header-right-lang') || document.querySelector('.lang-panel'); 
+    const mainNavArrows = document.getElementById('nav-hall') || document.querySelector('.ui-nav-arrows');
 
-            const currentActive = document.querySelector('.block.active');
-            const targetBlock = document.getElementById(nextId);
-            
-            if (currentActive && targetBlock) {
-                currentActive.classList.remove('active');
-                targetBlock.classList.add('active');
-                
-                const badge = document.getElementById('global-user-badge');
-                if (badge) {
-                    if (nextId !== 'block-entrance' && currentUserImage) {
-                        badge.style.display = 'block';
-                    } else {
-                        badge.style.display = 'none';
-                    }
-                }
-            }
+    // 2. Логика переключения под конкретные комнаты
+    if (blockId === 'block-studio') {
+        // Для Студии: жестко скрываем языковую панель, чтобы не мешала
+        if (mainLangPanel) mainLangPanel.style.setProperty('display', 'none', 'important');
+        
+        // Гарантируем, что стрелки навигации видны и активны
+        if (mainNavArrows) {
+            mainNavArrows.style.setProperty('display', 'flex', 'important');
+            mainNavArrows.style.zIndex = '9999999';
         }
+    } else {
+        // При возврате в Холл или другие комнаты — возвращаем язык на место
+        if (mainLangPanel) mainLangPanel.style.display = 'block';
+        if (mainNavArrows) mainNavArrows.style.display = 'flex';
+    }
 
+    // 3. Стандартный бесшовный переход между блоками Клуба
+    document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
+    
+    const targetBlock = document.getElementById(blockId);
+    if (targetBlock) {
+        targetBlock.style.display = 'block';
+    }
+}
         window.addEventListener('DOMContentLoaded', () => {
             checkAndFillRegistrationForm();
             renderLangList();
