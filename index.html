@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.3 CORE</title>
+    <title>GY-GY Club v4.5.30 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -210,19 +210,6 @@
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
-        /* ХАМЕЛЕОН КУРСОРОВ ДЛЯ ИНТЕРАКТИВА */
-        .btn-gy, 
-        .lang-frame-locked, 
-        .ui-user-badge, 
-        .passport-close-btn,
-        #block-welcome img { 
-            cursor: pointer !important; 
-        }
-
-        /* Если кнопка "спит" — курсор показывает запрет */
-        .btn-sleep { 
-            cursor: not-allowed !important; 
-        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -263,14 +250,11 @@
         <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
- <div id="block-welcome" class="block active">
-        <div class="quote-text">GY-GY Club</div>
-        
-        <img src="your_door_image.jpg" alt="Door" style="cursor: pointer !important;">
-        
-        <button class="btn-gy" style="cursor: pointer !important;" onclick="enterClub()">Войти</button>
-        <button class="btn-gy" style="cursor: pointer !important;">Регистрация</button>
-    </div>
+    <div id="block-welcome" class="block">
+        <div class="notranslate ui-nav-arrows" id="nav-welcome">
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;</div>
+            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+        </div>
         <div class="quote-text">I'M CHARLIE</div>
         <div class="quote-text">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
@@ -305,10 +289,10 @@
     </div>
 
     <div id="block-hall" class="block">
-        <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
-            <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
-            <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-        </div>
+      <div class="notranslate ui-nav-arrows" id="nav-hall" style="display: none; z-index: 10;">
+    <div class="arrow-item" onclick="portalTransition('block-identity')">&lt;</div>
+    <div class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
+</div>
         <div class="hall-interior" style="position: relative;">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
@@ -386,6 +370,7 @@
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
+    // КЛИК ПО ЯЗЫКУ: Сохраняем и мгновенно переводим
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
@@ -403,27 +388,38 @@
         if (langListContainer) langListContainer.style.display = 'none';
         renderLangList();
         
+        // Переводим интерфейс "на лету"
         forceTriggerGoogleTranslate(lang.code);
     }
 
-    function forceTriggerGoogleTranslate(langCode) {
-        if (window.langTimer) clearInterval(window.langTimer);
-        let attempts = 0;
-        window.langTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                clearInterval(window.langTimer);
-                if (selectEl.value === langCode) return;
-                selectEl.value = langCode;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
-            }
-            if (++attempts > 100) {
-                clearInterval(window.langTimer);
-                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
-            }
-        }, 100);
-    }
+    // Внутренний пушер для виджета Google
+ function forceTriggerGoogleTranslate(langCode) {
+    // Очищаем старые таймеры, если они были
+    if (window.langTimer) clearInterval(window.langTimer);
+
+    let attempts = 0;
+    window.langTimer = setInterval(() => {
+        const selectEl = document.querySelector('.goog-te-combo');
+        
+        if (selectEl) {
+            clearInterval(window.langTimer);
+            
+            // Если язык уже стоит какой нужно — выходим
+            if (selectEl.value === langCode) return;
+
+            // Принудительно меняем язык виджета
+            selectEl.value = langCode;
+            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
+        }
+
+        // Если за 10 секунд (100 попыток) Google не ответил, прекращаем мучить браузер
+        if (++attempts > 100) {
+            clearInterval(window.langTimer);
+            console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
+        }
+    }, 100); // Проверяем каждые 100мс
+}
 
     function toggleLangList() {
         const list = document.getElementById('lang-list-container');
@@ -459,9 +455,11 @@
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
+        // Восстановление сохраненного языка при входе
         let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
         const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
         
+        // Синхронизация старых текстовых форматов ('UA', 'EN' -> 'uk', 'en')
         if (savedLangCode) {
             savedLangCode = savedLangCode.toLowerCase();
             if (savedLangCode === 'ua') savedLangCode = 'uk';
@@ -474,6 +472,7 @@
             matchedLang = allLangs.find(l => l.code === savedLangCode);
         }
 
+        // Если нашли совпадение — выставляем переменные
         if (matchedLang) {
             currentFlagCode = matchedLang.c;
             currentActiveCode = matchedLang.code;
@@ -483,6 +482,7 @@
             const badgeFlagImg = document.getElementById('badge-flag-img');
             if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
             
+            // Принудительно запускаем перевод главной страницы под сохраненный язык
             forceTriggerGoogleTranslate(matchedLang.code);
         }
 
@@ -513,23 +513,11 @@
         }
     }
 
-    function enterStudio() { 
-        window.location.href = 'studio.html'; 
-    }
-
     function portalTransition(nextId) {
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-        
-        if (nextId === 'block-office') {
-            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-            if (currentNickname.toLowerCase() === 'модермех') { 
-                safeStorageSet('gygy_is_boss', 'true'); 
-            }
-            window.location.href = 'office.html';
-            return;
-        }
+        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; return; } 
+        if (nextId === 'block-office') { alert('Office coming soon...'); return; }
 
         const targetBlock = document.getElementById(nextId);
         if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
@@ -620,7 +608,7 @@
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
     }
 
-    function openPassport() {
+ function openPassport() {
         const modal = document.getElementById('modal-passport');
         if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
     }
@@ -633,17 +621,22 @@
     window.onload = () => {
         console.log("[GY-GY] Инициализация Клуба...");
         
+        // 1. Достаем сохраненный язык из хранилища ДО загрузки формы
         let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang') || 'en';
         savedLangCode = savedLangCode.toLowerCase();
         if (savedLangCode === 'ua') savedLangCode = 'uk';
 
+        // 2. ЖЕЛЕЗНЫЙ ДОПИНГ: Принудительно пишем куки перевода для Google.
+        // Это заставит Google Translate применить нужный язык ПРИ СТАРТЕ, даже если селектор заглючит.
         document.cookie = "googtrans=/en/" + savedLangCode + "; path=/";
         document.cookie = "googtrans=/en/" + savedLangCode + "; domain=" + window.location.hostname + "; path=/";
         console.log(`[GY-GY] В куки прописан язык: ${savedLangCode}`);
 
+        // 3. Восстанавливаем форму, аватары и запускаем интервал селектора
         checkAndFillRegistrationForm();
         renderLangList();
 
+        // Проверяем, пришли ли мы целенаправленно по одинарной стрелке в Холл
         const urlParams = new URLSearchParams(window.location.search);
         const targetBlock = urlParams.get('go'); 
 
@@ -651,6 +644,7 @@
             portalTransition('block-hall');
         }
 
+        // Мягко убираем шторку темноты после того, как куки встали на место
         setTimeout(() => {
             document.body.classList.add('page-loaded');
             console.log("[GY-GY] Страница проявлена.");
