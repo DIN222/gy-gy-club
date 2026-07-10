@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.46 CORE</title>
+    <title>GY-GY Club v4.5.30.47 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -374,28 +374,68 @@
     </div>
 </div>
 
-<!-- 1. НАЙДИ ЭТУ СТРОКУ В index.html -->
+<!-- БЛОК СТУДИИ В index.html -->
 <div id="block-studio" class="block" style="display: none; width: 100%; height: 100%; position: absolute; inset: 0; overflow: hidden;">
     
-    <!-- 2. ПРЯМО СЮДА ВСТАВЬ ЭТОТ КУСОК -->
-    <style>
-        /* Глушим языковую панель, когда открыта Студия */
-        #block-studio[style*="display: block"] ~ [class*="lang"],
-        #block-studio[style*="display: block"] ~ [id*="lang"],
-        #block-studio[style*="display: block"] .ui-header-right,
-        .ui-header-right-lang, .lang-panel { 
-            display: none !important; 
-        }
+    <!-- АВТОНОМНЫЙ ОГНЕТУШИТЕЛЬ ДЛЯ ЯЗЫКА И ВКЛЮЧАТЕЛЬ ДЛЯ СТРЕЛОК -->
+    <script>
+        (function() {
+            const studioBlock = document.getElementById('block-studio');
+            if (!studioBlock) return;
 
-        /* Принудительно включаем стрелки навигации */
-        .ui-nav-arrows, #nav-hall {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            z-index: 9999999 !important;
-        }
-    </style>
+            // Функция, которая наводит порядок в интерфейсе
+            function adjustUI() {
+                // Ищем любые возможные элементы языка и стрелок на странице
+                const langElements = document.querySelectorAll('.ui-header-right-lang, .lang-panel, [class*="lang-"], [id*="lang"]');
+                const navElements = document.querySelectorAll('.ui-nav-arrows, #nav-hall, [class*="nav-arrows"]');
 
+                // Проверяем, видна ли сейчас Студия
+                const isStudioVisible = studioBlock.style.display === 'block';
+
+                if (isStudioVisible) {
+                    // 1. Прячем язык полностью
+                    langElements.forEach(el => el.style.setProperty('display', 'none', 'important'));
+                    
+                    // 2. Показываем и вытягиваем наверх стрелки навигации
+                    navElements.forEach(el => {
+                        el.style.setProperty('display', 'flex', 'important');
+                        el.style.setProperty('visibility', 'visible', 'important');
+                        el.style.setProperty('opacity', '1', 'important');
+                        el.style.setProperty('z-index', '9999999', 'important');
+                    });
+                } else {
+                    // Когда уходим из студии — возвращаем стандартный вид Клуба
+                    langElements.forEach(el => el.style.display = '');
+                    navElements.forEach(el => {
+                        el.style.display = '';
+                        el.style.visibility = '';
+                        el.style.opacity = '';
+                        el.style.zIndex = '';
+                    });
+                }
+            }
+
+            // Следим за изменениями стиля блока Студии в реальном времени
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'style') {
+                        adjustUI();
+                    }
+                });
+            });
+
+            observer.observe(studioBlock, { attributes: trueList, attributeFilter: ['style'] });
+            
+            // На всякий случай запускаем проверку сразу при загрузке
+            setTimeout(adjustUI, 100);
+        })();
+    </script>
+
+    <!-- ДАЛЬШЕ ИДЕТ ТВОЙ СТАНДАРТНЫЙ ИНТЕРЬЕР СТУДИИ -->
+    <div class="studio-interior" style="position: absolute; inset: 0; background: url('studio_bg.jpg') center/95% no-repeat #000; z-index: 1;">
+        <!-- Зоны переходов... -->
+    </div>
+</div>
       
     <div class="studio-interior" style="position: absolute; inset: 0; background: url('studio_bg.jpg') center/95% no-repeat #000; z-index: 1;">
         
