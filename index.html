@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.30.47 CORE</title>
+    <title>GY-GY Club v4.5.30.48 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -374,22 +374,18 @@
     </div>
 </div>
 
-<!-- БЛОК СТУДИИ В index.html -->
-<div id="block-studio" class="block" style="display: none; width: 100%; height: 100%; position: absolute; inset: 0; overflow: hidden;">
+<div id="block-studio" class="block" style="display: none; width: 100%; height: 100%; position: absolute; inset: 0; overflow: hidden; background: #000;">
     
-    <!-- АВТОНОМНЫЙ ОГНЕТУШИТЕЛЬ ДЛЯ ЯЗЫКА И ВКЛЮЧАТЕЛЬ ДЛЯ СТРЕЛОК -->
     <script>
         (function() {
             const studioBlock = document.getElementById('block-studio');
             if (!studioBlock) return;
 
-            // Функция, которая наводит порядок в интерфейсе
             function adjustUI() {
-                // Ищем любые возможные элементы языка и стрелок на странице
-                const langElements = document.querySelectorAll('.ui-header-right-lang, .lang-panel, [class*="lang-"], [id*="lang"]');
+                // Ищем твой реальный lang-switcher и стрелки навигации
+                const langElements = document.querySelectorAll('#lang-switcher, .ui-header-right-lang, .lang-panel, [class*="lang-"]');
                 const navElements = document.querySelectorAll('.ui-nav-arrows, #nav-hall, [class*="nav-arrows"]');
 
-                // Проверяем, видна ли сейчас Студия
                 const isStudioVisible = studioBlock.style.display === 'block';
 
                 if (isStudioVisible) {
@@ -404,7 +400,7 @@
                         el.style.setProperty('z-index', '9999999', 'important');
                     });
                 } else {
-                    // Когда уходим из студии — возвращаем стандартный вид Клуба
+                    // Когда уходим из студии — сбрасываем стили, возвращая стандартный вид Клуба
                     langElements.forEach(el => el.style.display = '');
                     navElements.forEach(el => {
                         el.style.display = '';
@@ -415,7 +411,7 @@
                 }
             }
 
-            // Следим за изменениями стиля блока Студии в реальном времени
+            // Исправленный датчик: следим за появлением Студии на экране
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.attributeName === 'style') {
@@ -424,20 +420,14 @@
                 });
             });
 
-            observer.observe(studioBlock, { attributes: trueList, attributeFilter: ['style'] });
+            // true вместо trueList исправил ошибку падения скрипта
+            observer.observe(studioBlock, { attributes: true, attributeFilter: ['style'] });
             
-            // На всякий случай запускаем проверку сразу при загрузке
             setTimeout(adjustUI, 100);
         })();
     </script>
 
-    <!-- ДАЛЬШЕ ИДЕТ ТВОЙ СТАНДАРТНЫЙ ИНТЕРЬЕР СТУДИИ -->
-    <div class="studio-interior" style="position: absolute; inset: 0; background: url('studio_bg.jpg') center/95% no-repeat #000; z-index: 1;">
-        <!-- Зоны переходов... -->
-    </div>
-</div>
-      
-    <div class="studio-interior" style="position: absolute; inset: 0; background: url('studio_bg.jpg') center/95% no-repeat #000; z-index: 1;">
+    <div class="studio-interior" style="position: absolute; inset: 0; width: 100%; height: 100%; background: url('studio_bg.jpg') center/95% no-repeat #000; z-index: 1;">
         
         <div id="zone-wear" style="position: absolute; top: 24vh; left: 29vw; width: 120px; height: 90px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 100;" onclick="window.location.href='atelie.html'">
             <span style="color: #8A2BE2; font-size: 38px; font-weight: 900; text-shadow: 0 0 12px #8A2BE2; pointer-events: none;">↑</span>
@@ -454,263 +444,270 @@
     </div>
 </div>
 
-    <iframe src="studio.html" style="width: 100%; height: 100%; border: none; display: block; margin: 0; padding: 0; position: absolute; inset: 0; z-index: 1;"></iframe>
-</div>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
+
+    let currentID = "";
+    let currentActiveCode = 'en';
+    let currentUserImage = "";
+    let currentFlagCode = 'gb';
+
+    const allLangs = [
+        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'PORTUGUÊS', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'TÜRKÇЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+    ];
+
+    function renderLangList() {
+        const container = document.getElementById('lang-list-container');
+        if (!container) return;
+        container.innerHTML = ''; 
+        allLangs.forEach(lang => {
+            if(lang.code === currentActiveCode) return; 
+            const div = document.createElement('div');
+            div.className = 'lang-item notranslate';
+            div.setAttribute('translate', 'no');
+            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
+            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+            container.appendChild(div);
+        });
+    }
+
+    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
+    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+
+    function applyLanguage(lang) {
+        currentActiveCode = lang.code;
+        currentFlagCode = lang.c; 
+        safeStorageSet('gygy_flag', lang.c);
+        safeStorageSet('gy_user_flag', lang.c);
+        safeStorageSet('gy_lang', lang.code);
+        safeStorageSet('gygy_lang', lang.code);
+        
+        const activeDisplay = document.getElementById('active-lang-display');
+        if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
+        const badgeFlagImg = document.getElementById('badge-flag-img');
+        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
+        
+        const langListContainer = document.getElementById('lang-list-container');
+        if (langListContainer) langListContainer.style.display = 'none';
+        renderLangList();
+        
+        forceTriggerGoogleTranslate(lang.code);
+    }
+
+    function forceTriggerGoogleTranslate(langCode) {
+        if (window.langTimer) clearInterval(window.langTimer);
+        let attempts = 0;
+        window.langTimer = setInterval(() => {
+            const selectEl = document.querySelector('.goog-te-combo');
+            if (selectEl) {
+                clearInterval(window.langTimer);
+                if (selectEl.value === langCode) return;
+                selectEl.value = langCode;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
+            }
+            if (++attempts > 100) {
+                clearInterval(window.langTimer);
+                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
+            }
+        }, 100);
+    }
+
+    function toggleLangList() {
+        const list = document.getElementById('lang-list-container');
+        if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleManifest(boxId) {
+        document.querySelectorAll('.manifest-btn-box').forEach(box => {
+            if(box.id === boxId) {
+                const isOpened = box.getAttribute('data-opened') === "true";
+                box.style.opacity = isOpened ? "0" : "1";
+                box.style.pointerEvents = isOpened ? "none" : "auto";
+                box.setAttribute('data-opened', isOpened ? "false" : "true");
+                box.style.bottom = isOpened ? "-50px" : "-35px";
+            } else {
+                box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-50px";
+            }
+        });
+    }
+
+    function renderUserPassports(targetID) {
+        const idLabel = document.getElementById('id-label');
+        const passIdVal = document.getElementById('pass-id-val');
+        const qrBoxReg = document.getElementById('qr-box-reg');
+        const passQrBox = document.getElementById('pass-qr-box');
+        if (idLabel) idLabel.innerText = targetID;
+        if (passIdVal) passIdVal.innerText = targetID;
+        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
+        if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
+    }
+
+    function checkAndFillRegistrationForm() {
+        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+        
+        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
+        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
+        
+        if (savedLangCode) {
+            savedLangCode = savedLangCode.toLowerCase();
+            if (savedLangCode === 'ua') savedLangCode = 'uk';
         }
 
-        let currentID = "";
-        let currentActiveCode = 'en';
-        let currentUserImage = "";
-        let currentFlagCode = 'gb';
-
-        const allLangs = [
-            {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-            {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-            {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-            {n:'PORTUGUÊS', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-            {n:'TÜRKÇЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-            {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-        ];
-
-        function renderLangList() {
-            const container = document.getElementById('lang-list-container');
-            if (!container) return;
-            container.innerHTML = ''; 
-            allLangs.forEach(lang => {
-                if(lang.code === currentActiveCode) return; 
-                const div = document.createElement('div');
-                div.className = 'lang-item notranslate';
-                div.setAttribute('translate', 'no');
-                div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
-                div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-                container.appendChild(div);
-            });
+        let matchedLang = null;
+        if (savedFlag) {
+            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
+        } else if (savedLangCode) {
+            matchedLang = allLangs.find(l => l.code === savedLangCode);
         }
 
-        function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-        function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
-
-        function applyLanguage(lang) {
-            currentActiveCode = lang.code;
-            currentFlagCode = lang.c; 
-            safeStorageSet('gygy_flag', lang.c);
-            safeStorageSet('gy_user_flag', lang.c);
-            safeStorageSet('gy_lang', lang.code);
-            safeStorageSet('gygy_lang', lang.code);
+        if (matchedLang) {
+            currentFlagCode = matchedLang.c;
+            currentActiveCode = matchedLang.code;
             
             const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
+            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
             const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
+            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
             
-            const langListContainer = document.getElementById('lang-list-container');
-            if (langListContainer) langListContainer.style.display = 'none';
-            renderLangList();
-            
-            forceTriggerGoogleTranslate(lang.code);
+            forceTriggerGoogleTranslate(matchedLang.code);
         }
 
-        function forceTriggerGoogleTranslate(langCode) {
-            if (window.langTimer) clearInterval(window.langTimer);
-            let attempts = 0;
-            window.langTimer = setInterval(() => {
-                const selectEl = document.querySelector('.goog-te-combo');
-                if (selectEl) {
-                    clearInterval(window.langTimer);
-                    if (selectEl.value === langCode) return;
-                    selectEl.value = langCode;
-                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                    console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
-                }
-                if (++attempts > 100) {
-                    clearInterval(window.langTimer);
-                    console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
-                }
-            }, 100);
-        }
+        if (currentID) { renderUserPassports(currentID); }
+        
+        if (savedAvatar) {
+            currentUserImage = savedAvatar;
+            const badgeImg = document.getElementById('badge-avatar-img');
+            const passImg = document.getElementById('pass-avatar-img');
+            if (badgeImg) badgeImg.src = savedAvatar;
+            if (passImg) passImg.src = savedAvatar;
 
-        function toggleLangList() {
-            const list = document.getElementById('lang-list-container');
-            if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function toggleManifest(boxId) {
-            document.querySelectorAll('.manifest-btn-box').forEach(box => {
-                if(box.id === boxId) {
-                    const isOpened = box.getAttribute('data-opened') === "true";
-                    box.style.opacity = isOpened ? "0" : "1";
-                    box.style.pointerEvents = isOpened ? "none" : "auto";
-                    box.setAttribute('data-opened', isOpened ? "false" : "true");
-                    box.style.bottom = isOpened ? "-50px" : "-35px";
-                } else {
-                    box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-50px";
-                }
-            });
-        }
-
-        function renderUserPassports(targetID) {
-            const idLabel = document.getElementById('id-label');
-            const passIdVal = document.getElementById('pass-id-val');
-            const qrBoxReg = document.getElementById('qr-box-reg');
-            const passQrBox = document.getElementById('pass-qr-box');
-            if (idLabel) idLabel.innerText = targetID;
-            if (passIdVal) passIdVal.innerText = targetID;
-            if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
-            if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
-        }
-
-        function checkAndFillRegistrationForm() {
-            const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-            
-            let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
-            const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
-            
-            if (savedLangCode) {
-                savedLangCode = savedLangCode.toLowerCase();
-                if (savedLangCode === 'ua') savedLangCode = 'uk';
+            if (savedAvatar.startsWith('data:image/svg+xml')) {
+                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
+                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
+            } else { 
+                const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
             }
-
-            let matchedLang = null;
-            if (savedFlag) {
-                matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
-            } else if (savedLangCode) {
-                matchedLang = allLangs.find(l => l.code === savedLangCode);
-            }
-
-            if (matchedLang) {
-                currentFlagCode = matchedLang.c;
-                currentActiveCode = matchedLang.code;
-                
-                const activeDisplay = document.getElementById('active-lang-display');
-                if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
-                const badgeFlagImg = document.getElementById('badge-flag-img');
-                if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-                
-                forceTriggerGoogleTranslate(matchedLang.code);
-            }
-
-            if (currentID) { renderUserPassports(currentID); }
-            
-            if (savedAvatar) {
-                currentUserImage = savedAvatar;
-                const badgeImg = document.getElementById('badge-avatar-img');
-                const passImg = document.getElementById('pass-avatar-img');
-                if (badgeImg) badgeImg.src = savedAvatar;
-                if (passImg) passImg.src = savedAvatar;
-
-                if (savedAvatar.startsWith('data:image/svg+xml')) {
-                    const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                    const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-                } else { 
-                    const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                    const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
-                }
-                const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
-                const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
-
-                const activeBlock = document.querySelector('.block.active');
-                if (activeBlock && activeBlock.id !== 'block-entrance') {
-                    const badge = document.getElementById('global-user-badge');
-                    if (badge) badge.style.display = 'block';
-                }
-            }
+            const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
+            const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
 
             const activeBlock = document.querySelector('.block.active');
-            const langSwitcher = document.getElementById('lang-switcher');
-            if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
-                langSwitcher.style.display = 'flex';
-                langSwitcher.style.opacity = '1';
+            if (activeBlock && activeBlock.id !== 'block-entrance') {
+                const badge = document.getElementById('global-user-badge');
+                if (badge) badge.style.display = 'block';
             }
-        } 
-
-       function enterStudio() { 
-    portalTransition('block-studio'); 
-}
-        
-        function enterOffice(event) {
-            if (event && event.preventDefault) event.preventDefault();
-            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-            if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
-            window.location.href = 'office.html';
         }
 
-      function portalTransition(blockId) {
-    // 1. Находим сквозные элементы Клуба на главной странице
-    // (Убедись, что ID/классы совпадают с твоей главной разметкой)
-    const mainLangPanel = document.querySelector('.ui-header-right-lang') || document.querySelector('.lang-panel'); 
-    const mainNavArrows = document.getElementById('nav-hall') || document.querySelector('.ui-nav-arrows');
-
-    // 2. Логика переключения под конкретные комнаты
-    if (blockId === 'block-studio') {
-        // Для Студии: жестко скрываем языковую панель, чтобы не мешала
-        if (mainLangPanel) mainLangPanel.style.setProperty('display', 'none', 'important');
-        
-        // Гарантируем, что стрелки навигации видны и активны
-        if (mainNavArrows) {
-            mainNavArrows.style.setProperty('display', 'flex', 'important');
-            mainNavArrows.style.zIndex = '9999999';
+        const activeBlock = document.querySelector('.block.active');
+        const langSwitcher = document.getElementById('lang-switcher');
+        if (langSwitcher && (!activeBlock || activeBlock.id === 'block-entrance')) {
+            langSwitcher.style.display = 'flex';
+            langSwitcher.style.opacity = '1';
         }
-    } else {
-        // При возврате в Холл или другие комнаты — возвращаем язык на место
-        if (mainLangPanel) mainLangPanel.style.display = 'block';
-        if (mainNavArrows) mainNavArrows.style.display = 'flex';
+    } 
+
+    function enterStudio() { 
+        portalTransition('block-studio'); 
     }
-
-    // 3. Стандартный бесшовный переход между блоками Клуба
-    document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
     
-    const targetBlock = document.getElementById(blockId);
-    if (targetBlock) {
-        targetBlock.style.display = 'block';
+    function enterOffice(event) {
+        if (event && event.preventDefault) event.preventDefault();
+        const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
+        if (currentNickname.toLowerCase() === 'модермех') { safeStorageSet('gygy_is_boss', 'true'); }
+        window.location.href = 'office.html';
     }
-}
-        window.addEventListener('DOMContentLoaded', () => {
-            checkAndFillRegistrationForm();
-            renderLangList();
-        });
 
-        function openPassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
-        }
-        function closePassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
-        }
-        function handleDoor() {
-            const door = document.getElementById('main-door');
-            const snd = document.getElementById('snd-door');
-            if (snd) snd.play().catch(()=>{});
-            if (door) {
-                door.classList.add('door-exploded');
-                setTimeout(() => { portalTransition('block-welcome'); }, 600);
+    function portalTransition(blockId) {
+        const langSwitcher = document.getElementById('lang-switcher'); 
+        const mainNavArrows = document.getElementById('nav-hall') || document.querySelector('.ui-nav-arrows');
+
+        if (blockId === 'block-studio') {
+            // Для Студии: жестко скрываем языковую панель lang-switcher
+            if (langSwitcher) langSwitcher.style.setProperty('display', 'none', 'important');
+            
+            // Гарантируем, что стрелки навигации видны и активны поверх фона
+            if (mainNavArrows) {
+                mainNavArrows.style.setProperty('display', 'flex', 'important');
+                mainNavArrows.style.setProperty('z-index', '9999999', 'important');
+            }
+        } else {
+            // При возврате в Холл или на Вход — возвращаем элементы Клуба на места
+            if (langSwitcher) {
+                if (blockId === 'block-entrance' || blockId === 'block-hall') {
+                    langSwitcher.style.display = 'flex';
+                } else {
+                    langSwitcher.style.display = 'none';
+                }
+            }
+            if (mainNavArrows) {
+                mainNavArrows.style.display = 'flex';
             }
         }
+
+        // Переключение блоков комнат
+        document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
         
-        // Временные рабочие обработчики, чтобы не падал JS
-        function generateAvatar() { 
-            const mockSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23d4af37"/></svg>';
-            safeStorageSet('gygy_avatar', mockSvg);
-            checkAndFillRegistrationForm();
+        const targetBlock = document.getElementById(blockId);
+        if (targetBlock) {
+            targetBlock.style.display = 'block';
         }
-        function saveUserProfile() { 
-            if(!currentID) {
-                currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
-                safeStorageSet('gygy_id', currentID);
-            }
-            alert('Профиль сохранен! ID: ' + currentID);
-            checkAndFillRegistrationForm();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        checkAndFillRegistrationForm();
+        renderLangList();
+    });
+
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
+    }
+    
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
+    }
+    
+    function handleDoor() {
+        const door = document.getElementById('main-door');
+        const snd = document.getElementById('snd-door');
+        if (snd) snd.play().catch(()=>{});
+        if (door) {
+            door.classList.add('door-exploded');
+            setTimeout(() => { portalTransition('block-welcome'); }, 600);
         }
-        function preview(input) { console.log('Файл выбран'); }
-    </script>
+    }
+    
+    function generateAvatar() { 
+        const mockSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%23d4af37"/></svg>';
+        safeStorageSet('gygy_avatar', mockSvg);
+        checkAndFillRegistrationForm();
+    }
+    
+    function saveUserProfile() { 
+        if(!currentID) {
+            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+            safeStorageSet('gygy_id', currentID);
+        }
+        alert('Профиль сохранен! ID: ' + currentID);
+        checkAndFillRegistrationForm();
+    }
+    
+    function preview(input) { console.log('Файл выбран'); }
+</script>
 </body>
 </html>
