@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Управление v4.6.2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GY-GY Club — Кабинет Управления</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -11,213 +11,208 @@
             --panel-bg: #1a1a1a;
         }
 
-        * {
-            box-sizing: border-box; /* Защита от выпадания блоков за края экрана */
-        }
-
         body {
             background-color: var(--bg-dark);
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 10px; /* Уменьшили внешние поля */
+            padding: 85px 20px 20px 20px; /* Отступ сверху 85px, чтобы фиксированный хедер ничего не перекрывал */
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden; /* Полный запрет горизонтального скролла */
         }
 
-        /* КОМПАКТНЫЙ ХЕДЕР GY-GY */
-        .gy-header {
-            width: 100%;
-            max-width: 800px; /* Чуть сузили общую рамку для стабильности */
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            margin-bottom: 25px;
-            padding: 5px 0;
+        /* ============================================================= */
+        /* ОРИГИНАЛЬНАЯ ВЕРХНЯЯ ПАНЕЛЬ ИЗ INDEX.HTML */
+        
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ (РУЛИ) */
+        .ui-nav-arrows {
+            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
+            display: flex; gap: 20px; font-size: 26px; font-weight: 900 !important; 
+            cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
+        }
+        .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
+        .arrow-item:hover { opacity: 0.8; }
+
+        /* СКВОЗНОЙ АВАТАР ПО ЦЕНТРУ (ЛИЦО) */
+        .ui-user-badge {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 2px solid var(--gold); background: #111;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            z-index: 1000000; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
+        .ui-user-badge .badge-flag {
+            position: absolute; bottom: -2px; right: -4px;
+            width: 17px; height: 12px; object-fit: cover;
+            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+        }
+        .ui-user-badge .player-id { 
+            font-size: 11px; 
+            color: #888; 
+            margin-top: 4px;
+            white-space: nowrap;
         }
 
-        /* ЛЕВАЯ СТОРОНА: Одинарная и Двойная стрелки навигации */
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: flex-start;
+        /* ЛОГОТИП GY-GY СПРАВА (ИМЯ) */
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; color: var(--gold);
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            text-align: right;
         }
-        .nav-arrow {
+        .ui-header-right .version-tag { font-size: 10px; color: #888; display: block; font-weight: normal; letter-spacing: 0; margin-top: 2px; }
+        /* ============================================================= */
+
+        /* СТИЛЬ ВСЕХ КНОПОК: СТРОГО ЗОЛОТО НА ЧЕРНОМ */
+        .switch-btn, .num-block {
             background: var(--bg-dark);
             border: 2px solid var(--gold);
             color: var(--gold);
             font-family: inherit;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 6px 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
-        .nav-arrow:hover {
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        
-        /* ЦЕНТР: Лицо (Аватар + Флаг из localStorage) */
-        .header-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .avatar-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-        .main-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            display: block;
-        }
-        .lang-flag {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            font-size: 12px;
+
+        .switch-btn:hover, .num-block:hover {
             background: var(--bg-dark);
-            border-radius: 50%;
-            padding: 1px;
-            line-height: 1;
+            color: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
-        /* ПРАВАЯ СТОРОНА: Имя бренда */
-        .header-right {
-            text-align: right;
-        }
-        .logo-zone { color: var(--gold); font-weight: bold; font-size: 20px; letter-spacing: 1px; }
-        .version-tag { font-size: 9px; color: #888; display: block; }
-
-        /* ИНТЕРФЕЙС ПАНЕЛИ */
+        /* Пульт-тумблер переключения экранов */
         .office-switcher {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 25px;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
+            margin-top: 15px;
         }
         .switch-btn {
             flex: 1;
-            background: var(--bg-dark);
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            padding: 12px 5px;
-            font-size: 14px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.25s ease;
+            padding: 15px;
+            font-size: 16px;
         }
-        .switch-btn:hover { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
         .switch-btn.active {
             background: var(--panel-bg);
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
             font-weight: bold;
-            box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.2);
         }
 
-        .office-screen { 
-            width: 100%; 
-            max-width: 800px; 
-            background: var(--panel-bg); 
-            border: 1px solid #333; 
-            padding: 15px; 
-            border-radius: 4px; 
+        /* Экраны-контейнеры */
+        .office-screen {
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 4px;
         }
 
-        /* МАТРИЦА С КНОПКАМИ (ЗОЛОТО НА ЧЕРНОМ) */
-        .matrix-6-numbers { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-            gap: 15px; 
+        /* Матрица Схемы Офиса (6 номеров) */
+        .matrix-6-numbers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
         }
-        .num-block { 
-            background: var(--bg-dark);
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            padding: 25px 15px; 
-            text-align: center; 
-            font-size: 16px; 
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.25s ease;
-        }
-        .num-block:hover {
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+        .num-block {
+            padding: 35px 25px;
+            text-align: center;
+            font-size: 18px;
         }
 
-        .algo-pre { 
-            margin: 0; 
-            padding: 10px; 
-            overflow-x: auto; 
-            font-family: 'Courier New', Courier, monospace; 
-            font-size: 12px; 
-            color: #e0e0e0; 
-            background: #0a0a0a; 
-            border: 1px dashed #444; 
+        /* Текстовый Алгоритм Схемы Клуба */
+        .algo-pre {
+            margin: 0;
+            padding: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #e0e0e0;
+            background: #0a0a0a;
+            border: 1px dashed #444;
         }
     </style>
 </head>
 <body>
 
-    <header class="gy-header">
-        
-        <div class="header-left">
-            <button class="nav-arrow" title="Назад" onclick="window.history.back();">◀</button>
-            <button class="nav-arrow" title="В корень сайта" onclick="window.location.href='index.html';">◀◀</button>
-        </div>
-        
-        <div class="header-center">
-            <div class="avatar-wrapper">
-                <img src="assets/charli-avatar.png" class="main-avatar" alt="Avatar">
-                <span class="lang-flag" id="current-flag">🇷🇺</span>
-            </div>
-        </div>
-        
-        <div class="header-right">
-            <div class="logo-zone">GY-GY CLUB</div>
-            <span class="version-tag">CORE v4.6.2</span>
-        </div>
-        
-    </header>
+    <div class="ui-nav-arrows" id="club-nav-arrows">
+        <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
+        <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
+    </div>
+
+    <div class="ui-user-badge" id="global-user-badge">
+        <img src="assets/charli-avatar.png" class="badge-img" alt="Avatar">
+        <span class="badge-flag" id="current-flag">🇷🇺</span>
+        <span class="player-id">ID: GY-7701</span>
+    </div>
+
+    <div class="ui-header-right">
+        <div>GY-GY CLUB</div>
+        <span class="version-tag">CORE v4.6.1</span>
+    </div>
 
     <div class="office-switcher">
         <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
-        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА</button>
+        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.6.1)</button>
     </div>
 
     <div id="screen-office-core" class="office-screen">
         <div class="matrix-6-numbers">
-            <div class="num-block" onclick="alert('Логи Airtable v4.6.2...')">#1 Logs / Airtable</div>
-            <div class="num-block" onclick="alert('Цифровые следы ID/QR...')">#2 Users / QR</div>
-            <div class="num-block" onclick="alert('Стейты комнат...')">#3 States / Rooms</div>
-            <div class="num-block" onclick="alert('Роялти ячеек v4.6.2...')">#4 Wallet / Royalty</div>
-            <div class="num-block" onclick="alert('Нейро-модули Чарли v4.6.2...')">#5 AI Core / Prompts</div>
-            <div class="num-block" onclick="alert('Песочница франшиз GY-GY OS...')">#6 Sandbox / Franchises</div>
+            <div class="num-block" onclick="alert('Запуск логов Airtable v4.6.1...')">#1 Logs / Airtable</div>
+            <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Users / QR</div>
+            <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 States / Rooms</div>
+            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз v4.6.1...')">#4 Wallet / Royalty</div>
+            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.6.1...')">#5 AI Core / Prompts</div>
+            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS v4.6.1)...')">#6 Sandbox / Franchises</div>
         </div>
     </div>
 
     <div id="screen-club-map" class="office-screen" style="display: none;">
         <pre class="algo-pre">
-================ [ КАРТА КЛУБА v4.6.2 CORE ] ================
+================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.1 CORE ] ==================
 
-[index.html] ──► (Выбор языка / Регистрация)
-     │
-     ▼
-[#block-hall] ───► Направления:
-     │
-     ├─► [AI ROOM]  ──► verses.html ──► Нейро-модули Чарли
-     ├─► [STUDIO]   ──► studio.html ──► Творческие Лавки
-     ├─► [OFFICE]   ──► office.html ──► Кабинет (Вы здесь)
-     └─► [БАР]      ──► bar.html    ──► Таблицы / Столы
-                            │
-                            ▼
-                     [tables.html] ──► Матрица 3х2
+[НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
+       │
+       ▼
+ [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
+       │
+       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
+       │                                                 ├─► 🟢 Послание инопланетянам
+       │                                                 ├─► 🟢 Лунная база
+       │                                                 └─► 🟢 Привет, Вселенная!
+       │
+       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
+       │                                                 ├─► 🟢 Ателье
+       │                                                 ├─► 🟢 Мастерская сувениров
+       │                                                 └─► 🟢 Лавка древностей
+       │
+       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.6.1)
+       │
+       └─► [Ветка БАР]     ──► Открыть bar.html    ──► 🟢 Книга жалоб и Оскорблений
+                                     │
+                                     ▼
+                        [ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
+                                     │
+         ┌───────────────────────────┴───────────────────────────┐
+         ▼                                                       ▼
+   [Условие: ЛЕВЫЙ ФЛАНГ]                                  [Условие: ПРАВЫЙ ФЛАНГ]
+   ├─► Выбор Ст.1 ──► 🟢 Риск-стратегия                    ├─► Выбор Ст.4 ──► 🟢 Поэтический подиум
+   ├─► Выбор Ст.2 ──► 🟢 Дуэль на цитатах                   ├─► Выбор Ст.5 ──► 🟢 Переводчик М/Ж
+   └─► Выбор Ст.3 ──► 🟢 Дуэль комплиментов                  └─► Выбор Ст.6 ──► 🟢 Тень Барона
+         │                                                       │
+         └───────────────────────────┬───────────────────────────┘
+                                     ▼
+                        [Условие: ЦЕНТР ЗАЛА] ──► Вызов 🎙 🟢 ОТКРЫТЫЙ МИКРОФОН
         </pre>
     </div>
 
@@ -241,14 +236,14 @@
             }
         }
 
-        // Автоматический перехват стейта языка с index.html
         document.addEventListener("DOMContentLoaded", () => {
-            const htmlLang = document.documentElement.lang || localStorage.getItem('gy_lang');
+            const htmlLang = document.documentElement.lang;
             const flagElement = document.getElementById('current-flag');
-            
-            if (htmlLang === 'fr') flagElement.textContent = '🇫🇷';
-            else if (htmlLang === 'en') flagElement.textContent = '🇺🇸';
-            else flagElement.textContent = '🇷🇺';
+            if (flagElement) {
+                if (htmlLang === 'fr') flagElement.textContent = '🇫🇷';
+                else if (htmlLang === 'en') flagElement.textContent = '🇺🇸';
+                else flagElement.textContent = '🇷🇺';
+            }
         });
     </script>
 </body>
