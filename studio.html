@@ -10,7 +10,7 @@
         :root { 
             --gold: #d4af37; 
             --violet: #8A2BE2; 
-            --super-neon: #bf00ff; /* Ультра-яркий фиолетовый для интерактивных зон */
+            --super-neon: #bf00ff; 
         }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
@@ -25,7 +25,7 @@
             margin: 0; 
         }
 
-        /* Фоновое изображение Студии — отодвинуто на 5% от зрителя */
+        /* Фоновое изображение Студии */
         .studio-page {
             position: fixed;
             inset: 0;
@@ -37,7 +37,7 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ (СЛЕВА) — ВЕРНУЛИ ПЕРВОНАЧАЛЬНЫЙ ЗОЛОТОЙ ВИД */
+        /* НАВИГАЦИЯ (СЛЕВА) — ЗОЛОТАЯ КЛАССИКА */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -49,7 +49,7 @@
         .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
         .back-arrow:hover { opacity: 0.8; }
 
-        /* СКВОЗНОЙ РЕАЛЬНЫЙ АВАТАР */
+        /* СКВОЗНОЙ АВАТАР */
         .ui-header-center {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -67,7 +67,7 @@
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* РЕАЛЬНЫЙ ФЛАГ ИЗ ЯЗЫКОВОГО БЛОКА НА ВХОДЕ */
+        /* КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО ФЛАГА */
         .badge-flag {
             position: absolute;
             bottom: -2px;
@@ -99,13 +99,12 @@
             background: rgba(0,0,0,0);
         }
 
-        /* СТРЕЛКИ УКАЗАТЕЛЕЙ (↑) — ИНТЕНСИВНОЕ НЕОНОВОЕ СВЕЧЕНИЕ */
+        /* УКАЗАТЕЛИ СВЕЧЕНИЯ (↑) — МАКСИМАЛЬНЫЙ НЕОН */
         .cue-arrow-studio { 
             color: var(--super-neon); 
             font-size: 38px; 
             font-weight: 900; 
             font-family: 'Share Tech Mono', monospace;
-            /* Многослойный фильтр свечения для дикого неона */
             text-shadow: 0 0 5px #fff, 0 0 10px var(--super-neon), 0 0 20px var(--super-neon), 0 0 30px var(--super-neon), 0 0 40px var(--super-neon); 
             pointer-events: none; 
             user-select: none;
@@ -119,7 +118,6 @@
             text-shadow: 0 0 5px #fff, 0 0 15px var(--super-neon), 0 0 30px var(--super-neon), 0 0 50px var(--super-neon);
         }
 
-        /* НАСТРОЕННЫЕ КООРДИНАТЫ ИЗ ПУЛЬТА */
         .zone-wear { top: 24vh; left: 29vw; width: 120px; height: 90px; }
         .zone-gifts { top: 11vh; left: 55vw; width: 120px; height: 90px; }
         .zone-vintage { top: 4vh; left: 78vw; width: 120px; height: 90px; }
@@ -157,7 +155,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Загрузка сохраненного аватара
+            // 1. ПОДТЯГИВАЕМ АВАТАР
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -172,13 +170,22 @@
                 avatarEl.style.display = 'block';
             }
 
-            // Динамический расчёт реального флага на базе сохранённого на входе языка
-            const htmlLang = document.documentElement.lang || 'en';
+            // 2. ПОДТЯГИВАЕМ РЕАЛЬНЫЙ ФЛАГ ИЗ STORAGE НА ВХОДЕ
+            const userLang = localStorage.getItem('gygy_lang') || 
+                             localStorage.getItem('lang') || 
+                             localStorage.getItem('user_lang') || 
+                             document.documentElement.lang || 'ru';
+
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
-                if (htmlLang === 'fr') flagElement.textContent = '🇫🇷';
-                else if (htmlLang === 'en') flagElement.textContent = '🇺🇸';
-                else flagElement.textContent = '🇷🇺';
+                const cleanLang = userLang.toLowerCase().trim();
+                if (cleanLang.includes('fr')) {
+                    flagElement.textContent = '🇫🇷';
+                } else if (cleanLang.includes('en')) {
+                    flagElement.textContent = '🇺🇸';
+                } else {
+                    flagElement.textContent = '🇷🇺'; // Дефолт, если русский или не определен
+                }
             }
         });
 
