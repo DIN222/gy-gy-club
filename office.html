@@ -1,286 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club - Office v9.9.7 </title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club — Кабинет Управления v4.5.31</title>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --violet: #8A2BE2; 
-        }
-        
-        * { 
-            -webkit-tap-highlight-color: transparent !important; 
-            box-sizing: border-box; 
-        }
-        body, button, input, div, span { pointer-events: auto !important; }
-
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; 
-            position: fixed; 
-            margin: 0; 
+        :root {
+            --gold: #FFD700;
+            --violet: #8A2BE2;
+            --neon-green: #00ff00;
+            --bg-dark: #121212;
+            --panel-bg: #1a1a1a;
         }
 
-        /* ==================================================== */
-        /* STANDARD TOP BAR                                     */
-        /* ==================================================== */
-        .office-top-bar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; background: #000; z-index: 1000000;
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .ui-nav-arrows {
-            display: flex; gap: 20px; font-size: 26px; font-weight: 900; cursor: pointer; user-select: none;
-        }
-        .arrow-item { transition: opacity 0.2s; }
-        .arrow-item:hover { opacity: 0.7; text-shadow: 0 0 8px var(--gold); }
-
-        /* ЧИСТЫЙ БАДЖ ДЛЯ ВЫВОДА АВАТАРА ИЗ РЕГИСТРАЦИИ */
-        .ui-user-badge {
-            position: fixed !important; top: 12px !important; left: 50% !important; transform: translateX(-50%) !important;
-            width: 50px !important; height: 50px !important; border-radius: 50% !important;
-            border: 2px solid var(--gold) !important; background: #111 !important;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.35) !important; z-index: 1000000 !important; 
-            display: flex !important; align-items: center !important; justify-content: center !important;
-            overflow: hidden !important; opacity: 1 !important; visibility: visible !important;
-        }
-        
-        .ui-user-badge svg, .ui-user-badge img { 
-            width: 100% !important; height: 100% !important; 
-            display: block !important; object-fit: cover !important;
+        /* Постоянные сквозные атрибуты страницы */
+        .gy-header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
         }
 
-        .ui-header-right { display: flex; flex-direction: column; align-items: flex-end; user-select: none; }
-        .logo-text { font-size: 24px; letter-spacing: 3px; font-weight: bold; line-height: 1; }
-        .version-text { font-size: 10px; color: rgba(214, 175, 55, 0.5); letter-spacing: 1px; margin-top: 2px; }
+        .lang-panel { color: var(--gold); font-weight: bold; }
+        .logo-zone { color: var(--gold); font-weight: bold; font-size: 24px; letter-spacing: 2px; text-align: right; }
+        .version-tag { font-size: 10px; color: #888; display: block; font-weight: normal; }
+        .back-btn { 
+            background: transparent; border: 1px solid var(--gold); 
+            color: var(--gold); padding: 5px 10px; cursor: pointer; 
+        }
+        .back-btn:hover { background: var(--gold); color: var(--bg-dark); }
 
-        /* ==================================================== */
-        /* MAIN WORKSPACE                                       */
-        /* ==================================================== */
-        .office-chats-container { 
-            width: 90vw; max-width: 500px; height: 82vh; 
-            border: 2px solid var(--gold); background: rgba(0, 0, 0, 0.9); 
-            margin: 90px auto 0 auto; position: relative; box-shadow: 0 0 20px rgba(214, 175, 55, 0.15); 
-            display: flex; flex-direction: column; padding: 15px;
+        /* Верхний пульт переключения (Тумблер) */
+        .office-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 900px;
         }
 
-        .office-internal-tabs {
-            display: flex; justify-content: space-between; gap: 6px; margin-bottom: 15px; border-bottom: 1px solid rgba(214, 175, 55, 0.3); padding-bottom: 12px;
+        .switch-btn {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 2px solid var(--violet);
+            color: #ffffff;
+            padding: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .tab-num {
-            flex-grow: 1; height: 36px; border: 1px solid var(--gold); background: #000; color: var(--gold);
-            font-family: 'Share Tech Mono', monospace; font-size: 16px; font-weight: 900; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+
+        .switch-btn:hover {
+            box-shadow: 0 0 10px var(--violet);
         }
-        .tab-num:hover, .tab-num.active {
-            background: #000 !important; color: var(--gold) !important; border-color: var(--gold) !important;
-            text-shadow: 0 0 10px var(--gold) !important; box-shadow: 0 0 12px rgba(214, 175, 55, 0.6) !important;
+
+        .switch-btn.active {
+            background: var(--violet);
+            box-shadow: 0 0 15px var(--violet);
+            font-weight: bold;
         }
-        
-        .office-chat-page { display: none; flex-direction: column; flex-grow: 1; }
-        .office-chat-page.active { display: flex !important; }
 
-        .room-title-container { margin-bottom: 10px; min-height: 28px; display: flex; align-items: center; }
-        .room-title { font-size: 18px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed transparent; }
+        /* Экраны-контейнеры */
+        .office-screen {
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
 
-        .chat-history { flex-grow: 1; overflow-y: auto; border: 1px solid rgba(214, 175, 55, 0.3); padding: 10px; margin-bottom: 12px; background: #000; }
-        .chat-message { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-        .msg-avatar-holder { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--gold); background: #222; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
-        .msg-content { display: flex; flex-direction: column; }
-        .msg-username { font-size: 11px; color: rgba(214, 175, 55, 0.6); margin-bottom: 2px; font-weight: bold; }
-        .msg-text { font-size: 14px; color: #fff; word-break: break-all; }
+        /* Матрица Схемы Офиса (6 номеров) */
+        .matrix-6-numbers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
 
-        .chat-input-zone { display: flex; gap: 6px; }
-        .chat-input-zone input { flex-grow: 1; background: #000; border: 1px solid var(--gold); color: var(--gold); padding: 0 12px; font-family: 'Share Tech Mono'; outline: none; font-size: 14px; height: 40px; }
-        .btn-action { height: 40px; padding: 0 12px; background: #000; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Share Tech Mono'; font-weight: 900; font-size: 12px; text-transform: uppercase; }
-        
-        .notranslate goog-te-banner-frame, .skiptranslate { display: none !important; }
+        .num-block {
+            border: 2px solid var(--gold);
+            padding: 25px;
+            text-align: center;
+            font-size: 18px;
+            cursor: pointer;
+            background: rgba(255, 215, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .num-block:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--gold);
+            font-weight: bold;
+        }
+
+        /* Компактный Алгоритм Схемы Клуба */
+        .algo-pre {
+            margin: 0;
+            padding: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #e0e0e0;
+            background: #0a0a0a;
+            border: 1px dashed #444;
+        }
     </style>
 </head>
-<body class="notranslate">
+<body>
 
-    <div class="office-top-bar">
-        <div class="ui-nav-arrows">
-            <span class="arrow-item" onclick="goBack()">&lt;</span>
-            <span class="arrow-item" onclick="goToStart()">&lt;&lt;</span>
+    <!-- Сквозной интерфейс навигации GY-GY -->
+    <header class="gy-header">
+        <div class="lang-panel"> [ RU / EN ] </div>
+        <button class="back-btn" onclick="window.history.back();">◀ НАЗАД</button>
+        <div class="logo-zone">
+            GY-GY CLUB
+            <span class="version-tag">CORE v4.5.31</span>
         </div>
-        
-        <div class="ui-user-badge" id="main-badge"></div>
+    </header>
 
-        <div class="ui-header-right">
-            <span class="logo-text">GY-GY</span>
-            <span class="version-text">v9.9.5</span>
+    <!-- Двухпозиционный пульт-тумблер -->
+    <div class="office-switcher">
+        <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
+        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.5.31)</button>
+    </div>
+
+    <!-- ЭКРАН 1: СХЕМА ОФИСА (Системная консоль) -->
+    <div id="screen-office-core" class="office-screen">
+        <div class="matrix-6-numbers">
+            <div class="num-block" onclick="alert('Запуск логов Airtable v4.5...')">#1 Logs / Airtable</div>
+            <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Users / QR</div>
+            <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 States / Rooms</div>
+            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз...')">#4 Wallet / Royalty</div>
+            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.5.31...')">#5 AI Core / Prompts</div>
+            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS)...')">#6 Sandbox / Franchises</div>
         </div>
     </div>
 
-    <div class="office-chats-container">
-        <div class="office-internal-tabs">
-            <div class="tab-num active" id="tab-btn-1" onclick="switchOfficePage(1)">1</div>
-            <div class="tab-num" id="tab-btn-2" onclick="switchOfficePage(2)">2</div>
-            <div class="tab-num" id="tab-btn-3" onclick="switchOfficePage(3)">3</div>
-            <div class="tab-num" id="tab-btn-4" onclick="switchOfficePage(4)">4</div>
-            <div class="tab-num" id="tab-btn-5" onclick="switchOfficePage(5)">5</div>
-            <div class="tab-num" id="tab-btn-6" onclick="switchOfficePage(6)">6</div>
-        </div>
+    <!-- ЭКРАН 2: СХЕМА КЛУБА (Компактный алгоритм переходов) -->
+    <div id="screen-club-map" class="office-screen" style="display: none;">
+        <pre class="algo-pre">
+================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.5.31 CORE ] ==================
 
-        <div id="office-page-1" class="office-chat-page active">
-            <div class="room-title-container">
-                <div class="room-title" id="title-text-1" onclick="editRoomTitle(1)">ROOM 01 | AI CORE</div>
-            </div>
-            <div class="chat-history" id="chat-history-1">
-                <div class="chat-message">
-                    <div class="msg-avatar-holder" id="sys-msg-avatar"></div>
-                    <div class="msg-content">
-                        <span class="msg-username">SYSTEM ASSISTANT</span>
-                        <span class="msg-text">Внутренний шлюз Офиса v9.9.5 запущен. Лишние селекторы аватаров полностью ликвидированы.</span>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-input-zone">
-                <input type="text" id="chat-input-1" placeholder="Задать вопрос ИИ-Ядру..." onkeydown="if(event.key==='Enter') sendMessage(1)">
-                <button class="btn-action" onclick="consultStaff(1)">КОНСУЛЬТАЦИЯ</button>
-                <button class="btn-action" onclick="sendMessage(1)">ОТПРАВИТЬ</button>
-            </div>
-        </div>
+[НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
+       │
+       ▼
+ [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
+       │
+       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
+       │                                                 ├─► 🟢 Послание инопланетянам
+       │                                                 ├─► 🟢 Лунная база
+       │                                                 └─► 🟢 Привет, Вселенная!
+       │
+       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
+       │                                                 ├─► 🟢 Ателье
+       │                                                 ├─► 🟢 Мастерская сувениров
+       │                                                 └─► 🟢 Лавка древностей
+       │
+       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.5.31)
+       │
+       └─► [Ветка БАР]     ──► Открыть bar.html    ──► 🟢 Книга жалоб и Оскорблений
+                                     │
+                                     ▼
+                        [П ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
+                                     │
+         ┌───────────────────────────┴───────────────────────────┐
+         ▼                                                       ▼
+   [Условие: ЛЕВЫЙ ФЛАНГ]                                  [Условие: ПРАВЫЙ ФЛАНГ]
+   ├─► Выбор Ст.1 ──► 🟢 Риск-стратегия                    ├─► Выбор Ст.4 ──► 🟢 Поэтический подиум
+   ├─► Выбор Ст.2 ──► 🟢 Дуэль на цитатах                  ├─► Выбор Ст.5 ──► 🟢 Переводчик М/Ж
+   └─► Выбор Ст.3 ──► 🟢 Дуэль комплиментов                └─► Выбор Ст.6 ──► 🟢 Тень Барона
+         │                                                       │
+         └───────────────────────────┬───────────────────────────┘
+                                     ▼
+                        [Условие: ЦЕНТР ЗАЛА] ──► Вызов 🎙 🟢 ОТКРЫТЫЙ МИКРОФОН
+        </pre>
     </div>
 
+    <!-- Логика мгновенного переключения экранов без скролла -->
     <script>
-        // Полный набор ассетов GY-GY Club для точной подстраховки
-        const avatarCodes = {
-            1: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" fill="#d4af37"/><path d="M20 85 C20 60, 80 60, 80 85" fill="#d4af37"/></svg>`,
-            2: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#8A2BE2"/><path d="M15 85 Q50 50 85 85" fill="#8A2BE2"/></svg>`,
-            3: `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="40" fill="#d4af37"/><path d="M10 90 L30 65 L70 65 L90 90 Z" fill="#d4af37"/></svg>`,
-            4: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="#d4af37" stroke-width="6"/><circle cx="50" cy="50" r="10" fill="#8A2BE2"/></svg>`
-        };
+        function switchScreen(screenType) {
+            const coreScreen = document.getElementById('screen-office-core');
+            const clubScreen = document.getElementById('screen-club-map');
+            const btnCore = document.getElementById('btn-core');
+            const btnClub = document.getElementById('btn-club');
 
-        // Интеллектуальный поиск аватара, вытащенного из зоны регистрации
-        function getTargetAvatar() {
-            // Шаг 1: Проверяем все известные маркеры и ключи
-            let keys = ['userAvatarID', 'avatarID', 'savedAvatar', 'avatar', 'user_avatar', 'userAvatar', 'currentAvatar', 'selectedAvatar', 'gygy_user_avatar'];
-            for (let key of keys) {
-                let data = localStorage.getItem(key);
-                if (data) {
-                    data = data.trim();
-                    if (data.includes('<svg') || data.includes('viewBox')) return data;
-                    if (data.includes('data:image') || data.includes('http') || data.includes('.png') || data.includes('.jpg')) {
-                        return `<img src="${data}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    let num = parseInt(data.replace(/[^0-9]/g, ''));
-                    if (num >= 1 && num <= 4) return avatarCodes[num];
-                }
-            }
-
-            // Шаг 2: Глубокое сканирование памяти (если ключ назван как-то нестандартно)
-            for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                let val = localStorage.getItem(key).trim();
-                if (val.includes('<svg') || val.includes('viewBox')) return val;
-                if (key.toLowerCase().includes('avatar')) {
-                    if (val.includes('data:image') || val.includes('http')) {
-                        return `<img src="${val}" style="width:100%;height:100%;object-fit:cover;">`;
-                    }
-                    let num = parseInt(val.replace(/[^0-9]/g, ''));
-                    if (num >= 1 && num <= 4) return avatarCodes[num];
-                }
-            }
-
-            // Золотой премиальный дефолт, если хранилище этого домена девственно чисто
-            return avatarCodes[1]; 
-        }
-
-        // Жесткая отрисовка без войн с интерфейсом
-        function applyCorrectAvatar() {
-            let activeAvatarHTML = getTargetAvatar();
-            
-            // Главный бадж на верхней панели
-            let badge = document.getElementById('main-badge');
-            if (badge && badge.innerHTML.trim() !== activeAvatarHTML.trim()) {
-                badge.innerHTML = activeAvatarHTML;
-            }
-            
-            // Аватарка системного ассистента в чате
-            let sysMsg = document.getElementById('sys-msg-avatar');
-            if (sysMsg && !sysMsg.innerHTML.trim()) {
-                sysMsg.innerHTML = avatarCodes[2]; // Фиолетовый ИИ
+            if (screenType === 'core') {
+                coreScreen.style.display = 'block';
+                clubScreen.style.display = 'none';
+                btnCore.classList.add('active');
+                btnClub.classList.remove('active');
+            } else {
+                coreScreen.style.display = 'none';
+                clubScreen.style.display = 'block';
+                btnCore.classList.remove('active');
+                btnClub.classList.add('active');
             }
         }
-
-        // Инициализация на всех стадиях загрузки
-        applyCorrectAvatar();
-        document.addEventListener('DOMContentLoaded', applyCorrectAvatar);
-        window.addEventListener('load', applyCorrectAvatar);
-
-        // Периодическая проверка на случай ленивой подгрузки данных
-        setInterval(applyCorrectAvatar, 1000);
-
-        // --- ЛОГИКА ВЗАИМОДЕЙСТВИЯ И ИНТЕРФЕЙСА ОФИСА ---
-        function switchOfficePage(num) { 
-            if (num !== 1) alert(`Переключение на ROOM 0${num}. Функция в разработке согласно архитектурному плану!`);
-        }
-
-        function editRoomTitle(num) {
-            const titleText = document.getElementById(`title-text-${num}`);
-            const currentName = titleText.innerText;
-            const container = titleText.parentElement;
-            const input = document.createElement('input');
-            input.type = 'text'; input.className = 'room-title-input'; input.value = currentName;
-            container.innerHTML = ''; container.appendChild(input); input.focus();
-            function save() { container.innerHTML = `<div class="room-title" id="title-text-${num}" onclick="editRoomTitle(${num})">${input.value.trim() || 'ROOM 01'}</div>`; }
-            input.addEventListener('blur', save);
-            input.addEventListener('keydown', (e) => { if(e.key === 'Enter') save(); });
-        }
-
-        function sendMessage(num) {
-            const input = document.getElementById(`chat-input-${num}`);
-            if (!input.value.trim()) return;
-            const history = document.getElementById(`chat-history-${num}`);
-            const msg = document.createElement('div');
-            msg.className = 'chat-message';
-            msg.innerHTML = `<div class="msg-avatar-holder">${getTargetAvatar()}</div><div class="msg-content"><span class="msg-username">You</span><span class="msg-text">${input.value.trim()}</span></div>`;
-            history.appendChild(msg); input.value = ''; history.scrollTop = history.scrollHeight;
-        }
-
-       function consultStaff(num) {
-    const history = document.getElementById(`chat-history-${num}`);
-    
-    // Массив случайных ответов ИИ-сотрудника
-    const aiPhrases = [
-        "Запрос принят. Код перебираю, костыли выпрямляю. Подождите пару наносекунд...",
-        "Я изучил архитектурный план GY-GY. Мой вердикт: маловато юмора, добавьте ещё гифок!",
-        "Внимание! Обнаружен критический уровень серьёзности в чате. Снижаю до безопасного минимума.",
-        "Консультация платная. С вас один лайк на GitHub Pages и три добрых слова.",
-        "Ваш запрос обработан моим левым полушарием. Правое в данный момент заказывает цифровое пиво.",
-        "Интеграция со Студией прошла успешно. Теперь я вижу ваш аватар и одобряю этот выбор!",
-        "Всё под контролем. Главное — не нажимайте F5, пока я держу этот сервер на честном слове."
-    ];
-    
-    // Выбираем случайную фразу
-    const randomPhrase = aiPhrases[Math.floor(Math.random() * aiPhrases.length)];
-    
-    const msg = document.createElement('div');
-    msg.className = 'chat-message';
-    msg.innerHTML = `
-        <div class="msg-avatar-holder">${avatarCodes[2]}</div>
-        <div class="msg-content">
-            <span class="msg-username" style="color:var(--violet);">AI_USER_BOT (Сотрудник)</span>
-            <span class="msg-text" style="color:var(--gold); font-style: italic;">${randomPhrase}</span>
-        </div>
-    `;
-    
-    history.appendChild(msg);
-    history.scrollTop = history.scrollHeight;
-}
-        function goBack() { window.location.href = 'index.html'; }
-        function goToStart() { window.location.href = 'index.html'; }
     </script>
 </body>
 </html>
