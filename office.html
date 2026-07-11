@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club — Кабинет Управления</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club — Кабинет Управления v4.6.5 </title>
     <style>
         :root {
             --gold: #FFD700;
@@ -16,58 +16,101 @@
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 85px 20px 20px 20px; /* Отступ сверху 85px, чтобы фиксированный хедер ничего не перекрывал */
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* ============================================================= */
-        /* ОРИГИНАЛЬНАЯ ВЕРХНЯЯ ПАНЕЛЬ ИЗ INDEX.HTML */
-        
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ (РУЛИ) */
+        /* ЕДИНАЯ ВЕРХНЯЯ ПАНЕЛЬ СТРОГО ПО ОБРАЗУ INDEX */
+        .ui-custom-header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* ЛЕВАЯ СТОРОНА: Стрелки навигации (рули) */
         .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 20px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
+            display: flex;
+            gap: 20px;
+            font-size: 26px;
+            font-weight: 900 !important;
+            cursor: pointer;
+            color: var(--gold);
+            line-height: 1;
+            letter-spacing: -2px;
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
-
-        /* СКВОЗНОЙ АВАТАР ПО ЦЕНТРУ (ЛИЦО) */
+        
+        /* ЦЕНТР: Личность (Лицо + Флаг) */
         .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
         }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
+        
+        .badge-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 42px;
+            height: 42px;
+        }
+
+        .ui-user-badge .badge-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+            display: block;
+            object-fit: cover;
+            background-color: #111;
+        }
+
         .ui-user-badge .badge-flag {
-            position: absolute; bottom: -2px; right: -4px;
-            width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            font-size: 14px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            padding: 1px;
+            line-height: 1;
         }
+
         .ui-user-badge .player-id { 
             font-size: 11px; 
             color: #888; 
-            margin-top: 4px;
+            margin-top: 6px;
             white-space: nowrap;
         }
 
-        /* ЛОГОТИП GY-GY СПРАВА (ИМЯ) */
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; color: var(--gold);
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        /* ПРАВАЯ СТОРОНА: Айдентика (Имя бренда) с оригинальной обводкой */
+        .ui-header-right {
             text-align: right;
+            font-size: 24px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: var(--gold);
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
-        .ui-header-right .version-tag { font-size: 10px; color: #888; display: block; font-weight: normal; letter-spacing: 0; margin-top: 2px; }
-        /* ============================================================= */
+        .ui-header-right .version-tag { 
+            font-size: 10px; 
+            color: #888; 
+            display: block; 
+            font-weight: normal; 
+            letter-spacing: 0;
+            margin-top: 2px;
+        }
 
         /* СТИЛЬ ВСЕХ КНОПОК: СТРОГО ЗОЛОТО НА ЧЕРНОМ */
         .switch-btn, .num-block {
@@ -93,7 +136,6 @@
             margin-bottom: 25px;
             width: 100%;
             max-width: 900px;
-            margin-top: 15px;
         }
         .switch-btn {
             flex: 1;
@@ -145,21 +187,31 @@
 </head>
 <body>
 
-    <div class="ui-nav-arrows" id="club-nav-arrows">
-        <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
-        <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
-    </div>
-
-    <div class="ui-user-badge" id="global-user-badge">
-        <img src="assets/charli-avatar.png" class="badge-img" alt="Avatar">
-        <span class="badge-flag" id="current-flag">🇷🇺</span>
-        <span class="player-id">ID: GY-7701</span>
-    </div>
-
-    <div class="ui-header-right">
-        <div>GY-GY CLUB</div>
-        <span class="version-tag">CORE v4.6.1</span>
-    </div>
+    <!-- ЕДИНАЯ ВЕРХНЯЯ ПАНЕЛЬ ИЗ INDEX -->
+    <header class="ui-custom-header">
+        
+        <!-- Лево: Навигация -->
+        <div class="ui-nav-arrows" id="club-nav-arrows">
+            <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
+            <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
+        </div>
+        
+        <!-- Центр: Личность -->
+        <div class="ui-user-badge" id="global-user-badge">
+            <div class="badge-avatar-wrapper">
+                <img src="assets/charli-avatar.png" class="badge-img" alt="Avatar">
+                <span class="badge-flag" id="current-flag">🇷🇺</span>
+            </div>
+            <span class="player-id">ID: GY-7701</span>
+        </div>
+        
+        <!-- Право: Бренд -->
+        <div class="ui-header-right">
+            <div>GY-GY CLUB</div>
+            <span class="version-tag">CORE v4.6.1</span>
+        </div>
+        
+    </header>
 
     <div class="office-switcher">
         <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
