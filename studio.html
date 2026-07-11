@@ -10,7 +10,7 @@
         :root { 
             --gold: #d4af37; 
             --violet: #8A2BE2; 
-            --neon-violet: #b026ff; /* Неоновый фиолетовый оттенок для стрелок */
+            --super-neon: #bf00ff; /* Ультра-яркий фиолетовый для интерактивных зон */
         }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         
@@ -37,19 +37,19 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ (СЛЕВА) — СТРЕЛКИ СДЕЛАНЫ НЕОНОВЫМИ ФИОЛЕТОВЫМИ */
+        /* НАВИГАЦИЯ (СЛЕВА) — ВЕРНУЛИ ПЕРВОНАЧАЛЬНЫЙ ЗОЛОТОЙ ВИД */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--neon-violet); 
+            cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
-            text-shadow: 0 0 8px var(--neon-violet), 0 0 15px var(--neon-violet);
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
-        .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--neon-violet); }
+        .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
         .back-arrow:hover { opacity: 0.8; }
 
-        /* СКВОЗНОЙ РЕАЛЬНЫЙ АВАТАР С КОНТЕЙНЕРОМ ДЛЯ ФЛАГА */
+        /* СКВОЗНОЙ РЕАЛЬНЫЙ АВАТАР */
         .ui-header-center {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -66,7 +66,8 @@
             object-fit: cover; background: #fff !important; display: block;
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
-        /* Стилизация элемента флага на аватаре */
+        
+        /* РЕАЛЬНЫЙ ФЛАГ ИЗ ЯЗЫКОВОГО БЛОКА НА ВХОДЕ */
         .badge-flag {
             position: absolute;
             bottom: -2px;
@@ -98,13 +99,14 @@
             background: rgba(0,0,0,0);
         }
 
-        /* СТРЕЛКИ ИЗ ХОЛЛА (↑) */
+        /* СТРЕЛКИ УКАЗАТЕЛЕЙ (↑) — ИНТЕНСИВНОЕ НЕОНОВОЕ СВЕЧЕНИЕ */
         .cue-arrow-studio { 
-            color: var(--violet); 
+            color: var(--super-neon); 
             font-size: 38px; 
             font-weight: 900; 
             font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
+            /* Многослойный фильтр свечения для дикого неона */
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--super-neon), 0 0 20px var(--super-neon), 0 0 30px var(--super-neon), 0 0 40px var(--super-neon); 
             pointer-events: none; 
             user-select: none;
             z-index: 10;
@@ -112,8 +114,9 @@
         }
 
         .studio-zone:hover .cue-arrow-studio { 
-            opacity: 0.8; 
-            transform: scale(1.05);
+            opacity: 0.9; 
+            transform: scale(1.1);
+            text-shadow: 0 0 5px #fff, 0 0 15px var(--super-neon), 0 0 30px var(--super-neon), 0 0 50px var(--super-neon);
         }
 
         /* НАСТРОЕННЫЕ КООРДИНАТЫ ИЗ ПУЛЬТА */
@@ -130,7 +133,6 @@
             <a href="index.html" class="back-arrow">&lt;&lt;</a>
         </div>
 
-        <!-- Центр: Аватар внутри обертки с флагом -->
         <div class="ui-header-center notranslate">
             <div class="badge-avatar-wrapper">
                 <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
@@ -170,7 +172,7 @@
                 avatarEl.style.display = 'block';
             }
 
-            // Инициализация флага в зависимости от системного/локального языка страницы
+            // Динамический расчёт реального флага на базе сохранённого на входе языка
             const htmlLang = document.documentElement.lang || 'en';
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
