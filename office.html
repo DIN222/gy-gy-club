@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.5.31</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.0</title>
     <style>
         :root {
             --gold: #FFD700;
-            --violet: #8A2BE2;
-            --neon-green: #00ff00;
             --bg-dark: #121212;
             --panel-bg: #1a1a1a;
         }
@@ -24,28 +22,75 @@
             align-items: center;
         }
 
-        /* Постоянные сквозные атрибуты страницы */
+        /* ВЕРХНЯЯ ПАНЕЛЬ СТРАНИЦЫ GY-GY (БЕЗ РАЗДЕЛИТЕЛЬНОЙ ЛИНИИ) */
         .gy-header {
             width: 100%;
             max-width: 900px;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 10px;
+            margin-bottom: 40px; /* Увеличили отступ, так как линии больше нет */
+            padding-bottom: 12px;
         }
 
-        .lang-panel { color: var(--gold); font-weight: bold; }
-        .logo-zone { color: var(--gold); font-weight: bold; font-size: 24px; letter-spacing: 2px; text-align: right; }
+        /* ЛЕВАЯ СТОРОНА: Язык и Навигация */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+        .lang-panel { color: var(--gold); font-weight: bold; font-size: 14px; }
+        
+        /* ЦЕНТР: Личность */
+        .header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .main-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+        }
+        .player-id { font-size: 11px; color: #888; }
+
+        /* ПРАВАЯ СТОРОНА: Айдентика */
+        .header-right {
+            text-align: right;
+        }
+        .logo-zone { color: var(--gold); font-weight: bold; font-size: 24px; letter-spacing: 2px; }
         .version-tag { font-size: 10px; color: #888; display: block; font-weight: normal; }
-        .back-btn { 
-            background: transparent; border: 1px solid var(--gold); 
-            color: var(--gold); padding: 5px 10px; cursor: pointer; 
-        }
-        .back-btn:hover { background: var(--gold); color: var(--bg-dark); }
 
-        /* Верхний пульт переключения (Тумблер) */
+
+        /* СТИЛЬ ВСЕХ КНОПОК: СТРОГО ЗОЛОТО НА ЧЕРНОМ */
+        .back-btn, .switch-btn, .num-block {
+            background: var(--bg-dark);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        /* Эффект наведения для всех кнопок (Без заливки фоном!) */
+        .back-btn:hover, .switch-btn:hover, .num-block:hover {
+            background: var(--bg-dark); /* Всегда черный */
+            color: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); /* Мягкое золотое свечение контура */
+        }
+
+        /* Специфика для навигации */
+        .back-btn {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        /* Пульт-тумблер переключения экранов */
         .office-switcher {
             display: flex;
             gap: 10px;
@@ -53,26 +98,14 @@
             width: 100%;
             max-width: 900px;
         }
-
         .switch-btn {
             flex: 1;
-            background: var(--panel-bg);
-            border: 2px solid var(--violet);
-            color: #ffffff;
             padding: 15px;
             font-size: 16px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
-
-        .switch-btn:hover {
-            box-shadow: 0 0 10px var(--violet);
-        }
-
         .switch-btn.active {
-            background: var(--violet);
-            box-shadow: 0 0 15px var(--violet);
+            background: var(--panel-bg); /* Чуть светлее черного для фиксации нажатия */
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
             font-weight: bold;
         }
 
@@ -93,25 +126,14 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
-
         .num-block {
-            border: 2px solid var(--gold);
-            padding: 25px;
+            padding: 35px 25px;
             text-align: center;
             font-size: 18px;
-            cursor: pointer;
-            background: rgba(255, 215, 0, 0.05);
-            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
-        .num-block:hover {
-            background: var(--gold);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px var(--gold);
-            font-weight: bold;
-        }
-
-        /* Компактный Алгоритм Схемы Клуба */
+        /* Текстовый Алгоритм Схемы Клуба */
         .algo-pre {
             margin: 0;
             padding: 10px;
@@ -127,38 +149,51 @@
 </head>
 <body>
 
-    <!-- Сквозной интерфейс навигации GY-GY -->
+    <!-- Сквозной интерфейс навигации GY-GY (Линия удалена) -->
     <header class="gy-header">
-        <div class="lang-panel"> [ RU / EN ] </div>
-        <button class="back-btn" onclick="window.history.back();">◀ НАЗАД</button>
-        <div class="logo-zone">
-            GY-GY CLUB
-            <span class="version-tag">CORE v4.5.31</span>
+        
+        <!-- Вверху СЛЕВА: Язык и стрелки навигации -->
+        <div class="header-left">
+            <div class="lang-panel">[RU]</div>
+            <button class="back-btn" onclick="window.location.href='index.html#block-hall';">◀ НАЗАД В ХОЛЛ</button>
         </div>
+        
+        <!-- По ЦЕНТРУ: Идентичность Модермеха -->
+        <div class="header-center">
+            <img src="assets/charli-avatar.png" class="main-avatar" alt="Avatar">
+            <span class="player-id">ID: GY-7701</span>
+        </div>
+        
+        <!-- Вверху СПРАВА: Логотип бренда GY-GY -->
+        <div class="header-right">
+            <div class="logo-zone">GY-GY CLUB</div>
+            <span class="version-tag">CORE v4.6.0</span>
+        </div>
+        
     </header>
 
     <!-- Двухпозиционный пульт-тумблер -->
     <div class="office-switcher">
         <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
-        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.5.31)</button>
+        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.6.0)</button>
     </div>
 
-    <!-- ЭКРАН 1: СХЕМА ОФИСА (Системная консоль) -->
+    <!-- ЭКРАН 1: СХЕМА ОФИСА (Системная консоль управления) -->
     <div id="screen-office-core" class="office-screen">
         <div class="matrix-6-numbers">
-            <div class="num-block" onclick="alert('Запуск логов Airtable v4.5...')">#1 Logs / Airtable</div>
+            <div class="num-block" onclick="alert('Запуск логов Airtable v4.6...')">#1 Logs / Airtable</div>
             <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Users / QR</div>
             <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 States / Rooms</div>
-            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз...')">#4 Wallet / Royalty</div>
-            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.5.31...')">#5 AI Core / Prompts</div>
-            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS)...')">#6 Sandbox / Franchises</div>
+            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз v4.6...')">#4 Wallet / Royalty</div>
+            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.6.0...')">#5 AI Core / Prompts</div>
+            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS v4.6)...')">#6 Sandbox / Franchises</div>
         </div>
     </div>
 
     <!-- ЭКРАН 2: СХЕМА КЛУБА (Компактный алгоритм переходов) -->
     <div id="screen-club-map" class="office-screen" style="display: none;">
         <pre class="algo-pre">
-================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.5.31 CORE ] ==================
+================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.0 CORE ] ==================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
        │
@@ -175,12 +210,12 @@
        │                                                 ├─► 🟢 Мастерская сувениров
        │                                                 └─► 🟢 Лавка древностей
        │
-       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.5.31)
+       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.6.0)
        │
        └─► [Ветка БАР]     ──► Открыть bar.html    ──► 🟢 Книга жалоб и Оскорблений
                                      │
                                      ▼
-                        [П ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
+                        [ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
                                      │
          ┌───────────────────────────┴───────────────────────────┐
          ▼                                                       ▼
@@ -195,7 +230,7 @@
         </pre>
     </div>
 
-    <!-- Логика мгновенного переключения экранов без скролла -->
+    <!-- Логика мгновенного переключения экранов -->
     <script>
         function switchScreen(screenType) {
             const coreScreen = document.getElementById('screen-office-core');
