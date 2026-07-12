@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.9 </title>
+    <title>GY-GY Club — Кабинет Управления v4.6.1</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -22,71 +22,75 @@
             align-items: center;
         }
 
-        /* ЕДИНАЯ ВЕРХНЯЯ ПАНЕЛЬ СТРОГО ПО ОБРАЗУ INDEX */
+        /* ТОЧНЫЙ СТАНДАРТ ВЕРХНЕЙ ПАНЕЛИ ИЗ INDEX */
         .ui-custom-header {
             width: 100%;
             max-width: 900px;
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
             align-items: center;
-            padding-bottom: 12px;
+            padding-bottom: 15px;
             margin-bottom: 40px;
-            position: relative;
+            border-bottom: 1px solid #222;
         }
 
-        /* ЛЕВАЯ СТОРОНА: Стрелки навигации (рули) */
+        /* ЛЕВАЯ ЧАСТЬ: Стрелки навигации */
+        .ui-nav-wrapper {
+            display: flex;
+            justify-content: flex-start;
+        }
         .ui-nav-arrows {
             display: flex;
             gap: 20px;
             font-size: 26px;
-            font-weight: 900 !important;
+            font-weight: 900;
             cursor: pointer;
             color: var(--gold);
             line-height: 1;
             letter-spacing: -2px;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
         
-        /* ЦЕНТР: Личность (Лицо + Флаг) */
+        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Сквозной аватар */
+        .ui-user-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
         .ui-user-badge {
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative;
         }
-        
         .badge-avatar-wrapper {
             position: relative;
-            display: inline-block;
             width: 42px;
             height: 42px;
+            display: block;
         }
-
         .ui-user-badge .badge-img {
-            width: 100%;
-            height: 100%;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             border: 2px solid var(--gold);
             box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
             display: block;
             object-fit: cover;
-            background-color: #111;
+            background-color: #fff;
         }
-
         .ui-user-badge .badge-flag {
             position: absolute;
             bottom: -2px;
             right: -2px;
             font-size: 14px;
-            background: var(--bg-dark);
-            border-radius: 50%;
-            padding: 1px;
             line-height: 1;
+            background: #000;
+            padding: 1px;
+            border-radius: 50%;
         }
-
         .ui-user-badge .player-id { 
             font-size: 11px; 
             color: #888; 
@@ -94,25 +98,21 @@
             white-space: nowrap;
         }
 
-        /* ПРАВАЯ СТОРОНА: Айдентика (Имя бренда) с оригинальной обводкой */
+        /* ПРАВАЯ ЧАСТЬ: Логотип СТРОГО ПО СТАНДАРТУ INDEX */
+        .ui-logo-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
         .ui-header-right {
             text-align: right;
             font-size: 24px;
-            letter-spacing: 2px;
+            letter-spacing: 5px; /* Стандартный разряд букв */
             font-weight: bold;
             color: var(--gold);
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-        }
-        .ui-header-right .version-tag { 
-            font-size: 10px; 
-            color: #888; 
-            display: block; 
-            font-weight: normal; 
-            letter-spacing: 0;
-            margin-top: 2px;
+            user-select: none;
         }
 
-        /* СТИЛЬ ВСЕХ КНОПОК: СТРОГО ЗОЛОТО НА ЧЕРНОМ */
+        /* СТИЛЬ КНОПОК И СЕТКИ НОМЕРОВ */
         .switch-btn, .num-block {
             background: var(--bg-dark);
             border: 2px solid var(--gold);
@@ -129,7 +129,6 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
-        /* Пульт-тумблер переключения экранов */
         .office-switcher {
             display: flex;
             gap: 10px;
@@ -148,7 +147,6 @@
             font-weight: bold;
         }
 
-        /* Экраны-контейнеры */
         .office-screen {
             width: 100%;
             max-width: 900px;
@@ -159,7 +157,6 @@
             border-radius: 4px;
         }
 
-        /* Матрица Схемы Офиса (6 номеров) */
         .matrix-6-numbers {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -171,7 +168,6 @@
             font-size: 18px;
         }
 
-        /* Текстовый Алгоритм Схемы Клуба */
         .algo-pre {
             margin: 0;
             padding: 10px;
@@ -187,28 +183,27 @@
 </head>
 <body>
 
-    <!-- ЕДИНАЯ ВЕРХНЯЯ ПАНЕЛЬ ИЗ INDEX -->
     <header class="ui-custom-header">
         
-        <!-- Лево: Навигация -->
-        <div class="ui-nav-arrows" id="club-nav-arrows">
-            <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
-            <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
-        </div>
-        
-        <!-- Центр: Личность -->
-        <div class="ui-user-badge" id="global-user-badge">
-            <div class="badge-avatar-wrapper">
-                <img src="assets/charli-avatar.png" class="badge-img" alt="Avatar">
-                <span class="badge-flag" id="current-flag">🇷🇺</span>
+        <div class="ui-nav-wrapper">
+            <div class="ui-nav-arrows" id="club-nav-arrows">
+                <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
+                <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
             </div>
-            <span class="player-id">ID: GY-7701</span>
         </div>
         
-        <!-- Право: Бренд -->
-        <div class="ui-header-right">
-            <div>GY-GY CLUB</div>
-            <span class="version-tag">CORE v4.6.1</span>
+        <div class="ui-user-wrapper">
+            <div class="ui-user-badge" id="global-user-badge">
+                <div class="badge-avatar-wrapper">
+                    <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+                    <span class="badge-flag" id="current-flag">🇷🇺</span>
+                </div>
+                <span class="player-id">ID: GY-7701</span>
+            </div>
+        </div>
+        
+        <div class="ui-logo-wrapper">
+            <div class="ui-header-right notranslate">GY-GY</div>
         </div>
         
     </header>
@@ -288,12 +283,33 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const htmlLang = document.documentElement.lang;
+        document.addEventListener("DOMContentLoaded", function() {
+            // АВАТАР ИЗ STORAGE (Убираем заглушку)
+            const savedAvatar = localStorage.getItem('gygy_avatar') || 
+                                localStorage.getItem('gy_user_img') || 
+                                localStorage.getItem('user_avatar');
+                                
+            const avatarEl = document.getElementById('header-avatar');
+            
+            if (savedAvatar && avatarEl) {
+                avatarEl.src = savedAvatar;
+                avatarEl.style.display = 'block';
+            } else if (avatarEl) {
+                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+                avatarEl.style.display = 'block';
+            }
+
+            // РЕАЛЬНЫЙ ФЛАГ ВЫБРАННОГО ЯЗЫКА
+            const userLang = localStorage.getItem('gygy_lang') || 
+                             localStorage.getItem('lang') || 
+                             localStorage.getItem('user_lang') || 
+                             document.documentElement.lang || 'ru';
+
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
-                if (htmlLang === 'fr') flagElement.textContent = '🇫🇷';
-                else if (htmlLang === 'en') flagElement.textContent = '🇺🇸';
+                const cleanLang = userLang.toLowerCase().trim();
+                if (cleanLang.includes('fr')) flagElement.textContent = '🇫🇷';
+                else if (cleanLang.includes('en')) flagElement.textContent = '🇺🇸';
                 else flagElement.textContent = '🇷🇺';
             }
         });
