@@ -53,7 +53,7 @@
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
         
-        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Сквозной аватар */
+        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Сквозной аватар фиксированного размера */
         .ui-user-wrapper {
             display: flex;
             flex-direction: column;
@@ -71,9 +71,10 @@
             height: 42px;
             display: block;
         }
-        .ui-user-badge .badge-img {
-            width: 42px;
-            height: 42px;
+        /* ЖЕСТКИЙ КОНТРОЛЬ РАЗМЕРА КАРТИНКИ */
+        .ui-user-badge .user-avatar {
+            width: 42px !important;
+            height: 42px !important;
             border-radius: 50%;
             border: 2px solid var(--gold);
             box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
@@ -90,12 +91,7 @@
             background: #000;
             padding: 1px;
             border-radius: 50%;
-        }
-        .ui-user-badge .player-id { 
-            font-size: 11px; 
-            color: #888; 
-            margin-top: 6px;
-            white-space: nowrap;
+            z-index: 5;
         }
 
         /* ПРАВАЯ ЧАСТЬ: Логотип СТРОГО ПО СТАНДАРТУ INDEX */
@@ -106,7 +102,7 @@
         .ui-header-right {
             text-align: right;
             font-size: 24px;
-            letter-spacing: 5px; /* Стандартный разряд букв */
+            letter-spacing: 5px;
             font-weight: bold;
             color: var(--gold);
             user-select: none;
@@ -198,8 +194,7 @@
                     <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
                     <span class="badge-flag" id="current-flag">🇷🇺</span>
                 </div>
-                <span class="player-id">ID: GY-7701</span>
-            </div>
+                </div>
         </div>
         
         <div class="ui-logo-wrapper">
@@ -231,7 +226,7 @@
 [НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
        │
        ▼
- [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
+ [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите direction:
        │
        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
        │                                                 ├─► 🟢 Послание инопланетянам
@@ -284,7 +279,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // АВАТАР ИЗ STORAGE (Убираем заглушку)
+            // АВАТАР ИЗ STORAGE (С жестким ограничением габаритов)
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -299,7 +294,7 @@
                 avatarEl.style.display = 'block';
             }
 
-            // РЕАЛЬНЫЙ ФЛАГ ВЫБРАННОГО ЯЗЫКА
+            // РЕАЛЬНЫЙ ФЛАГ ВЫБРАННОГО НА ВХОДЕ ЯЗЫКА
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
