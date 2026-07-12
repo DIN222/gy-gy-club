@@ -53,7 +53,7 @@
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
         
-        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Сквозной аватар фиксированного размера */
+        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Сквозной аватар с флагом без лишнего текста */
         .ui-user-wrapper {
             display: flex;
             flex-direction: column;
@@ -71,7 +71,6 @@
             height: 42px;
             display: block;
         }
-        /* ЖЕСТКИЙ КОНТРОЛЬ РАЗМЕРА КАРТИНКИ */
         .ui-user-badge .user-avatar {
             width: 42px !important;
             height: 42px !important;
@@ -82,6 +81,8 @@
             object-fit: cover;
             background-color: #fff;
         }
+        
+        /* ФЛАГ С РЕГИСТРАЦИИ ПОВЕРХ АВАТАРА */
         .ui-user-badge .badge-flag {
             position: absolute;
             bottom: -2px;
@@ -194,7 +195,7 @@
                     <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
                     <span class="badge-flag" id="current-flag">🇷🇺</span>
                 </div>
-                </div>
+            </div>
         </div>
         
         <div class="ui-logo-wrapper">
@@ -226,10 +227,10 @@
 [НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
        │
        ▼
- [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите direction:
+ [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
        │
        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
-       │                                                 ├─► 🟢 Послание инопланетянам
+       │                                                 ├─► 🟢 Послание инопланеям
        │                                                 ├─► 🟢 Лунная база
        │                                                 └─► 🟢 Привет, Вселенная!
        │
@@ -279,7 +280,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // АВАТАР ИЗ STORAGE (С жестким ограничением габаритов)
+            // 1. АВАТАР ИЗ STORAGE
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -294,7 +295,7 @@
                 avatarEl.style.display = 'block';
             }
 
-            // РЕАЛЬНЫЙ ФЛАГ ВЫБРАННОГО НА ВХОДЕ ЯЗЫКА
+            // 2. ДИНАМИЧЕСКИЙ ВЫВОД ФЛАГА С РЕГИСТРАЦИИ (ИЗ LOCALSTORAGE)
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
