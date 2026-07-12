@@ -62,12 +62,17 @@
             height: 42px;
         }
         .user-avatar {
-            width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--gold);
-            object-fit: cover; background: #fff !important; display: block;
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            object-fit: cover;
+            background: #fff !important;
+            display: block;
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО ФЛАГА */
+        /* РЕАЛЬНЫЙ ФЛАГ ПОВЕРХ АВАТАРА */
         .badge-flag {
             position: absolute;
             bottom: -2px;
@@ -77,9 +82,10 @@
             border-radius: 50%;
             padding: 1px;
             line-height: 1;
+            z-index: 5;
         }
 
-        /* ЛОГОТИП GY-GY */
+        /* ЛОГОТИП GY-GY ПО СТАНДАРТУ */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -99,7 +105,7 @@
             background: rgba(0,0,0,0);
         }
 
-        /* УКАЗАТЕЛИ СВЕЧЕНИЯ (↑) — МАКСИМАЛЬНЫЙ НЕОН */
+        /* ИНТЕНСИВНЫЙ НЕОН УКАЗАТЕЛЕЙ */
         .cue-arrow-studio { 
             color: var(--super-neon); 
             font-size: 38px; 
@@ -155,7 +161,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. ПОДТЯГИВАЕМ АВАТАР
+            // 1. ЗАГРУЗКА АВАТАРА ИЗ LOCALSTORAGE
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -170,7 +176,7 @@
                 avatarEl.style.display = 'block';
             }
 
-            // 2. ПОДТЯГИВАЕМ РЕАЛЬНЫЙ ФЛАГ ИЗ STORAGE НА ВХОДЕ
+            // 2. ДИНАМИЧЕСКИЙ ВЫВОД ФЛАГА С РЕГИСТРАЦИИ ИЗ LOCALSTORAGE
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
@@ -184,7 +190,7 @@
                 } else if (cleanLang.includes('en')) {
                     flagElement.textContent = '🇺🇸';
                 } else {
-                    flagElement.textContent = '🇷🇺'; // Дефолт, если русский или не определен
+                    flagElement.textContent = '🇷🇺';
                 }
             }
         });
