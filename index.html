@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.8.0 CORE</title>
+    <title>GY-GY Club v4.8.2 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -14,8 +14,23 @@
         body, button, input, div, img, span { pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; }
 
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; top: 0 !important; }
         
+        /* ЖЕСТКАЯ БЛОКИРОВКА ВЫПАДЕНИЯ ПАНЕЛЕЙ ГУГЛА */
+        .goog-te-banner-frame, 
+        .goog-te-banner, 
+        .goog-te-balloon-frame,
+        #goog-gt-tt, 
+        .skiptranslate, 
+        .goog-te-spinner-pos { 
+            display: none !important; 
+            visibility: hidden !important; 
+            opacity: 0 !important; 
+            pointer-events: none !important; 
+        }
+        goog-te-gadget { display: none !important; }
+        .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+
         /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
@@ -65,7 +80,6 @@
         /* Сетка Квадратов */
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; transition: all 0.3s; }
 
-        body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
@@ -89,17 +103,39 @@
         .hub-field { width: 100%; padding: 8px; border: 1px solid #333; background: #fff; font-family: 'Share Tech Mono'; font-size: 13px; color: #000; }
         .hub-toggle-lang { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; font-weight: bold; color: var(--door-wood); }
 
-        /* ХОЛЛ */
+        /* ХОЛЛ И ИСПРАВЛЕННЫЕ СТИЛИ */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-        .hall-interior .quote-text { position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; color: var(--gold) !important; font-size: 28px; -webkit-text-stroke: 1px #000; }
-        .hall-door-target { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; cursor: pointer; z-index: 5; }
-        .painting-zone { position: absolute; top: 25vh; width: 6vw; height: 12vh; cursor: pointer; z-index: 6; display: flex; align-items: center; justify-content: center; }
-        .painting-left { left: 23vw; }
-        .painting-right { right: 23vw; }
-        .cue-arrow-hall { color: var(--violet); font-size: 38px; font-weight: 900; text-shadow: 0 0 12px var(--violet); }
+        
+        .hall-interior .quote-text { 
+            position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; 
+            text-align: center; color: var(--gold) !important; font-size: 28px; 
+            background: transparent !important;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0px 3px 5px rgba(0,0,0,0.8);
+        }
+        .hall-interior .quote-text font, .hall-interior .quote-text span { background: transparent !important; }
+
+        /* Корректные зоны картин и фиолетовые стрелки Офиса */
+        .painting-zone { 
+            position: absolute; top: 35vh; width: 60px; height: auto; cursor: pointer; z-index: 6; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        .painting-left { left: 5vw; }
+        .painting-right { right: 5vw; }
+
+        .cue-arrow-hall { color: var(--violet); font-size: 32px; font-weight: 900; text-shadow: 0 0 12px var(--violet); display: block; text-align: center; }
+        
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; background: #000; }
+
+        /* Чиним Дверь и Стрелку Бара прямо по центру двери */
+        .hall-door-target { 
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 30vw; height: 60vh; cursor: pointer; z-index: 5; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        #hall-doors::before {
+            content: "↓"; color: var(--violet); font-size: 42px; font-weight: 900; text-shadow: 0 0 15px var(--violet); position: absolute; top: 40%;
+        }
 
         .main-door-style { display: block; height: calc(50vh + 20px); width: auto; max-width: 100%; object-fit: contain; margin: 0 auto; transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; cursor: pointer; }
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
@@ -149,7 +185,6 @@
         
         <div style="display:flex; gap:8px; margin-bottom:25px; align-items:center; justify-content:center; flex-wrap: wrap; max-width: 320px;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
-            
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
             
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
@@ -163,7 +198,7 @@
                 <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
             </div>
 
-            <div class="box-final" id="comms-hub-box" style="border-color:var(--gold); background:#fff; cursor:pointer; box-shadow: 0 0 5px rgba(0,0,0,0.1);" onclick="openCommsHub()">
+            <div class="box-final" id="comms-hub-box" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="openCommsHub()">
                 <span id="txt-hub-status" style="color:#000; font-size:10px; font-weight:900; text-align:center; line-height: 1.2;">COMMS<br>HUB<br><small style="color:var(--violet); font-size:8px;">12 LANGS</small></span>
             </div>
         </div>
@@ -175,6 +210,7 @@
     <div id="block-hall" class="block">
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
+            
             <div class="painting-zone painting-left">
                 <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
@@ -189,6 +225,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
@@ -196,9 +233,7 @@
                 </div>
             </div>
         </div>
-        <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
-            <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
-        </div>
+        <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
     </div>
 
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
@@ -207,7 +242,7 @@
             <div style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto Pap;"></div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
             <div id="pass-active-comms" style="font-size:11px; font-weight:700; color:var(--violet); margin-bottom:5px; letter-spacing: 2px;"></div>
         </div>
     </div>
@@ -240,7 +275,11 @@
 
 <script type="text/javascript">
     function googleTranslateElementInit() {
-        new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false }, 'google_translate_element');
+        new google.translate.TranslateElement({ 
+            pageLanguage: 'en', 
+            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', 
+            autoDisplay: false 
+        }, 'google_translate_element');
     }
 
     let currentID = "";
@@ -249,7 +288,6 @@
     let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
     
-    // Объект матрицы связей резидента
     let commsData = { telegram: "", whatsapp: "", email: "", tgTranslate: true, waTranslate: true };
 
     const allLangs = [
@@ -442,7 +480,7 @@
         const gygy_passport = {
             id: currentID, nickname: currentID, avatar: currentUserImage,
             lang: currentActiveCode, flagCode: currentFlagCode,
-            comms: commsData // Матрица связей запечатана в JSON паспорта
+            comms: commsData 
         };
 
         safeStorageSet('gygy_passport', JSON.stringify(gygy_passport));
@@ -460,8 +498,6 @@
 
         if (document.getElementById('btn-w-hall')) document.getElementById('btn-w-hall').classList.remove('btn-sleep');
         if (document.getElementById('btn-pass')) document.getElementById('btn-pass').classList.remove('btn-sleep');
-        
-        console.log("Паспорт запечатан с матрицей 12-языкового автоперевода:", gygy_passport);
     }
 
     function enterStudio() { window.location.href = 'studio.html'; }
