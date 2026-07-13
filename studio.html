@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.35 - STUDIO 024</title>
+    <title>GY-GY Club v4.5.36 - STUDIO 024</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -91,19 +91,17 @@
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* АБСОЛЮТНЫЙ ОВЕРЛЕЙ ДЛЯ ФЛАГА НА ЭКРАНЕ */
-        .badge-flag {
-            position: fixed !important;
-            /* Точнейшая привязка к правому нижнему углу аватара 42x42 от центра экрана */
-            top: 12px;
-            left: 50%;
-            transform: translate(9px, 23px) !important; 
-            font-size: 16px !important;
+        /* ЖЕСТКАЯ АБСОЛЮТНАЯ ПРИВЯЗКА К АВАТАРУ */
+        .badge-avatar-wrapper .badge-flag {
+            position: absolute !important;
+            bottom: -2px !important;
+            right: -2px !important;
+            font-size: 14px !important;
             background: #000 !important;
             border-radius: 50% !important;
-            padding: 2px !important;
+            padding: 1px !important;
             line-height: 1 !important;
-            z-index: 100000000 !important; /* Абсолютный топ */
+            z-index: 100000000 !important; /* На самый верх */
             display: block !important;
             text-shadow: none !important;
         }
@@ -112,7 +110,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 9999999; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
 
@@ -153,12 +151,12 @@
     <div class="ui-header-center notranslate">
         <div class="badge-avatar-wrapper">
             <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+            <!-- Флаг теперь живет строго внутри контейнера аватара -->
+            <span class="badge-flag notranslate" id="current-flag">🇷🇺</span>
         </div>
     </div>
-    <span class="badge-flag notranslate" id="current-flag">🇷🇺</span>
 
     <div class="ui-header-right notranslate">GY-GY</div>
-
 
     <div class="studio-page">
         <div id="zone-wear" class="studio-zone zone-wear" onclick="selectCategory('wear')">
@@ -191,7 +189,8 @@
             }
 
             // Тотальный поиск языка по хранилищу и системе
-            const userLang = localStorage.getItem('gygy_lang') || 
+            const userLang = localStorage.getItem('gy_lang') ||
+                             localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
                              localStorage.getItem('selected_lang') || 
