@@ -1,182 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.36 - STUDIO 024</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club — Творческая Студия v4.6.1</title>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --violet: #8A2BE2; 
-            --super-neon: #bf00ff; 
-        }
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; 
-            position: fixed; 
-            margin: 0; 
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #121212;
+            --panel-bg: #1a1a1a;
+            --coin-orange: #ff9f00; /* Наш фирменный оранжевый цвет Студии */
         }
 
-        /* Задний фон Студии */
-        .studio-page {
-            position: fixed;
-            inset: 0;
-            background: url('studio_bg.jpg') center/95% no-repeat #000;
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            z-index: 10;
+            overflow-x: hidden;
         }
 
-        /* ТОЧНЫЙ СТАНДАРТ НАВИГАЦИИ ИЗ ОФИСА */
+        /* ТОЧНЫЙ СТАНДАРТ ВЕРХНЕЙ ПАНЕЛИ ИЗ INDEX И OFFICE */
+        .ui-custom-header {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #222;
+        }
+
+        .ui-nav-wrapper { display: flex; justify-content: flex-start; }
         .ui-nav-arrows {
-            position: fixed; 
-            top: 18px; 
-            left: 20px; 
-            z-index: 9999999; 
-            display: flex; 
-            gap: 20px; 
-            font-size: 26px; 
-            font-weight: 900 !important; 
-            cursor: pointer; 
-            color: var(--gold); 
-            line-height: 1; 
-            letter-spacing: -2px; 
-            font-family: 'Courier New', Courier, monospace;
+            display: flex; gap: 20px; font-size: 26px; font-weight: 900;
+            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px;
             user-select: none;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
-
-        /* ВЫНОСНАЯ ШАПКА В САМЫЙ ВЕРХ ИЕРАРХИИ БРАУЗЕРА */
-        .ui-header-center {
-            position: fixed; 
-            top: 12px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 9999999; /* Выше любого фона */
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            user-select: none;
-            width: 42px;
-            height: 42px;
+        
+        .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ui-user-badge { display: flex; flex-direction: column; align-items: center; }
+        
+        .badge-avatar-wrapper { 
+            position: relative; 
+            width: 42px; 
+            height: 42px; 
+            display: block; 
         }
         
-        .badge-avatar-wrapper {
-            position: relative;
-            display: block;
-            width: 42px;
-            height: 42px;
-        }
-        
-        .user-avatar {
+        .ui-user-badge .user-avatar {
             width: 42px !important;
             height: 42px !important;
             border-radius: 50%;
             border: 2px solid var(--gold);
-            object-fit: cover;
-            background: #fff !important;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
             display: block;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            object-fit: cover;
+            background-color: #fff;
         }
         
-        /* АБСОЛЮТНЫЙ ОВЕРЛЕЙ ДЛЯ ФЛАГА НА ЭКРАНЕ */
-        .badge-flag {
-            position: fixed !important;
-            /* Точнейшая привязка к правому нижнему углу аватара 42x42 от центра экрана */
-            top: 12px;
-            left: 50%;
-            transform: translate(9px, 23px) !important; 
-            font-size: 16px !important;
-            background: #000 !important;
-            border-radius: 50% !important;
-            padding: 2px !important;
+        /* ДОБИТЫЙ ФЛАГ ДЛЯ АВАТАРА */
+        .ui-user-badge .badge-flag {
+            position: absolute !important;
+            bottom: -2px !important;
+            right: -2px !important;
+            font-size: 14px !important;
             line-height: 1 !important;
-            z-index: 100000000 !important; /* Абсолютный топ */
+            background: #000 !important;
+            padding: 1px !important;
+            border-radius: 50% !important;
+            z-index: 999999 !important;
             display: block !important;
-            text-shadow: none !important;
         }
 
-        /* ЛОГОТИП GY-GY */
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 9999999; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
-            user-select: none;
+        .ui-logo-wrapper { display: flex; justify-content: flex-end; }
+        .ui-header-right {
+            text-align: right; font-size: 24px; letter-spacing: 5px;
+            font-weight: bold; color: var(--gold); user-select: none;
         }
 
-        /* ЗОНЫ СТУДИИ */
-        .studio-zone {
-            position: absolute;
+        /* КОНТЕНТ СТУДИИ */
+        .studio-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--coin-orange);
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Карточки крафта/монет в оранжевом стиле */
+        .studio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .studio-grid { grid-template-columns: 1fr; }
+        }
+
+        .studio-card {
+            background: var(--bg-dark);
+            border: 2px solid var(--coin-orange);
+            border-radius: 4px;
+            padding: 25px 15px;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            background: rgba(0,0,0,0);
+            transition: all 0.25s ease;
         }
 
-        .cue-arrow-studio { 
-            color: var(--super-neon); 
-            font-size: 38px; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 5px #fff, 0 0 10px var(--super-neon), 0 0 20px var(--super-neon); 
-            pointer-events: none; 
-            user-select: none;
+        .studio-card:hover {
+            box-shadow: 0 0 15px rgba(255, 159, 0, 0.5);
+            transform: translateY(-2px);
         }
 
-        .zone-wear { top: 24vh; left: 29vw; width: 120px; height: 90px; }
-        .zone-gifts { top: 11vh; left: 55vw; width: 120px; height: 90px; }
-        .zone-vintage { top: 4vh; left: 78vw; width: 120px; height: 90px; }
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.4;
+        }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div class="notranslate ui-nav-arrows">
-        <a href="index.html#block-hall" class="arrow-item">&lt;</a>
-        <a href="index.html" class="arrow-item">&lt;&lt;</a>
-    </div>
-
-    <div class="ui-header-center notranslate">
-        <div class="badge-avatar-wrapper">
-            <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+    <header class="ui-custom-header">
+        <div class="ui-nav-wrapper">
+            <div class="ui-nav-arrows" id="club-nav-arrows">
+                <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
+                <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
+            </div>
         </div>
-    </div>
-    <span class="badge-flag notranslate" id="current-flag">🇷🇺</span>
-
-    <div class="ui-header-right notranslate">GY-GY</div>
-
-
-    <div class="studio-page">
-        <div id="zone-wear" class="studio-zone zone-wear" onclick="selectCategory('wear')">
-            <span class="cue-arrow-studio">↑</span>
+        
+        <div class="ui-user-wrapper">
+            <div class="ui-user-badge" id="global-user-badge">
+                <div class="badge-avatar-wrapper">
+                    <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+                    <span class="badge-flag" id="current-flag">🇷🇺</span>
+                </div>
+            </div>
         </div>
-
-        <div id="zone-gifts" class="studio-zone zone-gifts" onclick="selectCategory('gifts')">
-            <span class="cue-arrow-studio">↑</span>
+        
+        <div class="ui-logo-wrapper">
+            <div class="ui-header-right notranslate">GY-GY</div>
         </div>
+    </header>
 
-        <div id="zone-vintage" class="studio-zone zone-vintage" onclick="selectCategory('vintage')">
-            <span class="cue-arrow-studio">↑</span>
+    <div class="studio-container">
+        <h1>🟠 Творческая Мастерская Студио 🟠</h1>
+        
+        <div class="studio-grid">
+            <!-- Блок 1: Ателье -->
+            <div class="studio-card" onclick="alert('Добро пожаловать в Ателье! Генерация цифровых костюмов v4.6.1...')">
+                <div class="card-icon">🪡</div>
+                <div class="card-title">Ателье</div>
+                <div class="card-desc">Создание и примерка клубного шмота, аватаров и кастомных скинов для ячеек.</div>
+            </div>
+
+            <!-- Блок 2: Мастерская сувениров -->
+            <div class="studio-card" onclick="alert('Запуск Мастерской! Печать уникального мерча и NFT-монет Клуба...')">
+                <div class="card-icon">🏺</div>
+                <div class="card-title">Мастерская сувениров</div>
+                <div class="card-desc">Чеканка памятных монет GY-GY и крафт сувениров для лояльных резидентов.</div>
+            </div>
+
+            <!-- Блок 3: Лавка древностей -->
+            <div class="studio-card" onclick="alert('Открытие архивов Лавки! Доступ к редким артефактам Клуба...')">
+                <div class="card-icon">🗝️</div>
+                <div class="card-title">Лавка древностей</div>
+                <div class="card-desc">Обмен заработанных монет на редкие цифровые артефакты и скрытые пасхалки.</div>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Загрузка аватара
+            // Загрузка и отображение аватара пользователя
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -186,35 +215,26 @@
                 avatarEl.src = savedAvatar;
                 avatarEl.style.display = 'block';
             } else if (avatarEl) {
+                // Если аватара нет, ставим дефолтную заглушку Клуба
                 avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
                 avatarEl.style.display = 'block';
             }
 
-            // Тотальный поиск языка по хранилищу и системе
-            const userLang = localStorage.getItem('gygy_lang') || 
+            // ПРИВЯЗКА ФЛАГА ИЗ РЕГИСТРАЦИИ (gy_lang)
+            const userLang = localStorage.getItem('gy_lang') || 
+                             localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
-                             localStorage.getItem('selected_lang') || 
-                             localStorage.getItem('current_lang') || 
-                             localStorage.getItem('registration_lang') || 
-                             navigator.language || 'ru';
+                             document.documentElement.lang || 'ru';
 
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 const cleanLang = userLang.toLowerCase().trim();
-                if (cleanLang.includes('fr')) {
-                    flagElement.textContent = '🇫🇷';
-                } else if (cleanLang.includes('en') || cleanLang.includes('us')) {
-                    flagElement.textContent = '🇺🇸';
-                } else {
-                    flagElement.textContent = '🇷🇺';
-                }
+                if (cleanLang.includes('fr')) flagElement.textContent = '🇫🇷';
+                else if (cleanLang.includes('en')) flagElement.textContent = '🇺🇸';
+                else flagElement.textContent = '🇷🇺';
             }
         });
-
-        function selectCategory(type) {
-            alert(`Переход в рабочий шаг локации: ${type.toUpperCase()}`);
-        }
     </script>
 </body>
 </html>
