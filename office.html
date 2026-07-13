@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.5</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.7</title>
     <style>
         :root {
             --gold: #FFD700;
             --bg-dark: #121212;
             --panel-bg: #1a1a1a;
             --neon-green: #39ff14;
+            --coin-orange: #ff9f00; /* Новый фирменный оранжевый для Студио */
         }
 
         body {
@@ -66,7 +67,6 @@
             background-color: #fff;
         }
         
-        /* ВОЗВРАЩЕННЫЙ ЖЕСТКИЙ СТАНДАРТ ФЛАГА */
         .ui-user-badge .badge-flag {
             position: absolute !important;
             bottom: -2px !important;
@@ -101,10 +101,9 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
-        /* ДВЕ ВЕРХНИЕ КНОПКИ: СТРОГО ПО ШИРИНЕ НИЖНЕГО БЛОКА */
         .office-switcher {
             display: flex;
-            gap: 0; /* Убираем зазор для идеального стыка */
+            gap: 0; 
             margin-bottom: 25px;
             width: 100%;
             max-width: 900px;
@@ -114,7 +113,6 @@
             padding: 15px;
             font-size: 16px;
         }
-        /* Чтобы рамки посередине не удваивались */
         .switch-btn + .switch-btn {
             border-left: none;
         }
@@ -135,22 +133,21 @@
             container-type: inline-size;
         }
 
-        /* СЕТКА ИЗ 6 НОМЕРОВ: ИДЕАЛЬНОЕ ВЫРАВНИВАНИЕ МЕЖДУ СОБОЙ */
         .matrix-6-numbers {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Ровно 3 колонки на строку */
+            grid-template-columns: repeat(3, 1fr); 
             gap: 20px;
             width: 100%;
         }
         
         @media (max-width: 768px) {
             .matrix-6-numbers {
-                grid-template-columns: 1fr; /* На мобилках в один ряд для удобства */
+                grid-template-columns: 1fr;
             }
         }
 
         .num-block {
-            height: 110px; /* Фиксированная высота для выравнивания */
+            height: 110px; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -176,6 +173,7 @@
             .algo-pre { font-size: 13.5px; }
         }
 
+        /* Базовый интерактивный шарик */
         .bubble-click {
             display: inline-flex;
             align-items: center;
@@ -194,6 +192,19 @@
             background: rgba(57, 255, 20, 0.25);
             border-color: var(--neon-green);
             box-shadow: 0 0 6px var(--neon-green);
+        }
+
+        /* ОРАНЖЕВЫЙ КЛАСС СПЕЦИАЛЬНО ДЛЯ СТУДИИ (МОНЕТЫ) */
+        .bubble-click.orange {
+            color: var(--coin-orange);
+            background: rgba(255, 159, 0, 0.08);
+            border-color: #553300;
+        }
+
+        .bubble-click.orange:hover {
+            background: rgba(255, 159, 0, 0.25);
+            border-color: var(--coin-orange);
+            box-shadow: 0 0 6px var(--coin-orange);
         }
 
         .counter-num { font-family: inherit; margin-left: 1px; }
@@ -260,9 +271,9 @@
        │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
        │
        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('atelier')">🟢(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('souvenirs')">🟢(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
-       │                                                 └─► <span class="bubble-click" onclick="addClick('vintage')">🟢(<span id="c-vintage" class="counter-num">0</span>) Лавка древностей</span>
+       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
+       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
+       │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Лавка древностей</span>
        │
        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.6.1)
        │
