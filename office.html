@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.2 </title>
+    <title>GY-GY Club — Кабинет Управления v4.6.2</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -46,7 +46,6 @@
         .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .ui-user-badge { display: flex; flex-direction: column; align-items: center; }
         
-        /* КОНТЕЙНЕР АВАТАРА */
         .badge-avatar-wrapper { 
             position: relative; 
             width: 42px; 
@@ -65,7 +64,6 @@
             background-color: #fff;
         }
         
-        /* ФЛАГ С РЕГИСТРАЦИИ ПОВЕРХ АВАТАРА (С ГАРАНТИЕЙ ВИДИМОСТИ) */
         .ui-user-badge .badge-flag {
             position: absolute;
             bottom: -4px;
@@ -85,7 +83,6 @@
             font-weight: bold; color: var(--gold); user-select: none;
         }
 
-        /* ДВЕ ГОРИЗОНТАЛЬНЫЕ РАМКИ ПЕРЕКЛЮЧЕНИЯ — СТРОГО ПО ОБЩЕЙ ШИРИНЕ (900px) */
         .office-switcher { 
             display: flex; 
             gap: 15px; 
@@ -108,28 +105,14 @@
             box-sizing: border-box;
         }
         
-        .switch-btn:hover {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
-        
-        .switch-btn.active { 
-            background: var(--panel-bg); 
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3); 
-            font-weight: bold; 
-        }
+        .switch-btn:hover { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+        .switch-btn.active { background: var(--panel-bg); box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3); font-weight: bold; }
 
-        /* ОСНОВНОЙ ЭКРАН */
         .office-screen {
-            width: 100%; 
-            max-width: 900px; 
-            background: var(--panel-bg);
-            border: 1px solid #333; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            border-radius: 4px;
+            width: 100%; max-width: 900px; background: var(--panel-bg);
+            border: 1px solid #333; padding: 20px; box-sizing: border-box; border-radius: 4px;
         }
 
-        /* СЕТКА ИЗ 6 ОДИНАКОВЫХ ПО РАЗМЕРУ РАМОК (3х2) */
         .matrix-6-numbers { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -153,10 +136,7 @@
             box-sizing: border-box;
         }
         
-        .num-block:hover {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
-
+        .num-block:hover { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
         .algo-pre { margin: 0; padding: 10px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.4; color: #e0e0e0; background: #0a0a0a; border: 1px dashed #444; }
     </style>
 </head>
@@ -191,12 +171,12 @@
 
     <div id="screen-office-core" class="office-screen">
         <div class="matrix-6-numbers">
-            <div class="num-block" onclick="alert('Запуск логов Airtable v4.6.1...')">#1 Logs / Airtable</div>
-            <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Users / QR</div>
-            <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 States / Rooms</div>
-            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз v4.6.1...')">#4 Wallet / Royalty</div>
-            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.6.1...')">#5 AI Core / Prompts</div>
-            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS v4.6.1)...')">#6 Sandbox / Franchises</div>
+            <div class="num-block" onclick="alert('Запуск логов Airtable v4.6.1...')">#1 Логи / Airtable</div>
+            <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Пользователи / QR</div>
+            <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 Статусы / Комнаты</div>
+            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз v4.6.1...')">#4 Кошелек / Роялти</div>
+            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.6.1...')">#5 ИИ Ядро / Промпты</div>
+            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS v4.6.1)...')">#6 Песочница / Франшизы</div>
         </div>
     </div>
 
@@ -231,7 +211,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. ПОДГРУЗКА АВАТАРА
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -245,7 +224,6 @@
                 avatarEl.style.display = 'block';
             }
 
-            // 2. ГЛУБОКИЙ ПОИСК ФЛАГА ИЗ ВСЕХ ВОЗМОЖНЫХ КЛЮЧЕЙ ХРАНИЛИЩА
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
