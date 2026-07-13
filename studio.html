@@ -25,6 +25,7 @@
             margin: 0; 
         }
 
+        /* Фоновое изображение Студии */
         .studio-page {
             position: fixed;
             inset: 0;
@@ -36,24 +37,35 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ — ЗОЛОТАЯ КЛАССИКА */
+        /* ТОЧНЫЙ СТАНДАРТ СТИЛЬНЫХ НАВИГАЦИОННЫХ СТРЕЛОК ИЗ ОФИСА */
         .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            position: fixed; 
+            top: 18px; 
+            left: 20px; 
+            z-index: 9999999; 
+            display: flex; 
+            gap: 20px; 
+            font-size: 26px; 
+            font-weight: 900 !important; 
+            cursor: pointer; 
+            color: var(--gold); 
+            line-height: 1; 
+            letter-spacing: -2px; 
+            font-family: 'Courier New', Courier, monospace;
             user-select: none;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
-        .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
-        .back-arrow:hover { opacity: 0.8; }
+        .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
+        .arrow-item:hover { opacity: 0.8; }
 
-        /* СКВОЗНОЙ АВАТАР */
+        /* СКВОЗНОЙ АВАТАР В ЦЕНТРЕ */
         .ui-header-center {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             user-select: none;
         }
+        
+        /* ЖЕСТКАЯ ФИКСАЦИЯ КОНТЕЙНЕРА АВАТАРА */
         .badge-avatar-wrapper {
             position: relative;
             display: inline-block;
@@ -71,7 +83,7 @@
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* ФЛАГ С РЕГИСТРАЦИИ ПОВЕРХ АВАТАРА */
+        /* ГАРАНТИРОВАННОЕ НАЛОЖЕНИЕ ФЛАГА */
         .badge-flag {
             position: absolute;
             bottom: -2px;
@@ -81,7 +93,8 @@
             border-radius: 50%;
             padding: 1px;
             line-height: 1;
-            z-index: 5;
+            z-index: 999999;
+            display: block !important;
         }
 
         /* ЛОГОТИП GY-GY ПО СТАНДАРТУ INDEX */
@@ -104,7 +117,7 @@
             background: rgba(0,0,0,0);
         }
 
-        /* ИНТЕНСИВНЫЙ НЕОН УКАЗАТЕЛЕЙ */
+        /* УКАЗАТЕЛИ СВЕЧЕНИЯ (↑) */
         .cue-arrow-studio { 
             color: var(--super-neon); 
             font-size: 38px; 
@@ -131,9 +144,10 @@
 <body oncontextmenu="return false;">
 
     <div class="studio-page">
+        
         <div class="notranslate ui-nav-arrows">
-            <a href="index.html" class="back-arrow">&lt;</a>
-            <a href="index.html" class="back-arrow">&lt;&lt;</a>
+            <a href="index.html#block-hall" class="arrow-item">&lt;</a>
+            <a href="index.html" class="arrow-item">&lt;&lt;</a>
         </div>
 
         <div class="ui-header-center notranslate">
@@ -160,6 +174,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            // 1. ПОДТЯГИВАЕМ АВАТАР ИЗ LOCALSTORAGE
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -173,17 +188,23 @@
                 avatarEl.style.display = 'block';
             }
 
+            // 2. ГЛУБОКИЙ ПОИСК ФЛАГА ИЗ ВСЕХ ВОЗМОЖНЫХ КЛЮЧЕЙ ХРАНИЛИЩА
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
+                             localStorage.getItem('selected_lang') || 
                              document.documentElement.lang || 'ru';
 
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 const cleanLang = userLang.toLowerCase().trim();
-                if (cleanLang.includes('fr')) flagElement.textContent = '🇫🇷';
-                else if (cleanLang.includes('en')) flagElement.textContent = '🇺🇸';
-                else flagElement.textContent = '🇷🇺';
+                if (cleanLang.includes('fr')) {
+                    flagElement.textContent = '🇫🇷';
+                } else if (cleanLang.includes('en') || cleanLang.includes('us')) {
+                    flagElement.textContent = '🇺🇸';
+                } else {
+                    flagElement.textContent = '🇷🇺';
+                }
             }
         });
 
