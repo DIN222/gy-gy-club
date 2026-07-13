@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.7</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.1</title>
     <style>
         :root {
             --gold: #FFD700;
             --bg-dark: #121212;
             --panel-bg: #1a1a1a;
             --neon-green: #39ff14;
-            --coin-orange: #ff9f00; /* Новый фирменный оранжевый для Студио */
+            --coin-orange: #ff9f00;
         }
 
         body {
@@ -173,7 +173,7 @@
             .algo-pre { font-size: 13.5px; }
         }
 
-        /* Базовый интерактивный шарик */
+        /* Зеленые развлечения */
         .bubble-click {
             display: inline-flex;
             align-items: center;
@@ -194,7 +194,7 @@
             box-shadow: 0 0 6px var(--neon-green);
         }
 
-        /* ОРАНЖЕВЫЙ КЛАСС СПЕЦИАЛЬНО ДЛЯ СТУДИИ (МОНЕТЫ) */
+        /* Оранжевая студия монет */
         .bubble-click.orange {
             color: var(--coin-orange);
             background: rgba(255, 159, 0, 0.08);
@@ -374,7 +374,9 @@
                 avatarEl.style.display = 'block';
             }
 
-            const userLang = localStorage.getItem('gygy_lang') || 
+            // ПРЯМАЯ СИНХРОНИЗАЦИЯ ФЛАГА С КЛЮЧОМ ИЗ ИНДЕКСА РЕГИСТРАЦИИ (gy_lang)
+            const userLang = localStorage.getItem('gy_lang') || 
+                             localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
                              document.documentElement.lang || 'ru';
