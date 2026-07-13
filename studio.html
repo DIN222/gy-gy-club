@@ -1,369 +1,182 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club v4.5.35 - STUDIO 024</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --gold: #FFD700;
-            --bg-dark: #121212;
-            --panel-bg: #1a1a1a;
-            --neon-green: #39ff14;
-            --coin-orange: #ff9f00;
+        :root { 
+            --gold: #d4af37; 
+            --violet: #8A2BE2; 
+            --super-neon: #bf00ff; 
+        }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+            position: fixed; 
+            margin: 0; 
         }
 
-        body {
-            background-color: var(--bg-dark);
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 20px;
+        /* Задний фон Студии */
+        .studio-page {
+            position: fixed;
+            inset: 0;
+            background: url('studio_bg.jpg') center/95% no-repeat #000;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            justify-content: center;
+            z-index: 10;
         }
 
-        /* ТОЧНЫЙ СТАНДАРТ ВЕРХНЕЙ ПАНЕЛИ ИЗ INDEX */
-        .ui-custom-header {
-            width: 100%;
-            max-width: 900px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            align-items: center;
-            padding-bottom: 15px;
-            margin-bottom: 40px;
-            border-bottom: 1px solid #222;
-        }
-
-        .ui-nav-wrapper { display: flex; justify-content: flex-start; }
+        /* ТОЧНЫЙ СТАНДАРТ НАВИГАЦИИ ИЗ ОФИСА */
         .ui-nav-arrows {
-            display: flex; gap: 20px; font-size: 26px; font-weight: 900;
-            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px;
+            position: fixed; 
+            top: 18px; 
+            left: 20px; 
+            z-index: 9999999; 
+            display: flex; 
+            gap: 20px; 
+            font-size: 26px; 
+            font-weight: 900 !important; 
+            cursor: pointer; 
+            color: var(--gold); 
+            line-height: 1; 
+            letter-spacing: -2px; 
+            font-family: 'Courier New', Courier, monospace;
             user-select: none;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
-        
-        .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ui-user-badge { display: flex; flex-direction: column; align-items: center; }
-        
-        .badge-avatar-wrapper { 
-            position: relative; 
-            width: 42px; 
-            height: 42px; 
-            display: block; 
+
+        /* ВЫНОСНАЯ ШАПКА В САМЫЙ ВЕРХ ИЕРАРХИИ БРАУЗЕРА */
+        .ui-header-center {
+            position: fixed; 
+            top: 12px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 9999999; /* Выше любого фона */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            user-select: none;
+            width: 42px;
+            height: 42px;
         }
         
-        .ui-user-badge .user-avatar {
+        .badge-avatar-wrapper {
+            position: relative;
+            display: block;
+            width: 42px;
+            height: 42px;
+        }
+        
+        .user-avatar {
             width: 42px !important;
             height: 42px !important;
             border-radius: 50%;
             border: 2px solid var(--gold);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
-            display: block;
             object-fit: cover;
-            background-color: #fff;
+            background: #fff !important;
+            display: block;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* ТОТ САМЫЙ ЗАФИКСИРОВАННЫЙ ФЛАГ */
-        .ui-user-badge .badge-flag {
-            position: absolute !important;
-            bottom: -2px !important;
-            right: -2px !important;
-            font-size: 14px !important;
-            line-height: 1 !important;
+        /* АБСОЛЮТНЫЙ ОВЕРЛЕЙ ДЛЯ ФЛАГА НА ЭКРАНЕ */
+        .badge-flag {
+            position: fixed !important;
+            /* Точнейшая привязка к правому нижнему углу аватара 42x42 от центра экрана */
+            top: 12px;
+            left: 50%;
+            transform: translate(9px, 23px) !important; 
+            font-size: 16px !important;
             background: #000 !important;
-            padding: 1px !important;
             border-radius: 50% !important;
-            z-index: 999999 !important;
+            padding: 2px !important;
+            line-height: 1 !important;
+            z-index: 100000000 !important; /* Абсолютный топ */
             display: block !important;
+            text-shadow: none !important;
         }
 
-        .ui-logo-wrapper { display: flex; justify-content: flex-end; }
-        .ui-header-right {
-            text-align: right; font-size: 24px; letter-spacing: 5px;
-            font-weight: bold; color: var(--gold); user-select: none;
+        /* ЛОГОТИП GY-GY */
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 9999999; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            user-select: none;
         }
 
-        /* КНОПКИ И ПРЯМОУГОЛЬНИКИ */
-        .switch-btn, .num-block {
-            background: var(--bg-dark);
-            border: 2px solid var(--gold);
-            color: var(--gold);
-            font-family: inherit;
+        /* ЗОНЫ СТУДИИ */
+        .studio-zone {
+            position: absolute;
             cursor: pointer;
-            transition: all 0.25s ease;
-            box-sizing: border-box;
-        }
-
-        .switch-btn:hover, .num-block:hover {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
-
-        /* ДВЕ ВЕРХНИЕ КНОПКИ: СТРОГО ПО ШИРИНЕ НИЖНЕГО БЛОКА */
-        .office-switcher {
             display: flex;
-            gap: 0; 
-            margin-bottom: 25px;
-            width: 100%;
-            max-width: 900px;
-        }
-        .switch-btn {
-            width: 50%;
-            padding: 15px;
-            font-size: 16px;
-        }
-        .switch-btn + .switch-btn {
-            border-left: none;
-        }
-        .switch-btn.active {
-            background: var(--panel-bg);
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
-            font-weight: bold;
-        }
-
-        .office-screen {
-            width: 100%;
-            max-width: 900px;
-            background: var(--panel-bg);
-            border: 1px solid #333;
-            padding: 20px;
-            box-sizing: border-box;
-            border-radius: 4px;
-            container-type: inline-size;
-        }
-
-        /* СЕТКА ИЗ 6 НОМЕРОВ */
-        .matrix-6-numbers {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 20px;
-            width: 100%;
-        }
-        
-        @media (max-width: 768px) {
-            .matrix-6-numbers {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .num-block {
-            height: 110px; 
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            font-size: 16px;
-            padding: 15px;
+            z-index: 100;
+            background: rgba(0,0,0,0);
         }
 
-        /* СХЕМА КЛУБА (ЗАФИКСИРОВАНА) */
-        .algo-pre {
-            margin: 0;
-            padding: 12px;
-            overflow-x: hidden;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.55cqw;
-            line-height: 1.4;
-            color: #e0e0e0;
-            background: #0a0a0a;
-            border: 1px dashed #444;
-        }
-
-        @container (min-width: 860px) {
-            .algo-pre { font-size: 13.5px; }
-        }
-
-        /* Зеленые развлечения */
-        .bubble-click {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(57, 255, 20, 0.08);
-            border: 1px solid #224411;
-            padding: 0 5px;
-            border-radius: 4px;
-            cursor: pointer;
+        .cue-arrow-studio { 
+            color: var(--super-neon); 
+            font-size: 38px; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 5px #fff, 0 0 10px var(--super-neon), 0 0 20px var(--super-neon); 
+            pointer-events: none; 
             user-select: none;
-            color: var(--neon-green);
-            transition: all 0.15s ease;
-            font-weight: bold;
-        }
-        
-        .bubble-click:hover {
-            background: rgba(57, 255, 20, 0.25);
-            border-color: var(--neon-green);
-            box-shadow: 0 0 6px var(--neon-green);
         }
 
-        /* Оранжевая студия монет */
-        .bubble-click.orange {
-            color: var(--coin-orange);
-            background: rgba(255, 159, 0, 0.08);
-            border-color: #553300;
-        }
-
-        .bubble-click.orange:hover {
-            background: rgba(255, 159, 0, 0.25);
-            border-color: var(--coin-orange);
-            box-shadow: 0 0 6px var(--coin-orange);
-        }
-
-        .counter-num { font-family: inherit; margin-left: 1px; }
-        .reset-btn-container { margin-top: 15px; }
-        .clear-data-btn {
-            background: transparent; border: 1px solid #444; color: #666;
-            padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer;
-        }
-        .clear-data-btn:hover { border-color: #ff3333; color: #ff3333; }
+        .zone-wear { top: 24vh; left: 29vw; width: 120px; height: 90px; }
+        .zone-gifts { top: 11vh; left: 55vw; width: 120px; height: 90px; }
+        .zone-vintage { top: 4vh; left: 78vw; width: 120px; height: 90px; }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <header class="ui-custom-header">
-        <div class="ui-nav-wrapper">
-            <div class="ui-nav-arrows" id="club-nav-arrows">
-                <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
-                <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
-            </div>
-        </div>
-        
-        <div class="ui-user-wrapper">
-            <div class="ui-user-badge" id="global-user-badge">
-                <div class="badge-avatar-wrapper">
-                    <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-                    <span class="badge-flag" id="current-flag">🇷🇺</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="ui-logo-wrapper">
-            <div class="ui-header-right notranslate">GY-GY</div>
-        </div>
-    </header>
-
-    <div class="office-switcher">
-        <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
-        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.6.1)</button>
+    <div class="notranslate ui-nav-arrows">
+        <a href="index.html#block-hall" class="arrow-item">&lt;</a>
+        <a href="index.html" class="arrow-item">&lt;&lt;</a>
     </div>
 
-    <div id="screen-office-core" class="office-screen">
-        <div class="matrix-6-numbers">
-            <div class="num-block" onclick="alert('Запуск логов Airtable v4.6.1...')">#1 Logs / Airtable</div>
-            <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Users / QR</div>
-            <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 States / Rooms</div>
-            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз v4.6.1...')">#4 Wallet / Royalty</div>
-            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.6.1...')">#5 AI Core / Prompts</div>
-            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS v4.6.1)...')">#6 Sandbox / Franchises</div>
+    <div class="ui-header-center notranslate">
+        <div class="badge-avatar-wrapper">
+            <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
         </div>
     </div>
+    <span class="badge-flag notranslate" id="current-flag">🇷🇺</span>
 
-    <div id="screen-club-map" class="office-screen" style="display: none;">
-        <pre class="algo-pre">
-================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.1 CORE ] ==================
+    <div class="ui-header-right notranslate">GY-GY</div>
 
-[НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
-       │
-       ▼
- [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите direction:
-       │
-       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послание инопланетянам</span>
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Лунная база</span>
-       │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
-       │
-       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
-       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
-       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
-       │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Лавка древностей</span>
-       │
-       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.6.1)
-       │
-       └─► [Ветка БАР]     ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга жалоб и Оскорблений</span>
-                                             │
-                                             ▼
-                                [ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
-                                             │
-                    ┌────────────────────────┴────────────────────────┐
-                    ▼                                                 ▼
-   [Условие: ЛЕВЫЙ ФЛАНГ]                                    [Условие: ПРАВЫЙ ФЛАНГ]
-   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
-   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>            ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
-   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>          └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
-         │                                                                │
-         └───────────────────────────┬────────────────────────────────────┘
-                                     ▼
-                        [Условие: ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
-        </pre>
-        <div class="reset-btn-container">
-            <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
+
+    <div class="studio-page">
+        <div id="zone-wear" class="studio-zone zone-wear" onclick="selectCategory('wear')">
+            <span class="cue-arrow-studio">↑</span>
+        </div>
+
+        <div id="zone-gifts" class="studio-zone zone-gifts" onclick="selectCategory('gifts')">
+            <span class="cue-arrow-studio">↑</span>
+        </div>
+
+        <div id="zone-vintage" class="studio-zone zone-vintage" onclick="selectCategory('vintage')">
+            <span class="cue-arrow-studio">↑</span>
         </div>
     </div>
 
     <script>
-        let clubStats = {
-            alien: 0, moon: 0, hello: 0,
-            atelier: 0, souvenirs: 0, vintage: 0,
-            complaints: 0,
-            strat1: 0, strat2: 0, strat3: 0,
-            strat4: 0, strat5: 0, strat6: 0,
-            open_mic: 0
-        };
-
-        function switchScreen(screenType) {
-            const coreScreen = document.getElementById('screen-office-core');
-            const clubScreen = document.getElementById('screen-club-map');
-            const btnCore = document.getElementById('btn-core');
-            const btnClub = document.getElementById('btn-club');
-
-            if (screenType === 'core') {
-                coreScreen.style.display = 'block'; clubScreen.style.display = 'none';
-                btnCore.classList.add('active'); btnClub.classList.remove('active');
-            } else {
-                coreScreen.style.display = 'none'; clubScreen.style.display = 'block';
-                btnCore.classList.remove('active'); btnClub.classList.add('active');
-            }
-        }
-
-        function addClick(id) {
-            if (clubStats.hasOwnProperty(id)) {
-                clubStats[id]++;
-                localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
-                document.getElementById(`c-${id}`).textContent = clubStats[id];
-            }
-        }
-
-        function loadStats() {
-            const data = localStorage.getItem('gygy_map_clicks');
-            if (data) {
-                try {
-                    const parsed = JSON.parse(data);
-                    Object.keys(clubStats).forEach(key => {
-                        if (parsed.hasOwnProperty(key)) {
-                            clubStats[key] = parsed[key];
-                            const el = document.getElementById(`c-${key}`);
-                            if (el) el.textContent = clubStats[key];
-                        }
-                    });
-                } catch (e) { console.error(e); }
-            }
-        }
-
-        function clearActivityData() {
-            if (confirm("Сбросить накопленные данные об активности сотрудников Клуба?")) {
-                Object.keys(clubStats).forEach(key => {
-                    clubStats[key] = 0;
-                    const el = document.getElementById(`c-${key}`);
-                    if (el) el.textContent = 0;
-                });
-                localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", function() {
-            loadStats();
-
+            // Загрузка аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -377,21 +190,31 @@
                 avatarEl.style.display = 'block';
             }
 
-            // ПРЯМАЯ СИНХРОНИЗАЦИЯ ФЛАГА С РЕГИСТРАЦИЕЙ
-            const userLang = localStorage.getItem('gy_lang') || 
-                             localStorage.getItem('gygy_lang') || 
+            // Тотальный поиск языка по хранилищу и системе
+            const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
-                             document.documentElement.lang || 'ru';
+                             localStorage.getItem('selected_lang') || 
+                             localStorage.getItem('current_lang') || 
+                             localStorage.getItem('registration_lang') || 
+                             navigator.language || 'ru';
 
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 const cleanLang = userLang.toLowerCase().trim();
-                if (cleanLang.includes('fr')) flagElement.textContent = '🇫🇷';
-                else if (cleanLang.includes('en')) flagElement.textContent = '🇺🇸';
-                else flagElement.textContent = '🇷🇺';
+                if (cleanLang.includes('fr')) {
+                    flagElement.textContent = '🇫🇷';
+                } else if (cleanLang.includes('en') || cleanLang.includes('us')) {
+                    flagElement.textContent = '🇺🇸';
+                } else {
+                    flagElement.textContent = '🇷🇺';
+                }
             }
         });
+
+        function selectCategory(type) {
+            alert(`Переход в рабочий шаг локации: ${type.toUpperCase()}`);
+        }
     </script>
 </body>
 </html>
