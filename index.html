@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.0 CORE</title>
+    <title>GY-GY Club v4.7.0 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -83,19 +83,15 @@
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        
+        /* Сетка Квадратов */
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; transition: all 0.3s; }
 
         body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
-
-        /* ИНПУТ ДЛЯ ТЕЛЕГРАМА С ЮМОРОМ */
-        .tg-input-wrapper { width: 270px; margin-bottom: 15px; text-align: left; }
-        .tg-input-wrapper label { font-size: 11px; letter-spacing: 1px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .tg-field { width: 100%; padding: 10px; background: #000; border: 2px solid var(--gold); color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 14px; outline: none; transition: border-color 0.3s; }
-        .tg-field:focus { border-color: var(--violet); box-shadow: 0 0 10px var(--neon-glow); }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
@@ -252,8 +248,9 @@
     <div id="block-identity" class="block">
         <div class="quote-text">There is never too much champagne</div>
         
-        <div style="display:flex; gap:10px; margin-bottom:20px; align-items:center;">
+        <div style="display:flex; gap:8px; margin-bottom:25px; align-items:center; justify-content:center; flex-wrap: wrap; max-width: 320px;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
+            
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
             
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
@@ -266,11 +263,10 @@
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
             </div>
-        </div>
 
-        <div class="tg-input-wrapper">
-            <label for="tg-username">Telegram (for stable matrix exit):</label>
-            <input type="text" id="tg-username" class="tg-field" placeholder="durov_crypto_king">
+            <div class="box-final" id="tg-connect-box" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="linkTelegram()">
+                <span id="txt-tg-status" style="color:#000; font-size:10px; font-weight:900; text-align:center;">LINK<br>TELEGRAM</span>
+            </div>
         </div>
 
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
@@ -342,6 +338,7 @@
     let currentUserImage = "";
     let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
+    let tgLinkedUsername = ""; // Хранилище верифицированного TG ника
 
     const allLangs = [
         {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
@@ -446,15 +443,64 @@
 
         if (idLabel) idLabel.innerText = targetID;
         if (passIdVal) passIdVal.innerText = targetID;
-        if (passTgVal) passTgVal.innerText = tgNick ? `@${tgNick}` : "";
+        
+        if (passTgVal) {
+            passTgVal.innerText = tgNick ? `@${tgNick}` : "";
+        }
 
         if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
         if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
     }
 
+    // ЛОГИКА ПЯТОГО КВАДРАТА: СВЯЗКА С ТЕЛЕГРАМ-БОТОМ
+    function linkTelegram() {
+        if (!currentID) return;
+        
+        const botUsername = "gygy_club_bot"; // Сюда имя твоего n8n-бота
+        const telegramLink = `https://t.me/${botUsername}?start=${currentID}`;
+        window.open(telegramLink, '_blank');
+        
+        const statusTxt = document.getElementById('txt-tg-status');
+        const tgBox = document.getElementById('tg-connect-box');
+        
+        if (statusTxt && tgBox) {
+            statusTxt.innerHTML = "WAITING<br>BOT...";
+            tgBox.style.borderColor = "var(--violet)";
+            tgBox.style.boxShadow = "0 0 10px var(--neon-glow)";
+        }
+        
+        startCheckingTelegramVerification();
+    }
+
+    function startCheckingTelegramVerification() {
+        if (window.tgCheckTimer) clearInterval(window.tgCheckTimer);
+        
+        window.tgCheckTimer = setInterval(() => {
+            // Запрос к вебхуку n8n (проверяем, записал ли бот юзернейм в Airtable по нашему ID)
+            fetch(`https://твой-n8n.com/check-tg?id=${currentID}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.verified && data.telegram_username) {
+                        clearInterval(window.tgCheckTimer);
+                        tgLinkedUsername = data.telegram_username.replace(/^@+/, "");
+                        
+                        const statusTxt = document.getElementById('txt-tg-status');
+                        const tgBox = document.getElementById('tg-connect-box');
+                        if (statusTxt && tgBox) {
+                            statusTxt.innerHTML = `LINKED<br>@${tgLinkedUsername}`;
+                            statusTxt.style.color = "#00FF00";
+                            tgBox.style.borderColor = "#00FF00";
+                            tgBox.style.boxShadow = "0 0 15px rgba(0, 255, 0, 0.6)";
+                        }
+                        renderUserPassports(currentID, tgLinkedUsername);
+                    }
+                })
+                .catch(err => console.log("Бот еще ожидает клика от резидента..."));
+        }, 3000); 
+    }
+
     function checkAndFillRegistrationForm() {
         const rawPassport = safeStorageGet('gygy_passport');
-        let savedTg = "";
         
         if (rawPassport) {
             const passport = JSON.parse(rawPassport);
@@ -462,7 +508,7 @@
             currentUserImage = passport.avatar;
             currentActiveCode = passport.lang;
             currentFlagCode = passport.flagCode || 'gb';
-            savedTg = passport.telegram || "";
+            tgLinkedUsername = passport.telegram || "";
         } else {
             currentUserImage = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
             currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
@@ -473,16 +519,12 @@
                 currentActiveCode = savedLangCode;
             }
             currentFlagCode = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
-            savedTg = safeStorageGet('gygy_tg_backup') || "";
+            tgLinkedUsername = safeStorageGet('gygy_tg_backup') || "";
         }
 
         if (!currentID) {
             currentID = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
         }
-
-        // Заполняем поле ввода Telegram, если ник уже был сохранен ранее
-        const tgField = document.getElementById('tg-username');
-        if (tgField && savedTg) tgField.value = savedTg;
 
         let matchedLang = allLangs.find(l => l.code === currentActiveCode) || allLangs.find(l => l.c.toLowerCase() === currentFlagCode.toLowerCase());
         if (matchedLang) {
@@ -497,8 +539,19 @@
             forceTriggerGoogleTranslate(matchedLang.code);
         }
 
-        if (currentID) { renderUserPassports(currentID, savedTg); }
+        if (currentID) { renderUserPassports(currentID, tgLinkedUsername); }
         
+        // Восстанавливаем визуальное состояние 5-го квадрата, если телеграм уже привязан
+        if (tgLinkedUsername) {
+            const statusTxt = document.getElementById('txt-tg-status');
+            const tgBox = document.getElementById('tg-connect-box');
+            if (statusTxt && tgBox) {
+                statusTxt.innerHTML = `LINKED<br>@${tgLinkedUsername}`;
+                statusTxt.style.color = "#00FF00";
+                tgBox.style.borderColor = "#00FF00";
+            }
+        }
+
         if (currentUserImage) {
             const badgeImg = document.getElementById('badge-avatar-img');
             const passImg = document.getElementById('pass-avatar-img');
@@ -624,42 +677,34 @@
         const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "block";
     }
 
-    // СБОРОЧНЫЙ ЦЕХ ЕДИНОГО ПАСПОРТА РЕЗИДЕНТА
+    // СБОРОЧНЫЙ ЦЕХ МОНОЛИТНОГО ПАСПОРТА РЕЗИДЕНТА
     function saveUserProfile() {
         if (!currentUserImage) return;
 
-        // Чистим введенный телеграм от знака @ на лету
-        const tgInput = document.getElementById('tg-username');
-        let rawTg = tgInput ? tgInput.value.trim() : "";
-        let cleanTg = rawTg.replace(/^@+/, ""); 
-
-        // Пакуем монолитный паспорт по новому стандарту (с полем telegram)
         const gygy_passport = {
             id: currentID,
             nickname: currentID, 
             avatar: currentUserImage,
-            telegram: cleanTg,
+            telegram: tgLinkedUsername, // Верифицированный ботом ник уходит в паспорт
             lang: currentActiveCode,
             flagCode: currentFlagCode
         };
 
-        // Запечатываем намертво под единым ключом
         safeStorageSet('gygy_passport', JSON.stringify(gygy_passport));
 
-        // Оставляем старые ключи для обратной совместимости
+        // Совместимость со старыми репозиториями
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
         safeStorageSet('gy_user_avatar', currentUserImage); 
         safeStorageSet('gy_user_id', currentID);
-        safeStorageSet('gygy_tg_backup', cleanTg);
+        safeStorageSet('gygy_tg_backup', tgLinkedUsername);
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
         if (badgeImg) badgeImg.src = currentUserImage;
         if (passImg) passImg.src = currentUserImage;
 
-        // Обновляем визуальное представление паспорта
-        renderUserPassports(currentID, cleanTg);
+        renderUserPassports(currentID, tgLinkedUsername);
 
         const badge = document.getElementById('global-user-badge');
         if (badge) badge.style.display = 'block';
@@ -667,7 +712,7 @@
         const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
         
-        console.log("Паспорт собран, очищен и запечатан:", gygy_passport);
+        console.log("Паспорт успешно запечатан с верифицированным ТГ:", gygy_passport);
     }
 
     function openPassport() {
