@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.2</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.3</title>
     <style>
         :root {
             --gold: #FFD700;
             --bg-dark: #121212;
             --panel-bg: #1a1a1a;
+            --neon-green: #39ff14;
         }
 
         body {
@@ -46,12 +47,11 @@
         .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .ui-user-badge { display: flex; flex-direction: column; align-items: center; }
         
-        /* КОНТЕЙНЕР АВАТАРА — ЖЕСТКАЯ ФИКСАЦИЯ ДЛЯ ФЛАГА */
         .badge-avatar-wrapper { 
             position: relative; 
             width: 42px; 
             height: 42px; 
-            display: inline-block; 
+            display: inline-block !important; 
         }
         
         .ui-user-badge .user-avatar {
@@ -65,18 +65,17 @@
             background-color: #fff;
         }
         
-        /* НАЛОЖЕНИЕ ФЛАГА ПОВЕРХ АВАТАРА */
         .ui-user-badge .badge-flag {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            font-size: 14px;
-            line-height: 1;
-            background: #000;
-            padding: 1px;
-            border-radius: 50%;
-            z-index: 9999;
-            display: block;
+            position: absolute !important;
+            bottom: -3px !important;
+            right: -3px !important;
+            font-size: 16px !important;
+            line-height: 1 !important;
+            background: #000 !important;
+            padding: 2px !important;
+            border-radius: 50% !important;
+            z-index: 99999999 !important;
+            display: block !important;
         }
 
         .ui-logo-wrapper { display: flex; justify-content: flex-end; }
@@ -85,7 +84,7 @@
             font-weight: bold; color: var(--gold); user-select: none;
         }
 
-        /* ДВЕ ВЕРХНИЕ РАМКИ ПЕРЕКЛЮЧЕНИЯ — СТРОГО ПО ОБЩЕЙ ШИРИНЕ (900px) */
+        /* ДВЕ ВЕРХНИЕ РАМКИ ПЕРЕКЛЮЧЕНИЯ ПО ШИРИНЕ ХОЛСТА (900px) */
         .office-switcher { 
             display: flex; 
             margin-bottom: 25px; 
@@ -95,7 +94,7 @@
         }
         
         .switch-btn { 
-            width: 50%; /* Ровно пополам холста */
+            width: 50%; 
             padding: 15px; 
             font-size: 16px; 
             background: var(--bg-dark); 
@@ -107,33 +106,17 @@
             box-sizing: border-box;
         }
         
-        /* Чтобы рамки не двоились по центру, убираем левую границу у второй кнопки */
-        .switch-btn + .switch-btn {
-            border-left: none;
-        }
-        
-        .switch-btn:hover {
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
-        
-        .switch-btn.active { 
-            background: var(--panel-bg); 
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3); 
-            font-weight: bold; 
-        }
+        .switch-btn + .switch-btn { border-left: none; }
+        .switch-btn:hover { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+        .switch-btn.active { background: var(--panel-bg); box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3); font-weight: bold; }
 
         /* ОСНОВНОЙ КОНТЕЙНЕР ЭКРАНА */
         .office-screen {
-            width: 100%; 
-            max-width: 900px; 
-            background: var(--panel-bg);
-            border: 1px solid #333; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            border-radius: 4px;
+            width: 100%; max-width: 900px; background: var(--panel-bg);
+            border: 1px solid #333; padding: 20px; box-sizing: border-box; border-radius: 4px;
         }
 
-        /* СЕТКА ИЗ 6 ОДИНАКОВЫХ РАМОК */
+        /* СЕТКА ИЗ 6 НОМЕРОВ */
         .matrix-6-numbers { 
             display: grid; 
             grid-template-columns: repeat(3, 1fr); 
@@ -142,7 +125,7 @@
         }
         
         .num-block { 
-            height: 100px; /* Фиксированная высота для идеального равенства рамок */
+            height: 100px; 
             text-align: center; 
             font-size: 16px; 
             background: var(--bg-dark); 
@@ -157,9 +140,75 @@
             box-sizing: border-box;
             padding: 10px;
         }
-        
         .num-block:hover { box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
-        .algo-pre { margin: 0; padding: 10px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.4; color: #e0e0e0; background: #0a0a0a; border: 1px dashed #444; }
+
+        /* ПОЛНАЯ ИНТЕРАКТИВНАЯ СХЕМА КЛУБА */
+        .interactive-map-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .map-branch-node {
+            background: #0d0d0d;
+            border: 1px dashed #444;
+            padding: 15px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-branch-node:hover {
+            border-color: var(--gold);
+            background: #151515;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+        }
+
+        .map-branch-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #e0e0e0;
+        }
+
+        /* СТИЛИЗАЦИЯ НАКОПИТЕЛЬНЫХ ЗЕЛЕНЫХ ШАРИКОВ */
+        .activity-bubble {
+            background: rgba(57, 255, 20, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 4px 10px;
+            font-size: 13px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 6px rgba(57, 255, 20, 0.2);
+            transition: transform 0.1s ease;
+        }
+
+        .map-branch-node:active .activity-bubble {
+            transform: scale(1.15);
+        }
+
+        .reset-analytics-btn {
+            margin-top: 15px;
+            background: transparent;
+            border: 1px solid #555;
+            color: #888;
+            padding: 8px 15px;
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 12px;
+            align-self: flex-start;
+            transition: all 0.2s;
+        }
+        .reset-analytics-btn:hover {
+            border-color: #ff3333;
+            color: #ff3333;
+        }
     </style>
 </head>
 <body>
@@ -188,7 +237,7 @@
 
     <div class="office-switcher">
         <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
-        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.6.1)</button>
+        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Интерактивная Архитектура)</button>
     </div>
 
     <div id="screen-office-core" class="office-screen">
@@ -203,21 +252,56 @@
     </div>
 
     <div id="screen-club-map" class="office-screen" style="display: none;">
-        <pre class="algo-pre">
-================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.1 CORE ] ==================
-[НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
-       │
-       ▼
- [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
-       │
-       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ
-       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ
-       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.6.1)
-       └─► [Ветка БАР]     ──► Открыть bar.html    ──► Книга жалоб
-        </pre>
+        <div class="interactive-map-container">
+            <div style="font-size: 13px; color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                КЛИКАЙ НА ЛОКАЦИИ ДЛЯ НАКОПЛЕНИЯ СТАТИСТИКИ АКТИВНОСТИ:
+            </div>
+            
+            <div class="map-branch-node" onclick="registerActivity('registration')">
+                <span class="map-branch-text">[ВХОД / РЕГИСТРАЦИЯ] ──► Выбор языка / Создание цифрового следа ID</span>
+                <span class="activity-bubble">🟢 <span id="count-registration">0</span></span>
+            </div>
+            
+            <div class="map-branch-node" onclick="registerActivity('hall')">
+                <span class="map-branch-text">[ГЛАВНЫЙ ХОЛЛ] ──► Узел распределения трафика (#block-hall)</span>
+                <span class="activity-bubble">🟢 <span id="count-hall">0</span></span>
+            </div>
+
+            <div class="map-branch-node" onclick="registerActivity('ai_room')">
+                <span class="map-branch-text">├──► [ВЕТКА AI ROOM] ──► Открыть verses.html ──► Поэзия и ИИ Чарли</span>
+                <span class="activity-bubble">🟢 <span id="count-ai_room">0</span></span>
+            </div>
+
+            <div class="map-branch-node" onclick="registerActivity('studio')">
+                <span class="map-branch-text">├──► [ВЕТКА STUDIO] ──► Открыть studio.html ──► Конструктор принтов одежды</span>
+                <span class="activity-bubble">🟢 <span id="count-studio">0</span></span>
+            </div>
+
+            <div class="map-branch-node" onclick="registerActivity('office')">
+                <span class="map-branch-text">├──► [ВЕТКА OFFICE] ──► Открыть office.html ──► Админ-панель Управления</span>
+                <span class="activity-bubble">🟢 <span id="count-office">0</span></span>
+            </div>
+
+            <div class="map-branch-node" onclick="registerActivity('bar')">
+                <span class="map-branch-text">└──► [ВЕТКА БАР] ──► Открыть bar.html ──► Интерактивная книга отзывов и жалоб</span>
+                <span class="activity-bubble">🟢 <span id="count-bar">0</span></span>
+            </div>
+
+            <button class="reset-analytics-btn" onclick="resetAnalytics()">Сбросить данные активности</button>
+        </div>
     </div>
 
     <script>
+        // Объект для хранения текущих кликов
+        let clubActivityData = {
+            registration: 0,
+            hall: 0,
+            ai_room: 0,
+            studio: 0,
+            office: 0,
+            bar: 0
+        };
+
         function switchScreen(screenType) {
             const coreScreen = document.getElementById('screen-office-core');
             const clubScreen = document.getElementById('screen-club-map');
@@ -232,7 +316,49 @@
             }
         }
 
+        // Логика инкрементации и накопления активности по зеленым шарикам
+        function registerActivity(locationId) {
+            if (clubActivityData.hasOwnProperty(locationId)) {
+                clubActivityData[locationId]++;
+                // Запись обновленных данных в локальное хранилище
+                localStorage.setItem('gygy_club_activity', JSON.stringify(clubActivityData));
+                // Обновление цифры внутри шарика на экране
+                document.getElementById(`count-${locationId}`).textContent = clubActivityData[locationId];
+            }
+        }
+
+        // Функция загрузки накопленных данных
+        function loadActivityAnalytics() {
+            const savedData = localStorage.getItem('gygy_club_activity');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    Object.keys(clubActivityData).forEach(key => {
+                        if (parsed.hasOwnProperty(key)) {
+                            clubActivityData[key] = parsed[key];
+                            document.getElementById(`count-${key}`).textContent = clubActivityData[key];
+                        }
+                    });
+                } catch(e) { console.error("Ошибка парсинга аналитики", e); }
+            }
+        }
+
+        // Обнуление счетчиков
+        function resetAnalytics() {
+            if(confirm("Очистить накопленные данные активности во всех локациях?")) {
+                Object.keys(clubActivityData).forEach(key => {
+                    clubActivityData[key] = 0;
+                    document.getElementById(`count-${key}`).textContent = 0;
+                });
+                localStorage.setItem('gygy_club_activity', JSON.stringify(clubActivityData));
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
+            // Инициализация аналитики зеленых шариков
+            loadActivityAnalytics();
+
+            // Подгрузка аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -246,18 +372,25 @@
                 avatarEl.style.display = 'block';
             }
 
+            // Глубокая проверка для определения флага
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
                              localStorage.getItem('selected_lang') || 
-                             document.documentElement.lang || 'ru';
+                             localStorage.getItem('current_lang') || 
+                             localStorage.getItem('registration_lang') || 
+                             navigator.language || 'ru';
 
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 const cleanLang = userLang.toLowerCase().trim();
-                if (cleanLang.includes('fr')) flagElement.textContent = '🇫🇷';
-                else if (cleanLang.includes('en') || cleanLang.includes('us')) flagElement.textContent = '🇺🇸';
-                else flagElement.textContent = '🇷🇺';
+                if (cleanLang.includes('fr')) {
+                    flagElement.textContent = '🇫🇷';
+                } else if (cleanLang.includes('en') || cleanLang.includes('us')) {
+                    flagElement.textContent = '🇺🇸';
+                } else {
+                    flagElement.textContent = '🇷🇺';
+                }
             }
         });
     </script>
