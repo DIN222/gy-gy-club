@@ -25,7 +25,6 @@
             margin: 0; 
         }
 
-        /* Фоновое изображение Студии */
         .studio-page {
             position: fixed;
             inset: 0;
@@ -37,7 +36,7 @@
             z-index: 10;
         }
 
-        /* ТОЧНЫЙ СТАНДАРТ СТИЛЬНЫХ НАВИГАЦИОННЫХ СТРЕЛОК ИЗ ОФИСА */
+        /* НАВИГАЦИОННЫЕ СТРЕЛОК ИЗ ОФИСА */
         .ui-nav-arrows {
             position: fixed; 
             top: 18px; 
@@ -65,12 +64,13 @@
             user-select: none;
         }
         
-        /* ЖЕСТКАЯ ФИКСАЦИЯ КОНТЕЙНЕРА АВАТАРА */
         .badge-avatar-wrapper {
             position: relative;
-            display: inline-block;
-            width: 42px;
-            height: 42px;
+            display: inline-block !important;
+            width: 42px !important;
+            height: 42px !important;
+            min-width: 42px;
+            min-height: 42px;
         }
         .user-avatar {
             width: 42px !important;
@@ -83,21 +83,20 @@
             box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
         
-        /* ГАРАНТИРОВАННОЕ НАЛОЖЕНИЕ ФЛАГА */
+        /* ФЛАГ ПОВЕРХ АВАТАРА */
         .badge-flag {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            font-size: 14px;
-            background: #000;
-            border-radius: 50%;
-            padding: 1px;
-            line-height: 1;
-            z-index: 999999;
+            position: absolute !important;
+            bottom: -3px !important;
+            right: -3px !important;
+            font-size: 16px !important;
+            background: #000 !important;
+            border-radius: 50% !important;
+            padding: 2px !important;
+            line-height: 1 !important;
+            z-index: 99999999 !important;
             display: block !important;
         }
 
-        /* ЛОГОТИП GY-GY ПО СТАНДАРТУ INDEX */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -105,7 +104,6 @@
             user-select: none;
         }
 
-        /* АКТИВНЫЕ ЛОКАЦИИ */
         .studio-zone {
             position: absolute;
             cursor: pointer;
@@ -117,7 +115,6 @@
             background: rgba(0,0,0,0);
         }
 
-        /* УКАЗАТЕЛИ СВЕЧЕНИЯ (↑) */
         .cue-arrow-studio { 
             color: var(--super-neon); 
             font-size: 38px; 
@@ -144,7 +141,6 @@
 <body oncontextmenu="return false;">
 
     <div class="studio-page">
-        
         <div class="notranslate ui-nav-arrows">
             <a href="index.html#block-hall" class="arrow-item">&lt;</a>
             <a href="index.html" class="arrow-item">&lt;&lt;</a>
@@ -174,7 +170,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. ПОДТЯГИВАЕМ АВАТАР ИЗ LOCALSTORAGE
+            // Подгрузка аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -188,12 +184,14 @@
                 avatarEl.style.display = 'block';
             }
 
-            // 2. ГЛУБОКИЙ ПОИСК ФЛАГА ИЗ ВСЕХ ВОЗМОЖНЫХ КЛЮЧЕЙ ХРАНИЛИЩА
+            // ГЛУБОКАЯ СВЕРКА ДЛЯ ОПРЕДЕЛЕНИЯ ФЛАГА
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
                              localStorage.getItem('selected_lang') || 
-                             document.documentElement.lang || 'ru';
+                             localStorage.getItem('current_lang') || 
+                             localStorage.getItem('registration_lang') || 
+                             navigator.language || 'ru';
 
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
@@ -203,7 +201,7 @@
                 } else if (cleanLang.includes('en') || cleanLang.includes('us')) {
                     flagElement.textContent = '🇺🇸';
                 } else {
-                    flagElement.textContent = '🇷🇺';
+                    flagElement.textContent = '🇷🇺'; // Надежный дефолт вместо пустоты
                 }
             }
         });
