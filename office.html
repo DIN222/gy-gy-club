@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.3</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.5</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -21,7 +21,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden; /* Железный запрет бокового скролла для body */
+            overflow-x: hidden;
         }
 
         /* ТОЧНЫЙ СТАНДАРТ ВЕРХНЕЙ ПАНЕЛИ ИЗ INDEX */
@@ -66,16 +66,18 @@
             background-color: #fff;
         }
         
+        /* ВОЗВРАЩЕННЫЙ ЖЕСТКИЙ СТАНДАРТ ФЛАГА */
         .ui-user-badge .badge-flag {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            font-size: 14px;
-            line-height: 1;
-            background: #000;
-            padding: 1px;
-            border-radius: 50%;
-            z-index: 5;
+            position: absolute !important;
+            bottom: -2px !important;
+            right: -2px !important;
+            font-size: 14px !important;
+            line-height: 1 !important;
+            background: #000 !important;
+            padding: 1px !important;
+            border-radius: 50% !important;
+            z-index: 999999 !important;
+            display: block !important;
         }
 
         .ui-logo-wrapper { display: flex; justify-content: flex-end; }
@@ -84,7 +86,7 @@
             font-weight: bold; color: var(--gold); user-select: none;
         }
 
-        /* СТАТИЧНЫЕ КНОПКИ */
+        /* КНОПКИ И ПРЯМОУГОЛЬНИКИ */
         .switch-btn, .num-block {
             background: var(--bg-dark);
             border: 2px solid var(--gold);
@@ -92,46 +94,88 @@
             font-family: inherit;
             cursor: pointer;
             transition: all 0.25s ease;
+            box-sizing: border-box;
         }
 
         .switch-btn:hover, .num-block:hover {
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
+        /* ДВЕ ВЕРХНИЕ КНОПКИ: СТРОГО ПО ШИРИНЕ НИЖНЕГО БЛОКА */
         .office-switcher {
-            display: flex; gap: 10px; margin-bottom: 25px; width: 100%; max-width: 900px;
+            display: flex;
+            gap: 0; /* Убираем зазор для идеального стыка */
+            margin-bottom: 25px;
+            width: 100%;
+            max-width: 900px;
         }
-        .switch-btn { flex: 1; padding: 15px; font-size: 16px; }
-        .switch-btn.active { background: var(--panel-bg); box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3); font-weight: bold; }
+        .switch-btn {
+            width: 50%;
+            padding: 15px;
+            font-size: 16px;
+        }
+        /* Чтобы рамки посередине не удваивались */
+        .switch-btn + .switch-btn {
+            border-left: none;
+        }
+        .switch-btn.active {
+            background: var(--panel-bg);
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
+            font-weight: bold;
+        }
 
         .office-screen {
-            width: 100%; max-width: 900px; background: var(--panel-bg);
-            border: 1px solid #333; padding: 15px; box-sizing: border-box; border-radius: 4px;
-            container-type: inline-size; /* Для адаптивного сжатия схемы внутри контейнера */
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            container-type: inline-size;
         }
 
-        .matrix-6-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .num-block { padding: 35px 25px; text-align: center; font-size: 18px; }
+        /* СЕТКА ИЗ 6 НОМЕРОВ: ИДЕАЛЬНОЕ ВЫРАВНИВАНИЕ МЕЖДУ СОБОЙ */
+        .matrix-6-numbers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Ровно 3 колонки на строку */
+            gap: 20px;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .matrix-6-numbers {
+                grid-template-columns: 1fr; /* На мобилках в один ряд для удобства */
+            }
+        }
 
-        /* УЛЬТРАКОМПАКТНЫЙ ОКОШКО ДЛЯ СХЕМЫ */
+        .num-block {
+            height: 110px; /* Фиксированная высота для выравнивания */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 16px;
+            padding: 15px;
+        }
+
+        /* СХЕМА КЛУБА (ЗАФИКСИРОВАНА) */
         .algo-pre {
             margin: 0;
             padding: 12px;
-            overflow-x: hidden; /* Никакого бокового скролла внутри схемы */
+            overflow-x: hidden;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1.55cqw; /* Умный размер шрифта: идеально масштабируется под ширину экрана */
+            font-size: 1.55cqw;
             line-height: 1.4;
             color: #e0e0e0;
             background: #0a0a0a;
             border: 1px dashed #444;
         }
 
-        /* Ограничение для больших мониторов, чтобы шрифт не стал гигантским */
         @container (min-width: 860px) {
             .algo-pre { font-size: 13.5px; }
         }
 
-        /* Зелёные интерактивные шарики */
         .bubble-click {
             display: inline-flex;
             align-items: center;
