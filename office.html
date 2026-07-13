@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.1</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.3</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -21,6 +21,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden; /* Железный запрет бокового скролла для body */
         }
 
         /* ТОЧНЫЙ СТАНДАРТ ВЕРХНЕЙ ПАНЕЛИ ИЗ INDEX */
@@ -35,44 +36,25 @@
             border-bottom: 1px solid #222;
         }
 
-        /* ЛЕВАЯ ЧАСТЬ: Стрелки навигации */
-        .ui-nav-wrapper {
-            display: flex;
-            justify-content: flex-start;
-        }
+        .ui-nav-wrapper { display: flex; justify-content: flex-start; }
         .ui-nav-arrows {
-            display: flex;
-            gap: 20px;
-            font-size: 26px;
-            font-weight: 900;
-            cursor: pointer;
-            color: var(--gold);
-            line-height: 1;
-            letter-spacing: -2px;
+            display: flex; gap: 20px; font-size: 26px; font-weight: 900;
+            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px;
             user-select: none;
         }
         .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
         .arrow-item:hover { opacity: 0.8; }
         
-        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Сквозной аватар фиксированного размера */
-        .ui-user-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ui-user-badge { display: flex; flex-direction: column; align-items: center; }
+        
+        .badge-avatar-wrapper { 
+            position: relative; 
+            width: 42px; 
+            height: 42px; 
+            display: block; 
         }
-        .ui-user-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .badge-avatar-wrapper {
-            position: relative;
-            width: 42px;
-            height: 42px;
-            display: block;
-        }
-        /* ЖЕСТКИЙ КОНТРОЛЬ РАЗМЕРА КАРТИНКИ */
+        
         .ui-user-badge .user-avatar {
             width: 42px !important;
             height: 42px !important;
@@ -83,6 +65,7 @@
             object-fit: cover;
             background-color: #fff;
         }
+        
         .ui-user-badge .badge-flag {
             position: absolute;
             bottom: -2px;
@@ -95,21 +78,13 @@
             z-index: 5;
         }
 
-        /* ПРАВАЯ ЧАСТЬ: Логотип СТРОГО ПО СТАНДАРТУ INDEX */
-        .ui-logo-wrapper {
-            display: flex;
-            justify-content: flex-end;
-        }
+        .ui-logo-wrapper { display: flex; justify-content: flex-end; }
         .ui-header-right {
-            text-align: right;
-            font-size: 24px;
-            letter-spacing: 5px;
-            font-weight: bold;
-            color: var(--gold);
-            user-select: none;
+            text-align: right; font-size: 24px; letter-spacing: 5px;
+            font-weight: bold; color: var(--gold); user-select: none;
         }
 
-        /* СТИЛЬ КНОПОК И СЕТКИ НОМЕРОВ */
+        /* СТАТИЧНЫЕ КНОПКИ */
         .switch-btn, .num-block {
             background: var(--bg-dark);
             border: 2px solid var(--gold);
@@ -120,71 +95,49 @@
         }
 
         .switch-btn:hover, .num-block:hover {
-            background: var(--bg-dark);
-            color: var(--gold);
-            border-color: var(--gold);
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
         .office-switcher {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            width: 100%;
-            max-width: 900px;
+            display: flex; gap: 10px; margin-bottom: 25px; width: 100%; max-width: 900px;
         }
-        .switch-btn {
-            flex: 1;
-            padding: 15px;
-            font-size: 16px;
-        }
-        .switch-btn.active {
-            background: var(--panel-bg);
-            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
-            font-weight: bold;
-        }
+        .switch-btn { flex: 1; padding: 15px; font-size: 16px; }
+        .switch-btn.active { background: var(--panel-bg); box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3); font-weight: bold; }
 
         .office-screen {
-            width: 100%;
-            max-width: 900px;
-            background: var(--panel-bg);
-            border: 1px solid #333;
-            padding: 20px;
-            box-sizing: border-box;
-            border-radius: 4px;
+            width: 100%; max-width: 900px; background: var(--panel-bg);
+            border: 1px solid #333; padding: 15px; box-sizing: border-box; border-radius: 4px;
+            container-type: inline-size; /* Для адаптивного сжатия схемы внутри контейнера */
         }
 
-        .matrix-6-numbers {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .num-block {
-            padding: 35px 25px;
-            text-align: center;
-            font-size: 18px;
-        }
+        .matrix-6-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .num-block { padding: 35px 25px; text-align: center; font-size: 18px; }
 
-        /* СТИЛИЗАЦИЯ ИНТЕРАКТИВНОЙ КАРТЫ С КНОПКАМИ-ШАРИКАМИ */
+        /* УЛЬТРАКОМПАКТНЫЙ ОКОШКО ДЛЯ СХЕМЫ */
         .algo-pre {
             margin: 0;
-            padding: 15px;
-            overflow-x: auto;
+            padding: 12px;
+            overflow-x: hidden; /* Никакого бокового скролла внутри схемы */
             font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 1.55cqw; /* Умный размер шрифта: идеально масштабируется под ширину экрана */
+            line-height: 1.4;
             color: #e0e0e0;
             background: #0a0a0a;
             border: 1px dashed #444;
         }
 
-        /* Стиль кликабельного зеленого шарика активности */
+        /* Ограничение для больших мониторов, чтобы шрифт не стал гигантским */
+        @container (min-width: 860px) {
+            .algo-pre { font-size: 13.5px; }
+        }
+
+        /* Зелёные интерактивные шарики */
         .bubble-click {
             display: inline-flex;
             align-items: center;
             background: rgba(57, 255, 20, 0.08);
             border: 1px solid #224411;
-            padding: 1px 6px;
+            padding: 0 5px;
             border-radius: 4px;
             cursor: pointer;
             user-select: none;
@@ -196,44 +149,21 @@
         .bubble-click:hover {
             background: rgba(57, 255, 20, 0.25);
             border-color: var(--neon-green);
-            box-shadow: 0 0 8px var(--neon-green);
-            transform: scale(1.05);
+            box-shadow: 0 0 6px var(--neon-green);
         }
 
-        .bubble-click:active {
-            transform: scale(0.95);
-        }
-
-        .counter-num {
-            font-family: inherit;
-            margin-left: 2px;
-        }
-
-        /* Кнопка сброса под схемой */
-        .reset-btn-container {
-            margin-top: 15px;
-            text-align: left;
-        }
+        .counter-num { font-family: inherit; margin-left: 1px; }
+        .reset-btn-container { margin-top: 15px; }
         .clear-data-btn {
-            background: transparent;
-            border: 1px solid #444;
-            color: #666;
-            padding: 6px 12px;
-            font-family: inherit;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: transparent; border: 1px solid #444; color: #666;
+            padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer;
         }
-        .clear-data-btn:hover {
-            border-color: #ff3333;
-            color: #ff3333;
-        }
+        .clear-data-btn:hover { border-color: #ff3333; color: #ff3333; }
     </style>
 </head>
 <body>
 
     <header class="ui-custom-header">
-        
         <div class="ui-nav-wrapper">
             <div class="ui-nav-arrows" id="club-nav-arrows">
                 <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
@@ -253,7 +183,6 @@
         <div class="ui-logo-wrapper">
             <div class="ui-header-right notranslate">GY-GY</div>
         </div>
-        
     </header>
 
     <div class="office-switcher">
@@ -301,13 +230,13 @@
                     ┌────────────────────────┴────────────────────────┐
                     ▼                                                 ▼
    [Условие: ЛЕВЫЙ ФЛАНГ]                                    [Условие: ПРАВЫЙ ФЛАНГ]
-   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>                    ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
-   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>                   ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
-   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>                 └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
+   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
+   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>            ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
+   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>          └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
          │                                                                │
          └───────────────────────────┬────────────────────────────────────┘
                                      ▼
-                        [Условие: ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="c-open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
+                        [Условие: ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
         </pre>
         <div class="reset-btn-container">
             <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
@@ -315,7 +244,6 @@
     </div>
 
     <script>
-        // База данных ключей для всех 14 шариков
         let clubStats = {
             alien: 0, moon: 0, hello: 0,
             atelier: 0, souvenirs: 0, vintage: 0,
@@ -332,19 +260,14 @@
             const btnClub = document.getElementById('btn-club');
 
             if (screenType === 'core') {
-                coreScreen.style.display = 'block';
-                clubScreen.style.display = 'none';
-                btnCore.classList.add('active');
-                btnClub.classList.remove('active');
+                coreScreen.style.display = 'block'; clubScreen.style.display = 'none';
+                btnCore.classList.add('active'); btnClub.classList.remove('active');
             } else {
-                coreScreen.style.display = 'none';
-                clubScreen.style.display = 'block';
-                btnCore.classList.remove('active');
-                btnClub.classList.add('active');
+                coreScreen.style.display = 'none'; clubScreen.style.display = 'block';
+                btnCore.classList.remove('active'); btnClub.classList.add('active');
             }
         }
 
-        // Клик по зеленому маркеру
         function addClick(id) {
             if (clubStats.hasOwnProperty(id)) {
                 clubStats[id]++;
@@ -353,7 +276,6 @@
             }
         }
 
-        // Загрузка сохраненной статистики из localStorage
         function loadStats() {
             const data = localStorage.getItem('gygy_map_clicks');
             if (data) {
@@ -366,11 +288,10 @@
                             if (el) el.textContent = clubStats[key];
                         }
                     });
-                } catch (e) { console.error("Ошибка чтения логов кликов", e); }
+                } catch (e) { console.error(e); }
             }
         }
 
-        // Сбросить всю активность
         function clearActivityData() {
             if (confirm("Сбросить накопленные данные об активности сотрудников Клуба?")) {
                 Object.keys(clubStats).forEach(key => {
@@ -383,14 +304,11 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Подгружаем клики по шарикам
             loadStats();
 
-            // АВАТАР ИЗ STORAGE
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
-                                
             const avatarEl = document.getElementById('header-avatar');
             
             if (savedAvatar && avatarEl) {
@@ -401,7 +319,6 @@
                 avatarEl.style.display = 'block';
             }
 
-            // РЕАЛЬНЫЙ ФЛАГ ВЫБРАННОГО НА ВХОДЕ ЯЗЫКА
             const userLang = localStorage.getItem('gygy_lang') || 
                              localStorage.getItem('lang') || 
                              localStorage.getItem('user_lang') || 
