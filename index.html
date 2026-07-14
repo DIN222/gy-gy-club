@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.38 CORE</title>
+    <title>GY-GY Club v4.5.39 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -25,10 +25,10 @@
         }
         .lang-dropdown-adaptive {
             display: none; position: absolute; top: 40px; left: -2px; 
-            width: 150px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
+            width: 200px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
             max-height: 70vh; overflow-y: auto;
         }
-        .lang-item { display: flex; align-items: center; padding: 8px 10px; cursor: pointer; line-height: 1; }
+        .lang-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; cursor: pointer; line-height: 1; }
         .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
         .flag-icon { width: 20px; margin-right: 10px; }
 
@@ -82,8 +82,6 @@
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
-        /* Желтая подсветка кнопок (hover) отменена */
-        
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
@@ -93,7 +91,7 @@
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
+        /* НАВИГАЦИОННЫЕ СТРЕЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 20px; font-size: 26px; font-weight: 900 !important; 
@@ -109,26 +107,22 @@
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-     .hall-interior .quote-text { 
-    position: absolute; 
-    top: 12vh; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 85%; 
-    margin: 0; 
-    text-align: center;
-    padding: 0;
-    background: transparent !important;
-    color: var(--gold) !important;       
-    font-size: 28px;
-    font-weight: 700;
-    
-    /* ОСТАВЛЯЕМ СТРОГО ОБВОДКУ 1px ЧЕРНЫМ ЦВЕТОМ */
-    -webkit-text-stroke: 1px #000000;
-    text-stroke: 1px #000000;
-    
-    /* ВСЕ ТЕНИ ПОЛНОСТЬЮ УДАЛЕНЫ */
-}
+        .hall-interior .quote-text { 
+            position: absolute; 
+            top: 12vh; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 85%; 
+            margin: 0; 
+            text-align: center;
+            padding: 0;
+            background: transparent !important;
+            color: var(--gold) !important;       
+            font-size: 28px;
+            font-weight: 700;
+            -webkit-text-stroke: 1px #000000;
+            text-stroke: 1px #000000;
+        }
         .hall-door-target {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
@@ -206,6 +200,21 @@
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
+        
+        /* Поле ввода никнейма */
+        .nick-input-field {
+            text-align: center; 
+            background: #000; 
+            color: var(--gold); 
+            border: 2px solid var(--gold); 
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: box-shadow 0.3s;
+        }
+        .nick-input-field:focus {
+            box-shadow: 0 0 10px var(--gold);
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -251,6 +260,9 @@
 
     <div id="block-identity" class="block">
         <div class="quote-text">There is never too much champagne</div>
+        
+        <input type="text" id="user-nickname" placeholder="ENTER NICKNAME" class="btn-gy nick-input-field" maxlength="15">
+
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
@@ -310,10 +322,25 @@
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
+            
+            <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; color:#555;">#ID</div>
+            
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;">
+                <img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;">
+            </div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+        </div>
+    </div>
+
+    <div id="modal-users-list" class="passport-overlay" onclick="closeUsersList()">
+        <div class="passport-card" onclick="event.stopPropagation()" style="width: 290px; max-height: 75vh; background: #F5F5DC; border-color: var(--gold); padding: 20px;">
+            <div class="passport-close-btn" onclick="closeUsersList()">&times;</div>
+            <div id="users-list-title" style="font-weight:900; font-size:16px; letter-spacing:1px; margin-bottom: 15px; text-transform: uppercase; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px;">MEMBERS</div>
+            
+            <div id="users-list-content" style="display: flex; flex-direction: column; gap: 12px; text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
+                </div>
         </div>
     </div>
 
@@ -333,13 +360,20 @@
     let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
 
+    // БД резидентов с фейковыми юзерами для симуляции счетчиков на главной
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+        {n:'ENGLISH', c:'gb', code:'en', count: 3, users: [{name: 'Charlie_Whisky', avatar: ''}, {name: 'Alice_In_Club', avatar: ''}, {name: 'Bob_The_Tee', avatar: ''}]}, 
+        {n:'DEUTSCH', c:'de', code:'de', count: 1, users: [{name: 'Hans_Bier', avatar: ''}]}, 
+        {n:'ESPAÑOL', c:'es', code:'es', count: 0, users: []}, 
+        {n:'FRANÇAIS', c:'fr', code:'fr', count: 2, users: [{name: 'Pierre_Champagne', avatar: ''}, {name: 'Amelie_Eiffel', avatar: ''}]},
+        {n:'ITALIANO', c:'it', code:'it', count: 0, users: []}, 
+        {n:'POLSKI', c:'pl', code:'pl', count: 0, users: []}, 
+        {n:'PORTUGUÊС', c:'pt', code:'pt', count: 0, users: []}, 
+        {n:'РУССКИЙ', c:'ru', code:'ru', count: 4, users: [{name: 'Модермех', avatar: ''}, {name: 'Дядя_Вася', avatar: ''}, {name: 'Кот_Матрос', avatar: ''}, {name: 'Ася_Дизайн', avatar: ''}]}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr', count: 0, users: []}, 
+        {n:'УКРАЇНСЬКА', c:'ua', code:'uk', count: 1, users: [{name: 'Козак_Сміх', avatar: ''}]}, 
+        {n:'中文', c:'cn', code:'zh-CN', count: 0, users: []}, 
+        {n:'日本語', c:'jp', code:'ja', count: 0, users: []}
     ];
 
     function renderLangList() {
@@ -351,8 +385,21 @@
             const div = document.createElement('div');
             div.className = 'lang-item notranslate';
             div.setAttribute('translate', 'no');
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
-            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+            
+            // Замена кавычек для безопасной передачи объекта в onclick
+            const stringifiedLang = JSON.stringify(lang).replace(/"/g, '&quot;');
+            
+            div.innerHTML = `
+                <div style="display:flex; align-items:center; width: 100%;" onclick="applyLanguage(${stringifiedLang})">
+                    <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
+                    <span class="notranslate" translate="no">${lang.n}</span>
+                </div>
+                ${lang.count > 0 ? `
+                    <span style="color:var(--gold); font-weight:900; margin-left:10px; cursor:pointer; border: 1px solid var(--gold); padding: 2px 6px; font-size:11px;" onclick="event.stopPropagation(); openUsersList('${lang.c}')">
+                        [ ${lang.count} ]
+                    </span>` : ''
+                }
+            `;
             container.appendChild(div);
         });
     }
@@ -431,8 +478,16 @@
 
     function checkAndFillRegistrationForm() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        const savedNickname = safeStorageGet('gygy_nickname');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
+        // Автогенерация ID, если пусто
+        if (!currentID) {
+            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+            safeStorageSet('gygy_id', currentID);
+            safeStorageSet('gy_user_id', currentID);
+        }
+
         let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
         const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
         
@@ -462,6 +517,13 @@
 
         if (currentID) { renderUserPassports(currentID); }
         
+        if (savedNickname) {
+            const nickInput = document.getElementById('user-nickname');
+            if (nickInput) nickInput.value = savedNickname;
+            const passNick = document.getElementById('pass-nickname');
+            if (passNick) passNick.innerText = '@' + savedNickname;
+        }
+
         if (savedAvatar) {
             currentUserImage = savedAvatar;
             const badgeImg = document.getElementById('badge-avatar-img');
@@ -592,15 +654,23 @@
 
     function saveUserProfile() {
         if (!currentUserImage) return;
+        
+        const nickInput = document.getElementById('user-nickname');
+        const nickname = (nickInput && nickInput.value.trim()) ? nickInput.value.trim() : "GUEST";
+        
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
         safeStorageSet('gy_user_avatar', currentUserImage); 
         safeStorageSet('gy_user_id', currentID);
+        safeStorageSet('gygy_nickname', nickname);
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
         if (badgeImg) badgeImg.src = currentUserImage;
         if (passImg) passImg.src = currentUserImage;
+
+        const passNick = document.getElementById('pass-nickname');
+        if (passNick) passNick.innerText = '@' + nickname;
 
         const badge = document.getElementById('global-user-badge');
         if (badge) badge.style.display = 'block';
@@ -619,6 +689,54 @@
 
     function closePassport() {
         const modal = document.getElementById('modal-passport');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    }
+
+    // ЛОГИКА ОКНА СПИСКА ПОЛЬЗОВАТЕЛЕЙ ИЗ ВЫБРАННОЙ СТРАНЫ
+    function openUsersList(countryCode) {
+        const lang = allLangs.find(l => l.c === countryCode);
+        if (!lang || !lang.users.length) return;
+
+        const title = document.getElementById('users-list-title');
+        const content = document.getElementById('users-list-content');
+        if (title) title.innerText = `${lang.n} RESIDENTS`;
+        
+        if (content) {
+            content.innerHTML = '';
+            // Сортировка по алфавиту
+            const sortedUsers = [...lang.users].sort((a, b) => a.name.localeCompare(b.name));
+            
+            sortedUsers.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.style.display = 'flex';
+                userDiv.style.alignItems = 'center';
+                userDiv.style.gap = '12px';
+                userDiv.style.padding = '8px 0';
+                userDiv.style.borderBottom = '1px dashed rgba(0,0,0,0.15)';
+
+                // Стандартный дефолтный SVG аватар, если нет кастомного
+                const avatarSrc = user.avatar || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30"><rect width="100" height="100" fill="%23d4af37"/><circle cx="50" cy="40" r="20" fill="%23000"/><path d="M20,90 C20,70 80,70 80,90" fill="%23000"/></svg>';
+
+                userDiv.innerHTML = `
+                    <img src="${avatarSrc}" style="width:36px; height:36px; border-radius:50%; border:1.5px solid var(--gold); object-fit:cover; background:#000;">
+                    <span style="font-weight:900; font-size:14px; color:#000; font-family:'Share Tech Mono';">@${user.name}</span>
+                `;
+                content.appendChild(userDiv);
+            });
+        }
+
+        const modal = document.getElementById('modal-users-list');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+        }
+    }
+
+    function closeUsersList() {
+        const modal = document.getElementById('modal-users-list');
         if (modal) {
             modal.style.opacity = '0';
             setTimeout(() => { modal.style.display = 'none'; }, 300);
