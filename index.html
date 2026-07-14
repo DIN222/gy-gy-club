@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.39 CORE</title>
+    <title>GY-GY Club v4.5.40 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -19,18 +19,50 @@
         /* ЯЗЫКОВАЯ ПАНЕЛЬ — Сдвинута влево на 5% от исходной позиции */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
-            width: 150px; height: 36px; border: 2px solid var(--gold); 
+            width: 175px; height: 38px; border: 2px solid var(--gold); 
             background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 10px;
-            font-size: 13px;
+            font-size: 13px; box-shadow: 0 0 8px rgba(214, 175, 55, 0.2);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .lang-frame-locked:hover {
+            border-color: #fff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
         }
         .lang-dropdown-adaptive {
-            display: none; position: absolute; top: 40px; left: -2px; 
-            width: 200px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
+            display: none; position: absolute; top: 42px; left: -2px; 
+            width: 210px; background: #000; border: 2px solid var(--gold) !important; z-index: 10000;
             max-height: 70vh; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
-        .lang-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; cursor: pointer; line-height: 1; }
-        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
-        .flag-icon { width: 20px; margin-right: 10px; }
+        .lang-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px 12px; 
+            cursor: pointer; 
+            line-height: 1; 
+            border-bottom: 1px solid rgba(214, 175, 55, 0.1);
+            transition: background 0.2s;
+        }
+        .lang-item:hover { background: rgba(214, 175, 55, 0.15); }
+        .flag-icon { width: 22px; height: 15px; object-fit: cover; margin-right: 10px; border: 1px solid rgba(214,175,55,0.3); }
+
+        /* Элегантный счетчик-индикатор */
+        .member-counter {
+            font-size: 10px;
+            font-weight: 900;
+            color: #000;
+            background: var(--gold);
+            padding: 2px 6px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 5px rgba(214, 175, 55, 0.5);
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        .lang-item:hover .member-counter {
+            transform: scale(1.08);
+        }
 
         /* ЛОГОТИП GY-GY */
         .ui-header-right { 
@@ -91,7 +123,7 @@
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЕЛКИ В УГЛУ */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 20px; font-size: 26px; font-weight: 900 !important; 
@@ -229,10 +261,11 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
 
+    <!-- ЯЗЫКОВОЙ БЛОК -->
     <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
-            <span class="notranslate" translate="no">ENGLISH</span>
+            <span class="notranslate" translate="no" style="color:var(--gold); font-weight:900;">ENGLISH</span>
         </div>
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate" translate="no"></div>
     </div>
@@ -318,6 +351,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА: КАРТА ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -334,13 +368,16 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА: СПИСОК РЕЗИДЕНТОВ СТРАНЫ -->
     <div id="modal-users-list" class="passport-overlay" onclick="closeUsersList()">
         <div class="passport-card" onclick="event.stopPropagation()" style="width: 290px; max-height: 75vh; background: #F5F5DC; border-color: var(--gold); padding: 20px;">
             <div class="passport-close-btn" onclick="closeUsersList()">&times;</div>
             <div id="users-list-title" style="font-weight:900; font-size:16px; letter-spacing:1px; margin-bottom: 15px; text-transform: uppercase; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px;">MEMBERS</div>
             
+            <!-- Обертка списка с прокруткой -->
             <div id="users-list-content" style="display: flex; flex-direction: column; gap: 12px; text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
-                </div>
+                <!-- Динамические резиденты -->
+            </div>
         </div>
     </div>
 
@@ -355,48 +392,51 @@
     }
 
     let currentID = "";
+    // По умолчанию выбран Английский (код 'en', флаг 'gb')
     let currentActiveCode = 'en';
-    let currentUserImage = "";
     let currentFlagCode = 'gb';
+    let currentUserImage = "";
     let currentBlockId = 'block-entrance';
 
-    // БД резидентов с фейковыми юзерами для симуляции счетчиков на главной
+    // База данных со счетчиками для КАЖДОГО языка клуба
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en', count: 3, users: [{name: 'Charlie_Whisky', avatar: ''}, {name: 'Alice_In_Club', avatar: ''}, {name: 'Bob_The_Tee', avatar: ''}]}, 
-        {n:'DEUTSCH', c:'de', code:'de', count: 1, users: [{name: 'Hans_Bier', avatar: ''}]}, 
-        {n:'ESPAÑOL', c:'es', code:'es', count: 0, users: []}, 
-        {n:'FRANÇAIS', c:'fr', code:'fr', count: 2, users: [{name: 'Pierre_Champagne', avatar: ''}, {name: 'Amelie_Eiffel', avatar: ''}]},
-        {n:'ITALIANO', c:'it', code:'it', count: 0, users: []}, 
-        {n:'POLSKI', c:'pl', code:'pl', count: 0, users: []}, 
-        {n:'PORTUGUÊС', c:'pt', code:'pt', count: 0, users: []}, 
-        {n:'РУССКИЙ', c:'ru', code:'ru', count: 4, users: [{name: 'Модермех', avatar: ''}, {name: 'Дядя_Вася', avatar: ''}, {name: 'Кот_Матрос', avatar: ''}, {name: 'Ася_Дизайн', avatar: ''}]}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr', count: 0, users: []}, 
-        {n:'УКРАЇНСЬКА', c:'ua', code:'uk', count: 1, users: [{name: 'Козак_Сміх', avatar: ''}]}, 
-        {n:'中文', c:'cn', code:'zh-CN', count: 0, users: []}, 
-        {n:'日本語', c:'jp', code:'ja', count: 0, users: []}
+        {n:'ENGLISH', c:'gb', code:'en', count: 12, users: [{name: 'Charlie_Whisky', avatar: ''}, {name: 'Alice_In_Club', avatar: ''}, {name: 'Bob_The_Tee', avatar: ''}]}, 
+        {n:'DEUTSCH', c:'de', code:'de', count: 4, users: [{name: 'Hans_Bier', avatar: ''}, {name: 'Klaus_S.', avatar: ''}, {name: 'Helga_M', avatar: ''}, {name: 'Dieter_N', avatar: ''}]}, 
+        {n:'ESPAÑOL', c:'es', code:'es', count: 2, users: [{name: 'Carlos_Amigo', avatar: ''}, {name: 'Sofia_Sol', avatar: ''}]}, 
+        {n:'FRANÇAIS', c:'fr', code:'fr', count: 5, users: [{name: 'Pierre_Champagne', avatar: ''}, {name: 'Amelie_Eiffel', avatar: ''}, {name: 'Jean_Luc', avatar: ''}, {name: 'Chloe_Paris', avatar: ''}, {name: 'Francois', avatar: ''}]},
+        {n:'ITALIANO', c:'it', code:'it', count: 3, users: [{name: 'Giovanni_V', avatar: ''}, {name: 'Francesca_B', avatar: ''}, {name: 'Marco_Roma', avatar: ''}]}, 
+        {n:'POLSKI', c:'pl', code:'pl', count: 2, users: [{name: 'Janusz_K', avatar: ''}, {name: 'Agnieszka', avatar: ''}]}, 
+        {n:'PORTUGUÊС', c:'pt', code:'pt', count: 1, users: [{name: 'Thiago_Lisbon', avatar: ''}]}, 
+        {n:'РУССКИЙ', c:'ru', code:'ru', count: 8, users: [{name: 'Модермех', avatar: ''}, {name: 'Дядя_Вася', avatar: ''}, {name: 'Кот_Матрос', avatar: ''}, {name: 'Ася_Дизайн', avatar: ''}, {name: 'Петр_Павлов', avatar: ''}, {name: 'Ольга_Креатив', avatar: ''}, {name: 'Шурик', avatar: ''}, {name: 'Маша_Арт', avatar: ''}]}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr', count: 2, users: [{name: 'Mustafa_Ist', avatar: ''}, {name: 'Canan_K', avatar: ''}]}, 
+        {n:'УКРАЇНСЬКА', c:'ua', code:'uk', count: 3, users: [{name: 'Козак_Сміх', avatar: ''}, {name: 'Оксана_Д', avatar: ''}, {name: 'Дмитро_В', avatar: ''}]}, 
+        {n:'中文', c:'cn', code:'zh-CN', count: 6, users: [{name: 'Lee_Shaolin', avatar: ''}, {name: 'Mei_Ling', avatar: ''}, {name: 'Zhang_Wei', avatar: ''}, {name: 'Wang_Fang', avatar: ''}, {name: 'Chen_Qiang', avatar: ''}, {name: 'Li_Jie', avatar: ''}]}, 
+        {n:'日本語', c:'jp', code:'ja', count: 4, users: [{name: 'Satoshi_N', avatar: ''}, {name: 'Yuki_Tokyo', avatar: ''}, {name: 'Kenji_K', avatar: ''}, {name: 'Haruka_A', avatar: ''}]}
     ];
 
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
         if (!container) return;
         container.innerHTML = ''; 
+        
         allLangs.forEach(lang => {
+            // Исключаем тот язык, который сейчас активен в рамке
             if(lang.code === currentActiveCode) return; 
+            
             const div = document.createElement('div');
             div.className = 'lang-item notranslate';
             div.setAttribute('translate', 'no');
             
-            // Замена кавычек для безопасной передачи объекта в onclick
             const stringifiedLang = JSON.stringify(lang).replace(/"/g, '&quot;');
             
             div.innerHTML = `
-                <div style="display:flex; align-items:center; width: 100%;" onclick="applyLanguage(${stringifiedLang})">
+                <div style="display:flex; align-items:center; flex-grow:1;" onclick="applyLanguage(${stringifiedLang})">
                     <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
-                    <span class="notranslate" translate="no">${lang.n}</span>
+                    <span class="notranslate" translate="no" style="color:#fff;">${lang.n}</span>
                 </div>
                 ${lang.count > 0 ? `
-                    <span style="color:var(--gold); font-weight:900; margin-left:10px; cursor:pointer; border: 1px solid var(--gold); padding: 2px 6px; font-size:11px;" onclick="event.stopPropagation(); openUsersList('${lang.c}')">
-                        [ ${lang.count} ]
+                    <span class="member-counter notranslate" translate="no" onclick="event.stopPropagation(); openUsersList('${lang.c}')">
+                        ${lang.count}
                     </span>` : ''
                 }
             `;
@@ -407,6 +447,7 @@
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
+    // Применение выбранного языка и ротация
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
@@ -415,13 +456,23 @@
         safeStorageSet('gy_lang', lang.code);
         safeStorageSet('gygy_lang', lang.code);
         
+        // Обновляем главную золотую рамку на лету
         const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
+        if (activeDisplay) { 
+            activeDisplay.innerHTML = `
+                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
+                <span style="color:var(--gold); font-weight:900;">${lang.n}</span>
+                ${lang.count > 0 ? `<span class="member-counter" style="margin-left: auto; transform: scale(0.9);" onclick="event.stopPropagation(); openUsersList('${lang.c}')">${lang.count}</span>` : ''}
+            `; 
+        }
+        
         const badgeFlagImg = document.getElementById('badge-flag-img');
         if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
         
         const langListContainer = document.getElementById('lang-list-container');
         if (langListContainer) langListContainer.style.display = 'none';
+        
+        // Перерисовываем список, чтобы бывший активный язык вернулся вниз к остальным
         renderLangList();
         
         forceTriggerGoogleTranslate(lang.code);
@@ -481,7 +532,6 @@
         const savedNickname = safeStorageGet('gygy_nickname');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
-        // Автогенерация ID, если пусто
         if (!currentID) {
             currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
             safeStorageSet('gygy_id', currentID);
@@ -503,18 +553,17 @@
             matchedLang = allLangs.find(l => l.code === savedLangCode);
         }
 
-        if (matchedLang) {
-            currentFlagCode = matchedLang.c;
-            currentActiveCode = matchedLang.code;
-            
-            const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-            
-            forceTriggerGoogleTranslate(matchedLang.code);
+        // Если ничего не сохранено — берем Английский по умолчанию
+        if (!matchedLang) {
+            matchedLang = allLangs.find(l => l.code === 'en');
         }
 
+        if (matchedLang) {
+            applyLanguage(matchedLang);
+        } else {
+            renderLangList();
+        }
+        
         if (currentID) { renderUserPassports(currentID); }
         
         if (savedNickname) {
@@ -580,7 +629,6 @@
         const langSwitcher = document.getElementById('lang-switcher');
         const navArrows = document.getElementById('club-nav-arrows');
 
-        // Управление элементами верхней панели + Загасить блок языков на последующих экранах
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
             if (mainDoor) mainDoor.classList.remove('door-exploded');
@@ -591,7 +639,7 @@
             if (navArrows) navArrows.style.display = 'flex';
             if (badge && currentUserImage) badge.style.display = 'block';
             
-            // Загасить языковую панель на страницах Приветствие, Регистрация, Холл
+            // Прячем языки на внутренних экранах, чтобы не загромождать UI
             if (nextId === 'block-welcome' || nextId === 'block-identity' || nextId === 'block-hall') {
                 if (langSwitcher) langSwitcher.style.display = 'none';
             } else {
@@ -744,7 +792,6 @@
     }
 
     window.addEventListener('load', () => {
-        renderLangList();
         checkAndFillRegistrationForm();
         document.body.classList.add('page-loaded');
     });
