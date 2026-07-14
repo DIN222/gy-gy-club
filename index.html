@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.8.3 CORE</title>
+    <title>GY-GY Club v4.5.38 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -14,31 +14,9 @@
         body, button, input, div, img, span { pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; }
 
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; top: 0 !important; }
+        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ПЕЛЕНА ДЛЯ ПРЕДОТВРАЩЕНИЯ МИГАНИЯ ЯЗЫКА (FOUC) */
-        #loading-shield {
-            position: fixed; inset: 0; background: #000; z-index: 99999999;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.4s ease; pointer-events: none;
-        }
-        
-        /* ЖЕСТКАЯ БЛОКИРОВКА ВЫПАДЕНИЯ ПАНЕЛЕЙ ГУГЛА */
-        .goog-te-banner-frame, 
-        .goog-te-banner, 
-        .goog-te-balloon-frame,
-        #goog-gt-tt, 
-        .skiptranslate, 
-        .goog-te-spinner-pos { 
-            display: none !important; 
-            visibility: hidden !important; 
-            opacity: 0 !important; 
-            pointer-events: none !important; 
-        }
-        goog-te-gadget { display: none !important; }
-        .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
-
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ — Сдвинута влево на 5% от исходной позиции */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
             width: 150px; height: 36px; border: 2px solid var(--gold); 
@@ -58,7 +36,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
@@ -76,86 +54,161 @@
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
         }
 
-        /* КЛАСС ДЛЯ СТРАНИЦ */
-        .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.5s ease-in-out; }
-        .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
+        /* ПАСПОРТ */
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card .box-final { margin: 15px auto; border-color: #000; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
 
-        /* ОБЩИЙ СТИЛЬ СЛОГАНОВ */
-        .quote-text { 
-            font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; 
-            text-shadow: 2px 2px 4px #000; 
+        /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ СТРАНИЦ */
+        .block { 
+            position: fixed; 
+            inset: 0; 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            background: #000; 
+            z-index: 10; 
+            opacity: 0; 
+            transition: opacity 0.5s ease-in-out; 
         }
-        .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        
-        /* Сетка Квадратов */
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; transition: all 0.3s; }
+        .block.active { 
+            display: flex !important; 
+            opacity: 1 !important; 
+            z-index: 5000 !important; 
+        }
 
+        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+        .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
+        
+        /* Желтая подсветка кнопок (hover) отменена */
+        
+        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+
+        body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
         #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
+        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 20px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px; 
+            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            pointer-events: auto !important; user-select: none;
         }
+        .arrow-item { transition: opacity 0.2s; }
+        .arrow-item:hover { opacity: 0.8; }
 
-        /* ОКНА МОДАЛОК (ПАСПОРТ И ХАБ СВЯЗИ) */
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 310px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; }
-
-        /* Поля ввода внутри Хаба коммуникаций */
-        .hub-input-group { display: flex; flex-direction: column; text-align: left; margin-bottom: 12px; width: 100%; }
-        .hub-input-group label { font-size: 11px; font-weight: 900; margin-bottom: 4px; color: #333; }
-        .hub-field { width: 100%; padding: 8px; border: 1px solid #333; background: #fff; font-family: 'Share Tech Mono'; font-size: 13px; color: #000; }
-        .hub-toggle-lang { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 10px; font-weight: bold; color: var(--door-wood); }
-
-        /* ХОЛЛ И ИСПРАВЛЕННЫЕ СТИЛИ */
+        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-        /* ЧИСТЫЙ СТИЛЬ СЛОГАНА ХОЛЛА БЕЗ ДВОЙНОЙ ОБВОДКИ */
-        .hall-interior .quote-text { 
-            position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; 
-            text-align: center; color: var(--gold) !important; font-size: 28px; 
-            margin-bottom: 0; background: transparent !important;
-            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0px 3px 5px rgba(0,0,0,0.8);
+     .hall-interior .quote-text { 
+    position: absolute; 
+    top: 12vh; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 85%; 
+    margin: 0; 
+    text-align: center;
+    padding: 0;
+    background: transparent !important;
+    color: var(--gold) !important;       
+    font-size: 28px;
+    font-weight: 700;
+    
+    /* ОСТАВЛЯЕМ СТРОГО ОБВОДКУ 1px ЧЕРНЫМ ЦВЕТОМ */
+    -webkit-text-stroke: 1px #000000;
+    text-stroke: 1px #000000;
+    
+    /* ВСЕ ТЕНИ ПОЛНОСТЬЮ УДАЛЕНЫ */
+}
+        .hall-door-target {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
+            background: transparent;
         }
-        .hall-interior .quote-text font, .hall-interior .quote-text span { background: transparent !important; }
 
-        /* Корректные зоны картин и фиолетовые стрелки */
-        .painting-zone { 
-            position: absolute; top: 40vh; width: 70px; height: 120px; cursor: pointer; z-index: 6; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        /* Интерактивные зоны стрелок в Холле */
+        .painting-zone {
+            position: absolute; 
+            top: 25vh; 
+            width: 6vw; 
+            height: 12vh; 
+            cursor: pointer; 
+            z-index: 6; 
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .painting-left { left: 4vw; }
-        .painting-right { right: 4vw; }
+        .painting-left { left: 23vw; }
+        .painting-right { right: 23vw; }
 
-        .cue-arrow-hall { color: var(--violet); font-size: 42px; font-weight: 900; text-shadow: 0 0 15px var(--violet); display: block; text-align: center; line-height: 1; }
+        .cue-arrow-hall { 
+            color: var(--violet); 
+            font-size: 38px; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
+            pointer-events: none; 
+            user-select: none;
+            z-index: 10;
+            transition: opacity 0.2s;
+        }
+        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
+
+        /* Выплывающие подменю для стрелок Холла */
+        .manifest-btn-box { 
+            position: absolute; 
+            bottom: -50px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 140px; 
+            display: flex; 
+            justify-content: center; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.4s, bottom 0.4s; 
+            z-index: 10; 
+        }
+        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
-        .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
-        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; background: #000; }
-
-        /* Чиним Дверь и Стрелку Бара прямо по центру двери */
-        .hall-door-target { 
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 32vw; height: 50vh; cursor: pointer; z-index: 5; 
-            display: flex; align-items: center; justify-content: center;
+        /* Защита от сдвигов перевода Google */
+        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
+        body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
+        body.page-loaded { opacity: 1 !important; }
+        
+        font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
+        .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
+        .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
+        
+        /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
+        #main-door {
+            display: block;
+            height: calc(50vh + 20px);
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            margin: 0 auto; 
+            transform: scale(1);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
+            cursor: pointer;
         }
-        #hall-doors::before {
-            content: "↓"; color: var(--violet); font-size: 48px; font-weight: 900; text-shadow: 0 0 18px var(--violet); position: absolute; top: 38%; left: 50%; transform: translateX(-50%);
-        }
 
-        .main-door-style { display: block; height: calc(50vh + 20px); width: auto; max-width: 100%; object-fit: contain; margin: 0 auto; transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; cursor: pointer; }
-        .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
+        .door-exploded {
+            transform: scale(3.5) !important;
+            opacity: 0 !important;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
-
-    <div id="loading-shield"></div>
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
@@ -168,21 +221,23 @@
     </div>
 
     <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
-        <div id="active-lang-display" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
-            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
-            <span>ENGLISH</span>
+        <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
+            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
+            <span class="notranslate" translate="no">ENGLISH</span>
         </div>
-        <div id="lang-list-container" class="lang-dropdown-adaptive"></div>
+        <div id="lang-list-container" class="lang-dropdown-adaptive notranslate" translate="no"></div>
     </div>
         
     <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
+    
     <div class="ui-header-right notranslate">GY-GY</div>
 
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
+    <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
-        <img src="door_1.jpg" id="main-door" class="main-door-style" onclick="handleDoor()">
+        <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
@@ -196,8 +251,7 @@
 
     <div id="block-identity" class="block">
         <div class="quote-text">There is never too much champagne</div>
-        
-        <div style="display:flex; gap:8px; margin-bottom:25px; align-items:center; justify-content:center; flex-wrap: wrap; max-width: 320px;">
+        <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
             
@@ -211,35 +265,31 @@
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
             </div>
-
-            <div class="box-final" id="comms-hub-box" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="openCommsHub()">
-                <span id="txt-hub-status" style="color:#000; font-size:10px; font-weight:900; text-align:center; line-height: 1.2;">COMMS<br>HUB<br><small style="color:var(--violet); font-size:8px;">12 LANGS</small></span>
-            </div>
         </div>
-
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
     <div id="block-hall" class="block">
-        <div class="hall-interior">
+        <div class="hall-interior" style="position: relative;">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
-            <div class="painting-zone painting-left" style="justify-content: space-between;">
-                <div style="width: 100%; cursor: pointer;" onclick="toggleManifest('manifest-left')">
+            <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
+                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                     </div>
                 </div>
-                <div style="width: 100%; cursor: pointer;" onclick="toggleManifest('manifest-office')">
+
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')">OFFICE</button>
                     </div>
                 </div>
             </div>
-            
+                
             <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
@@ -247,52 +297,33 @@
                 </div>
             </div>
         </div>
-        <div id="hall-doors" class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+            
+        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
+            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
+            <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
+                <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
+            </div>
+        </div>
     </div>
 
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
-            <div id="pass-active-comms" style="font-size:11px; font-weight:700; color:var(--violet); margin-bottom:5px; letter-spacing: 2px;"></div>
-        </div>
-    </div>
-
-    <div id="modal-comms-hub" class="passport-overlay" onclick="closeCommsHub()">
-        <div class="passport-card" onclick="event.stopPropagation()" style="text-align: left; background: #FAF0E6;">
-            <div class="passport-close-btn" onclick="closeCommsHub()">&times;</div>
-            <div style="font-weight:900; font-size:16px; text-align: center; margin-bottom: 15px; color: #000; letter-spacing:1px;">COMMS MATRIX</div>
-            
-            <div class="hub-input-group">
-                <label>TELEGRAM USERNAME</label>
-                <input type="text" id="hub-tg" class="hub-field" placeholder="durov">
-                <div class="hub-toggle-lang"><input type="checkbox" id="hub-tg-trans" checked> <span>Auto-translate to my lang</span></div>
-            </div>
-
-            <div class="hub-input-group">
-                <label>WHATSAPP (PHONE)</label>
-                <input type="text" id="hub-wa" class="hub-field" placeholder="79991112233">
-                <div class="hub-toggle-lang"><input type="checkbox" id="hub-wa-trans" checked> <span>Auto-translate to my lang</span></div>
-            </div>
-
-            <div class="hub-input-group">
-                <label>E-MAIL ADDRESS</label>
-                <input type="email" id="hub-mail" class="hub-field" placeholder="charlie@gygy.club">
-            </div>
-
-            <button class="btn-gy" style="min-width: 100%; margin-top: 10px; padding: 10px; font-size: 12px; background: #000; color: var(--gold);" onclick="applyCommsHubData()">CONNECT HUBS</button>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
 
 <script type="text/javascript">
     function googleTranslateElementInit() {
-        new google.translate.TranslateElement({ 
-            pageLanguage: 'en', 
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja', 
-            autoDisplay: false 
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false
         }, 'google_translate_element');
     }
 
@@ -301,22 +332,26 @@
     let currentUserImage = "";
     let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
-    
-    let commsData = { telegram: "", whatsapp: "", email: "", tgTranslate: true, waTranslate: true };
 
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
+        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
+        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
+        {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
+        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
+        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
     ];
 
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
-        if (!container) return; container.innerHTML = ''; 
+        if (!container) return;
+        container.innerHTML = ''; 
         allLangs.forEach(lang => {
             if(lang.code === currentActiveCode) return; 
-            const div = document.createElement('div'); div.className = 'lang-item notranslate'; div.setAttribute('translate', 'no');
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"><span>${lang.n}</span>`;
+            const div = document.createElement('div');
+            div.className = 'lang-item notranslate';
+            div.setAttribute('translate', 'no');
+            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
             div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
             container.appendChild(div);
         });
@@ -326,22 +361,23 @@
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
     function applyLanguage(lang) {
-        currentActiveCode = lang.code; currentFlagCode = lang.c; 
-        safeStorageSet('gygy_flag', lang.c); safeStorageSet('gygy_lang', lang.code);
+        currentActiveCode = lang.code;
+        currentFlagCode = lang.c; 
+        safeStorageSet('gygy_flag', lang.c);
+        safeStorageSet('gy_user_flag', lang.c);
+        safeStorageSet('gy_lang', lang.code);
+        safeStorageSet('gygy_lang', lang.code);
         
         const activeDisplay = document.getElementById('active-lang-display');
         if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
         const badgeFlagImg = document.getElementById('badge-flag-img');
         if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
         
-        if (document.getElementById('lang-list-container')) document.getElementById('lang-list-container').style.display = 'none';
-        renderLangList(); forceTriggerGoogleTranslate(lang.code);
-
-        const rawPassport = safeStorageGet('gygy_passport');
-        if (rawPassport) {
-            const passport = JSON.parse(rawPassport); passport.lang = currentActiveCode; passport.flagCode = currentFlagCode;
-            safeStorageSet('gygy_passport', JSON.stringify(passport));
-        }
+        const langListContainer = document.getElementById('lang-list-container');
+        if (langListContainer) langListContainer.style.display = 'none';
+        renderLangList();
+        
+        forceTriggerGoogleTranslate(lang.code);
     }
 
     function forceTriggerGoogleTranslate(langCode) {
@@ -351,26 +387,16 @@
             const selectEl = document.querySelector('.goog-te-combo');
             if (selectEl) {
                 clearInterval(window.langTimer);
-                if (selectEl.value === langCode) {
-                    hideLoadingShield();
-                    return;
-                }
-                selectEl.value = langCode; selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                setTimeout(hideLoadingShield, 400); // Плавно открываем, как только применился перевод
+                if (selectEl.value === langCode) return;
+                selectEl.value = langCode;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
             }
             if (++attempts > 100) {
                 clearInterval(window.langTimer);
-                hideLoadingShield();
+                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
             }
         }, 100);
-    }
-
-    function hideLoadingShield() {
-        const shield = document.getElementById('loading-shield');
-        if (shield) {
-            shield.style.opacity = '0';
-            setTimeout(() => { shield.style.display = 'none'; }, 400);
-        }
     }
 
     function toggleLangList() {
@@ -382,49 +408,14 @@
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
             if(box.id === boxId) {
                 const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1"; box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true"); box.style.bottom = isOpened ? "-50px" : "-35px";
+                box.style.opacity = isOpened ? "0" : "1";
+                box.style.pointerEvents = isOpened ? "none" : "auto";
+                box.setAttribute('data-opened', isOpened ? "false" : "true");
+                box.style.bottom = isOpened ? "-50px" : "-35px";
             } else {
                 box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-50px";
             }
         });
-    }
-
-    function openCommsHub() {
-        document.getElementById('hub-tg').value = commsData.telegram;
-        document.getElementById('hub-wa').value = commsData.whatsapp;
-        document.getElementById('hub-mail').value = commsData.email;
-        document.getElementById('hub-tg-trans').checked = commsData.tgTranslate;
-        document.getElementById('hub-wa-trans').checked = commsData.waTranslate;
-
-        const modal = document.getElementById('modal-comms-hub');
-        modal.style.display = 'flex'; setTimeout(() => { modal.style.opacity = '1'; }, 10);
-    }
-
-    function closeCommsHub() {
-        const modal = document.getElementById('modal-comms-hub');
-        modal.style.opacity = '0'; setTimeout(() => { modal.style.display = 'none'; }, 300);
-    }
-
-    function applyCommsHubData() {
-        commsData.telegram = document.getElementById('hub-tg').value.trim().replace(/^@+/, "");
-        commsData.whatsapp = document.getElementById('hub-wa').value.trim().replace(/[+\s()]/g, "");
-        commsData.email = document.getElementById('hub-mail').value.trim();
-        commsData.tgTranslate = document.getElementById('hub-tg-trans').checked;
-        commsData.waTranslate = document.getElementById('hub-wa-trans').checked;
-
-        const box = document.getElementById('comms-hub-box');
-        const statusTxt = document.getElementById('txt-hub-status');
-        
-        if (commsData.telegram || commsData.whatsapp || commsData.email) {
-            box.style.borderColor = "#00FF00";
-            box.style.boxShadow = "0 0 12px rgba(0,255,0,0.5)";
-            statusTxt.innerHTML = "COMMS<br><span style='color:#00FF00;'>READY</span><br><small style='color:#00FF00;font-size:7px;'>AI TRANSLATE</small>";
-        } else {
-            box.style.borderColor = "var(--gold)"; box.style.boxShadow = "none";
-            statusTxt.innerHTML = "COMMS<br>HUB<br><small style='color:var(--violet); font-size:8px;'>12 LANGS</small>";
-        }
-        closeCommsHub();
     }
 
     function renderUserPassports(targetID) {
@@ -432,135 +423,113 @@
         const passIdVal = document.getElementById('pass-id-val');
         const qrBoxReg = document.getElementById('qr-box-reg');
         const passQrBox = document.getElementById('pass-qr-box');
-        const passActiveComms = document.getElementById('pass-active-comms');
-
         if (idLabel) idLabel.innerText = targetID;
         if (passIdVal) passIdVal.innerText = targetID;
-        
-        if (passActiveComms) {
-            let icons = [];
-            if (commsData.telegram) icons.push("✈️TG");
-            if (commsData.whatsapp) icons.push("💬WA");
-            if (commsData.email) icons.push("✉️MAIL");
-            passActiveComms.innerText = icons.length ? `ACTIVE CODES: ${icons.join(' | ')}` : "NO MATRIX CONNECTED";
-        }
-
         if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
         if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
     }
 
     function checkAndFillRegistrationForm() {
-        const rawPassport = safeStorageGet('gygy_passport');
-        if (rawPassport) {
-            const passport = JSON.parse(rawPassport);
-            currentID = passport.id; currentUserImage = passport.avatar;
-            currentActiveCode = passport.lang; currentFlagCode = passport.flagCode || 'gb';
-            if (passport.comms) commsData = passport.comms;
-        } else {
-            currentUserImage = safeStorageGet('gygy_avatar');
-            currentID = safeStorageGet('gygy_id');
-            currentActiveCode = safeStorageGet('gygy_lang') || 'en';
-            currentFlagCode = safeStorageGet('gygy_flag') || 'gb';
+        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+        
+        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
+        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
+        
+        if (savedLangCode) {
+            savedLangCode = savedLangCode.toLowerCase();
+            if (savedLangCode === 'ua') savedLangCode = 'uk';
         }
 
-        if (!currentID) currentID = 'GY-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        let matchedLang = null;
+        if (savedFlag) {
+            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
+        } else if (savedLangCode) {
+            matchedLang = allLangs.find(l => l.code === savedLangCode);
+        }
 
-        let matchedLang = allLangs.find(l => l.code === currentActiveCode);
         if (matchedLang) {
+            currentFlagCode = matchedLang.c;
+            currentActiveCode = matchedLang.code;
+            
             const activeDisplay = document.getElementById('active-lang-display');
             if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
             const badgeFlagImg = document.getElementById('badge-flag-img');
             if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+            
             forceTriggerGoogleTranslate(matchedLang.code);
-        } else {
-            hideLoadingShield();
         }
 
-        renderUserPassports(currentID);
+        if (currentID) { renderUserPassports(currentID); }
         
-        if (commsData.telegram || commsData.whatsapp || commsData.email) {
-            const box = document.getElementById('comms-hub-box');
-            const statusTxt = document.getElementById('txt-hub-status');
-            if (box && statusTxt) {
-                box.style.borderColor = "#00FF00";
-                statusTxt.innerHTML = "COMMS<br><span style='color:#00FF00;'>READY</span><br><small style='color:#00FF00;font-size:7px;'>AI TRANSLATE</small>";
-            }
-        }
-
-        if (currentUserImage) {
+        if (savedAvatar) {
+            currentUserImage = savedAvatar;
             const badgeImg = document.getElementById('badge-avatar-img');
             const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = currentUserImage;
-            if (passImg) passImg.src = currentUserImage;
+            if (badgeImg) badgeImg.src = savedAvatar;
+            if (passImg) passImg.src = savedAvatar;
 
-            if (currentUserImage.startsWith('data:image/svg+xml')) {
-                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
+            if (savedAvatar.startsWith('data:image/svg+xml')) {
+                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
                 const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
             } else { 
-                const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = currentUserImage; ppImg.style.display = "block"; }
+                const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
                 const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
             }
-            if(document.getElementById('btn-w-hall')) document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-            if(document.getElementById('btn-pass')) document.getElementById('btn-pass').classList.remove('btn-sleep');
+            const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
+            const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
         }
     }
 
-    function saveUserProfile() {
-        if (!currentUserImage) return;
-
-        const gygy_passport = {
-            id: currentID, nickname: currentID, avatar: currentUserImage,
-            lang: currentActiveCode, flagCode: currentFlagCode,
-            comms: commsData 
-        };
-
-        safeStorageSet('gygy_passport', JSON.stringify(gygy_passport));
-        safeStorageSet('gygy_avatar', currentUserImage); safeStorageSet('gygy_id', currentID);
-
-        const badgeImg = document.getElementById('badge-avatar-img');
-        const passImg = document.getElementById('pass-avatar-img');
-        if (badgeImg) badgeImg.src = currentUserImage;
-        if (passImg) passImg.src = currentUserImage;
-
-        renderUserPassports(currentID);
-
-        const badge = document.getElementById('global-user-badge');
-        if (badge) badge.style.display = 'block';
-
-        if (document.getElementById('btn-w-hall')) document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-        if (document.getElementById('btn-pass')) document.getElementById('btn-pass').classList.remove('btn-sleep');
+    function enterStudio() { 
+        window.location.href = 'studio.html'; 
     }
 
-    function enterStudio() { window.location.href = 'studio.html'; }
-    function openPassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.style.opacity = '1'; }, 10); } }
-    function closePassport() { const modal = document.getElementById('modal-passport'); if (modal) { modal.style.opacity = '0'; setTimeout(() => { modal.style.display = 'none'; }, 300); } }
-
     function handleNavigationBack() {
-        if (currentBlockId === 'block-hall') portalTransition('block-identity');
-        else if (currentBlockId === 'block-identity') portalTransition('block-welcome');
-        else if (currentBlockId === 'block-welcome') portalTransition('block-entrance');
+        if (currentBlockId === 'block-hall') {
+            portalTransition('block-identity');
+        } else if (currentBlockId === 'block-identity') {
+            portalTransition('block-welcome');
+        } else if (currentBlockId === 'block-welcome') {
+            portalTransition('block-entrance');
+        }
     }
 
     function portalTransition(nextId) {
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-office') { window.location.href = 'office.html'; return; }
+        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
+        
+        if (nextId === 'block-office') {
+            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
+            if (currentNickname.toLowerCase() === 'модермех') { 
+                safeStorageSet('gygy_is_boss', 'true'); 
+            }
+            window.location.href = 'office.html';
+            return;
+        }
 
         const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) return; currentBlockId = nextId;
+        if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
+
+        currentBlockId = nextId;
 
         const badge = document.getElementById('global-user-badge');
         const langSwitcher = document.getElementById('lang-switcher');
         const navArrows = document.getElementById('club-nav-arrows');
 
+        // Управление элементами верхней панели + Загасить блок языков на последующих экранах
         if (nextId === 'block-entrance') {
-            if (document.getElementById('main-door')) document.getElementById('main-door').classList.remove('door-exploded');
+            const mainDoor = document.getElementById('main-door');
+            if (mainDoor) mainDoor.classList.remove('door-exploded');
             if (langSwitcher) langSwitcher.style.display = 'flex';
             if (navArrows) navArrows.style.display = 'none';
             if (badge) badge.style.display = 'none';
         } else {
             if (navArrows) navArrows.style.display = 'flex';
             if (badge && currentUserImage) badge.style.display = 'block';
+            
+            // Загасить языковую панель на страницах Приветствие, Регистрация, Холл
             if (nextId === 'block-welcome' || nextId === 'block-identity' || nextId === 'block-hall') {
                 if (langSwitcher) langSwitcher.style.display = 'none';
             } else {
@@ -568,18 +537,31 @@
             }
         }
 
-        document.querySelectorAll('.block').forEach(b => { b.classList.remove('active'); b.style.display = 'none'; });
-        targetBlock.style.display = 'flex'; setTimeout(() => { targetBlock.classList.add('active'); }, 20);
+        document.querySelectorAll('.block').forEach(b => {
+            b.classList.remove('active');
+            b.style.display = 'none';
+        });
+
+        targetBlock.style.display = 'flex';
+        
+        setTimeout(() => {
+            targetBlock.classList.add('active');
+        }, 20);
     }
 
     function handleDoor() {
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
+        const mainDoor = document.getElementById('main-door');
+
         if (sndDoor) sndDoor.play();
-        if (document.getElementById('main-door')) document.getElementById('main-door').classList.add('door-exploded');
+        if (mainDoor) mainDoor.classList.add('door-exploded');
 
         setTimeout(() => {
-            if (sndAmbient) { sndAmbient.volume = 0.5; sndAmbient.play().catch(e => {}); }
+            if (sndAmbient) {
+                sndAmbient.volume = 0.5;
+                sndAmbient.play().catch(e => console.log("Ambient blocked"));
+            }
             portalTransition('block-welcome');
         }, 700);
     }
@@ -589,10 +571,10 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 currentUserImage = e.target.result;
-                if (document.getElementById('pp')) { document.getElementById('pp').src = currentUserImage; document.getElementById('pp').style.display = 'block'; }
-                if (document.getElementById('txt-photo')) document.getElementById('txt-photo').style.display = 'none';
-                if (document.getElementById('avatar-img')) document.getElementById('avatar-img').style.display = 'none';
-                if (document.getElementById('txt-avatar')) document.getElementById('txt-avatar').style.display = 'block';
+                const pp = document.getElementById('pp'); if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
+                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = 'none';
+                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) avatarImg.style.display = 'none';
+                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = 'block';
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -602,14 +584,51 @@
         const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        if (document.getElementById('avatar-img')) { document.getElementById('avatar-img').src = currentUserImage; document.getElementById('avatar-img').style.display = "block"; }
-        if (document.getElementById('txt-avatar')) document.getElementById('txt-avatar').style.display = "none";
-        if (document.getElementById('pp')) document.getElementById('pp').style.display = "none";
-        if (document.getElementById('txt-photo')) document.getElementById('txt-photo').style.display = "block";
+        const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
+        const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
+        const pp = document.getElementById('pp'); if (pp) pp.style.display = "none";
+        const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "block";
+    }
+
+    function saveUserProfile() {
+        if (!currentUserImage) return;
+        safeStorageSet('gygy_avatar', currentUserImage);
+        safeStorageSet('gy_user_img', currentUserImage);
+        safeStorageSet('gy_user_avatar', currentUserImage); 
+        safeStorageSet('gy_user_id', currentID);
+
+        const badgeImg = document.getElementById('badge-avatar-img');
+        const passImg = document.getElementById('pass-avatar-img');
+        if (badgeImg) badgeImg.src = currentUserImage;
+        if (passImg) passImg.src = currentUserImage;
+
+        const badge = document.getElementById('global-user-badge');
+        if (badge) badge.style.display = 'block';
+
+        const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
+        const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
+    }
+
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) { 
+            modal.style.display = 'flex'; 
+            setTimeout(() => { modal.style.opacity = '1'; }, 10); 
+        }
+    }
+
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
     }
 
     window.addEventListener('load', () => {
-        renderLangList(); checkAndFillRegistrationForm(); document.body.classList.add('page-loaded');
+        renderLangList();
+        checkAndFillRegistrationForm();
+        document.body.classList.add('page-loaded');
     });
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
