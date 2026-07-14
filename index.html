@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.40 CORE</title>
+    <title>GY-GY Club v4.5.41 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ — Сдвинута влево на 5% от исходной позиции */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ — Рамка и выпадающий список строго одного размера */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
             width: 175px; height: 38px; border: 2px solid var(--gold); 
@@ -29,8 +29,8 @@
             box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
         }
         .lang-dropdown-adaptive {
-            display: none; position: absolute; top: 42px; left: -2px; 
-            width: 210px; background: #000; border: 2px solid var(--gold) !important; z-index: 10000;
+            display: none; position: absolute; top: 34px; left: -2px; 
+            width: 175px; background: #000; border: 2px solid var(--gold) !important; z-index: 10000;
             max-height: 70vh; overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
@@ -38,24 +38,24 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            padding: 10px 12px; 
+            padding: 8px 10px; 
             cursor: pointer; 
             line-height: 1; 
             border-bottom: 1px solid rgba(214, 175, 55, 0.1);
             transition: background 0.2s;
         }
         .lang-item:hover { background: rgba(214, 175, 55, 0.15); }
-        .flag-icon { width: 22px; height: 15px; object-fit: cover; margin-right: 10px; border: 1px solid rgba(214,175,55,0.3); }
+        .flag-icon { width: 22px; height: 15px; object-fit: cover; margin-right: 8px; border: 1px solid rgba(214,175,55,0.3); }
 
         /* Элегантный счетчик-индикатор */
         .member-counter {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 900;
             color: #000;
             background: var(--gold);
-            padding: 2px 6px;
+            padding: 2px 5px;
             border-radius: 10px;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             box-shadow: 0 0 5px rgba(214, 175, 55, 0.5);
             margin-left: auto;
             transition: transform 0.2s;
@@ -115,7 +115,7 @@
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .box-final { width: 54px; height: 54px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
@@ -233,7 +233,7 @@
             opacity: 0 !important;
         }
         
-        /* Поле ввода никнейма */
+        /* Поле ввода никнейма и почты */
         .nick-input-field {
             text-align: center; 
             background: #000; 
@@ -246,6 +246,21 @@
         }
         .nick-input-field:focus {
             box-shadow: 0 0 10px var(--gold);
+        }
+
+        /* 5 Квадратов на Identity */
+        .identity-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 25px;
+            align-items: center;
+            width: 290px;
+        }
+        .identity-grid .box-final {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            height: auto;
         }
     </style>
 </head>
@@ -294,23 +309,41 @@
     <div id="block-identity" class="block">
         <div class="quote-text">There is never too much champagne</div>
         
-        <input type="text" id="user-nickname" placeholder="ENTER NICKNAME" class="btn-gy nick-input-field" maxlength="15">
+        <!-- ВВОД НИКА И ПОЧТЫ -->
+        <input type="text" id="user-nickname" placeholder="ENTER NICKNAME" class="btn-gy nick-input-field" maxlength="15" style="margin-bottom: 6px;">
+        <input type="email" id="user-email" placeholder="ENTER EMAIL ADDRESS" class="btn-gy nick-input-field" style="margin-bottom: 15px; text-transform: none;">
 
-        <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
+        <!-- СЕТКА ИЗ 5 КВАДРАТОВ -->
+        <div class="identity-grid">
+            <!-- 1. ID -->
+            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:9px; font-weight:900;" id="id-label">#ID</div>
+            
+            <!-- 2. QR -->
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
             
+            <!-- 3. ФОТО -->
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
+                <span id="txt-photo" style="color:#000; font-size:9px; font-weight:900; text-align:center; padding: 2px; line-height:1.1;">OR PHOTO</span>
             </div>
             
+            <!-- 4. АВАТАР -->
             <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
+                <span id="txt-avatar" style="color:#000; font-size:9px; font-weight:900; text-align:center; padding: 2px; line-height:1.1;">OR AVATAR</span>
+            </div>
+
+            <!-- 5. ВНЕШНЯЯ СВЯЗЬ -->
+            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="promptExternalContact()">
+                <div id="social-status-icon" style="display:none; color: green; font-size: 16px; font-weight:900;">✔</div>
+                <span id="txt-social" style="color:#000; font-size:9px; font-weight:900; text-align:center; padding: 2px; line-height:1.1;">LINK MSG</span>
             </div>
         </div>
+
+        <!-- Кнопка генерации Клубного Никнейма -->
+        <button class="btn-gy" onclick="generateClubNickname()">OR GENERATE NICK</button>
+
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
@@ -357,7 +390,9 @@
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             
-            <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
+            <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0 2px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
+            <!-- Почта в паспорте -->
+            <div id="pass-email" style="font-size:11px; color:#555; margin-bottom: 8px; font-weight:700;"></div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; color:#555;">#ID</div>
             
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;">
@@ -392,13 +427,12 @@
     }
 
     let currentID = "";
-    // По умолчанию выбран Английский (код 'en', флаг 'gb')
     let currentActiveCode = 'en';
     let currentFlagCode = 'gb';
     let currentUserImage = "";
     let currentBlockId = 'block-entrance';
 
-    // База данных со счетчиками для КАЖДОГО языка клуба
+    // База данных со счетчиками для каждого языка
     const allLangs = [
         {n:'ENGLISH', c:'gb', code:'en', count: 12, users: [{name: 'Charlie_Whisky', avatar: ''}, {name: 'Alice_In_Club', avatar: ''}, {name: 'Bob_The_Tee', avatar: ''}]}, 
         {n:'DEUTSCH', c:'de', code:'de', count: 4, users: [{name: 'Hans_Bier', avatar: ''}, {name: 'Klaus_S.', avatar: ''}, {name: 'Helga_M', avatar: ''}, {name: 'Dieter_N', avatar: ''}]}, 
@@ -414,13 +448,45 @@
         {n:'日本語', c:'jp', code:'ja', count: 4, users: [{name: 'Satoshi_N', avatar: ''}, {name: 'Yuki_Tokyo', avatar: ''}, {name: 'Kenji_K', avatar: ''}, {name: 'Haruka_A', avatar: ''}]}
     ];
 
+    const clubPrefixes = ["Lucky", "Sweet", "Cyber", "Jolly", "Crypto", "Lazy", "Neon", "Grand", "Royal", "Crazy", "Gentle", "Silver", "Iron"];
+    const clubSuffixes = ["Panda", "Whisky", "Socrates", "Joker", "Tesla", "Tee", "Sherlock", "Pirate", "Hacker", "Baron", "Zeus", "Fox", "Gamer"];
+
+    function generateClubNickname() {
+        const randPre = clubPrefixes[Math.floor(Math.random() * clubPrefixes.length)];
+        const randSuf = clubSuffixes[Math.floor(Math.random() * clubSuffixes.length)];
+        const generatedName = `${randPre}_${randSuf}`;
+        
+        const nickInput = document.getElementById('user-nickname');
+        if (nickInput) nickInput.value = generatedName;
+        
+        const passNick = document.getElementById('pass-nickname');
+        if (passNick) passNick.innerText = '@' + generatedName;
+    }
+
+    function promptExternalContact() {
+        const currentContact = safeStorageGet('gygy_contact') || '';
+        const userContact = prompt("ENTER TELEGRAM, INSTAGRAM OR X PROFILE LINK:", currentContact);
+        if (userContact !== null) {
+            const cleanContact = userContact.trim();
+            safeStorageSet('gygy_contact', cleanContact);
+            const statusIcon = document.getElementById('social-status-icon');
+            const txtSocial = document.getElementById('txt-social');
+            if (cleanContact !== '') {
+                if (statusIcon) statusIcon.style.display = 'block';
+                if (txtSocial) txtSocial.style.display = 'none';
+            } else {
+                if (statusIcon) statusIcon.style.display = 'none';
+                if (txtSocial) txtSocial.style.display = 'block';
+            }
+        }
+    }
+
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
         if (!container) return;
         container.innerHTML = ''; 
         
         allLangs.forEach(lang => {
-            // Исключаем тот язык, который сейчас активен в рамке
             if(lang.code === currentActiveCode) return; 
             
             const div = document.createElement('div');
@@ -447,7 +513,6 @@
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
-    // Применение выбранного языка и ротация
     function applyLanguage(lang) {
         currentActiveCode = lang.code;
         currentFlagCode = lang.c; 
@@ -456,7 +521,6 @@
         safeStorageSet('gy_lang', lang.code);
         safeStorageSet('gygy_lang', lang.code);
         
-        // Обновляем главную золотую рамку на лету
         const activeDisplay = document.getElementById('active-lang-display');
         if (activeDisplay) { 
             activeDisplay.innerHTML = `
@@ -472,9 +536,7 @@
         const langListContainer = document.getElementById('lang-list-container');
         if (langListContainer) langListContainer.style.display = 'none';
         
-        // Перерисовываем список, чтобы бывший активный язык вернулся вниз к остальным
         renderLangList();
-        
         forceTriggerGoogleTranslate(lang.code);
     }
 
@@ -488,11 +550,9 @@
                 if (selectEl.value === langCode) return;
                 selectEl.value = langCode;
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
             }
             if (++attempts > 100) {
                 clearInterval(window.langTimer);
-                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
             }
         }, 100);
     }
@@ -523,13 +583,15 @@
         const passQrBox = document.getElementById('pass-qr-box');
         if (idLabel) idLabel.innerText = targetID;
         if (passIdVal) passIdVal.innerText = targetID;
-        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
+        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 50, height: 50 }); }
         if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
     }
 
     function checkAndFillRegistrationForm() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         const savedNickname = safeStorageGet('gygy_nickname');
+        const savedEmail = safeStorageGet('gygy_email');
+        const savedContact = safeStorageGet('gygy_contact');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
         if (!currentID) {
@@ -553,7 +615,6 @@
             matchedLang = allLangs.find(l => l.code === savedLangCode);
         }
 
-        // Если ничего не сохранено — берем Английский по умолчанию
         if (!matchedLang) {
             matchedLang = allLangs.find(l => l.code === 'en');
         }
@@ -571,6 +632,20 @@
             if (nickInput) nickInput.value = savedNickname;
             const passNick = document.getElementById('pass-nickname');
             if (passNick) passNick.innerText = '@' + savedNickname;
+        }
+
+        if (savedEmail) {
+            const emailInput = document.getElementById('user-email');
+            if (emailInput) emailInput.value = savedEmail;
+            const passEmail = document.getElementById('pass-email');
+            if (passEmail) passEmail.innerText = savedEmail;
+        }
+
+        if (savedContact) {
+            const statusIcon = document.getElementById('social-status-icon');
+            const txtSocial = document.getElementById('txt-social');
+            if (statusIcon) statusIcon.style.display = 'block';
+            if (txtSocial) txtSocial.style.display = 'none';
         }
 
         if (savedAvatar) {
@@ -639,7 +714,6 @@
             if (navArrows) navArrows.style.display = 'flex';
             if (badge && currentUserImage) badge.style.display = 'block';
             
-            // Прячем языки на внутренних экранах, чтобы не загромождать UI
             if (nextId === 'block-welcome' || nextId === 'block-identity' || nextId === 'block-hall') {
                 if (langSwitcher) langSwitcher.style.display = 'none';
             } else {
@@ -706,11 +780,15 @@
         const nickInput = document.getElementById('user-nickname');
         const nickname = (nickInput && nickInput.value.trim()) ? nickInput.value.trim() : "GUEST";
         
+        const emailInput = document.getElementById('user-email');
+        const email = emailInput ? emailInput.value.trim() : "";
+        
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
         safeStorageSet('gy_user_avatar', currentUserImage); 
         safeStorageSet('gy_user_id', currentID);
         safeStorageSet('gygy_nickname', nickname);
+        safeStorageSet('gygy_email', email);
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
@@ -719,6 +797,9 @@
 
         const passNick = document.getElementById('pass-nickname');
         if (passNick) passNick.innerText = '@' + nickname;
+
+        const passEmail = document.getElementById('pass-email');
+        if (passEmail) passEmail.innerText = email;
 
         const badge = document.getElementById('global-user-badge');
         if (badge) badge.style.display = 'block';
@@ -743,7 +824,6 @@
         }
     }
 
-    // ЛОГИКА ОКНА СПИСКА ПОЛЬЗОВАТЕЛЕЙ ИЗ ВЫБРАННОЙ СТРАНЫ
     function openUsersList(countryCode) {
         const lang = allLangs.find(l => l.c === countryCode);
         if (!lang || !lang.users.length) return;
@@ -754,7 +834,6 @@
         
         if (content) {
             content.innerHTML = '';
-            // Сортировка по алфавиту
             const sortedUsers = [...lang.users].sort((a, b) => a.name.localeCompare(b.name));
             
             sortedUsers.forEach(user => {
@@ -765,7 +844,6 @@
                 userDiv.style.padding = '8px 0';
                 userDiv.style.borderBottom = '1px dashed rgba(0,0,0,0.15)';
 
-                // Стандартный дефолтный SVG аватар, если нет кастомного
                 const avatarSrc = user.avatar || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30"><rect width="100" height="100" fill="%23d4af37"/><circle cx="50" cy="40" r="20" fill="%23000"/><path d="M20,90 C20,70 80,70 80,90" fill="%23000"/></svg>';
 
                 userDiv.innerHTML = `
