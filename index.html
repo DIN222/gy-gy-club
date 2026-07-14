@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.8.2 CORE</title>
+    <title>GY-GY Club v4.8.3 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -15,6 +15,13 @@
         img { -webkit-user-drag: none !important; }
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; top: 0 !important; }
+        
+        /* ПЕЛЕНА ДЛЯ ПРЕДОТВРАЩЕНИЯ МИГАНИЯ ЯЗЫКА (FOUC) */
+        #loading-shield {
+            position: fixed; inset: 0; background: #000; z-index: 99999999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.4s ease; pointer-events: none;
+        }
         
         /* ЖЕСТКАЯ БЛОКИРОВКА ВЫПАДЕНИЯ ПАНЕЛЕЙ ГУГЛА */
         .goog-te-banner-frame, 
@@ -73,7 +80,11 @@
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
 
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
+        /* ОБЩИЙ СТИЛЬ СЛОГАНОВ */
+        .quote-text { 
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; 
+            text-shadow: 2px 2px 4px #000; 
+        }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         
@@ -107,34 +118,35 @@
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
+        /* ЧИСТЫЙ СТИЛЬ СЛОГАНА ХОЛЛА БЕЗ ДВОЙНОЙ ОБВОДКИ */
         .hall-interior .quote-text { 
             position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; 
             text-align: center; color: var(--gold) !important; font-size: 28px; 
-            background: transparent !important;
+            margin-bottom: 0; background: transparent !important;
             text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0px 3px 5px rgba(0,0,0,0.8);
         }
         .hall-interior .quote-text font, .hall-interior .quote-text span { background: transparent !important; }
 
-        /* Корректные зоны картин и фиолетовые стрелки Офиса */
+        /* Корректные зоны картин и фиолетовые стрелки */
         .painting-zone { 
-            position: absolute; top: 35vh; width: 60px; height: auto; cursor: pointer; z-index: 6; 
+            position: absolute; top: 40vh; width: 70px; height: 120px; cursor: pointer; z-index: 6; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
         }
-        .painting-left { left: 5vw; }
-        .painting-right { right: 5vw; }
+        .painting-left { left: 4vw; }
+        .painting-right { right: 4vw; }
 
-        .cue-arrow-hall { color: var(--violet); font-size: 32px; font-weight: 900; text-shadow: 0 0 12px var(--violet); display: block; text-align: center; }
+        .cue-arrow-hall { color: var(--violet); font-size: 42px; font-weight: 900; text-shadow: 0 0 15px var(--violet); display: block; text-align: center; line-height: 1; }
         
         .manifest-btn-box { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); width: 140px; display: flex; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; background: #000; }
 
         /* Чиним Дверь и Стрелку Бара прямо по центру двери */
         .hall-door-target { 
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 30vw; height: 60vh; cursor: pointer; z-index: 5; 
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 32vw; height: 50vh; cursor: pointer; z-index: 5; 
             display: flex; align-items: center; justify-content: center;
         }
         #hall-doors::before {
-            content: "↓"; color: var(--violet); font-size: 42px; font-weight: 900; text-shadow: 0 0 15px var(--violet); position: absolute; top: 40%;
+            content: "↓"; color: var(--violet); font-size: 48px; font-weight: 900; text-shadow: 0 0 18px var(--violet); position: absolute; top: 38%; left: 50%; transform: translateX(-50%);
         }
 
         .main-door-style { display: block; height: calc(50vh + 20px); width: auto; max-width: 100%; object-fit: contain; margin: 0 auto; transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; cursor: pointer; }
@@ -142,6 +154,8 @@
     </style>
 </head>
 <body oncontextmenu="return false;">
+
+    <div id="loading-shield"></div>
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
@@ -211,14 +225,14 @@
         <div class="hall-interior">
             <div class="quote-text">In every joke there is a share of whisky</div>
             
-            <div class="painting-zone painting-left">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
+            <div class="painting-zone painting-left" style="justify-content: space-between;">
+                <div style="width: 100%; cursor: pointer;" onclick="toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
                     </div>
                 </div>
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
+                <div style="width: 100%; cursor: pointer;" onclick="toggleManifest('manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')">OFFICE</button>
@@ -337,11 +351,26 @@
             const selectEl = document.querySelector('.goog-te-combo');
             if (selectEl) {
                 clearInterval(window.langTimer);
-                if (selectEl.value === langCode) return;
+                if (selectEl.value === langCode) {
+                    hideLoadingShield();
+                    return;
+                }
                 selectEl.value = langCode; selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                setTimeout(hideLoadingShield, 400); // Плавно открываем, как только применился перевод
             }
-            if (++attempts > 100) clearInterval(window.langTimer);
+            if (++attempts > 100) {
+                clearInterval(window.langTimer);
+                hideLoadingShield();
+            }
         }, 100);
+    }
+
+    function hideLoadingShield() {
+        const shield = document.getElementById('loading-shield');
+        if (shield) {
+            shield.style.opacity = '0';
+            setTimeout(() => { shield.style.display = 'none'; }, 400);
+        }
     }
 
     function toggleLangList() {
@@ -443,6 +472,8 @@
             const badgeFlagImg = document.getElementById('badge-flag-img');
             if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
             forceTriggerGoogleTranslate(matchedLang.code);
+        } else {
+            hideLoadingShield();
         }
 
         renderUserPassports(currentID);
