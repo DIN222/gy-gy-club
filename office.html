@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.2</title>
+    <title>GY-GY Club — Кабінет Управління v4.6.3 </title>
     <style>
         :root {
             --gold: #FFD700;
@@ -25,7 +25,7 @@
             overflow-x: hidden;
         }
 
-        /* ТОЧНЫЙ СТАНДАРТ ВЕРХНЕЙ ПАНЕЛИ ИЗ INDEX */
+        /* ТОЧНИЙ СТАНДАРТ ВЕРХНЬОЇ ПАНЕЛІ З INDEX */
         .ui-custom-header {
             width: 100%;
             max-width: 900px;
@@ -87,7 +87,7 @@
             font-weight: bold; color: var(--gold); user-select: none;
         }
 
-        /* КНОПКИ И ПРЯМОУГОЛЬНИКИ */
+        /* КНОПКИ ТА ПРЯМОКУТНИКИ */
         .switch-btn, .num-block {
             background: var(--bg-dark);
             border: 2px solid var(--gold);
@@ -102,9 +102,10 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
+        /* Окремі верхні кнопки перемикання */
         .office-switcher {
             display: flex;
-            gap: 0; 
+            gap: 15px; 
             margin-bottom: 25px;
             width: 100%;
             max-width: 900px;
@@ -113,9 +114,7 @@
             width: 50%;
             padding: 15px;
             font-size: 16px;
-        }
-        .switch-btn + .switch-btn {
-            border-left: none;
+            border-radius: 6px; 
         }
         .switch-btn.active {
             background: var(--panel-bg);
@@ -134,6 +133,7 @@
             container-type: inline-size;
         }
 
+        /* Сітка строго 3х2 з вирівнюванням по ширині */
         .matrix-6-numbers {
             display: grid;
             grid-template-columns: repeat(3, 1fr); 
@@ -155,9 +155,10 @@
             text-align: center;
             font-size: 16px;
             padding: 15px;
+            border-radius: 6px;
         }
 
-        /* СХЕМА КЛУБА (ЗАФИКСИРОВАНА) */
+        /* СХЕМА КЛУБУ */
         .algo-pre {
             margin: 0;
             padding: 12px;
@@ -174,7 +175,7 @@
             .algo-pre { font-size: 13.5px; }
         }
 
-        /* Зеленые развлечения */
+        /* Зелені розваги */
         .bubble-click {
             display: inline-flex;
             align-items: center;
@@ -195,7 +196,7 @@
             box-shadow: 0 0 6px var(--neon-green);
         }
 
-        /* Оранжевая студия монет */
+        /* Помаранчева студія монет */
         .bubble-click.orange {
             color: var(--coin-orange);
             background: rgba(255, 159, 0, 0.08);
@@ -216,7 +217,7 @@
         }
         .clear-data-btn:hover { border-color: #ff3333; color: #ff3333; }
 
-        /* ПАСПОРТНАЯ МОДАЛКА ИЗ INDEX.HTML */
+        /* ПАСПОРТНА МОДАЛКА З INDEX.HTML */
         .passport-overlay { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; 
             display: none; align-items: center; justify-content: center; opacity: 0; 
@@ -237,6 +238,7 @@
             font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; 
         }
     </style>
+    <!-- Генератор QR-кодів -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
@@ -250,10 +252,12 @@
         </div>
         
         <div class="ui-user-wrapper">
+            <!-- Клік відкриває модалку паспорта -->
             <div class="ui-user-badge" id="global-user-badge" onclick="openPassport()">
                 <div class="badge-avatar-wrapper">
                     <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-                    <img id="current-flag" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
+                    <!-- Прапор завантажується скриптом динамічно (по дефолту буде gb) -->
+                    <img id="current-flag" class="badge-flag" src="">
                 </div>
             </div>
         </div>
@@ -264,63 +268,64 @@
     </header>
 
     <div class="office-switcher">
-        <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФИСА (6 Номеров)</button>
-        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБА (Алгоритм v4.6.1)</button>
+        <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')">📟 СХЕМА ОФІСУ (6 Номерів)</button>
+        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')">🗺️ СХЕМА КЛУБУ (Алгоритм v4.6.1)</button>
     </div>
 
     <div id="screen-office-core" class="office-screen">
         <div class="matrix-6-numbers">
-            <div class="num-block" onclick="alert('Запуск логов Airtable v4.6.1...')">#1 Logs / Airtable</div>
-            <div class="num-block" onclick="alert('Управление цифровыми следами ID/QR...')">#2 Users / QR</div>
-            <div class="num-block" onclick="alert('Мониторинг стейтов комнат...')">#3 States / Rooms</div>
-            <div class="num-block" onclick="alert('Баланс роялти дочерних франшиз v4.6.1...')">#4 Wallet / Royalty</div>
-            <div class="num-block" onclick="alert('Настройка нейро-модулей Чарли v4.6.1...')">#5 AI Core / Prompts</div>
-            <div class="num-block" onclick="alert('Песочница дочерних ячеек (Лицензия GY-GY OS v4.6.1)...')">#6 Sandbox / Franchises</div>
+            <div class="num-block" onclick="alert('Запуск логів Airtable v4.6.1...')">#1 Logs / Airtable</div>
+            <div class="num-block" onclick="alert('Керування цифровими слідами ID/QR...')">#2 Users / QR</div>
+            <div class="num-block" onclick="alert('Моніторинг стейтів кімнат...')">#3 States / Rooms</div>
+            <div class="num-block" onclick="alert('Баланс роялті дочірніх франшиз v4.6.1...')">#4 Wallet / Royalty</div>
+            <div class="num-block" onclick="alert('Налаштування нейро-модулів Чарлі v4.6.1...')">#5 AI Core / Prompts</div>
+            <div class="num-block" onclick="alert('Пісочниця дочірніх осередків (Ліцензія GY-GY OS v4.6.1)...')">#6 Sandbox / Franchises</div>
         </div>
     </div>
 
     <div id="screen-club-map" class="office-screen" style="display: none;">
         <pre class="algo-pre">
-================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.1 CORE ] ==================
+================== [ КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE ] ==================
 
-[НАЧАЛО: index.html] ──► (Выбор языка / Приветствие / Регистрация)
+[ПОЧАТОК: index.html] ──► (Вибір мови / Привітання / Реєстрація)
        │
        ▼
- [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите direction:
+ [ГОЛОВНИЙ ХОЛ: #block-hall] ───► Оберіть direction:
        │
-       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послание инопланетянам</span>
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Лунная база</span>
-       │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
+       ├─► [Гілка AI ROOM] ──► Відкрити verses.html ──► РОБОТА НЕЙРО-МОДУЛІВ:
+       │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послання інопланетянам</span>
+       │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Місячна база</span>
+       │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привіт, Всесвіт!</span>
        │
-       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
-       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
-       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
-       │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Лавка древностей</span>
+       ├─► [Гілка STUDIO]  ──► Відкрити studio.html ──► ТВОРЧИЙ ФУНКЦІОНАЛ:
+       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ательє</span>
+       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Майстерня сувенірів</span>
+       │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Лавка старожитностей</span>
        │
-       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет (v4.6.1)
+       ├─► [Гілка OFFICE]  ──► Відкрити office.html ──► Вхід до Кабінету (v4.6.1)
        │
-       └─► [Ветка БАР]     ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга жалоб и Оскорблений</span>
+       └─► [Гілка БАР]     ──► Відкрити bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга скарг та Образ</span>
                                              │
                                              ▼
-                                [ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
+                                [ПЕРЕХІД: tables.html] ──► Ініціалізація матриці 3х2:
                                              │
                                 ┌────────────┴────────────┐
                                 ▼                         ▼
-   [Условие: ЛЕВЫЙ ФЛАНГ]                                     [Условие: ПРАВЫЙ ФЛАНГ]
-   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
-   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>            ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
-   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>          └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
+   [Умова: ЛІВИЙ ФЛАНГ]                                       [Умова: ПРАВИЙ ФЛАНГ]
+   ├─► Вибір Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Ризик-стратегія</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поетичний подіум</span>
+   ├─► Вибір Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуель на цитатах</span>            ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Перекладач Ч/Ж</span>
+   └─► Вибір Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуель компліментів</span>          └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тінь Барона</span>
          │                                                                │
          └───────────────────────────┬────────────────────────────────────┘
                                      ▼
-                        [Условие: ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
+                        [Умова: ЦЕНТР ЗАЛУ] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ВІДКРИТИЙ МІКРОФОН</span>
         </pre>
         <div class="reset-btn-container">
-            <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
+            <button class="clear-data-btn" onclick="clearActivityData()">Скинути лічильники локацій</button>
         </div>
     </div>
 
+    <!-- МОДАЛКА ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -334,7 +339,7 @@
                 <img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;" src="">
             </div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Клікніть &times; або за межами карти для закриття</div>
         </div>
     </div>
 
@@ -390,7 +395,7 @@
         }
 
         function clearActivityData() {
-            if (confirm("Сбросить накопленные данные об активности сотрудников Клуба?")) {
+            if (confirm("Скинути накопичені дані про активність співробітників Клубу?")) {
                 Object.keys(clubStats).forEach(key => {
                     clubStats[key] = 0;
                     const el = document.getElementById(`c-${key}`);
@@ -400,7 +405,6 @@
             }
         }
 
-        /* ИНТЕРАКТИВНЫЕ МОДАЛЬНЫЕ ОКНА ПАСПОРТА */
         function openPassport() {
             const modal = document.getElementById('modal-passport');
             if (modal) { 
@@ -430,7 +434,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             loadStats();
 
-            // Чтение аватара
+            // Читання аватара резидента
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -446,21 +450,21 @@
                 if (passAvatarEl) { passAvatarEl.src = defaultAvatar; }
             }
 
-            // Чтение никнейма
+            // Читання нікнейма резидента
             const savedNickname = localStorage.getItem('gygy_nickname');
             const passNick = document.getElementById('pass-nickname');
             if (savedNickname && passNick) {
                 passNick.innerText = '@' + savedNickname;
             }
 
-            // Чтение электронной почты
+            // Читання пошти резидента
             const savedEmail = localStorage.getItem('gygy_email');
             const passEmail = document.getElementById('pass-email');
             if (savedEmail && passEmail) {
                 passEmail.innerText = savedEmail;
             }
 
-            // Инициализация ID и QR-кода
+            // Генерація унікального ID
             currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace');
             if (!currentID) {
                 currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
@@ -468,8 +472,9 @@
             }
             renderUserPassport(currentID);
 
-            // ПРЯМАЯ СИНХРОНИЗАЦИЯ ФЛАГА С ИНДЕКСОМ РЕГИСТРАЦИИ (gygy_flag)
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+            // Динамічне завантаження вибраної мови / флага
+            // Якщо нічого не збережено (перший вхід), завантажується англійський 'gb'
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || localStorage.getItem('gy_lang') || 'gb';
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
