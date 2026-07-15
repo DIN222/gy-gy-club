@@ -277,6 +277,7 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
 
+    <!-- ЯЗЫКОВОЙ БЛОК -->
     <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
@@ -309,38 +310,48 @@
     <div id="block-identity" class="block">
         <div class="quote-text">There is never too much champagne</div>
 
+        <!-- ЕДИНАЯ СЕТКА ИЗ КВАДРАТОВ (8 модулей) -->
         <div class="identity-grid">
+            <!-- 1. ID -->
             <div class="box-final" style="background:#fff; cursor: default;" id="id-label-box">
                 <span id="id-label" class="box-inner-text">#ID</span>
             </div>
             
+            <!-- 2. QR -->
             <div class="box-final" id="qr-box-reg" style="background:#fff; cursor: default;"></div>
             
+            <!-- 3. ФОТО -->
             <div class="box-final" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" class="box-inner-text">OR PHOTO</span>
             </div>
             
+            <!-- 4. АВАТАР -->
             <div class="box-final" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" class="box-inner-text">OR AVATAR</span>
             </div>
 
+            <!-- 5. СВОЙ НИКНЕЙМ (YOUR NICK) -->
             <div class="box-final" onclick="promptNickname()">
                 <div id="nick-filled-status" style="display:none; font-size:10px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all; text-transform: uppercase;"></div>
                 <span id="txt-nick" class="box-inner-text">YOUR NICK</span>
             </div>
 
+            <!-- 6. КЛУБНЫЙ НИКНЕЙМ (AUTO NICK) -->
             <div class="box-final" onclick="generateClubNickname()">
-                <span class="box-inner-text">AUTO NICK</span>
+                <div id="auto-nick-filled-status" style="display:none; font-size:10px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all; text-transform: uppercase;"></div>
+                <span id="txt-auto-nick" class="box-inner-text">AUTO NICK</span>
             </div>
 
+            <!-- 7. ЭЛЕКТРОННАЯ ПОЧТА -->
             <div class="box-final" onclick="promptEmail()">
                 <div id="email-filled-status" style="display:none; font-size:9px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all;">✔ MAIL</div>
                 <span id="txt-email" class="box-inner-text">SET EMAIL</span>
             </div>
 
+            <!-- 8. ВНЕШНЯЯ СВЯЗЬ -->
             <div class="box-final" onclick="promptExternalContact()">
                 <div id="social-status-icon" style="display:none; color: green; font-size: 16px; font-weight:900;">✔</div>
                 <span id="txt-social" class="box-inner-text">LINK MSG</span>
@@ -387,6 +398,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА: КАРТА ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -404,13 +416,16 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА: СПИСОК РЕЗИДЕНТОВ СТРАНЫ -->
     <div id="modal-users-list" class="passport-overlay" onclick="closeUsersList()">
         <div class="passport-card" onclick="event.stopPropagation()" style="width: 290px; max-height: 75vh; background: #F5F5DC; border-color: var(--gold); padding: 20px;">
             <div class="passport-close-btn" onclick="closeUsersList()">&times;</div>
             <div id="users-list-title" style="font-weight:900; font-size:16px; letter-spacing:1px; margin-bottom: 15px; text-transform: uppercase; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px;">MEMBERS</div>
             
+            <!-- Обертка списка с прокруткой -->
             <div id="users-list-content" style="display: flex; flex-direction: column; gap: 12px; text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
-                </div>
+                <!-- Динамические резиденты -->
+            </div>
         </div>
     </div>
 
@@ -432,6 +447,7 @@
     
     let tempNickname = "";
     let tempEmail = "";
+    let isAutoNickname = false; // флаг, используем ли мы сгенерированный никнейм
 
     // База данных со счетчиками для каждого языка
     const allLangs = [
@@ -454,8 +470,10 @@
 
     // Окна ввода данных через квадраты
     function promptNickname() {
-        const userNick = prompt("ENTER NICKNAME (MAX 15 CHARS):", tempNickname);
+        const defaultPrompt = isAutoNickname ? "" : tempNickname;
+        const userNick = prompt("ENTER NICKNAME (MAX 15 CHARS):", defaultPrompt);
         if (userNick !== null) {
+            isAutoNickname = false;
             updateNicknameUI(userNick.trim().substring(0, 15));
         }
     }
@@ -464,6 +482,7 @@
         const randPre = clubPrefixes[Math.floor(Math.random() * clubPrefixes.length)];
         const randSuf = clubSuffixes[Math.floor(Math.random() * clubSuffixes.length)];
         const generatedName = `${randPre}_${randSuf}`;
+        isAutoNickname = true;
         updateNicknameUI(generatedName);
     }
 
@@ -471,18 +490,36 @@
         tempNickname = nick;
         const filledStatus = document.getElementById('nick-filled-status');
         const txtNick = document.getElementById('txt-nick');
+        
+        const autoFilledStatus = document.getElementById('auto-nick-filled-status');
+        const txtAutoNick = document.getElementById('txt-auto-nick');
+        
         const passNick = document.getElementById('pass-nickname');
         
+        // Сброс визуального состояния обоих квадратов ников
+        if (filledStatus) filledStatus.style.display = 'none';
+        if (txtNick) txtNick.style.display = 'block';
+        if (autoFilledStatus) autoFilledStatus.style.display = 'none';
+        if (txtAutoNick) txtAutoNick.style.display = 'block';
+
         if (nick && nick.trim() !== '') {
-            if (filledStatus) {
-                filledStatus.innerText = "@" + nick;
-                filledStatus.style.display = 'block';
+            if (isAutoNickname) {
+                // Если сгенерирован автоматически — показываем его в 6-м квадрате
+                if (autoFilledStatus) {
+                    autoFilledStatus.innerText = "@" + nick;
+                    autoFilledStatus.style.display = 'block';
+                }
+                if (txtAutoNick) txtAutoNick.style.display = 'none';
+            } else {
+                // Если введен вручную — показываем его в 5-м квадрате
+                if (filledStatus) {
+                    filledStatus.innerText = "@" + nick;
+                    filledStatus.style.display = 'block';
+                }
+                if (txtNick) txtNick.style.display = 'none';
             }
-            if (txtNick) txtNick.style.display = 'none';
             if (passNick) passNick.innerText = '@' + nick;
         } else {
-            if (filledStatus) filledStatus.style.display = 'none';
-            if (txtNick) txtNick.style.display = 'block';
             if (passNick) passNick.innerText = '@GUEST_HUMORIST';
         }
     }
@@ -634,6 +671,7 @@
     function checkAndFillRegistrationForm() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         const savedNickname = safeStorageGet('gygy_nickname');
+        const savedIsAuto = safeStorageGet('gygy_is_auto_nick');
         const savedEmail = safeStorageGet('gygy_email');
         const savedContact = safeStorageGet('gygy_contact');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
@@ -672,6 +710,7 @@
         if (currentID) { renderUserPassports(currentID); }
         
         if (savedNickname) {
+            isAutoNickname = (savedIsAuto === 'true');
             updateNicknameUI(savedNickname);
         }
 
@@ -830,6 +869,7 @@
         safeStorageSet('gy_user_avatar', currentUserImage); 
         safeStorageSet('gy_user_id', currentID);
         safeStorageSet('gygy_nickname', nickname);
+        safeStorageSet('gygy_is_auto_nick', isAutoNickname ? 'true' : 'false');
         safeStorageSet('gygy_email', email);
 
         const badgeImg = document.getElementById('badge-avatar-img');
