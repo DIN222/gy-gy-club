@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабинет Управления v4.6.1</title>
+    <title>GY-GY Club — Кабинет Управления v4.6.2</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -47,7 +47,7 @@
         .arrow-item:hover { opacity: 0.8; }
         
         .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ui-user-badge { display: flex; flex-direction: column; align-items: center; }
+        .ui-user-badge { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         
         .badge-avatar-wrapper { 
             position: relative; 
@@ -70,12 +70,13 @@
         .ui-user-badge .badge-flag {
             position: absolute !important;
             bottom: -2px !important;
-            right: -2px !important;
-            font-size: 14px !important;
-            line-height: 1 !important;
-            background: #000 !important;
-            padding: 1px !important;
-            border-radius: 50% !important;
+            right: -4px !important;
+            width: 17px !important;
+            height: 12px !important;
+            object-fit: cover !important;
+            border: 1px solid var(--gold) !important;
+            box-shadow: 0 0 0 1px #000 !important;
+            border-radius: 0 !important;
             z-index: 999999 !important;
             display: block !important;
         }
@@ -214,7 +215,29 @@
             padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer;
         }
         .clear-data-btn:hover { border-color: #ff3333; color: #ff3333; }
+
+        /* ПАСПОРТНАЯ МОДАЛКА ИЗ INDEX.HTML */
+        .passport-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; 
+            display: none; align-items: center; justify-content: center; opacity: 0; 
+            transition: opacity 0.3s ease; 
+        }
+        .passport-card { 
+            background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; 
+            padding: 25px; width: 280px; color: #000; text-align: center; 
+            box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; 
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+        }
+        .passport-card .box-final { 
+            margin: 15px auto; border: 2px solid #000; background: #fff; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; 
+        }
+        .passport-close-btn { 
+            position: absolute; top: 10px; right: 14px; font-size: 28px; 
+            font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; 
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -227,10 +250,10 @@
         </div>
         
         <div class="ui-user-wrapper">
-            <div class="ui-user-badge" id="global-user-badge">
+            <div class="ui-user-badge" id="global-user-badge" onclick="openPassport()">
                 <div class="badge-avatar-wrapper">
                     <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-                    <span class="badge-flag" id="current-flag">🇷🇺</span>
+                    <img id="current-flag" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
                 </div>
             </div>
         </div>
@@ -282,9 +305,9 @@
                                              ▼
                                 [ПЕРЕХОД: tables.html] ──► Инициализация матрицы 3х2:
                                              │
-                    ┌────────────────────────┴────────────────────────┐
-                    ▼                                                 ▼
-   [Условие: ЛЕВЫЙ ФЛАНГ]                                    [Условие: ПРАВЫЙ ФЛАНГ]
+                                ┌────────────┴────────────┐
+                                ▼                         ▼
+   [Условие: ЛЕВЫЙ ФЛАНГ]                                     [Условие: ПРАВЫЙ ФЛАНГ]
    ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
    ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>            ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
    └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>          └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
@@ -298,6 +321,23 @@
         </div>
     </div>
 
+    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
+        <div class="passport-card" onclick="event.stopPropagation()">
+            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            
+            <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0 2px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
+            <div id="pass-email" style="font-size:11px; color:#555; margin-bottom: 8px; font-weight:700;"></div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; color:#555;">#ID</div>
+            
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;">
+                <img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;" src="">
+            </div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+        </div>
+    </div>
+
     <script>
         let clubStats = {
             alien: 0, moon: 0, hello: 0,
@@ -307,6 +347,8 @@
             strat4: 0, strat5: 0, strat6: 0,
             open_mic: 0
         };
+
+        let currentID = "";
 
         function switchScreen(screenType) {
             const coreScreen = document.getElementById('screen-office-core');
@@ -358,35 +400,79 @@
             }
         }
 
+        /* ИНТЕРАКТИВНЫЕ МОДАЛЬНЫЕ ОКНА ПАСПОРТА */
+        function openPassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) { 
+                modal.style.display = 'flex'; 
+                setTimeout(() => { modal.style.opacity = '1'; }, 10); 
+            }
+        }
+
+        function closePassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        }
+
+        function renderUserPassport(targetID) {
+            const passIdVal = document.getElementById('pass-id-val');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (passIdVal) passIdVal.innerText = targetID;
+            if (passQrBox && typeof QRCode !== 'undefined') { 
+                passQrBox.innerHTML = ""; 
+                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); 
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             loadStats();
 
+            // Чтение аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
+            const passAvatarEl = document.getElementById('pass-avatar-img');
             
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-                avatarEl.style.display = 'block';
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
-                avatarEl.style.display = 'block';
+            if (savedAvatar) {
+                if (avatarEl) { avatarEl.src = savedAvatar; avatarEl.style.display = 'block'; }
+                if (passAvatarEl) { passAvatarEl.src = savedAvatar; }
+            } else {
+                const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+                if (avatarEl) { avatarEl.src = defaultAvatar; avatarEl.style.display = 'block'; }
+                if (passAvatarEl) { passAvatarEl.src = defaultAvatar; }
             }
 
-            // ПРЯМАЯ СИНХРОНИЗАЦИЯ ФЛАГА С КЛЮЧОМ ИЗ ИНДЕКСА РЕГИСТРАЦИИ (gy_lang)
-            const userLang = localStorage.getItem('gy_lang') || 
-                             localStorage.getItem('gygy_lang') || 
-                             localStorage.getItem('lang') || 
-                             localStorage.getItem('user_lang') || 
-                             document.documentElement.lang || 'ru';
+            // Чтение никнейма
+            const savedNickname = localStorage.getItem('gygy_nickname');
+            const passNick = document.getElementById('pass-nickname');
+            if (savedNickname && passNick) {
+                passNick.innerText = '@' + savedNickname;
+            }
 
+            // Чтение электронной почты
+            const savedEmail = localStorage.getItem('gygy_email');
+            const passEmail = document.getElementById('pass-email');
+            if (savedEmail && passEmail) {
+                passEmail.innerText = savedEmail;
+            }
+
+            // Инициализация ID и QR-кода
+            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace');
+            if (!currentID) {
+                currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+                localStorage.setItem('gygy_id', currentID);
+            }
+            renderUserPassport(currentID);
+
+            // ПРЯМАЯ СИНХРОНИЗАЦИЯ ФЛАГА С ИНДЕКСОМ РЕГИСТРАЦИИ (gygy_flag)
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
-                const cleanLang = userLang.toLowerCase().trim();
-                if (cleanLang.includes('fr')) flagElement.textContent = '🇫🇷';
-                else if (cleanLang.includes('en')) flagElement.textContent = '🇺🇸';
-                else flagElement.textContent = '🇷🇺';
+                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
             }
         });
     </script>
