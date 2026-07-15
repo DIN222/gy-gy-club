@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Кабінет Управління v4.6.4 </title>
+    <title>GY-GY Club — Кабінет Управління v4.7.0</title>
     <style>
         :root {
             --gold: #FFD700;
@@ -11,6 +11,7 @@
             --panel-bg: #1a1a1a;
             --neon-green: #39ff14;
             --coin-orange: #ff9f00;
+            --neon-blue: #00f0ff;
         }
 
         /* Базові стилі та скидання відступів */
@@ -126,7 +127,7 @@
             font-weight: bold;
         }
 
-        /* Екрани Офісу — Межа прибрана, щоб не дублювати та не зміщувати внутрішні рамки плитки */
+        /* Екрани Офісу — Межа прибрана для збереження чистоти геометрії */
         .office-screen {
             background: transparent;
             padding: 0;
@@ -171,6 +172,13 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
         }
 
+        /* Активний вибір блоку */
+        .num-block.active-block {
+            background: #252525;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            border-style: dashed;
+        }
+
         .num-block.highlight {
             border-color: var(--neon-green);
             color: var(--neon-green);
@@ -178,30 +186,95 @@
         .num-block.highlight:hover {
             box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
         }
+        .num-block.highlight.active-block {
+            background: #152515;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+        }
 
-        /* Мультимовний лінгво-чат — вирівняний по ширині */
-        .chat-section {
+        /* ЗАГАЛЬНИЙ СТИЛЬ ІНТЕРАКТИВНИХ СЕКЦІЙ */
+        .interactive-panel {
             margin-top: 25px;
-            border: 2px solid var(--neon-green);
+            border: 2px solid var(--gold);
             background: #0d0d0d;
             border-radius: 6px;
-            padding: 15px;
+            padding: 20px;
             display: none;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
             width: 100%;
+            animation: fadeIn 0.3s ease;
         }
 
-        .chat-title {
-            color: var(--neon-green);
+        .panel-green {
+            border-color: var(--neon-green);
+        }
+
+        .panel-title {
             font-size: 14px;
             font-weight: bold;
-            border-bottom: 1px dashed var(--neon-green);
-            padding-bottom: 8px;
+            border-bottom: 1px dashed #444;
+            padding-bottom: 10px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-green .panel-title {
+            color: var(--neon-green);
+            border-bottom-color: var(--neon-green);
+        }
+        
+        .panel-gold .panel-title {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
         }
 
+        .close-panel-btn {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .close-panel-btn:hover {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* #1 СТИЛІ ТЕРМІНАЛУ ЛОГІВ */
+        .terminal-box {
+            background: #050505;
+            border: 1px solid #333;
+            padding: 10px;
+            font-size: 11px;
+            color: #00ff00;
+            height: 180px;
+            overflow-y: auto;
+            border-radius: 4px;
+        }
+
+        /* #2 СТИЛІ ЦИФРОВИХ СЛІДІВ */
+        .trace-info-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .trace-info-grid { grid-template-columns: 1fr; }
+        }
+        .trace-card {
+            background: #151515;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* #3 СТИЛІ ЛІНГВО-ЧАТУ */
         .chat-history {
             max-height: 200px;
             overflow-y: auto;
@@ -218,29 +291,16 @@
             padding-left: 8px;
         }
 
-        .msg-original {
-            color: #aaa;
-            font-style: italic;
-        }
+        .msg-original { color: #aaa; font-style: italic; }
+        .msg-translation { color: #fff; margin-top: 2px; }
+        .msg-meta { font-size: 10px; color: var(--gold); margin-bottom: 2px; }
 
-        .msg-translation {
-            color: #fff;
-            margin-top: 2px;
-        }
-
-        .msg-meta {
-            font-size: 10px;
-            color: var(--gold);
-            margin-bottom: 2px;
-        }
-
-        .chat-input-row {
+        .chat-input-row, .control-row {
             display: flex;
             gap: 10px;
-            margin-top: 5px;
         }
 
-        .chat-select {
+        .chat-select, .form-input, .form-select {
             background: #222;
             color: var(--gold);
             border: 1px solid var(--gold);
@@ -249,7 +309,7 @@
             font-size: 12px;
         }
 
-        .chat-input {
+        .chat-input, .text-field {
             flex-grow: 1;
             background: #111;
             border: 1px solid #444;
@@ -258,14 +318,10 @@
             font-family: inherit;
             font-size: 12px;
         }
+        .chat-input:focus, .text-field:focus { outline: none; border-color: var(--neon-green); }
 
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--neon-green);
-        }
-
-        .chat-send-btn {
-            background: var(--neon-green);
+        .action-btn {
+            background: var(--gold);
             color: #000;
             border: none;
             padding: 8px 15px;
@@ -273,10 +329,89 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 12px;
+            transition: background 0.2s;
+        }
+        .action-btn:hover { opacity: 0.9; }
+        
+        .action-btn.btn-green {
+            background: var(--neon-green);
         }
 
-        .chat-send-btn:hover {
-            opacity: 0.9;
+        /* #4 СТИЛІ БАЛАНСУ ТА РОЯЛТІ */
+        .royalty-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .royalty-grid { grid-template-columns: 1fr; }
+        }
+        .balance-card {
+            background: #151515;
+            border: 1px solid var(--gold);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .balance-val {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--coin-orange);
+            margin-top: 5px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .slider-group input {
+            width: 100%;
+            accent-color: var(--gold);
+        }
+
+        /* #5 СТИЛІ НЕЙРОМЕРЕЖІ */
+        .ai-sliders {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .ai-sliders { grid-template-columns: 1fr; }
+        }
+        .ai-terminal-output {
+            background: #000;
+            border-left: 3px solid var(--neon-green);
+            padding: 10px;
+            font-size: 12px;
+            color: #e0e0e0;
+            min-height: 60px;
+            white-space: pre-line;
+        }
+
+        /* #6 СТИЛІ САНДБОКСУ */
+        .sandbox-progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #222;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-inner {
+            height: 100%;
+            width: 0%;
+            background: var(--neon-green);
+            transition: width 0.1s linear;
+        }
+        .deployed-list {
+            font-size: 12px;
+            background: #151515;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 100px;
+            overflow-y: auto;
         }
 
         /* СХЕМА КЛУБУ (вирівняні краї) */
@@ -392,19 +527,56 @@
 
     <div id="screen-office-core" class="office-screen container-width">
         <div class="matrix-6-numbers">
-            <div class="num-block" onclick="alert('Підключення до логів Airtable v4.6.1...')"><strong>#1 Системні Логи</strong><br>База даних Airtable</div>
-            <div class="num-block" onclick="alert('Управління ідентифікаторами та генерація кодів доступу...')"><strong>#2 Цифрові Сліди</strong><br>Керування ID / QR</div>
-            <div class="num-block highlight" onclick="toggleNegotiationRoom()"><strong>💬 #3 Кімната переговорів</strong><br>Лингво-смисловий чат</div>
-            <div class="num-block" onclick="alert('Розрахунок роялті та фінансові стріми ліцензіатів...')"><strong>#4 Роялті та Баланс</strong><br>Wallet / Франшизи</div>
-            <div class="num-block" onclick="alert('Конфігурація поведінкових скриптів ШІ-асистента Чарлі...')"><strong>#5 Ядро Нейромережі</strong><br>AI Core / Промпти</div>
-            <div class="num-block" onclick="alert('Створення ізольованих середовищ для тестування осередків...')"><strong>#6 Пісочниця Клубів</strong><br>Ліцензія GY-GY OS</div>
+            <div class="num-block" id="block-logs" onclick="togglePanel('logs')"><strong>#1 Системні Логи</strong><br>База даних Airtable</div>
+            <div class="num-block" id="block-traces" onclick="togglePanel('traces')"><strong>#2 Цифрові Сліди</strong><br>Керування ID / QR</div>
+            <div class="num-block highlight" id="block-chat" onclick="togglePanel('chat')"><strong>💬 #3 Кімната переговорів</strong><br>Лингво-смисловий чат</div>
+            <div class="num-block" id="block-royalty" onclick="togglePanel('royalty')"><strong>#4 Роялті та Баланс</strong><br>Wallet / Франшизи</div>
+            <div class="num-block" id="block-neural" onclick="togglePanel('neural')"><strong>#5 Ядро Нейромережі</strong><br>AI Core / Промпти</div>
+            <div class="num-block" id="block-sandbox" onclick="togglePanel('sandbox')"><strong>#6 Пісочниця Клубів</strong><br>Ліцензія GY-GY OS</div>
         </div>
 
-        <!-- Інтерактивний Мультимовний Чат -->
-        <div id="negotiation-room" class="chat-section">
-            <div class="chat-title">
-                <span>🟢 Кімната переговорів v4.6.2 (Лингво-смисловий переклад)</span>
-                <span style="cursor:pointer;" onclick="toggleNegotiationRoom()">[Закрити &times;]</span>
+        <!-- ================= #1 СЕКЦІЯ: СИСТЕМНІ ЛОГИ ================= -->
+        <div id="panel-logs" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span>📊 СИСТЕМНІ ЛОГИ (AIRTABLE SYNC LOGGER v4.7.0)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()">[Закрити &times;]</span>
+            </div>
+            <div class="terminal-box" id="logs-terminal"></div>
+            <div class="control-row">
+                <button class="action-btn" onclick="generateMockLog()">Згенерувати подію вручну</button>
+                <button class="action-btn" style="background:#444; color:#fff;" onclick="clearLogs()">Очистити вікно</button>
+            </div>
+        </div>
+
+        <!-- ================= #2 СЕКЦІЯ: ЦИФРОВІ СЛІДИ ================= -->
+        <div id="panel-traces" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span>👣 ЦИФРОВІ СЛІДИ ТА СЕСІЙНІ МЕТАДАНІ</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()">[Закрити &times;]</span>
+            </div>
+            <div class="trace-info-grid">
+                <div class="trace-card">
+                    <strong>Браузер клієнта:</strong> <span id="trace-ua" style="color:var(--neon-green);">Завантаження...</span><br>
+                    <strong>ID сесії:</strong> <span id="trace-session" style="color:var(--gold);">Generating...</span><br>
+                    <strong>Мовна локаль:</strong> <span id="trace-lang">UA-uk</span><br>
+                    <strong>Реєстрація у GY-GY OS:</strong> <span style="color:var(--coin-orange);" id="trace-time"></span>
+                </div>
+                <div class="trace-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
+                    <div id="trace-mini-qr" style="background:#fff; padding:5px;"></div>
+                    <span style="font-size:9px;">ВЕБ-ІДЕНТИФІКАТОР</span>
+                </div>
+            </div>
+            <div class="control-row">
+                <input type="text" id="trace-custom-input" class="text-field" placeholder="Оновити вбудоване QR-значення...">
+                <button class="action-btn" onclick="updateTraceQR()">Перегенерувати QR</button>
+            </div>
+        </div>
+
+        <!-- ================= #3 СЕКЦІЯ: КІМНАТА ПЕРЕГОВОРІВ (ЧАТ) ================= -->
+        <div id="panel-chat" class="interactive-panel panel-green">
+            <div class="panel-title">
+                <span>🟢 КІМНАТА ПЕРЕГОВОРІВ v4.6.2 (Лингво-смисловий переклад)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()">[Закрити &times;]</span>
             </div>
             <div class="chat-history" id="chat-box">
                 <div class="chat-msg">
@@ -419,12 +591,98 @@
                     <option value="es">Español 🇪🇸</option>
                     <option value="de">Deutsch 🇩🇪</option>
                 </select>
-                <input type="text" id="chat-msg-input" class="chat-input" placeholder="Введіть фразу для адаптивного перекладу..." onkeydown="if(event.key === 'Enter') sendSemanticMessage()">
-                <button class="chat-send-btn" onclick="sendSemanticMessage()">Надіслати</button>
+                <input type="text" id="chat-msg-input" class="chat-input" placeholder="Введіть ідіому або фразу (напр. 'break a leg', 'tomar el pelo')..." onkeydown="if(event.key === 'Enter') sendSemanticMessage()">
+                <button class="action-btn btn-green" onclick="sendSemanticMessage()">Надіслати</button>
+            </div>
+        </div>
+
+        <!-- ================= #4 СЕКЦІЯ: РОЯЛТІ ТА БАЛАНС ================= -->
+        <div id="panel-royalty" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span>💰 БАЛАНС ЛІЦЕНЗІАТА ТА КАЛЬКУЛЯТОР ФРАНШИЗИ</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()">[Закрити &times;]</span>
+            </div>
+            <div class="royalty-grid">
+                <div class="balance-card">
+                    <div>Поточний баланс</div>
+                    <div class="balance-val"><span id="royalty-balance-num">1,420</span> GY</div>
+                </div>
+                <div class="balance-card">
+                    <div>Комісія Мережі</div>
+                    <div class="balance-val" style="color:var(--neon-green);" id="fee-display">12%</div>
+                </div>
+                <div class="balance-card">
+                    <div>Партнерська частка</div>
+                    <div class="balance-val" style="color:var(--neon-blue);" id="payout-display">1,249.6 GY</div>
+                </div>
+            </div>
+            <div class="slider-group">
+                <label>Вартість проданої ліцензії: <strong id="val-price-text">1500</strong> GY</label>
+                <input type="range" id="royalty-price" min="500" max="10000" step="500" value="1500" oninput="calculateRoyalty()">
+            </div>
+            <div class="slider-group">
+                <label>Роялті компанії (%): <strong id="val-fee-text">12</strong>%</label>
+                <input type="range" id="royalty-fee" min="5" max="30" step="1" value="12" oninput="calculateRoyalty()">
+            </div>
+            <div class="control-row" style="margin-top:10px;">
+                <button class="action-btn" onclick="collectRoyalty()">Зарахувати прибуток у Гаманець</button>
+            </div>
+        </div>
+
+        <!-- ================= #5 СЕКЦІЯ: ЯДРО НЕЙРОМЕРЕЖІ ================= -->
+        <div id="panel-neural" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span>🧠 AI CORE (ПРОМПТ-КОНФІГУРАТОР АСИСТЕНТА ЧАРЛІ)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()">[Закрити &times;]</span>
+            </div>
+            <div class="ai-sliders">
+                <div class="slider-group">
+                    <label>Рівень сарказму: <strong id="val-sarc">80</strong>%</label>
+                    <input type="range" id="slider-sarc" min="0" max="100" value="80" oninput="document.getElementById('val-sarc').innerText=this.value">
+                </div>
+                <div class="slider-group">
+                    <label>Креативність: <strong id="val-crea">65</strong>%</label>
+                    <input type="range" id="slider-crea" min="0" max="100" value="65" oninput="document.getElementById('val-crea').innerText=this.value">
+                </div>
+                <div class="slider-group">
+                    <label>Логіка: <strong id="val-log">90</strong>%</label>
+                    <input type="range" id="slider-log" min="0" max="100" value="90" oninput="document.getElementById('val-log').innerText=this.value">
+                </div>
+            </div>
+            <div class="control-row">
+                <input type="text" id="ai-input" class="text-field" placeholder="Задайте питання ШІ-асистенту Чарлі...">
+                <button class="action-btn" onclick="generateCharlieResponse()">Надіслати запит Чарлі</button>
+            </div>
+            <div class="ai-terminal-output" id="charlie-terminal">🤖 Налаштуйте повзунки темпераменту Чарлі та надішліть йому тестове питання.</div>
+        </div>
+
+        <!-- ================= #6 СЕКЦІЯ: ПІСОЧНИЦЯ КЛУБІВ ================= -->
+        <div id="panel-sandbox" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span>📦 ПІСОЧНИЦЯ КЛУБІВ (РОЗГОРТАННЯ ЛОКАЛЬНИХ ОСЕРЕДКІВ)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()">[Закрити &times;]</span>
+            </div>
+            <div class="control-row">
+                <input type="text" id="sandbox-club-name" class="text-field" placeholder="Назва нового клубу (напр. GY-GY Odesa)">
+                <select id="sandbox-pack" class="form-select">
+                    <option value="Lite Pack">Lite (Тільки Хол)</option>
+                    <option value="Pro Core">Pro Core (Усі локації)</option>
+                    <option value="Neural Max">Neural Max (+Чарлі AI)</option>
+                </select>
+                <button class="action-btn" onclick="deploySandboxNode()">Розгорнути вузол</button>
+            </div>
+            <div class="sandbox-progress-bar" id="sandbox-progress">
+                <div class="progress-inner" id="progress-bar-fill"></div>
+            </div>
+            <div id="sandbox-status" style="font-size:11px; font-weight:bold; color:var(--neon-green); text-align:center; display:none;"></div>
+            <div class="deployed-list" id="sandbox-list">
+                <strong>Активні симуляції та осередки:</strong>
+                <div style="color:#777; margin-top:5px;">Список порожній. Введіть назву та натисніть «Розгорнути вузол».</div>
             </div>
         </div>
     </div>
 
+    <!-- ================= СХЕМА КЛУБУ ================= -->
     <div id="screen-club-map" class="office-screen container-width" style="display: none;">
         <pre class="algo-pre">
 ================== [ КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE ] ==================
@@ -449,7 +707,7 @@
        └─► [Гілка БАР]     ──► Відкрити bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга скарг та Образ</span>
                                              │
                                              ▼
-                                [ПЕРЕХІД: tables.html] ──► Ініціалізація матриці 3х2:
+                                [ПЕРЕХІД: tables.html] ──► Ініціалізація matrix 3х2:
                                              │
                                 ┌────────────┴────────────┐
                                 ▼                         ▼
@@ -497,6 +755,7 @@
 
         let currentID = "";
 
+        // База семантичного перекладу для чату #3
         const semanticDatabase = {
             en: {
                 "it is raining cats and dogs": "Ллє як з відра (дослівно: дощ із котів та собак)",
@@ -520,6 +779,7 @@
             }
         };
 
+        // Перемикач екранів Схема Офісу / Схема Клубу
         function switchScreen(screenType) {
             const coreScreen = document.getElementById('screen-office-core');
             const clubScreen = document.getElementById('screen-club-map');
@@ -535,16 +795,111 @@
             }
         }
 
-        function toggleNegotiationRoom() {
-            const room = document.getElementById('negotiation-room');
-            if (room.style.display === 'flex') {
-                room.style.display = 'none';
-            } else {
-                room.style.display = 'flex';
-                room.scrollIntoView({ behavior: 'smooth' });
+        // Керування показом інтерактивних секцій
+        function togglePanel(panelId) {
+            const currentPanel = document.getElementById(`panel-${panelId}`);
+            const blockElement = document.getElementById(`block-${panelId}`);
+            const allPanels = document.querySelectorAll('.interactive-panel');
+            const allBlocks = document.querySelectorAll('.num-block');
+
+            // Якщо клікнули на вже активну панель — згортаємо її
+            if (currentPanel && currentPanel.style.display === 'flex') {
+                closeAllPanels();
+                return;
+            }
+
+            // Згортаємо всі інші
+            allPanels.forEach(p => p.style.display = 'none');
+            allBlocks.forEach(b => b.classList.remove('active-block'));
+
+            // Розгортаємо потрібну
+            if (currentPanel) {
+                currentPanel.style.display = 'flex';
+                blockElement.classList.add('active-block');
+                currentPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                // Специфічні дії при запуску окремих панелей
+                if (panelId === 'logs') runTerminalDemo();
+                if (panelId === 'traces') initTraceData();
             }
         }
 
+        function closeAllPanels() {
+            document.querySelectorAll('.interactive-panel').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.num-block').forEach(b => b.classList.remove('active-block'));
+        }
+
+        // ================= #1 СИСТЕМНІ ЛОГИ =================
+        let logTimer = null;
+        function runTerminalDemo() {
+            const terminal = document.getElementById('logs-terminal');
+            if (terminal.innerHTML !== "") return; // Вже запущено
+
+            terminal.innerHTML = "=== Ініціалізація зв'язку з Airtable API v4.7.0 ===<br>";
+            const mockEvents = [
+                "CONNECTED: Вузол Франшизи #19 (Lviv Core)",
+                "SYNC: Оновлено лічильники відвідувачів для модуля 'verses.html'",
+                "SECURITY: Перевірка ліцензійного сертифіката пройшла успішно",
+                "WALLET: Зафіксовано транзакцію роялті +120 GY від GY-GY Berlin",
+                "AI_LOG: Чарлі згенерував відповідь з температурою 0.85",
+                "DATABASE: Резервне копіювання таблиць користувачів завершено"
+            ];
+
+            let index = 0;
+            if (logTimer) clearInterval(logTimer);
+            logTimer = setInterval(() => {
+                const now = new Date().toLocaleTimeString();
+                const logLine = `<span style="color:#888;">[${now}]</span> <span style="color:var(--neon-green);">${mockEvents[index % mockEvents.length]}</span><br>`;
+                terminal.innerHTML += logLine;
+                terminal.scrollTop = terminal.scrollHeight;
+                index++;
+            }, 3000);
+        }
+
+        function generateMockLog() {
+            const terminal = document.getElementById('logs-terminal');
+            const userEvent = prompt("Введіть текст кастомного запису в лог:");
+            if (userEvent) {
+                const now = new Date().toLocaleTimeString();
+                terminal.innerHTML += `<span style="color:#888;">[${now}]</span> <span style="color:var(--gold);">[MANUAL_EVENT] ${userEvent}</span><br>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logs-terminal').innerHTML = "=== Логи очищено користувачем ===<br>";
+        }
+
+        // ================= #2 ЦИФРОВІ СЛІДИ =================
+        let traceQrInstance = null;
+        function initTraceData() {
+            document.getElementById('trace-ua').innerText = navigator.userAgent.substring(0, 75) + "...";
+            const sessionKey = localStorage.getItem('gygy_session_key') || "SESSION-" + Math.floor(Math.random()*100000000);
+            localStorage.setItem('gygy_session_key', sessionKey);
+            document.getElementById('trace-session').innerText = sessionKey;
+            
+            document.getElementById('trace-time').innerText = new Date().toLocaleString();
+
+            const qrBox = document.getElementById('trace-mini-qr');
+            if (qrBox && qrBox.innerHTML === "" && typeof QRCode !== 'undefined') {
+                traceQrInstance = new QRCode(qrBox, {
+                    text: currentID + "|" + sessionKey,
+                    width: 90,
+                    height: 90
+                });
+            }
+        }
+
+        function updateTraceQR() {
+            const val = document.getElementById('trace-custom-input').value.trim();
+            const qrBox = document.getElementById('trace-mini-qr');
+            if (val && qrBox && typeof QRCode !== 'undefined') {
+                qrBox.innerHTML = "";
+                new QRCode(qrBox, { text: val, width: 90, height: 90 });
+            }
+        }
+
+        // ================= #3 КІМНАТА ПЕРЕГОВОРІВ (ЧАТ) =================
         function sendSemanticMessage() {
             const input = document.getElementById('chat-msg-input');
             const langSelect = document.getElementById('chat-lang');
@@ -575,6 +930,107 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        // ================= #4 РОЯЛТІ ТА БАЛАНС =================
+        function calculateRoyalty() {
+            const price = parseFloat(document.getElementById('royalty-price').value);
+            const feePercent = parseFloat(document.getElementById('royalty-fee').value);
+
+            document.getElementById('val-price-text').innerText = price;
+            document.getElementById('val-fee-text').innerText = feePercent;
+
+            const feeAmount = (price * (feePercent / 100)).toFixed(1);
+            const payoutAmount = (price - feeAmount).toFixed(1);
+
+            document.getElementById('fee-display').innerText = feePercent + "% (" + feeAmount + " GY)";
+            document.getElementById('payout-display').innerText = payoutAmount + " GY";
+        }
+
+        function collectRoyalty() {
+            const price = parseFloat(document.getElementById('royalty-price').value);
+            const feePercent = parseFloat(document.getElementById('royalty-fee').value);
+            const payoutAmount = price - (price * (feePercent / 100));
+
+            let curBal = parseFloat(document.getElementById('royalty-balance-num').innerText.replace(",", ""));
+            curBal = (curBal + payoutAmount);
+            
+            document.getElementById('royalty-balance-num').innerText = curBal.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
+            alert(`Успішно! На партнерський рахунок зараховано ${payoutAmount.toFixed(1)} GY.`);
+        }
+
+        // ================= #5 ЯДРО НЕЙРОМЕРЕЖІ =================
+        function generateCharlieResponse() {
+            const input = document.getElementById('ai-input').value.trim();
+            const output = document.getElementById('charlie-terminal');
+            if (!input) return;
+
+            const sarc = parseInt(document.getElementById('slider-sarc').value);
+            const crea = parseInt(document.getElementById('slider-crea').value);
+
+            output.innerHTML = "🤖 <i>Чарлі думає, обробляючи параметри характеру...</i>";
+
+            setTimeout(() => {
+                let response = "";
+                if (sarc > 70) {
+                    response = `Чарлі: "Серйозно? '${input}'? Мої процесори згорять від глибини цієї думки. Але якщо відповісти логічно — GY-GY OS працює на максимумі, а ваші лічильники оновлюються."`;
+                } else if (crea > 70) {
+                    response = `Чарлі: "Ваше запитання '${input}' викликало художню іскру в моєму коді! Уявіть, якби кожна франшиза Клубу була сузір'ям... Ми зараз будуємо цілу галактику сміху!"`;
+                } else {
+                    response = `Чарлі: "Запит '${input}' успішно оброблено. Налаштування стабільні. Конфігурація кабінету v4.7.0 функціонує в штатному режимі."`;
+                }
+                output.innerText = response;
+            }, 1200);
+        }
+
+        // ================= #6 ПІСОЧНИЦЯ КЛУБІВ =================
+        function deploySandboxNode() {
+            const name = document.getElementById('sandbox-club-name').value.trim();
+            const pack = document.getElementById('sandbox-pack').value;
+            const progress = document.getElementById('sandbox-progress');
+            const progressFill = document.getElementById('progress-bar-fill');
+            const status = document.getElementById('sandbox-status');
+            const list = document.getElementById('sandbox-list');
+
+            if (!name) {
+                alert("Вкажіть назву осередку!");
+                return;
+            }
+
+            progress.style.display = 'block';
+            status.style.display = 'block';
+            status.innerText = "Ініціалізація контейнера...";
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 5;
+                progressFill.style.width = width + "%";
+
+                if (width === 30) status.innerText = "Розгортання структури БД Airtable...";
+                if (width === 60) status.innerText = "Монтування AI Чарлі модуля...";
+                if (width === 90) status.innerText = "Генерація SSL та токенів доступу...";
+
+                if (width >= 100) {
+                    clearInterval(interval);
+                    status.innerText = `Успішно розгорнуто!`;
+                    progress.style.display = 'none';
+                    progressFill.style.width = "0%";
+
+                    // Додаємо до списку розгорнутих
+                    const now = new Date().toLocaleTimeString();
+                    const newEntry = `<div style="margin-top:5px; border-left: 2px solid var(--neon-green); padding-left: 5px;">
+                        🟢 <strong>${name}</strong> [${pack}] — Стан: Active (Sync ${now})
+                    </div>`;
+                    
+                    if (list.innerHTML.includes("Список порожній")) {
+                        list.innerHTML = "<strong>Активні симуляції та осередки:</strong>" + newEntry;
+                    } else {
+                        list.innerHTML += newEntry;
+                    }
+                    document.getElementById('sandbox-club-name').value = "";
+                }
+            }, 150);
+        }
+
+        // ================= СХЕМА КЛУБУ ТА ЛІЧИЛЬНИКИ =================
         function addClick(id) {
             if (clubStats.hasOwnProperty(id)) {
                 clubStats[id]++;
@@ -610,6 +1066,7 @@
             }
         }
 
+        // ================= МОДАЛКА ПАСПОРТА =================
         function openPassport() {
             const modal = document.getElementById('modal-passport');
             if (modal) { 
@@ -677,12 +1134,15 @@
             }
             renderUserPassport(currentID);
 
-            // Динамічний вибір прапора (англійський 'gb' як дефолт при першому візиті)
+            // Динамічний вибір прапора
             const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || localStorage.getItem('gy_lang') || 'gb';
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
             }
+
+            // Первинний запуск роялті
+            calculateRoyalty();
         });
     </script>
 </body>
