@@ -16,7 +16,7 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ — Рамка и выпадающий список строго одного размера */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
             width: 175px; height: 38px; border: 2px solid var(--gold); 
@@ -232,27 +232,12 @@
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
-        
-        /* Поле ввода никнейма и почты */
-        .nick-input-field {
-            text-align: center; 
-            background: #000; 
-            color: var(--gold); 
-            border: 2px solid var(--gold); 
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 16px;
-            outline: none;
-            transition: box-shadow 0.3s;
-        }
-        .nick-input-field:focus {
-            box-shadow: 0 0 10px var(--gold);
-        }
 
-        /* 5 Квадратов на Identity */
+        /* 7-МОДУЛЬНАЯ ЕДИНАЯ СЕТКА КВАДРАТОВ */
         .identity-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             margin-bottom: 25px;
             align-items: center;
             width: 290px;
@@ -261,6 +246,22 @@
             width: 100%;
             aspect-ratio: 1 / 1;
             height: auto;
+            border: 2px solid var(--gold);
+            background: #fff;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        /* Стили внутренних текстовых меток в квадратах */
+        .box-inner-text {
+            color: #000; 
+            font-size: 8.5px; 
+            font-weight: 900; 
+            text-align: center; 
+            padding: 2px; 
+            line-height: 1.1;
+            text-transform: uppercase;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -276,7 +277,6 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
 
-    <!-- ЯЗЫКОВОЙ БЛОК -->
     <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
@@ -308,40 +308,41 @@
 
     <div id="block-identity" class="block">
         <div class="quote-text">There is never too much champagne</div>
-        
-        <!-- ВВОД НИКА И ПОЧТЫ -->
-        <input type="text" id="user-nickname" placeholder="ENTER NICKNAME" class="btn-gy nick-input-field" maxlength="15" style="margin-bottom: 6px;">
-        <input type="email" id="user-email" placeholder="ENTER EMAIL ADDRESS" class="btn-gy nick-input-field" style="margin-bottom: 15px; text-transform: none;">
 
-        <!-- СЕТКА ИЗ 5 КВАДРАТОВ -->
         <div class="identity-grid">
-            <!-- 1. ID -->
-            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:9px; font-weight:900;" id="id-label">#ID</div>
+            <div class="box-final" style="background:#fff; cursor: default;" id="id-label-box">
+                <span id="id-label" class="box-inner-text">#ID</span>
+            </div>
             
-            <!-- 2. QR -->
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
+            <div class="box-final" id="qr-box-reg" style="background:#fff; cursor: default;"></div>
             
-            <!-- 3. ФОТО -->
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000; font-size:9px; font-weight:900; text-align:center; padding: 2px; line-height:1.1;">OR PHOTO</span>
+                <span id="txt-photo" class="box-inner-text">OR PHOTO</span>
             </div>
             
-            <!-- 4. АВАТАР -->
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
+            <div class="box-final" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000; font-size:9px; font-weight:900; text-align:center; padding: 2px; line-height:1.1;">OR AVATAR</span>
+                <span id="txt-avatar" class="box-inner-text">OR AVATAR</span>
             </div>
 
-            <!-- 5. ВНЕШНЯЯ СВЯЗЬ -->
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="promptExternalContact()">
+            <div class="box-final" onclick="promptNickname()">
+                <div id="nick-filled-status" style="display:none; font-size:10px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all;"></div>
+                <span id="txt-nick" class="box-inner-text">SET NICK</span>
+            </div>
+
+            <div class="box-final" onclick="promptEmail()">
+                <div id="email-filled-status" style="display:none; font-size:9px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all;">✔ MAIL</div>
+                <span id="txt-email" class="box-inner-text">SET EMAIL</span>
+            </div>
+
+            <div class="box-final" onclick="promptExternalContact()">
                 <div id="social-status-icon" style="display:none; color: green; font-size: 16px; font-weight:900;">✔</div>
-                <span id="txt-social" style="color:#000; font-size:9px; font-weight:900; text-align:center; padding: 2px; line-height:1.1;">LINK MSG</span>
+                <span id="txt-social" class="box-inner-text">LINK MSG</span>
             </div>
         </div>
 
-        <!-- Кнопка генерации Клубного Никнейма -->
         <button class="btn-gy" onclick="generateClubNickname()">OR GENERATE NICK</button>
 
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
@@ -384,14 +385,12 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: КАРТА ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             
             <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0 2px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
-            <!-- Почта в паспорте -->
             <div id="pass-email" style="font-size:11px; color:#555; margin-bottom: 8px; font-weight:700;"></div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; color:#555;">#ID</div>
             
@@ -403,16 +402,13 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА: СПИСОК РЕЗИДЕНТОВ СТРАНЫ -->
     <div id="modal-users-list" class="passport-overlay" onclick="closeUsersList()">
         <div class="passport-card" onclick="event.stopPropagation()" style="width: 290px; max-height: 75vh; background: #F5F5DC; border-color: var(--gold); padding: 20px;">
             <div class="passport-close-btn" onclick="closeUsersList()">&times;</div>
             <div id="users-list-title" style="font-weight:900; font-size:16px; letter-spacing:1px; margin-bottom: 15px; text-transform: uppercase; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px;">MEMBERS</div>
             
-            <!-- Обертка списка с прокруткой -->
             <div id="users-list-content" style="display: flex; flex-direction: column; gap: 12px; text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
-                <!-- Динамические резиденты -->
-            </div>
+                </div>
         </div>
     </div>
 
@@ -431,6 +427,9 @@
     let currentFlagCode = 'gb';
     let currentUserImage = "";
     let currentBlockId = 'block-entrance';
+    
+    let tempNickname = "";
+    let tempEmail = "";
 
     // База данных со счетчиками для каждого языка
     const allLangs = [
@@ -451,16 +450,59 @@
     const clubPrefixes = ["Lucky", "Sweet", "Cyber", "Jolly", "Crypto", "Lazy", "Neon", "Grand", "Royal", "Crazy", "Gentle", "Silver", "Iron"];
     const clubSuffixes = ["Panda", "Whisky", "Socrates", "Joker", "Tesla", "Tee", "Sherlock", "Pirate", "Hacker", "Baron", "Zeus", "Fox", "Gamer"];
 
+    // Окна ввода данных через квадраты
+    function promptNickname() {
+        const userNick = prompt("ENTER NICKNAME (MAX 15 CHARS):", tempNickname);
+        if (userNick !== null) {
+            updateNicknameUI(userNick.trim().substring(0, 15));
+        }
+    }
+
     function generateClubNickname() {
         const randPre = clubPrefixes[Math.floor(Math.random() * clubPrefixes.length)];
         const randSuf = clubSuffixes[Math.floor(Math.random() * clubSuffixes.length)];
         const generatedName = `${randPre}_${randSuf}`;
-        
-        const nickInput = document.getElementById('user-nickname');
-        if (nickInput) nickInput.value = generatedName;
-        
+        updateNicknameUI(generatedName);
+    }
+
+    function updateNicknameUI(nick) {
+        tempNickname = nick;
+        const filledStatus = document.getElementById('nick-filled-status');
+        const txtNick = document.getElementById('txt-nick');
         const passNick = document.getElementById('pass-nickname');
-        if (passNick) passNick.innerText = '@' + generatedName;
+        
+        if (nick !== '') {
+            if (filledStatus) {
+                filledStatus.innerText = nick;
+                filledStatus.style.display = 'block';
+            }
+            if (txtNick) txtNick.style.display = 'none';
+            if (passNick) passNick.innerText = '@' + nick;
+        } else {
+            if (filledStatus) filledStatus.style.display = 'none';
+            if (txtNick) txtNick.style.display = 'block';
+            if (passNick) passNick.innerText = '@GUEST_HUMORIST';
+        }
+    }
+
+    function promptEmail() {
+        const userEmail = prompt("ENTER EMAIL ADDRESS:", tempEmail);
+        if (userEmail !== null) {
+            tempEmail = userEmail.trim();
+            const filledStatus = document.getElementById('email-filled-status');
+            const txtEmail = document.getElementById('txt-email');
+            const passEmail = document.getElementById('pass-email');
+            
+            if (tempEmail !== '') {
+                if (filledStatus) filledStatus.style.display = 'block';
+                if (txtEmail) txtEmail.style.display = 'none';
+                if (passEmail) passEmail.innerText = tempEmail;
+            } else {
+                if (filledStatus) filledStatus.style.display = 'none';
+                if (txtEmail) txtEmail.style.display = 'block';
+                if (passEmail) passEmail.innerText = '';
+            }
+        }
     }
 
     function promptExternalContact() {
@@ -628,16 +670,16 @@
         if (currentID) { renderUserPassports(currentID); }
         
         if (savedNickname) {
-            const nickInput = document.getElementById('user-nickname');
-            if (nickInput) nickInput.value = savedNickname;
-            const passNick = document.getElementById('pass-nickname');
-            if (passNick) passNick.innerText = '@' + savedNickname;
+            updateNicknameUI(savedNickname);
         }
 
         if (savedEmail) {
-            const emailInput = document.getElementById('user-email');
-            if (emailInput) emailInput.value = savedEmail;
+            tempEmail = savedEmail;
+            const filledStatus = document.getElementById('email-filled-status');
+            const txtEmail = document.getElementById('txt-email');
             const passEmail = document.getElementById('pass-email');
+            if (filledStatus) filledStatus.style.display = 'block';
+            if (txtEmail) txtEmail.style.display = 'none';
             if (passEmail) passEmail.innerText = savedEmail;
         }
 
@@ -777,11 +819,8 @@
     function saveUserProfile() {
         if (!currentUserImage) return;
         
-        const nickInput = document.getElementById('user-nickname');
-        const nickname = (nickInput && nickInput.value.trim()) ? nickInput.value.trim() : "GUEST";
-        
-        const emailInput = document.getElementById('user-email');
-        const email = emailInput ? emailInput.value.trim() : "";
+        const nickname = tempNickname ? tempNickname : "GUEST";
+        const email = tempEmail ? tempEmail : "";
         
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
