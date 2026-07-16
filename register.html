@@ -1,1 +1,519 @@
 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club — Регистрация Резидента 001 </title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #121212;
+            --dark-gray: #1a1a1a;
+            --light-gray: #2a2a2a;
+            --text: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Контейнер регистрации */
+        .register-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Шапка с логотипом GY-GY */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+
+        /* Блоки/Экраны */
+        .reg-block {
+            background: var(--dark-gray);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        .reg-block.active {
+            display: flex;
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--gold);
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Поля ввода */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #aaa;
+        }
+
+        input[type="text"], input[type="email"] {
+            background: var(--light-gray);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            padding: 12px;
+            border-radius: 6px;
+            color: #white;
+            font-family: inherit;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="email"]:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Кнопки */
+        .btn {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold);
+            border: 1.5px solid var(--gold);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-sleep {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Секция Аватара */
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar-preview-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .avatar-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            font-size: 0.8rem;
+            text-align: center;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Паспортный блок (Модалка или Экран) */
+        .passport-card {
+            background: linear-gradient(135deg, #1f1f1f 0%, #111 100%);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .pass-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+
+        .pass-body {
+            display: flex;
+            gap: 15px;
+        }
+
+        .pass-photo {
+            width: 90px;
+            height: 110px;
+            border: 1.5px solid var(--gold);
+            background: #050505;
+            object-fit: cover;
+        }
+
+        .pass-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .pass-row {
+            font-size: 0.95rem;
+        }
+
+        .pass-label {
+            color: #888;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .pass-val {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Дверь и аудио */
+        .door-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .main-door-btn {
+            width: 140px;
+            height: 200px;
+            background: #222;
+            border: 4px solid var(--gold);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+        }
+
+        .main-door-btn::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            width: 15px;
+            height: 15px;
+            background: var(--gold);
+            border-radius: 50%;
+        }
+
+        .door-exploded {
+            transform: scale(0.9) rotateY(90deg);
+            opacity: 0;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="header">
+            <div class="logo">GY-GY CLUB</div>
+        </div>
+
+        <div class="reg-block active" id="block-step1">
+            <h2>Шаг 1: Цифровой след</h2>
+            
+            <div class="avatar-section">
+                <div class="avatar-preview-box">
+                    <img id="avatar-img" style="display: none;">
+                    <img id="pp" style="display: none;">
+                    <div id="txt-avatar" class="avatar-placeholder">Нет аватара</div>
+                </div>
+                
+                <div style="display:flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="generateAvatar()">Сгенерировать</button>
+                    <div class="file-input-wrapper">
+                        <button class="btn btn-secondary">Свое фото</button>
+                        <input type="file" accept="image/*" onchange="preview(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Ваш Уникальный ID (Генерируется автоматически):</label>
+                <input type="text" id="id-label" readonly style="text-align: center; color: var(--gold); font-weight: bold;">
+            </div>
+
+            <button class="btn btn-sleep" id="btn-next-step" onclick="goToStep(2)">Далее →</button>
+        </div>
+
+        <div class="reg-block" id="block-step2">
+            <h2>Шаг 2: Имя в клубе</h2>
+            
+            <div class="input-group">
+                <label>Придумайте Никнейм:</label>
+                <input type="text" id="input-nickname" placeholder="Например: CyberJoke" oninput="validateStep2Input()">
+            </div>
+
+            <div class="input-group">
+                <label>Электронная почта (Опционально):</label>
+                <input type="email" id="input-email" placeholder="email@example.com">
+            </div>
+
+            <div style="display:flex; gap: 10px;">
+                <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(1)">← Назад</button>
+                <button class="btn" style="flex:1;" onclick="finalizeProfile()">Готово!</button>
+            </div>
+        </div>
+
+        <div class="reg-block" id="block-step3">
+            <h2>Ваш Клубный Паспорт</h2>
+            
+            <div class="passport-card">
+                <div class="pass-header">
+                    <span style="font-weight: bold; color: var(--gold);">GY-GY RESIDENT CARD</span>
+                    <span id="pass-id-val" style="font-size: 0.8rem;">GY-000000</span>
+                </div>
+                <div class="pass-body">
+                    <img id="pass-avatar-img" class="pass-photo" src="" alt="Avatar">
+                    <div class="pass-info">
+                        <div class="pass-row">
+                            <span class="pass-label">Никнейм</span>
+                            <span class="pass-val" id="pass-nickname">@GUEST</span>
+                        </div>
+                        <div class="pass-row">
+                            <span class="pass-label">E-mail</span>
+                            <span class="pass-val" id="pass-email">-</span>
+                        </div>
+                    </div>
+                    <div id="pass-qr-box" style="background:#fff; padding:3px; border-radius:5px; display: flex; align-items: center; justify-content: center;"></div>
+                </div>
+            </div>
+
+            <div class="door-zone">
+                <p style="font-size: 0.9rem; color: #888; text-transform: uppercase;">Нажмите на дверь, чтобы войти в Клуб</p>
+                <div class="main-door-btn" id="main-door" onclick="handleDoorAndRedirect()">🚪</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="snd-door" src="https://assets.mixkit.co/active_storage/sfx/2065/2065-84.wav" preload="auto"></audio>
+
+    <script>
+        // --- Переменные состояния регистрации ---
+        let currentID = '';
+        let currentUserImage = '';
+        let tempNickname = '';
+        let tempEmail = '';
+
+        // --- Утилиты Хранилища ---
+        function safeStorageSet(key, val) {
+            try { localStorage.setItem(key, val); } catch(e) {}
+        }
+        function safeStorageGet(key) {
+            try { return localStorage.getItem(key); } catch(e) { return null; }
+        }
+
+        // --- Загрузка и проверка данных ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Если ID уже сгенерирован ранее — берем его, иначе создаем новый
+            currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
+            safeStorageSet('gygy_id', currentID);
+            safeStorageSet('gy_user_id', currentID);
+            
+            document.getElementById('id-label').value = currentID;
+        });
+
+        // --- Навигация по шагам ---
+        function goToStep(stepNum) {
+            document.querySelectorAll('.reg-block').forEach(b => b.classList.remove('active'));
+            document.getElementById(`block-step${stepNum}`).classList.add('active');
+        }
+
+        // --- Работа с аватарами ---
+        function preview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUserImage = e.target.result;
+                    showAvatar(currentUserImage);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function generateAvatar() {
+            const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
+            currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            showAvatar(currentUserImage);
+        }
+
+        function showAvatar(src) {
+            const avatarImg = document.getElementById('avatar-img');
+            const txtAvatar = document.getElementById('txt-avatar');
+            const btnNext = document.getElementById('btn-next-step');
+
+            if (avatarImg) {
+                avatarImg.src = src;
+                avatarImg.style.display = 'block';
+            }
+            if (txtAvatar) txtAvatar.style.display = 'none';
+            if (btnNext) btnNext.classList.remove('btn-sleep'); // Активируем кнопку "Далее"
+        }
+
+        // --- Валидация Шага 2 ---
+        function validateStep2Input() {
+            const nickInput = document.getElementById('input-nickname').value.trim();
+            // Можно добавить проверку на длину или спецсимволы
+        }
+
+        // --- Финализация профиля и сборка паспорта ---
+        function finalizeProfile() {
+            tempNickname = document.getElementById('input-nickname').value.trim() || "GUEST";
+            tempEmail = document.getElementById('input-email').value.trim() || "-";
+
+            // Сохраняем в localStorage
+            safeStorageSet('gygy_avatar', currentUserImage);
+            safeStorageSet('gy_user_img', currentUserImage);
+            safeStorageSet('gygy_nickname', tempNickname);
+            safeStorageSet('gygy_email', tempEmail);
+
+            // Тсс! Секретная проверка на Главного Механика
+            if (tempNickname.toLowerCase() === 'модермех') {
+                safeStorageSet('gygy_is_boss', 'true');
+            }
+
+            // Рендерим паспорт перед входом
+            document.getElementById('pass-id-val').innerText = currentID;
+            document.getElementById('pass-nickname').innerText = '@' + tempNickname;
+            document.getElementById('pass-email').innerText = tempEmail;
+            document.getElementById('pass-avatar-img').src = currentUserImage;
+
+            // Генерируем QR-код
+            const qrBox = document.getElementById('pass-qr-box');
+            if (qrBox && typeof QRCode !== 'undefined') {
+                qrBox.innerHTML = "";
+                new QRCode(qrBox, {
+                    text: currentID,
+                    width: 70,
+                    height: 70,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff"
+                });
+            }
+
+            goToStep(3);
+        }
+
+        // --- Анимация Входа и Редирект ---
+        function handleDoorAndRedirect() {
+            const sndDoor = document.getElementById('snd-door');
+            const mainDoor = document.getElementById('main-door');
+
+            if (sndDoor) sndDoor.play().catch(e => console.log("Sound error"));
+            if (mainDoor) mainDoor.classList.add('door-exploded');
+
+            setTimeout(() => {
+                // Прямой вылет на главную страницу клуба!
+                window.location.href = 'index.html';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
