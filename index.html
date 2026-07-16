@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.38 CORE</title>
+    <title>GY-GY Club v4.5.43 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,21 +16,53 @@
 
         html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ — Сдвинута влево на 5% от исходной позиции */
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
-            width: 150px; height: 36px; border: 2px solid var(--gold); 
+            width: 175px; height: 38px; border: 2px solid var(--gold); 
             background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 10px;
-            font-size: 13px;
+            font-size: 13px; box-shadow: 0 0 8px rgba(214, 175, 55, 0.2);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .lang-frame-locked:hover {
+            border-color: #fff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
         }
         .lang-dropdown-adaptive {
-            display: none; position: absolute; top: 40px; left: -2px; 
-            width: 150px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
+            display: none; position: absolute; top: 34px; left: -2px; 
+            width: 175px; background: #000; border: 2px solid var(--gold) !important; z-index: 10000;
             max-height: 70vh; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
-        .lang-item { display: flex; align-items: center; padding: 8px 10px; cursor: pointer; line-height: 1; }
-        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
-        .flag-icon { width: 20px; margin-right: 10px; }
+        .lang-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 8px 10px; 
+            cursor: pointer; 
+            line-height: 1; 
+            border-bottom: 1px solid rgba(214, 175, 55, 0.1);
+            transition: background 0.2s;
+        }
+        .lang-item:hover { background: rgba(214, 175, 55, 0.15); }
+        .flag-icon { width: 22px; height: 15px; object-fit: cover; margin-right: 8px; border: 1px solid rgba(214,175,55,0.3); }
+
+        /* Элегантный счетчик-индикатор */
+        .member-counter {
+            font-size: 9px;
+            font-weight: 900;
+            color: #000;
+            background: var(--gold);
+            padding: 2px 5px;
+            border-radius: 10px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 0 5px rgba(214, 175, 55, 0.5);
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        .lang-item:hover .member-counter {
+            transform: scale(1.08);
+        }
 
         /* ЛОГОТИП GY-GY */
         .ui-header-right { 
@@ -82,10 +114,8 @@
         .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
         .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
         
-        /* Желтая подсветка кнопок (hover) отменена */
-        
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .box-final { width: 54px; height: 54px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
@@ -109,26 +139,22 @@
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-     .hall-interior .quote-text { 
-    position: absolute; 
-    top: 12vh; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 85%; 
-    margin: 0; 
-    text-align: center;
-    padding: 0;
-    background: transparent !important;
-    color: var(--gold) !important;       
-    font-size: 28px;
-    font-weight: 700;
-    
-    /* ОСТАВЛЯЕМ СТРОГО ОБВОДКУ 1px ЧЕРНЫМ ЦВЕТОМ */
-    -webkit-text-stroke: 1px #000000;
-    text-stroke: 1px #000000;
-    
-    /* ВСЕ ТЕНИ ПОЛНОСТЬЮ УДАЛЕНЫ */
-}
+        .hall-interior .quote-text { 
+            position: absolute; 
+            top: 12vh; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 85%; 
+            margin: 0; 
+            text-align: center;
+            padding: 0;
+            background: transparent !important;
+            color: var(--gold) !important;       
+            font-size: 28px;
+            font-weight: 700;
+            -webkit-text-stroke: 1px #000000;
+            text-stroke: 1px #000000;
+        }
         .hall-door-target {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
@@ -206,6 +232,37 @@
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
+
+        /* 8-МОДУЛЬНАЯ ЕДИНАЯ СЕТКА КВАДРАТОВ (4x2) */
+        .identity-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+            align-items: center;
+            width: 290px;
+        }
+        .identity-grid .box-final {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            height: auto;
+            border: 2px solid var(--gold);
+            background: #fff;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        /* Стили внутренних текстовых меток в квадратах */
+        .box-inner-text {
+            color: #000; 
+            font-size: 8.5px; 
+            font-weight: 900; 
+            text-align: center; 
+            padding: 2px; 
+            line-height: 1.1;
+            text-transform: uppercase;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -223,7 +280,7 @@
     <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
-            <span class="notranslate" translate="no">ENGLISH</span>
+            <span class="notranslate" translate="no" style="color:var(--gold); font-weight:900;">ENGLISH</span>
         </div>
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate" translate="no"></div>
     </div>
@@ -241,38 +298,63 @@
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="quote-text">I'M CHARLIE</div>
-        <div class="quote-text">In every joke there is a share of whisky</div>
+        <div class="quote-text" id="welcome-quote-charlie">I'M CHARLIE</div>
+        <div class="quote-text" id="welcome-quote-joke">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
-        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
+        <div id="welcome-title" style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
+        <button id="btn-w-getid" class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
     <div id="block-identity" class="block">
-        <div class="quote-text">There is never too much champagne</div>
-        <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
+        <div class="quote-text" id="identity-quote">There is never too much champagne</div>
+
+        <div class="identity-grid">
+            <div class="box-final" style="background:#fff; cursor: default;" id="id-label-box">
+                <span id="id-label" class="box-inner-text">#ID</span>
+            </div>
             
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" id="qr-box-reg" style="background:#fff; cursor: default;"></div>
+            
+            <div class="box-final" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
+                <span id="txt-photo" class="box-inner-text">OR PHOTO</span>
             </div>
             
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
+            <div class="box-final" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
+                <span id="txt-avatar" class="box-inner-text">OR AVATAR</span>
+            </div>
+
+            <div class="box-final" onclick="promptNickname()">
+                <div id="nick-filled-status" style="display:none; font-size:10px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all; text-transform: uppercase;"></div>
+                <span id="txt-nick" class="box-inner-text">YOUR NICK</span>
+            </div>
+
+            <div class="box-final" onclick="generateClubNickname()">
+                <div id="auto-nick-filled-status" style="display:none; font-size:10px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all; text-transform: uppercase;"></div>
+                <span id="txt-auto-nick" class="box-inner-text">AUTO NICK</span>
+            </div>
+
+            <div class="box-final" onclick="promptEmail()">
+                <div id="email-filled-status" style="display:none; font-size:9px; font-weight:900; color:#000; text-align:center; padding: 2px; word-break: break-all;">✔ MAIL</div>
+                <span id="txt-email" class="box-inner-text">SET EMAIL</span>
+            </div>
+
+            <div class="box-final" onclick="promptExternalContact()">
+                <div id="social-status-icon" style="display:none; color: green; font-size: 16px; font-weight:900;">✔</div>
+                <span id="txt-social" class="box-inner-text">LINK MSG</span>
             </div>
         </div>
+
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
     </div>
 
     <div id="block-hall" class="block">
         <div class="hall-interior" style="position: relative;">
-            <div class="quote-text">In every joke there is a share of whisky</div>
+            <div class="quote-text" id="hall-quote">In every joke there is a share of whisky</div>
             
             <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
                 <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
@@ -310,10 +392,26 @@
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
+            
+            <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0 2px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
+            <div id="pass-email" style="font-size:11px; color:#555; margin-bottom: 8px; font-weight:700;"></div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; color:#555;">#ID</div>
+            
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;">
+                <img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;">
+            </div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+            <div id="pass-footer-text" style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+        </div>
+    </div>
+
+    <div id="modal-users-list" class="passport-overlay" onclick="closeUsersList()">
+        <div class="passport-card" onclick="event.stopPropagation()" style="width: 290px; max-height: 75vh; background: #F5F5DC; border-color: var(--gold); padding: 20px;">
+            <div class="passport-close-btn" onclick="closeUsersList()">&times;</div>
+            <div id="users-list-title" style="font-weight:900; font-size:16px; letter-spacing:1px; margin-bottom: 15px; text-transform: uppercase; color: #000; border-bottom: 2px solid #000; padding-bottom: 5px;">MEMBERS</div>
+            
+            <div id="users-list-content" style="display: flex; flex-direction: column; gap: 12px; text-align: left; max-height: 50vh; overflow-y: auto; padding-right: 5px;">
+                </div>
         </div>
     </div>
 
@@ -329,30 +427,400 @@
 
     let currentID = "";
     let currentActiveCode = 'en';
-    let currentUserImage = "";
     let currentFlagCode = 'gb';
+    let currentUserImage = "";
     let currentBlockId = 'block-entrance';
+    
+    let tempNickname = "";
+    let tempEmail = "";
+    let isAutoNickname = false; // флаг, используем ли мы сгенерированный никнейм
 
+    // Локальный словарь мгновенного перевода ключевых элементов интерфейса
+    const translations = {
+        en: {
+            charlie: "I'M CHARLIE",
+            joke: "In every joke there is a share of whisky",
+            champagne: "There is never too much champagne",
+            welcome: "WELCOME",
+            proceedHall: "PROCEED TO HALL",
+            getId: "GET ID",
+            orPhoto: "OR PHOTO",
+            orAvatar: "OR AVATAR",
+            yourNick: "YOUR NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "SET EMAIL",
+            linkMsg: "LINK MSG",
+            save: "SAVE",
+            proceed: "PROCEED",
+            closeHint: "Click &times; or outside to close"
+        },
+        ru: {
+            charlie: "Я ЧАРЛИ",
+            joke: "В каждой шутке есть доля виски",
+            champagne: "Шампанского много не бывает",
+            welcome: "ДОБРО ПОЖАЛОВАТЬ",
+            proceedHall: "ВОЙТИ В ХОЛЛ",
+            getId: "ПОЛУЧИТЬ ID",
+            orPhoto: "ИЛИ ФОТО",
+            orAvatar: "ИЛИ АВАТАР",
+            yourNick: "ТВОЙ НИК",
+            autoNick: "АВТО НИК",
+            setEmail: "ТВОЯ ПОЧТА",
+            linkMsg: "МЕССЕНДЖЕР",
+            save: "СОХРАНИТЬ",
+            proceed: "ПРОДОЛЖИТЬ",
+            closeHint: "Кликни &times; или вне окна для закрытия"
+        },
+        uk: {
+            charlie: "Я ЧАРЛІ",
+            joke: "У кожному жарті є частка віскі",
+            champagne: "Шампанського багато не буває",
+            welcome: "ЛАСКАВО ПРОСИМО",
+            proceedHall: "УВІЙТИ ДО ХОЛУ",
+            getId: "ОТРИМАТИ ID",
+            orPhoto: "АБО ФОТО",
+            orAvatar: "АБО АВАТАР",
+            yourNick: "ТВІЙ НІК",
+            autoNick: "АВТО НІК",
+            setEmail: "ТВІЙ МЕЙЛ",
+            linkMsg: "МЕСЕНДЖЕР",
+            save: "ЗБЕРЕГТИ",
+            proceed: "ПРОДОВЖИТИ",
+            closeHint: "Клікни &times; або зовні для закриття"
+        },
+        de: {
+            charlie: "ICH BIN CHARLIE",
+            joke: "In jedem Witz steckt ein Teil Whisky",
+            champagne: "Es gibt nie zu viel Champagner",
+            welcome: "WILLKOMMEN",
+            proceedHall: "WEITER ZUM SALON",
+            getId: "ID ERHALTEN",
+            orPhoto: "ODER FOTO",
+            orAvatar: "ODER AVATAR",
+            yourNick: "DEIN NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "E-MAIL SETZEN",
+            linkMsg: "MESSENGER",
+            save: "SPEICHERN",
+            proceed: "WEITER",
+            closeHint: "Klicke &times; oder außerhalb zum Schließen"
+        },
+        fr: {
+            charlie: "JE SUIS CHARLIE",
+            joke: "Dans chaque blague, il y a une part de whisky",
+            champagne: "Il n'y a jamais trop de champagne",
+            welcome: "BIENVENUE",
+            proceedHall: "ACCÉDER AU HALL",
+            getId: "OBTENIR ID",
+            orPhoto: "OU PHOTO",
+            orAvatar: "OU AVATAR",
+            yourNick: "TON NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "MON EMAIL",
+            linkMsg: "MESSAGERIE",
+            save: "SAUVER",
+            proceed: "CONTINUER",
+            closeHint: "Cliquez sur &times; ou en dehors pour fermer"
+        },
+        es: {
+            charlie: "SOY CHARLIE",
+            joke: "En cada broma hay una parte de whisky",
+            champagne: "Nunca hay demasiado champán",
+            welcome: "BIENVENIDO",
+            proceedHall: "IR AL VESTÍBULO",
+            getId: "OBTENER ID",
+            orPhoto: "O FOTO",
+            orAvatar: "O AVATAR",
+            yourNick: "TU NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "TU CORREO",
+            linkMsg: "MENSAJERO",
+            save: "GUARDAR",
+            proceed: "CONTINUAR",
+            closeHint: "Haz clic en &times; o fuera para cerrar"
+        },
+        it: {
+            charlie: "SONO CHARLIE",
+            joke: "In ogni scherzo c'è una parte di whisky",
+            champagne: "Lo champagne non è mai troppo",
+            welcome: "BENVENUTO",
+            proceedHall: "PROSEGUI AL SALONE",
+            getId: "OTTIENI ID",
+            orPhoto: "O FOTO",
+            orAvatar: "O AVATAR",
+            yourNick: "TUO NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "TUA EMAIL",
+            linkMsg: "CONTATTO",
+            save: "SALVA",
+            proceed: "PROSEGUI",
+            closeHint: "Clicca &times; o fuori per chiudere"
+        },
+        pl: {
+            charlie: "JESTEM CHARLIE",
+            joke: "W każdym żarcie jest kropla whisky",
+            champagne: "Szampana nigdy za wiele",
+            welcome: "WITAMY",
+            proceedHall: "PRZEJDŹ DO HOLU",
+            getId: "POBIERZ ID",
+            orPhoto: "LUB ZDJĘCIE",
+            orAvatar: "LUB AWATAR",
+            yourNick: "TWÓJ NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "USTAW EMAIL",
+            linkMsg: "KOMUNIKATOR",
+            save: "ZAPISZ",
+            proceed: "DALEJ",
+            closeHint: "Kliknij &times; lub poza oknem, aby zamknąć"
+        },
+        pt: {
+            charlie: "SOU O CHARLIE",
+            joke: "Em cada piada há uma dose de uísque",
+            champagne: "Nunca é demais champanhe",
+            welcome: "BEM-VINDO",
+            proceedHall: "IR PARA O SALÃO",
+            getId: "OBTER ID",
+            orPhoto: "OU FOTO",
+            orAvatar: "OU AVATAR",
+            yourNick: "TEU NICK",
+            autoNick: "AUTO NICK",
+            setEmail: "DEFINIR EMAIL",
+            linkMsg: "LINK MSG",
+            save: "SALVAR",
+            proceed: "PROSSEGUIR",
+            closeHint: "Clique em &times; ou fora para fechar"
+        },
+        tr: {
+            charlie: "BEN CHARLIE",
+            joke: "Her şakada bir parça viski vardır",
+            champagne: "Asla çok fazla şampanya olmaz",
+            welcome: "HOŞ GELDİNİZ",
+            proceedHall: "HOLA GEÇ",
+            getId: "ID AL",
+            orPhoto: "VEYA FOTO",
+            orAvatar: "VEYA AVATAR",
+            yourNick: "TAKMA ADIN",
+            autoNick: "OTO AD",
+            setEmail: "E-POSTA YAZ",
+            linkMsg: "MESAJ LINK",
+            save: "KAYDET",
+            proceed: "DEVAM ET",
+            closeHint: "Kapatmak için &times; işaretine veya dışarıya tıklayın"
+        },
+        "zh-CN": {
+            charlie: "我是查理",
+            joke: "每个玩笑里都有威士忌的影子",
+            champagne: "香槟永远不嫌多",
+            welcome: "欢迎光临",
+            proceedHall: "前往大厅",
+            getId: "获取 ID",
+            orPhoto: "或上传照片",
+            orAvatar: "或生成头像",
+            yourNick: "自定义昵称",
+            autoNick: "自动昵称",
+            setEmail: "设置邮箱",
+            linkMsg: "社交链接",
+            save: "保存",
+            proceed: "继续",
+            closeHint: "点击 &times; 或外部区域以关闭"
+        },
+        ja: {
+            charlie: "私はチャーリーです",
+            joke: "すべてのジョークにはウイスキーの隠し味がある",
+            champagne: "シャンパンはいくらあっても困らない",
+            welcome: "ようこそ",
+            proceedHall: "ホールへ進む",
+            getId: "IDを取得",
+            orPhoto: "写真を使う",
+            orAvatar: "アバター作成",
+            yourNick: "ニックネーム",
+            autoNick: "自動生成ニック",
+            setEmail: "メルアド設定",
+            linkMsg: "連絡先リンク",
+            save: "保存する",
+            proceed: "進む",
+            closeHint: "&times; または枠外をクリックして閉じる"
+        }
+    };
+
+    // База данных со счетчиками для каждого языка
     const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
+        {n:'ENGLISH', c:'gb', code:'en', count: 12, users: [{name: 'Charlie_Whisky', avatar: ''}, {name: 'Alice_In_Club', avatar: ''}, {name: 'Bob_The_Tee', avatar: ''}]}, 
+        {n:'DEUTSCH', c:'de', code:'de', count: 4, users: [{name: 'Hans_Bier', avatar: ''}, {name: 'Klaus_S.', avatar: ''}, {name: 'Helga_M', avatar: ''}, {name: 'Dieter_N', avatar: ''}]}, 
+        {n:'ESPAÑOL', c:'es', code:'es', count: 2, users: [{name: 'Carlos_Amigo', avatar: ''}, {name: 'Sofia_Sol', avatar: ''}]}, 
+        {n:'FRANÇAIS', c:'fr', code:'fr', count: 5, users: [{name: 'Pierre_Champagne', avatar: ''}, {name: 'Amelie_Eiffel', avatar: ''}, {name: 'Jean_Luc', avatar: ''}, {name: 'Chloe_Paris', avatar: ''}, {name: 'Francois', avatar: ''}]},
+        {n:'ITALIANO', c:'it', code:'it', count: 3, users: [{name: 'Giovanni_V', avatar: ''}, {name: 'Francesca_B', avatar: ''}, {name: 'Marco_Roma', avatar: ''}]}, 
+        {n:'POLSKI', c:'pl', code:'pl', count: 2, users: [{name: 'Janusz_K', avatar: ''}, {name: 'Agnieszka', avatar: ''}]}, 
+        {n:'PORTUGUÊS', c:'pt', code:'pt', count: 1, users: [{name: 'Thiago_Lisbon', avatar: ''}]}, 
+        {n:'РУССКИЙ', c:'ru', code:'ru', count: 8, users: [{name: 'Модермех', avatar: ''}, {name: 'Дядя_Вася', avatar: ''}, {name: 'Кот_Матрос', avatar: ''}, {name: 'Ася_Дизайн', avatar: ''}, {name: 'Петр_Павлов', avatar: ''}, {name: 'Ольга_Креатив', avatar: ''}, {name: 'Шурик', avatar: ''}, {name: 'Маша_Арт', avatar: ''}]}, 
+        {n:'TÜRKÇE', c:'tr', code:'tr', count: 2, users: [{name: 'Mustafa_Ist', avatar: ''}, {name: 'Canan_K', avatar: ''}]}, 
+        {n:'УКРАЇНСЬКА', c:'ua', code:'uk', count: 3, users: [{name: 'Козак_Сміх', avatar: ''}, {name: 'Оксана_Д', avatar: ''}, {name: 'Дмитро_В', avatar: ''}]}, 
+        {n:'中文', c:'cn', code:'zh-CN', count: 6, users: [{name: 'Lee_Shaolin', avatar: ''}, {name: 'Mei_Ling', avatar: ''}, {name: 'Zhang_Wei', avatar: ''}, {name: 'Wang_Fang', avatar: ''}, {name: 'Chen_Qiang', avatar: ''}, {name: 'Li_Jie', avatar: ''}]}, 
+        {n:'日本語', c:'jp', code:'ja', count: 4, users: [{name: 'Satoshi_N', avatar: ''}, {name: 'Yuki_Tokyo', avatar: ''}, {name: 'Kenji_K', avatar: ''}, {name: 'Haruka_A', avatar: ''}]}
     ];
+
+    const clubPrefixes = ["Lucky", "Sweet", "Cyber", "Jolly", "Crypto", "Lazy", "Neon", "Grand", "Royal", "Crazy", "Gentle", "Silver", "Iron"];
+    const clubSuffixes = ["Panda", "Whisky", "Socrates", "Joker", "Tesla", "Tee", "Sherlock", "Pirate", "Hacker", "Baron", "Zeus", "Fox", "Gamer"];
+
+    // Окна ввода данных через квадраты
+    function promptNickname() {
+        const defaultPrompt = isAutoNickname ? "" : tempNickname;
+        const userNick = prompt("ENTER NICKNAME (MAX 15 CHARS):", defaultPrompt);
+        if (userNick !== null) {
+            isAutoNickname = false;
+            updateNicknameUI(userNick.trim().substring(0, 15));
+        }
+    }
+
+    // Глобальная функция обновления текстов по словарю
+    function runGlobalDispatcher(langCode) {
+        const dict = translations[langCode] || translations['en'];
+        
+        // Перевод текстовых блоков
+        const welcomeCharlie = document.getElementById('welcome-quote-charlie');
+        const welcomeJoke = document.getElementById('welcome-quote-joke');
+        const welcomeTitle = document.getElementById('welcome-title');
+        const btnWHall = document.getElementById('btn-w-hall');
+        const btnWGetid = document.getElementById('btn-w-getid');
+        const identityQuote = document.getElementById('identity-quote');
+        const txtPhoto = document.getElementById('txt-photo');
+        const txtAvatar = document.getElementById('txt-avatar');
+        const txtNick = document.getElementById('txt-nick');
+        const txtAutoNick = document.getElementById('txt-auto-nick');
+        const txtEmail = document.getElementById('txt-email');
+        const txtSocial = document.getElementById('txt-social');
+        const btnSave = document.getElementById('btn-save');
+        const btnPass = document.getElementById('btn-pass');
+        const hallQuote = document.getElementById('hall-quote');
+        const passFooterText = document.getElementById('pass-footer-text');
+
+        if (welcomeCharlie) welcomeCharlie.innerText = dict.charlie;
+        if (welcomeJoke) welcomeJoke.innerText = dict.joke;
+        if (welcomeTitle) welcomeTitle.innerText = dict.welcome;
+        if (btnWHall) btnWHall.innerText = dict.proceedHall;
+        if (btnWGetid) btnWGetid.innerText = dict.getId;
+        if (identityQuote) identityQuote.innerText = dict.champagne;
+        if (txtPhoto) txtPhoto.innerText = dict.orPhoto;
+        if (txtAvatar) txtAvatar.innerText = dict.orAvatar;
+        if (txtNick) txtNick.innerText = dict.yourNick;
+        if (txtAutoNick) txtAutoNick.innerText = dict.autoNick;
+        if (txtEmail) txtEmail.innerText = dict.setEmail;
+        if (txtSocial) txtSocial.innerText = dict.linkMsg;
+        if (btnSave) btnSave.innerText = dict.save;
+        if (btnPass) btnPass.innerText = dict.proceed;
+        if (hallQuote) hallQuote.innerText = dict.joke;
+        if (passFooterText) passFooterText.innerHTML = dict.closeHint;
+    }
+
+    function generateClubNickname() {
+        const randPre = clubPrefixes[Math.floor(Math.random() * clubPrefixes.length)];
+        const randSuf = clubSuffixes[Math.floor(Math.random() * clubSuffixes.length)];
+        const generatedName = `${randPre}_${randSuf}`;
+        isAutoNickname = true;
+        updateNicknameUI(generatedName);
+    }
+
+    function updateNicknameUI(nick) {
+        tempNickname = nick;
+        const filledStatus = document.getElementById('nick-filled-status');
+        const txtNick = document.getElementById('txt-nick');
+        
+        const autoFilledStatus = document.getElementById('auto-nick-filled-status');
+        const txtAutoNick = document.getElementById('txt-auto-nick');
+        
+        const passNick = document.getElementById('pass-nickname');
+        
+        // Сброс визуального состояния обоих квадратов ников
+        if (filledStatus) filledStatus.style.display = 'none';
+        if (txtNick) txtNick.style.display = 'block';
+        if (autoFilledStatus) autoFilledStatus.style.display = 'none';
+        if (txtAutoNick) txtAutoNick.style.display = 'block';
+
+        if (nick && nick.trim() !== '') {
+            if (isAutoNickname) {
+                // Если сгенерирован автоматически — показываем его в 6-м квадрате
+                if (autoFilledStatus) {
+                    autoFilledStatus.innerText = "@" + nick;
+                    autoFilledStatus.style.display = 'block';
+                }
+                if (txtAutoNick) txtAutoNick.style.display = 'none';
+            } else {
+                // Если введен вручную — показываем его в 5-м квадрате
+                if (filledStatus) {
+                    filledStatus.innerText = "@" + nick;
+                    filledStatus.style.display = 'block';
+                }
+                if (txtNick) txtNick.style.display = 'none';
+            }
+            if (passNick) passNick.innerText = '@' + nick;
+        } else {
+            if (passNick) passNick.innerText = '@GUEST_HUMORIST';
+        }
+    }
+
+    function promptEmail() {
+        const userEmail = prompt("ENTER EMAIL ADDRESS:", tempEmail);
+        if (userEmail !== null) {
+            tempEmail = userEmail.trim();
+            const filledStatus = document.getElementById('email-filled-status');
+            const txtEmail = document.getElementById('txt-email');
+            const passEmail = document.getElementById('pass-email');
+            
+            if (tempEmail !== '') {
+                if (filledStatus) filledStatus.style.display = 'block';
+                if (txtEmail) txtEmail.style.display = 'none';
+                if (passEmail) passEmail.innerText = tempEmail;
+            } else {
+                if (filledStatus) filledStatus.style.display = 'none';
+                if (txtEmail) txtEmail.style.display = 'block';
+                if (passEmail) passEmail.innerText = '';
+            }
+        }
+    }
+
+    function promptExternalContact() {
+        const currentContact = safeStorageGet('gygy_contact') || '';
+        const userContact = prompt("ENTER TELEGRAM, INSTAGRAM OR X PROFILE LINK:", currentContact);
+        if (userContact !== null) {
+            const cleanContact = userContact.trim();
+            safeStorageSet('gygy_contact', cleanContact);
+            const statusIcon = document.getElementById('social-status-icon');
+            const txtSocial = document.getElementById('txt-social');
+            if (cleanContact !== '') {
+                if (statusIcon) statusIcon.style.display = 'block';
+                if (txtSocial) txtSocial.style.display = 'none';
+            } else {
+                if (statusIcon) statusIcon.style.display = 'none';
+                if (txtSocial) txtSocial.style.display = 'block';
+            }
+        }
+    }
 
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
         if (!container) return;
         container.innerHTML = ''; 
+        
         allLangs.forEach(lang => {
             if(lang.code === currentActiveCode) return; 
+            
             const div = document.createElement('div');
             div.className = 'lang-item notranslate';
             div.setAttribute('translate', 'no');
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
-            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
+            
+            const stringifiedLang = JSON.stringify(lang).replace(/"/g, '&quot;');
+            
+            div.innerHTML = `
+                <div style="display:flex; align-items:center; flex-grow:1;" onclick="applyLanguage(${stringifiedLang})">
+                    <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no">
+                    <span class="notranslate" translate="no" style="color:#fff;">${lang.n}</span>
+                </div>
+                ${lang.count > 0 ? `
+                    <span class="member-counter notranslate" translate="no" onclick="event.stopPropagation(); openUsersList('${lang.c}')">
+                        ${lang.count}
+                    </span>` : ''
+                }
+            `;
             container.appendChild(div);
         });
     }
@@ -369,14 +837,24 @@
         safeStorageSet('gygy_lang', lang.code);
         
         const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
+        if (activeDisplay) { 
+            activeDisplay.innerHTML = `
+                <img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> 
+                <span style="color:var(--gold); font-weight:900;">${lang.n}</span>
+                ${lang.count > 0 ? `<span class="member-counter" style="margin-left: auto; transform: scale(0.9);" onclick="event.stopPropagation(); openUsersList('${lang.c}')">${lang.count}</span>` : ''}
+            `; 
+        }
+        
         const badgeFlagImg = document.getElementById('badge-flag-img');
         if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
         
         const langListContainer = document.getElementById('lang-list-container');
         if (langListContainer) langListContainer.style.display = 'none';
-        renderLangList();
         
+        // Мгновенный перевызов Диспетчера Локализации
+        runGlobalDispatcher(lang.code);
+        
+        renderLangList();
         forceTriggerGoogleTranslate(lang.code);
     }
 
@@ -390,11 +868,9 @@
                 if (selectEl.value === langCode) return;
                 selectEl.value = langCode;
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
             }
             if (++attempts > 100) {
                 clearInterval(window.langTimer);
-                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
             }
         }, 100);
     }
@@ -425,14 +901,24 @@
         const passQrBox = document.getElementById('pass-qr-box');
         if (idLabel) idLabel.innerText = targetID;
         if (passIdVal) passIdVal.innerText = targetID;
-        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
+        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 50, height: 50 }); }
         if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
     }
 
     function checkAndFillRegistrationForm() {
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
+        const savedNickname = safeStorageGet('gygy_nickname');
+        const savedIsAuto = safeStorageGet('gygy_is_auto_nick');
+        const savedEmail = safeStorageGet('gygy_email');
+        const savedContact = safeStorageGet('gygy_contact');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
+        if (!currentID) {
+            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+            safeStorageSet('gygy_id', currentID);
+            safeStorageSet('gy_user_id', currentID);
+        }
+
         let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
         const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
         
@@ -448,20 +934,41 @@
             matchedLang = allLangs.find(l => l.code === savedLangCode);
         }
 
-        if (matchedLang) {
-            currentFlagCode = matchedLang.c;
-            currentActiveCode = matchedLang.code;
-            
-            const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-            
-            forceTriggerGoogleTranslate(matchedLang.code);
+        // По умолчанию используется английский, если язык ранее не сохранялся
+        if (!matchedLang) {
+            matchedLang = allLangs.find(l => l.code === 'en');
         }
 
+        if (matchedLang) {
+            applyLanguage(matchedLang);
+        } else {
+            renderLangList();
+        }
+        
         if (currentID) { renderUserPassports(currentID); }
         
+        if (savedNickname) {
+            isAutoNickname = (savedIsAuto === 'true');
+            updateNicknameUI(savedNickname);
+        }
+
+        if (savedEmail) {
+            tempEmail = savedEmail;
+            const filledStatus = document.getElementById('email-filled-status');
+            const txtEmail = document.getElementById('txt-email');
+            const passEmail = document.getElementById('pass-email');
+            if (filledStatus) filledStatus.style.display = 'block';
+            if (txtEmail) txtEmail.style.display = 'none';
+            if (passEmail) passEmail.innerText = savedEmail;
+        }
+
+        if (savedContact) {
+            const statusIcon = document.getElementById('social-status-icon');
+            const txtSocial = document.getElementById('txt-social');
+            if (statusIcon) statusIcon.style.display = 'block';
+            if (txtSocial) txtSocial.style.display = 'none';
+        }
+
         if (savedAvatar) {
             currentUserImage = savedAvatar;
             const badgeImg = document.getElementById('badge-avatar-img');
@@ -518,7 +1025,6 @@
         const langSwitcher = document.getElementById('lang-switcher');
         const navArrows = document.getElementById('club-nav-arrows');
 
-        // Управление элементами верхней панели + Загасить блок языков на последующих экранах
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
             if (mainDoor) mainDoor.classList.remove('door-exploded');
@@ -529,7 +1035,6 @@
             if (navArrows) navArrows.style.display = 'flex';
             if (badge && currentUserImage) badge.style.display = 'block';
             
-            // Загасить языковую панель на страницах Приветствие, Регистрация, Холл
             if (nextId === 'block-welcome' || nextId === 'block-identity' || nextId === 'block-hall') {
                 if (langSwitcher) langSwitcher.style.display = 'none';
             } else {
@@ -549,6 +1054,7 @@
         }, 20);
     }
 
+    // Воспроизведение звука при открытии двери
     function handleDoor() {
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
@@ -592,15 +1098,28 @@
 
     function saveUserProfile() {
         if (!currentUserImage) return;
+        
+        const nickname = tempNickname ? tempNickname : "GUEST";
+        const email = tempEmail ? tempEmail : "";
+        
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
         safeStorageSet('gy_user_avatar', currentUserImage); 
         safeStorageSet('gy_user_id', currentID);
+        safeStorageSet('gygy_nickname', nickname);
+        safeStorageSet('gygy_is_auto_nick', isAutoNickname ? 'true' : 'false');
+        safeStorageSet('gygy_email', email);
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
         if (badgeImg) badgeImg.src = currentUserImage;
         if (passImg) passImg.src = currentUserImage;
+
+        const passNick = document.getElementById('pass-nickname');
+        if (passNick) passNick.innerText = '@' + nickname;
+
+        const passEmail = document.getElementById('pass-email');
+        if (passEmail) passEmail.innerText = email;
 
         const badge = document.getElementById('global-user-badge');
         if (badge) badge.style.display = 'block';
@@ -625,8 +1144,52 @@
         }
     }
 
+    function openUsersList(countryCode) {
+        const lang = allLangs.find(l => l.c === countryCode);
+        if (!lang || !lang.users.length) return;
+
+        const title = document.getElementById('users-list-title');
+        const content = document.getElementById('users-list-content');
+        if (title) title.innerText = `${lang.n} RESIDENTS`;
+        
+        if (content) {
+            content.innerHTML = '';
+            const sortedUsers = [...lang.users].sort((a, b) => a.name.localeCompare(b.name));
+            
+            sortedUsers.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.style.display = 'flex';
+                userDiv.style.alignItems = 'center';
+                userDiv.style.gap = '12px';
+                userDiv.style.padding = '8px 0';
+                userDiv.style.borderBottom = '1px dashed rgba(0,0,0,0.15)';
+
+                const avatarSrc = user.avatar || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30"><rect width="100" height="100" fill="%23d4af37"/><circle cx="50" cy="40" r="20" fill="%23000"/><path d="M20,90 C20,70 80,70 80,90" fill="%23000"/></svg>';
+
+                userDiv.innerHTML = `
+                    <img src="${avatarSrc}" style="width:36px; height:36px; border-radius:50%; border:1.5px solid var(--gold); object-fit:cover; background:#000;">
+                    <span style="font-weight:900; font-size:14px; color:#000; font-family:'Share Tech Mono';">@${user.name}</span>
+                `;
+                content.appendChild(userDiv);
+            });
+        }
+
+        const modal = document.getElementById('modal-users-list');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+        }
+    }
+
+    function closeUsersList() {
+        const modal = document.getElementById('modal-users-list');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    }
+
     window.addEventListener('load', () => {
-        renderLangList();
         checkAndFillRegistrationForm();
         document.body.classList.add('page-loaded');
     });
