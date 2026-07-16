@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club 001 </title>
+    <title>GY-GY Club — Официальный вход 001 </title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
-    
+
     <style>
         :root {
             --gold: #d4af37;
-            --dark: #121212;
-            --dark-gray: #1a1a1a;
-            --light-gray: #2a2a2a;
+            --dark: #0a0a0a;
+            --dark-gray: #141414;
+            --light-gray: #222222;
             --text: #f0f0f0;
+            --glow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             background-color: var(--dark);
@@ -26,43 +32,123 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Общие стили для экранов-блоков */
-        .block {
-            display: none;
-            flex-direction: column;
+        /* ПОСТОЯННЫЕ АТРИБУТЫ GY-GY КЛУБА */
+        .fixed-header {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            z-index: 100;
+        }
+
+        .gy-logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: var(--glow);
+            text-decoration: none;
+            letter-spacing: 3px;
+        }
+
+        /* Навигация и Языковая панель */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+            display: none; /* Показывается динамически в js */
+        }
+
+        .back-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: var(--glow);
+        }
+
+        /* Языковая панель с юмором */
+        .lang-panel {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-btn {
+            background: var(--light-gray);
+            border: 1.5px solid var(--gold);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: var(--dark-gray);
+            border: 1.5px solid var(--gold);
+            border-radius: 5px;
+            width: 150px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            z-index: 110;
+        }
+
+        .lang-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .lang-option:hover {
+            background: var(--light-gray);
+            color: var(--gold);
+        }
+
+        /* КОНСТРУКЦИЯ БЛОКОВ И ЭКРАНОВ */
+        .block-container {
             width: 100%;
-            max-width: 480px;
-            padding: 25px;
+            max-width: 500px;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .block {
             background: var(--dark-gray);
             border: 2px solid var(--gold);
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            gap: 20px;
             text-align: center;
+            position: relative;
         }
 
         .block.active {
             display: flex;
-            animation: fadeIn 0.4s ease forwards;
+            animation: teleport 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Постоянные атрибуты клуба (Логотип GY-GY) */
-        .club-logo {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--gold);
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+        @keyframes teleport {
+            0% { opacity: 0; transform: scale(0.8) rotate(-3deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
         /* Кнопки */
@@ -70,7 +156,7 @@
             background: var(--gold);
             color: var(--dark);
             border: none;
-            padding: 12px 24px;
+            padding: 14px 20px;
             border-radius: 8px;
             font-family: inherit;
             font-size: 1.1rem;
@@ -78,130 +164,322 @@
             cursor: pointer;
             text-transform: uppercase;
             transition: 0.3s;
+            box-shadow: var(--glow);
         }
 
         .btn:hover {
             background: #fff;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
         }
 
         .btn-sleep {
-            opacity: 0.4;
+            opacity: 0.3;
             pointer-events: none;
+            filter: grayscale(1);
         }
 
-        /* Дверь */
+        /* Стилизация Двери */
+        .door-frame {
+            perspective: 1000px;
+            margin: 20px auto;
+            width: 120px;
+            height: 180px;
+        }
+
         .door {
-            font-size: 5rem;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            border: 3px solid var(--gold);
+            border-radius: 8px;
+            font-size: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: transform 0.5s ease;
+            transform-origin: left center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s;
+            box-shadow: var(--glow);
         }
 
         .door-exploded {
-            transform: scale(0.8) rotateY(90deg);
-            opacity: 0;
+            transform: rotateY(-110deg);
+            opacity: 0.3;
+            box-shadow: 0 0 30px rgba(212,175,55,0.8);
         }
 
-        /* Юзер-Бейдж в Холле */
-        #global-user-badge {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        /* Аватар и Юзер-зона */
+        .avatar-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar-box {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3.5px solid var(--gold);
+            background: #050505;
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(0,0,0,0.8);
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid var(--gold);
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
         }
 
-        #badge-avatar-img {
-            width: 30px;
-            height: 30px;
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .file-upload-btn {
+            background: transparent;
+            border: 1px dashed var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        /* Инпуты */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .input-field {
+            background: var(--light-gray);
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 6px;
+            padding: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: var(--gold);
+            box-shadow: var(--glow);
+        }
+
+        /* Паспортный интерфейс (Магический ключ) */
+        .passport-card {
+            background: linear-gradient(145deg, #181818 0%, #0d0d0d 100%);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: var(--glow);
+        }
+
+        .passport-header {
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .passport-layout {
+            display: flex;
+            gap: 15px;
+        }
+
+        .passport-avatar {
+            width: 85px;
+            height: 105px;
+            border: 1.5px solid var(--gold);
+            background: #000;
+            object-fit: cover;
+        }
+
+        .passport-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .passport-field {
+            margin-bottom: 5px;
+        }
+
+        .passport-label {
+            font-size: 0.7rem;
+            color: #777;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .passport-value {
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .qr-wrapper {
+            background: #fff;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Глобальный бейдж авторизации */
+        #user-badge {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: var(--light-gray);
+            border: 1px solid var(--gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        #user-badge img {
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        /* Специфические элементы регистрации */
-        .avatar-preview-box {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-        }
-
-        .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; }
-        
-        input[type="text"] {
-            background: var(--light-gray);
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            padding: 10px;
-            color: #white;
-            font-family: inherit;
-            border-radius: 6px;
-            outline: none;
-            text-align: center;
-            width: 80%;
+        #user-badge span {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <div id="global-user-badge" style="display: none;">
-        <img id="badge-avatar-img" src="" alt="Avatar">
-        <span id="badge-nickname" style="color: var(--gold); font-weight: bold;">@GUEST</span>
-    </div>
-
-    <div id="block-entrance" class="block active">
-        <div class="club-logo">GY-GY</div>
-        <p>Постучись в закрытую дверь...</p>
-        <div id="main-door" class="door" onclick="handleDoor()">🚪</div>
-    </div>
-
-    <div id="block-welcome" class="block">
-        <div class="club-logo">GY-GY</div>
-        <h2>Приветствуем, Странник!</h2>
-        <p>Ты стоишь на пороге обители юмора, кода и мемов. Чтобы продолжить, нам нужно зафиксировать твой цифровой след.</p>
-        <button class="btn" onclick="portalTransition('block-identity')">Создать личность</button>
-    </div>
-
-    <div id="block-identity" class="block">
-        <h2>Регистрация личности</h2>
+    <header class="fixed-header">
+        <a href="#" class="gy-logo" onclick="resetToEntrance(event)">GY-GY</a>
         
-        <div class="avatar-preview-box">
-            <img id="avatar-img" style="display: none;">
-            <img id="pp" style="display: none;">
-            <div id="txt-avatar">НЕТ ФОТО</div>
+        <div class="nav-controls">
+            <button id="back-arrow" class="back-btn" onclick="handleNavigationBack()">← НАЗАД</button>
+
+            <div id="user-badge">
+                <img id="badge-img" src="" alt="">
+                <span id="badge-nick">@GUEST</span>
+            </div>
+
+            <div class="lang-panel">
+                <button class="lang-btn" onclick="toggleLangPanel()">🌐 RU/UA/EN</button>
+                <div class="lang-dropdown" id="lang-dropdown">
+                    <div class="lang-option" onclick="selectLanguage('ru')">🇷🇺 Русский</div>
+                    <div class="lang-option" onclick="selectLanguage('ua')">🇺🇦 Українська</div>
+                    <div class="lang-option" onclick="selectLanguage('en')">🇬🇧 English</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="block-container">
+
+        <div id="block-entrance" class="block active">
+            <h2 style="color: var(--gold);">СТУЧИСЬ В GY-GY CLUB</h2>
+            <p style="color: #888; font-size: 0.9rem;">Вход только для весёлых кодеров и мэм-лордов</p>
+            <div class="door-frame">
+                <div id="main-door" class="door" onclick="explodeDoor()">🚪</div>
+            </div>
         </div>
 
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" style="font-size:0.8rem; padding: 8px 15px;" onclick="generateAvatar()">GY-Генератор</button>
-            <label class="btn" style="font-size:0.8rem; padding: 8px 15px; cursor: pointer;">
-                Своё фото <input type="file" accept="image/*" onchange="preview(this)" style="display: none;">
-            </label>
+        <div id="block-welcome" class="block">
+            <h2 style="color: var(--gold);">ДОБРО ПОЖАЛОВАТЬ!</h2>
+            <p>У нас тут своя атмосфера: мемы, андеграундный код и никакого занудства.</p>
+            <p style="font-size: 0.95rem; color: #aaa;">Для входа необходимо сгенерировать твою новую виртуальную личность Клуба.</p>
+            <button class="btn" onclick="portalTransition('block-identity')">Создать личность ⚔️</button>
         </div>
 
-        <input type="text" id="input-nickname" placeholder="Твой Клубный Никнейм" oninput="validateInput()">
-        <input type="text" id="id-label" readonly style="color: var(--gold); border: none; font-weight: bold;" value="Генерация ID...">
+        <div id="block-identity" class="block">
+            <h2 style="color: var(--gold);">СОЗДАНИЕ ПЕРСОНАЖА</h2>
 
-        <button id="btn-w-hall" class="btn btn-sleep" onclick="saveUserProfileAndEnter()">Зайти в Холл ──►</button>
-    </div>
+            <div class="avatar-zone">
+                <div class="avatar-box">
+                    <img id="avatar-preview" style="display: none;">
+                    <span id="avatar-placeholder-text" class="avatar-placeholder">НЕТ АВАТАРА</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="file-upload-btn" onclick="generateRandomAvatar()">⚡ Сгенерировать</button>
+                    <label class="file-upload-btn">
+                        📸 Своё фото
+                        <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+                    </label>
+                </div>
+            </div>
 
-    <div id="block-hall" class="block">
-        <div class="club-logo">GY-GY HALL</div>
-        <h2>Главный Зал Клуба</h2>
-        <p>Чувствуй себя как дома. Ты официально в теме!</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 15px;">
-            <button class="btn" onclick="alert('Улетели на Версы!')">🖧 Серверная</button>
-            <button class="btn" onclick="alert('Наливаем!')">🍺 Бар GY-GY</button>
+            <div class="input-group">
+                <label>Придумай никнейм в клубе</label>
+                <input type="text" id="input-nickname" class="input-field" placeholder="Например: CyberMechanic" oninput="validateRegistrationForm()">
+            </div>
+
+            <div class="input-group">
+                <label>Твой уникальный цифровой след (ID)</label>
+                <input type="text" id="id-display" class="input-field" style="color: var(--gold); border: none; text-align: center; font-weight: bold;" readonly value="Генерирую...">
+            </div>
+
+            <button id="submit-reg-btn" class="btn btn-sleep" onclick="finalizeRegistration()">ПОЛУЧИТЬ ПАСПОРТ ──►</button>
         </div>
+
+        <div id="block-passport" class="block">
+            <h2 style="color: var(--gold);">ТВОЙ МАГИЧЕСКИЙ КЛЮЧ</h2>
+            
+            <div class="passport-card">
+                <div class="passport-header">GY-GY CLUB RESIDENT</div>
+                <div class="passport-layout">
+                    <img id="pass-avatar" class="passport-avatar" src="" alt="Avatar">
+                    <div class="passport-details">
+                        <div class="passport-field">
+                            <span class="passport-label">Никнейм</span>
+                            <span class="passport-value" id="pass-nick-val">@GUEST</span>
+                        </div>
+                        <div class="passport-field">
+                            <span class="passport-label">Идентификатор (ID)</span>
+                            <span class="passport-value" id="pass-id-val" style="color: var(--gold);">GY-000000</span>
+                        </div>
+                    </div>
+                    <div class="qr-wrapper" id="pass-qr-container"></div>
+                </div>
+            </div>
+
+            <p style="font-size: 0.8rem; color: #888;">Скачай паспорт или сохрани QR-код для бесшовного входа с других устройств.</p>
+            <button class="btn" onclick="enterMainHall()">ЗАЙТИ В КЛУБ 🚪🚶‍♂️</button>
+        </div>
+
+        <div id="block-hall" class="block">
+            <h2 style="color: var(--gold); text-shadow: var(--glow);">ГЛАВНЫЙ ЗАЛ GY-GY</h2>
+            <p>Ты внутри! Тебе открыты все тайные двери.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                <button class="btn" onclick="alert('Убегаем в Серверную!')">🖧 Серверная (verses)</button>
+                <button class="btn" onclick="alert('Наливаем бокал пенного!')">🍺 Бар Клуба</button>
+                <button class="btn" onclick="alert('Игры разума запущены!')">🎲 Игровые Столики</button>
+            </div>
+        </div>
+
     </div>
 
     <audio id="snd-door" src="https://assets.mixkit.co/active_storage/sfx/2065/2065-84.wav" preload="auto"></audio>
