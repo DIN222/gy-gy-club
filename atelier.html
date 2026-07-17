@@ -2,635 +2,864 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Studio | Digital Atelier 001 </title>
-    <!-- Подключаем Three.js для 3D графики -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club — 3D Ателье & Фабрика v5.3.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- Подключаем Three.js для 3D -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
         :root {
-            --bg-dark: #0a0a0c;
-            --panel-bg: rgba(15, 15, 20, 0.88);
             --gold: #d4af37;
-            --gold-hover: #f3cf57;
-            --text-light: #f5f5f7;
-            --text-muted: #8e8e93;
+            --dark: #0a0a0a;
+            --dark-gray: rgba(15, 15, 15, 0.92);
+            --light-gray: rgba(30, 30, 30, 0.95);
+            --text: #f0f0f0;
+            --glow: 0 0 12px rgba(212, 175, 55, 0.5);
+            --neon-purple: #bf00ff;
             --neon-green: #39ff14;
-            --border-color: rgba(212, 175, 55, 0.2);
-            --card-active-bg: rgba(212, 175, 55, 0.08);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        #app-container {
-            display: flex;
+        html, body {
             width: 100%;
-            height: 100%;
-            position: relative;
+            height: 100vh;
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+            position: fixed;
         }
 
-        /* 3D Окно просмотра */
-        #canvas-container {
-            flex: 1;
-            height: 100%;
-            position: relative;
-            cursor: grab;
-        }
-        #canvas-container:active {
-            cursor: grabbing;
-        }
-
-        /* Навигация (Вкладки) */
-        .tabs-nav {
+        /* Задний фон — генерируемый арт astudio_bg.jpg */
+        .atelier-bg {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            inset: 0;
+            background: url('astudio_bg.jpg') center/cover no-repeat #000;
+            z-index: 1;
+        }
+
+        .overlay-mask {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
+            z-index: 2;
+        }
+
+        /* ==========================================================
+           СТАНДАРТНАЯ ВЕРХНЯЯ ПАНЕЛЬ GY-GY (БЕЗ ФЛАГА, КНОПКИ С ЗАЛИВКОЙ)
+           ========================================================== */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--gold);
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .header-left {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Кнопки навигации с заливкой в фирменном стиле */
+        .nav-btn {
+            background: var(--gold);
+            border: 1.5px solid var(--gold);
+            color: #000;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--glow);
+        }
+
+        .nav-btn:hover {
+            background: #fff;
+            border-color: #fff;
+            color: #000;
+            box-shadow: 0 0 15px #fff;
+        }
+
+        .header-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Аватар без флага по вашему стандарту */
+        .header-avatar-zone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--light-gray);
+            border: 1.5px solid var(--gold);
+            padding: 6px 18px;
+            border-radius: 25px;
+            box-shadow: var(--glow);
+        }
+
+        .header-avatar-zone img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--gold);
+            object-fit: cover;
+        }
+        .header-avatar-zone span.nickname { 
+            color: var(--gold); 
+            font-weight: bold; 
+            font-size: 0.95rem;
+        }
+
+        .header-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .gy-logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: var(--glow);
+            text-decoration: none;
+            letter-spacing: 4px;
+        }
+
+        /* ==========================================================
+           ГЛАВНЫЙ ИНТЕРФЕЙС АТЕЛЬЕ
+           ========================================================== */
+        .main-workspace {
+            position: absolute;
+            inset: 70px 0 0 0;
+            display: grid;
+            grid-template-columns: 380px 1fr;
             z-index: 10;
         }
 
-        .tab-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            padding: 10px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn:hover { border-color: var(--gold); }
-        .tab-btn.active {
-            background: var(--gold);
-            color: var(--bg-dark);
-            border-color: var(--gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-
-        /* Боковая панель интерфейса */
-        .side-panel {
-            width: 420px;
-            height: 100%;
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid var(--border-color);
-            padding: 30px;
+        /* Панель управления (Слева) */
+        .control-panel {
+            background: var(--dark-gray);
+            border-right: 2px solid var(--gold);
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 18px;
             overflow-y: auto;
-            z-index: 5;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
+            z-index: 20;
+        }
+
+        /* Вкладки */
+        .panel-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #888;
+            padding: 8px 3px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .tab-btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            font-weight: bold;
+            box-shadow: var(--glow);
         }
 
         .tab-content {
             display: none;
             flex-direction: column;
-            gap: 23px;
+            gap: 18px;
         }
 
-        .tab-content.active { display: flex; }
-
-        h2 {
-            color: var(--gold);
-            font-size: 1.4rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-            text-transform: uppercase;
+        .tab-content.active {
+            display: flex;
         }
 
         .section-title {
-            font-size: 0.8rem;
+            color: var(--gold);
+            font-size: 1.1rem;
+            border-bottom: 1.5px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        /* Выбор манекена и опций */
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        
-        .grid-2 {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .option-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px;
-            padding: 12px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.85rem;
-        }
-
-        .option-card:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(212, 175, 55, 0.4);
-        }
-
-        .option-card.active {
-            border-color: var(--gold);
-            background: var(--card-active-bg);
-            font-weight: 500;
-        }
-
-        .color-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin: 0 auto 6px auto;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* Ползунки размеров */
-        .range-container {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 12px;
-        }
-
-        .range-header {
-            display: flex;
-            justify-content: space-between;
+            letter-spacing: 2px;
             margin-bottom: 10px;
-            font-size: 0.85rem;
         }
 
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--gold);
-            background: #222;
-            height: 4px;
-            outline: none;
-        }
-
-        /* Зона Drag & Drop */
-        .drop-zone {
-            border: 2px dashed rgba(212, 175, 55, 0.25);
-            border-radius: 14px;
-            padding: 25px 15px;
-            text-align: center;
-            cursor: pointer;
-            background: rgba(212, 175, 55, 0.01);
-            transition: all 0.3s ease;
-        }
-
-        .drop-zone.dragover {
-            background: rgba(212, 175, 55, 0.08);
-            border-color: var(--gold);
-        }
-
-        .drop-zone p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-
-        /* Поля ввода */
-        .input-group {
+        /* Формы */
+        .form-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
-        .input-group label {
+        .form-group label {
             font-size: 0.8rem;
-            color: var(--text-muted);
+            color: #aaa;
+            text-transform: uppercase;
         }
 
-        input[type="text"], input[type="tel"] {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 12px 14px;
-            border-radius: 8px;
+        .form-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1.5px solid rgba(212, 175, 55, 0.4);
+            border-radius: 4px;
+            padding: 10px;
             color: #fff;
-            font-size: 0.9rem;
+            font-family: inherit;
             outline: none;
+            transition: 0.3s;
         }
 
-        input[type="text"]:focus, input[type="tel"]:focus { border-color: var(--gold); }
-
-        /* Итоговый виджет калькулятора */
-        .price-widget {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(0,0,0,0));
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: auto;
+        .form-input:focus {
+            border-color: var(--gold);
+            box-shadow: var(--glow);
         }
 
-        .price-row {
+        /* Переключатели */
+        .gender-selector, .grid-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .size-selector {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+        }
+
+        .selector-btn {
+            background: #111;
+            border: 1.5px solid #444;
+            color: #aaa;
+            padding: 8px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .selector-btn:hover { border-color: var(--gold); color: #fff; }
+        .selector-btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            box-shadow: var(--glow);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-label {
             display: flex;
             justify-content: space-between;
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: var(--gold);
+            font-size: 0.85rem;
+            color: #ccc;
         }
 
-        .price-currency {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 3px;
-        }
-
-        .submit-btn {
+        .control-label span.val { color: var(--gold); font-weight: bold; }
+        .slider {
+            -webkit-appearance: none;
             width: 100%;
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            outline: none;
+            border: 1px solid #333;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
             background: var(--gold);
-            color: var(--bg-dark);
-            border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
             cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.2s;
+            box-shadow: var(--glow);
         }
 
-        .submit-btn:hover { background: var(--gold-hover); }
+        .drop-zone {
+            border: 2px dashed rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            padding: 20px 15px;
+            text-align: center;
+            background: rgba(20, 20, 20, 0.6);
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
 
-        /* Карточки фабрики */
-        .factory-container {
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: var(--glow);
+        }
+
+        /* Калькулятор */
+        .order-summary {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1.5px solid var(--gold);
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .summary-total {
+            border-top: 1.5px solid rgba(212, 175, 55, 0.3);
+            padding-top: 10px;
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        .action-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: var(--glow);
+        }
+
+        .action-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 15px #fff;
+        }
+
+        /* Заказы на Заводе */
+        .order-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            overflow-y: auto;
+            transition: 0.3s;
         }
 
-        .order-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border-left: 4px solid #666;
-        }
-        .order-card.pending { border-left-color: var(--gold); }
-        .order-card.processing { border-left-color: #007bff; }
-        .order-card.shipped { border-left-color: var(--neon-green); }
+        .order-card.pending { border-left: 4px solid var(--gold); }
+        .order-card.processing { border-left: 4px solid var(--neon-purple); }
+        .order-card.shipped { border-left: 4px solid var(--neon-green); }
 
         .order-card-header {
             display: flex;
             justify-content: space-between;
-            font-weight: 600;
             font-size: 0.85rem;
+            color: #888;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
         }
 
         .status-badge {
-            font-size: 0.7rem;
-            padding: 2px 7px;
-            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.75rem;
         }
-        .status-pending { background: rgba(212,175,55,0.15); color: var(--gold); }
-        .status-processing { background: rgba(0,123,255,0.15); color: #007bff; }
-        .status-shipped { background: rgba(57,255,20,0.15); color: var(--neon-green); }
+        .status-pending { color: var(--gold); }
+        .status-processing { color: var(--neon-purple); }
+        .status-shipped { color: var(--neon-green); }
 
         .order-specs {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+            font-size: 0.85rem;
+            color: #ccc;
             line-height: 1.4;
         }
 
-        .order-buttons { display: flex; gap: 6px; }
+        .order-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
 
         .mini-btn {
-            flex: 1;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            padding: 5px;
-            border-radius: 6px;
+            padding: 6px;
+            font-family: inherit;
             font-size: 0.75rem;
+            font-weight: bold;
+            border: 1.5px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
             cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
         }
 
-        @media (max-width: 850px) {
-            #app-container { flex-direction: column; }
-            .side-panel { width: 100%; height: 55%; border-left: none; border-top: 1px solid var(--border-color); padding: 20px; }
-            #canvas-container { height: 45%; }
-            .tabs-nav { top: 10px; left: 10px; }
+        .mini-btn:hover {
+            background: var(--gold);
+            color: #000;
         }
+
+        .threejs-viewport {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            outline: none;
+        }
+
+        .viewport-instructions {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        #file-input { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
-        <!-- Навигация -->
-        <div class="tabs-nav">
-            <button class="tab-btn active" onclick="switchTab('tab-design', this)">Примерка</button>
-            <button class="tab-btn" onclick="switchTab('tab-checkout', this)">Доставка</button>
-            <button class="tab-btn" onclick="switchTab('tab-factory', this)">Фабрика</button>
+    <div class="atelier-bg"></div>
+    <div class="overlay-mask"></div>
+
+    <audio id="atelier-music" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/123/123.wav" type="audio/wav">
+    </audio>
+
+    <!-- ВЕРХНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ GY-GY (СТАНДАРТИЗИРОВАННАЯ) -->
+    <header class="fixed-header">
+        <div class="header-left">
+            <a href="studio.html" class="nav-btn" title="Назад в Студию">&lt;</a>
+            <a href="index.html" class="nav-btn" title="В начало к дверям">≪</a>
         </div>
 
-        <!-- 3D Окно -->
-        <div id="canvas-container"></div>
+        <div class="header-center">
+            <!-- Без флага согласно новому стандарту -->
+            <div class="header-avatar-zone">
+                <img id="header-avatar-img" src="" alt="Avatar" style="display: none;">
+                <span class="nickname" id="header-avatar-nick">@GUEST</span>
+            </div>
+        </div>
 
-        <!-- Интерфейс -->
-        <div class="side-panel">
+        <div class="header-right">
+            <a href="index.html" class="gy-logo">GY-GY</a>
+        </div>
+    </header>
+
+    <!-- РАБОЧАЯ ОБЛАСТЬ -->
+    <main class="main-workspace">
+        
+        <!-- БОКОВАЯ ПАНЕЛЬ -->
+        <aside class="control-panel">
             
-            <!-- ВКЛАДКА 1: КОНФИГУРАТОР -->
+            <div class="panel-tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-design', this)">1. Дизайн</button>
+                <button class="tab-btn" onclick="switchTab('tab-order', this)">2. Заказ</button>
+                <button class="tab-btn" onclick="switchTab('tab-factory', this)">3. Завод</button>
+            </div>
+
+            <!-- ВКЛАДКА 1: КОНСТРУКТОР -->
             <div id="tab-design" class="tab-content active">
-                <div>
-                    <h2>Цифровое Ателье</h2>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">Выберите ваш силуэт и настройте параметры</p>
-                </div>
-
-                <div>
-                    <div class="section-title">Тип Фигуры (Манекен)</div>
-                    <div class="options-grid">
-                        <div class="option-card active" id="type-male" onclick="setAvatarType('male')">👨 Мужчина</div>
-                        <div class="option-card" id="type-female" onclick="setAvatarType('female')">👩 Женщина</div>
-                        <div class="option-card" id="type-child" onclick="setAvatarType('child')">🧒 Ребенок</div>
+                <section>
+                    <div class="section-title">Манекен база</div>
+                    <div class="gender-selector">
+                        <button class="selector-btn active" onclick="setGender('male', this)">МУЖ</button>
+                        <button class="selector-btn" onclick="setGender('female', this)">ЖЕН</button>
+                        <button class="selector-btn" onclick="setGender('child', this)">ДЕТ</button>
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <div class="section-title">Цвет одежды</div>
-                    <div class="options-grid grid-2">
-                        <div class="option-card active" id="color-white" onclick="setHoodieColor('white')">
-                            <div class="color-dot" style="background: #ffffff;"></div>Белый
+                <section style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="section-title">Размер и параметры</div>
+                    
+                    <!-- Стандартная сетка размеров вместо ползунков ширины/объема -->
+                    <div class="control-group">
+                        <div class="control-label">Стандартный размер:</div>
+                        <div class="size-selector">
+                            <button class="selector-btn" onclick="setSize('XS', this)">XS</button>
+                            <button class="selector-btn" onclick="setSize('S', this)">S</button>
+                            <button class="selector-btn active" onclick="setSize('M', this)">M</button>
+                            <button class="selector-btn" onclick="setSize('L', this)">L</button>
+                            <button class="selector-btn" onclick="setSize('XL', this)">XL</button>
+                            <button class="selector-btn" onclick="setSize('XXL', this)">XXL</button>
                         </div>
-                        <div class="option-card" id="color-black" onclick="setHoodieColor('black')">
-                            <div class="color-dot" style="background: #121216;"></div>Черный
-                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <div class="section-title">Материал полотна</div>
-                    <div class="options-grid grid-2">
-                        <div class="option-card active" id="fabric-base" onclick="setFabricType('3-thread')">Петля 3-х нитка</div>
-                        <div class="option-card" id="fabric-premium" onclick="setFabricType('95/5')">Премиум Пенье</div>
+                    <!-- Рост оставляем параметрическим -->
+                    <div class="control-group">
+                        <div class="control-label">Рост <span class="val" id="val-height">180 см</span></div>
+                        <input type="range" class="slider" id="slider-height" min="100" max="220" value="180" oninput="updateMannequin()">
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <div class="section-title">Параметры Роста</div>
-                    <div class="range-container">
-                        <div class="range-header">
-                            <span>Ваш рост (для лекал)</span>
-                            <span id="height-val" style="color: var(--gold); font-weight: 600;">180 см</span>
-                        </div>
-                        <input type="range" id="slider-height" min="100" max="210" value="180" oninput="updateHeightSlider(this.value)">
+                <section style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="section-title">Качество ткани</div>
+                    <div class="grid-selector">
+                        <button class="selector-btn active" onclick="setFabric('Хлопок', this)">Хлопок</button>
+                        <button class="selector-btn" onclick="setFabric('95/5', this)">95/5</button>
                     </div>
-                </div>
+                </section>
 
-                <div>
-                    <div class="section-title">Загрузка принта (Drag & Drop)</div>
-                    <input type="file" id="file-input" style="display: none;" accept="image/*" onchange="handleFileSelect(event)">
+                <section style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="section-title">Базовый цвет</div>
+                    <div class="grid-selector">
+                        <button class="selector-btn active" onclick="setColor('black', this)">Черный</button>
+                        <button class="selector-btn" onclick="setColor('white', this)">Белый</button>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-title">Кастомный принт</div>
                     <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-                        <span style="font-size: 1.4rem;">✨</span>
-                        <p>Перетащите изображение принта сюда</p>
-                        <p style="font-size: 0.7rem; color: #555;">JPG / PNG файлы</p>
+                        <span style="font-size: 1.8rem;">🖼️</span>
+                        <p style="font-size: 0.8rem; color: #888;">Перетащи рисунок или кликни</p>
+                    </div>
+                    <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(event)">
+                </section>
+            </div>
+
+            <!-- ВКЛАДКА 2: ОФОРМЛЕНИЕ ЗАКАЗА -->
+            <div id="tab-order" class="tab-content">
+                <div class="section-title">Данные доставки</div>
+                
+                <div class="form-group">
+                    <label>ФИО Получателя</label>
+                    <input type="text" id="order-name" class="form-input" placeholder="Иван Иванов">
+                </div>
+
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="order-phone" class="form-input" placeholder="+380 99 123 4567">
+                </div>
+
+                <div class="form-group">
+                    <label>Адрес (Город, Отделение)</label>
+                    <input type="text" id="order-address" class="form-input" placeholder="Киев, Новая Почта №15">
+                </div>
+
+                <div class="section-title">Калькулятор пошива</div>
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Базовая вещь:</span>
+                        <span id="calc-base">1200 GY-Coins</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Ткань премиюм:</span>
+                        <span id="calc-fabric">0 GY-Coins</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Сложность принта:</span>
+                        <span id="calc-print">0 GY-Coins</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>К оплате:</span>
+                        <span id="calc-total">1200 GY-Coins</span>
                     </div>
                 </div>
+
+                <button class="action-btn" onclick="submitOrder()">Оплатить в Сейф Клуба</button>
+                <p style="font-size: 0.75rem; color: #888; text-align: center; line-height: 1.3;">
+                    * Средства блокируются Клубом в "Безопасной сделке" и будут переведены Фабрике только после отправки товара.
+                </p>
             </div>
 
-            <!-- ВКЛАДКА 2: ДОСТАВКА -->
-            <div id="tab-checkout" class="tab-content">
-                <div>
-                    <h2>Данные Доставки</h2>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">Куда отправить готовое изделие</p>
-                </div>
-                <div class="input-group"><label>ФИО Получателя</label><input type="text" id="order-name" placeholder="Константин Резидент"></div>
-                <div class="input-group"><label>Телефон</label><input type="tel" id="order-phone" placeholder="+7 (___) ___-__-__"></div>
-                <div class="input-group"><label>Адрес (Город, СДЭК или Улица)</label><input type="text" id="order-address" placeholder="Москва, Ломоносовский пр-т 12"></div>
-            </div>
-
-            <!-- ВКЛАДКА 3: ФАБРИКА -->
+            <!-- ВКЛАДКА 3: КАБИНЕТ ПОДРЯДЧИКА -->
             <div id="tab-factory" class="tab-content">
-                <div>
-                    <h2>Мониторинг Фабрики</h2>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">Статус производства ваших заказов</p>
+                <div class="section-title">Заказы в производстве</div>
+                <div id="factory-orders-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <p style="font-size: 0.85rem; color: #666; text-align: center;">Пока нет активных заказов.</p>
                 </div>
-                <div class="factory-container" id="factory-orders-list"></div>
             </div>
 
-            <!-- КНОПКА И ЦЕНА -->
-            <div class="price-widget" id="common-price-widget">
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 3px;">Итоговая стоимость</div>
-                <div class="price-row">
-                    <span id="total-price-val">1200</span>
-                    <span class="price-currency">GY-Coins</span>
-                </div>
-                <button class="submit-btn" id="main-action-btn" onclick="submitOrder()">Оформить ТЗ на пошив</button>
-            </div>
+        </aside>
 
-        </div>
-    </div>
+        <!-- 3D СЦЕНА -->
+        <section class="threejs-viewport" id="viewport">
+            <div class="viewport-instructions">
+                Зажми мышь и крути сцену для детального осмотра лекал
+            </div>
+        </section>
+
+    </main>
 
     <script>
-        // --- СОСТОЯНИЕ ---
-        let currentAvatar = 'male';
-        let hoodieColor = 'white';
-        let fabricType = '3-thread';
-        let userSize = 'L';
+        // --- ПЕРЕМЕННЫЕ THREE.JS ---
+        let scene, camera, renderer, mannequin;
+        let currentGender = 'male';
+        let currentSize = 'M';
+        let currentFabric = 'Хлопок';
+        let currentColor = 'black';
         let isPrintLoaded = false;
-        let printFileName = 'Нет';
+        let printFileName = "Без принта (Базовая ткань)";
 
-        // 3D Моделирование
-        let scene, camera, renderer, mannequinGroup, clothMaterial;
-        
-        // Отдельные ссылки на части тела для управления пропорциями (Анатомия круче чем в MD)
-        let spine, shoulders, hips, head, leftArm, rightArm;
+        // Предустановки масштаба под стандартные размеры (Ширина, Объем)
+        const sizeScales = {
+            'XS':  { x: 0.8, z: 0.8 },
+            'S':   { x: 0.9, z: 0.9 },
+            'M':   { x: 1.0, z: 1.0 },
+            'L':   { x: 1.1, z: 1.1 },
+            'XL':  { x: 1.2, z: 1.2 },
+            'XXL': { x: 1.3, z: 1.3 }
+        };
 
-        window.addEventListener('DOMContentLoaded', () => {
+        // Текстура сетки по умолчанию
+        function generateDefaultTexture(colorHex) {
+            const strokeColor = colorHex === '#ffffff' ? '%23888888' : '%23d4af37';
+            const bgColor = colorHex === '#ffffff' ? '%23eeeeee' : '%231a1a1a';
+            const tex = new THREE.TextureLoader().load(`data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" fill="${bgColor}"/><path d="M0 0h128v128H0z" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-opacity="0.35"/><circle cx="64" cy="64" r="5" fill="${strokeColor}" fill-opacity="0.5"/></svg>`);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(4, 4);
+            return tex;
+        }
+
+        let mannequinMaterial = new THREE.MeshStandardMaterial({
+            map: generateDefaultTexture('#0a0a0a'),
+            roughness: 0.4,
+            metalness: 0.1,
+        });
+
+        // --- ИНИЦИАЛИЗАЦИЯ ШАПКИ И МУЗЫКИ ---
+        window.addEventListener('load', () => {
+            document.body.addEventListener('click', () => {
+                const music = document.getElementById('atelier-music');
+                if (music && music.paused) {
+                    music.volume = 0.15;
+                    music.play().catch(e => {});
+                }
+            }, { once: true });
+
+            // Загрузка сессии (Без флага)
+            const savedAvatar = localStorage.getItem('gygy_avatar') || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="24" height="24"><rect width="100" height="100" fill="%23d4af37"/><circle cx="50" cy="50" r="30" fill="%23000"/></svg>';
+            const savedNickname = localStorage.getItem('gygy_nickname') || 'Шеф МодерМех';
+
+            document.getElementById('header-avatar-img').src = savedAvatar;
+            document.getElementById('header-avatar-img').style.display = 'block';
+            document.getElementById('header-avatar-nick').innerText = '@' + savedNickname;
+
             init3D();
-            setupControls(document.getElementById('canvas-container'));
             updateCalculator();
             renderFactoryOrders();
         });
 
-        // --- 3D ДВИЖОК И ПРОДВИНУТАЯ АНАТОМИЯ ---
+        // --- ВКЛАДКИ ПАНЕЛИ ---
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // --- ИНИЦИАЛИЗАЦИЯ 3D ---
         function init3D() {
-            const container = document.getElementById('canvas-container');
-            
+            const container = document.getElementById('viewport');
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x070709);
 
-            camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
-            camera.position.set(0, 0.3, 4.5);
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            camera.position.set(0, 0.3, 3);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
             container.appendChild(renderer.domElement);
 
-            // Освещение (Студийный свет для демонстрации ткани)
-            const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambient);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+            scene.add(ambientLight);
 
-            const frontLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            frontLight.position.set(2, 4, 5);
-            scene.add(frontLight);
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1);
+            keyLight.position.set(5, 5, 5);
+            scene.add(keyLight);
 
-            const rimLight = new THREE.DirectionalLight(0xd4af37, 0.35); // Фирменный золотой контурный свет
-            rimLight.position.set(-3, 3, -4);
-            scene.add(rimLight);
+            const fillLight = new THREE.DirectionalLight(0xbf00ff, 0.45);
+            fillLight.position.set(-5, 3, -5);
+            scene.add(fillLight);
 
-            // Создаем высокотехнологичный сбалансированный гуманоидный манекен одежды
-            mannequinGroup = new THREE.Group();
-            mannequinGroup.position.y = -0.8; // Выравниваем по центру кадра
+            buildMannequin();
+            animate();
 
-            // Материал ткани худи
-            clothMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                roughness: 0.7,
-                metalness: 0.05
-            });
-
-            // Сборка реалистичного человекообразного силуэта из полигональных примитивов
-            // Голова
-            const headGeo = new THREE.SphereGeometry(0.2, 32, 32);
-            headGeo.scale(1, 1.2, 1); // Делаем анатомический овал лица
-            head = new THREE.Mesh(headGeo, clothMaterial);
-            head.position.y = 1.45;
-            mannequinGroup.add(head);
-
-            // Торс (Позвоночник / Грудь)
-            const spineGeo = new THREE.CylinderGeometry(0.32, 0.26, 0.7, 32);
-            spine = new THREE.Mesh(spineGeo, clothMaterial);
-            spine.position.y = 0.85;
-            mannequinGroup.add(spine);
-
-            // Плечевой пояс
-            const shoulderGeo = new THREE.CylinderGeometry(0.42, 0.35, 0.3, 32);
-            shoulders = new THREE.Mesh(shoulderGeo, clothMaterial);
-            shoulders.position.y = 1.15;
-            mannequinGroup.add(shoulders);
-
-            // Таз / Бедра
-            const hipGeo = new THREE.CylinderGeometry(0.26, 0.32, 0.4, 32);
-            hips = new THREE.Mesh(hipGeo, clothMaterial);
-            hips.position.y = 0.4;
-            mannequinGroup.add(hips);
-
-            // Левая рука (сгиб анатомический)
-            const armLGeo = new THREE.CylinderGeometry(0.11, 0.08, 0.9, 16);
-            leftArm = new THREE.Mesh(armLGeo, clothMaterial);
-            leftArm.position.set(-0.52, 0.85, 0);
-            leftArm.rotation.z = Math.PI / 12;
-            mannequinGroup.add(leftArm);
-
-            // Правая рука
-            const armRGeo = new THREE.CylinderGeometry(0.11, 0.08, 0.9, 16);
-            rightArm = new THREE.Mesh(armRGeo, clothMaterial);
-            rightArm.position.set(0.52, 0.85, 0);
-            rightArm.rotation.z = -Math.PI / 12;
-            mannequinGroup.add(rightArm);
-
-            scene.add(mannequinGroup);
-
-            // Обновление размеров экрана
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(container.clientWidth, container.clientHeight);
             });
+
+            setupControls(container);
         }
 
-        // --- УПРАВЛЕНИЕ АНАТОМИЧЕСКИМИ ТИПАМИ МАНЕКЕНОВ ---
-        function setAvatarType(type) {
-            currentAvatar = type;
-            document.getElementById('type-male').classList.toggle('active', type === 'male');
-            document.getElementById('type-female').classList.toggle('active', type === 'female');
-            document.getElementById('type-child').classList.toggle('active', type === 'child');
+        // --- ПОСТРОЕНИЕ 3D-МАНЕКЕНА ---
+        function buildMannequin() {
+            if (mannequin) scene.remove(mannequin);
+            mannequin = new THREE.Group();
 
-            const heightSlider = document.getElementById('slider-height');
+            const torsoGeom = new THREE.CylinderGeometry(0.3, 0.2, 0.9, 32);
+            const torso = new THREE.Mesh(torsoGeom, mannequinMaterial);
+            torso.position.y = 0.1;
+            mannequin.add(torso);
 
-            // Полная трансформация 3D пропорций человеческого тела в реальном времени
-            if (mannequinGroup) {
-                if (type === 'male') {
-                    // Мужской силуэт: широкие плечи, высокий рост
-                    shoulders.scale.set(1.1, 1, 1.1);
-                    hips.scale.set(0.95, 1, 0.95);
-                    spine.scale.set(1.05, 1, 1.05);
-                    mannequinGroup.scale.set(1, 1, 1);
-                    heightSlider.min = 160; heightSlider.max = 210; heightSlider.value = 180;
-                    userSize = 'L';
-                } else if (type === 'female') {
-                    // Женский силуэт: утонченные плечи, более выраженные бедра
-                    shoulders.scale.set(0.85, 1, 0.85);
-                    hips.scale.set(1.1, 1, 1.1);
-                    spine.scale.set(0.88, 1, 0.88);
-                    mannequinGroup.scale.set(0.94, 0.94, 0.94);
-                    heightSlider.min = 145; heightSlider.max = 190; heightSlider.value = 168;
-                    userSize = 'S';
-                } else if (type === 'child') {
-                    // Детские пропорции: крупная голова относительно тела, уменьшенный масштаб
-                    shoulders.scale.set(0.75, 1, 0.75);
-                    hips.scale.set(0.85, 1, 0.85);
-                    spine.scale.set(0.8, 1, 0.8);
-                    mannequinGroup.scale.set(0.65, 0.65, 0.65);
-                    heightSlider.min = 100; heightSlider.max = 155; heightSlider.value = 130;
-                    userSize = 'M (Child)';
-                }
-                updateHeightSlider(heightSlider.value);
-            }
+            const chestGeom = new THREE.SphereGeometry(0.32, 32, 16);
+            const chest = new THREE.Mesh(chestGeom, mannequinMaterial);
+            chest.scale.set(1.1, 0.8, 0.9);
+            chest.position.y = 0.5;
+            mannequin.add(chest);
+
+            const hipsGeom = new THREE.SphereGeometry(0.24, 32, 16);
+            const hips = new THREE.Mesh(hipsGeom, mannequinMaterial);
+            hips.scale.set(1, 0.7, 0.9);
+            hips.position.y = -0.35;
+            mannequin.add(hips);
+
+            // Держатель/Штатив
+            const goldMaterial = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.1, metalness: 0.9 });
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.2, 16), goldMaterial);
+            pole.position.y = -0.9;
+            mannequin.add(pole);
+
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 0.04, 32), goldMaterial);
+            base.position.y = -1.5;
+            mannequin.add(base);
+
+            mannequin.position.y = 0.2;
+            scene.add(mannequin);
+            updateMannequin();
+        }
+
+        function setGender(gender, btn) {
+            document.querySelectorAll('.gender-selector .selector-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentGender = gender;
+
+            const sh = document.getElementById('slider-height');
+            if (gender === 'male') { sh.value = 180; }
+            else if (gender === 'female') { sh.value = 168; }
+            else if (gender === 'child') { sh.value = 120; }
+
+            updateMannequin();
             updateCalculator();
         }
 
-        function setHoodieColor(color) {
-            hoodieColor = color;
-            document.getElementById('color-white').classList.toggle('active', color === 'white');
-            document.getElementById('color-black').classList.toggle('active', color === 'black');
-
-            if (clothMaterial) {
-                clothMaterial.color.setHex(color === 'white' ? 0xffffff : 0x141418);
-                clothMaterial.needsUpdate = true;
-            }
+        function setSize(size, btn) {
+            document.querySelectorAll('.size-selector .selector-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSize = size;
+            updateMannequin();
         }
 
-        function setFabricType(fabric) {
-            fabricType = fabric;
-            document.getElementById('fabric-base').classList.toggle('active', fabric === '3-thread');
-            document.getElementById('fabric-premium').classList.toggle('active', fabric === '95/5');
+        function setFabric(fabric, btn) {
+            document.querySelectorAll('.grid-selector:nth-of-type(1) .selector-btn').forEach(b => {
+                if(b.innerText === 'Хлопок' || b.innerText === '95/5') b.classList.remove('active');
+            });
+            btn.classList.add('active');
+            currentFabric = fabric;
             updateCalculator();
         }
 
-        function updateHeightSlider(val) {
-            document.getElementById('height-val').innerText = `${val} см`;
+        function setColor(color, btn) {
+            document.querySelectorAll('.grid-selector .selector-btn').forEach(b => {
+                if(b.innerText === 'Черный' || b.innerText === 'Белый') b.classList.remove('active');
+            });
+            btn.classList.add('active');
+            currentColor = color;
+
+            if (!isPrintLoaded) {
+                const hexColor = color === 'white' ? '#ffffff' : '#0a0a0a';
+                mannequinMaterial.map = generateDefaultTexture(hexColor);
+                mannequinMaterial.needsUpdate = true;
+            }
         }
 
-        // --- КАЛЬКУЛЯТОР ДЛЯ КЛИЕНТОВ ---
+        function updateMannequin() {
+            const h = parseFloat(document.getElementById('slider-height').value);
+            document.getElementById('val-height').innerText = h + ' см';
+
+            if (!mannequin) return;
+
+            const scaleY = h / 180;
+            const sizeScale = sizeScales[currentSize] || { x: 1.0, z: 1.0 };
+
+            mannequin.children.forEach(child => {
+                if (child.material !== mannequinMaterial) return;
+                child.scale.set(sizeScale.x, scaleY, sizeScale.z);
+            });
+        }
+
+        // --- КАЛЬКУЛЯТОР СТОИМОСТИ ---
         function updateCalculator() {
-            const baseCost = currentAvatar === 'child' ? 900 : 1200;
-            const fabricPremium = fabricType === '95/5' ? 250 : 0;
+            const baseCost = currentGender === 'child' ? 900 : 1200;
+            const fabricPremium = currentFabric === '95/5' ? 250 : 0;
             const printCost = isPrintLoaded ? 350 : 0;
-            const totalCost = baseCost + fabricPremium + printCost;
+            const total = baseCost + fabricPremium + printCost;
 
-            document.getElementById('total-price-val').innerText = totalCost;
+            document.getElementById('calc-base').innerText = `${baseCost} GY-Coins`;
+            document.getElementById('calc-fabric').innerText = `${fabricPremium} GY-Coins`;
+            document.getElementById('calc-print').innerText = `${printCost} GY-Coins`;
+            document.getElementById('calc-total').innerText = `${total} GY-Coins`;
         }
 
-        // --- ВИНТОВЫЙ ЗАГРУЗЧИК ПРИНТОВ (DRAG & DROP) ---
+        // --- ДРАГ-ЭНД-ДРОП ПРИНТОВ ---
         const dropZone = document.getElementById('drop-zone');
 
         ['dragenter', 'dragover'].forEach(ev => {
@@ -641,7 +870,6 @@
         });
 
         dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
             handleFiles(e.dataTransfer.files);
         });
 
@@ -659,62 +887,50 @@
                 const img = new Image();
                 img.src = ev.target.result;
                 img.onload = function() {
-                    if (clothMaterial.map) {
-                        clothMaterial.map.dispose();
-                    }
-
                     const customTexture = new THREE.Texture(img);
+                    customTexture.needsUpdate = true;
                     customTexture.wrapS = THREE.RepeatWrapping;
                     customTexture.wrapT = THREE.RepeatWrapping;
                     customTexture.repeat.set(1, 1);
-                    customTexture.needsUpdate = true;
 
-                    clothMaterial.map = customTexture;
-                    clothMaterial.needsUpdate = true;
+                    mannequinMaterial.map = customTexture;
+                    mannequinMaterial.needsUpdate = true;
 
                     isPrintLoaded = true;
-                    dropZone.innerHTML = `<span style="font-size: 1.5rem;">✅</span><p style="color: var(--gold); font-weight:500;">${file.name}</p>`;
+                    dropZone.innerHTML = `<span style="font-size: 1.8rem;">✅</span><p style="color: var(--gold);">${file.name}</p>`;
                     updateCalculator();
                 };
             };
             reader.readAsDataURL(file);
         }
 
-        // --- РАБОТА С ЗАКАЗАМИ ---
+        // --- ОФОРМЛЕНИЕ ЗАКАЗА ---
         function submitOrder() {
-            const activeTab = document.querySelector('.tab-content.active');
-            if (activeTab.id === 'tab-design') {
-                switchTab('tab-checkout', document.querySelectorAll('.tab-btn')[1]);
-                return;
-            }
-
             const name = document.getElementById('order-name').value.trim();
             const phone = document.getElementById('order-phone').value.trim();
             const address = document.getElementById('order-address').value.trim();
 
             if (!name || !phone || !address) {
-                alert("Пожалуйста, заполните все контактные поля для организации доставки!");
+                alert("Пожалуйста, заполните все поля доставки перед оплатой!");
                 return;
             }
 
             const h = document.getElementById('slider-height').value;
             
-            const baseCost = currentAvatar === 'child' ? 900 : 1200;
-            const fabricPremium = fabricType === '95/5' ? 250 : 0;
+            const baseCost = currentGender === 'child' ? 900 : 1200;
+            const fabricPremium = currentFabric === '95/5' ? 250 : 0;
             const printCost = isPrintLoaded ? 350 : 0;
             const totalCost = baseCost + fabricPremium + printCost;
-
-            const genderLabels = { male: 'МУЖСКОЙ', female: 'ЖЕНСКИЙ', child: 'ДЕТСКИЙ' };
 
             const newOrder = {
                 id: Math.floor(1000 + Math.random() * 9000),
                 customer: name,
                 phone: phone,
                 address: address,
-                gender: genderLabels[currentAvatar],
-                size: userSize,
-                fabric: fabricType === '95/5' ? 'Премиум Пенье' : '3-х нитка Петля',
-                color: hoodieColor === 'white' ? 'БЕЛЫЙ' : 'ЧЕРНЫЙ',
+                gender: currentGender.toUpperCase(),
+                size: currentSize,
+                fabric: currentFabric,
+                color: currentColor.toUpperCase() === 'WHITE' ? 'БЕЛЫЙ' : 'ЧЕРНЫЙ',
                 specs: { height: h },
                 print: printFileName,
                 price: totalCost,
@@ -725,7 +941,7 @@
             orders.unshift(newOrder);
             localStorage.setItem('gygy_studio_orders', JSON.stringify(orders));
 
-            alert(`✅ Заказ успешно оплачен (${totalCost} GY-Coins)!\n\nРеквизиты переданы на фабрику. Код отслеживания: #${newOrder.id}`);
+            alert(`✅ Оплата ${totalCost} GY-Coins успешна!\n\nСредства заблокированы в Сейфе Клуба GY-GY. ТЗ передано Подрядчику на выполнение.\nКод заказа: #${newOrder.id}`);
 
             document.getElementById('order-name').value = '';
             document.getElementById('order-phone').value = '';
@@ -735,15 +951,13 @@
             switchTab('tab-factory', document.querySelectorAll('.tab-btn')[2]);
         }
 
-        // --- УПРАВЛЕНИЕ ФАБРИКОЙ ---
+        // --- ПАНЕЛЬ ПОДРЯДЧИКА ---
         function renderFactoryOrders() {
             const listContainer = document.getElementById('factory-orders-list');
-            if (!listContainer) return;
-            
             const orders = JSON.parse(localStorage.getItem('gygy_studio_orders')) || [];
 
             if (orders.length === 0) {
-                listContainer.innerHTML = `<p style="font-size: 0.8rem; color: #555; text-align: center; padding: 20px;">Нет активных заказов на пошив.</p>`;
+                listContainer.innerHTML = `<p style="font-size: 0.85rem; color: #666; text-align: center;">Пока нет активных заказов.</p>`;
                 return;
             }
 
@@ -760,7 +974,7 @@
                     actionBtnHTML = `<button class="mini-btn" style="border-color: var(--neon-green); color: var(--neon-green)" onclick="updateOrderStatus(${index}, 'shipped')">Отправить</button>`;
                 } else if (order.status === 'shipped') {
                     statusLabel = 'Отправлено';
-                    actionBtnHTML = `<span style="font-size: 0.75rem; color: var(--neon-green); font-weight:500;">Передан в СДЭК</span>`;
+                    actionBtnHTML = `<span style="font-size: 0.75rem; color: var(--neon-green);">Доставка...</span>`;
                 }
 
                 card.innerHTML = `
@@ -769,16 +983,16 @@
                         <span class="status-badge status-${order.status}">${statusLabel}</span>
                     </div>
                     <div class="order-specs">
-                        <strong>Клиент:</strong> ${order.customer} (${order.phone})<br>
+                        <strong>Получатель:</strong> ${order.customer} (${order.phone})<br>
                         <strong>Куда:</strong> ${order.address}<br>
-                        <strong>Тип фигуры:</strong> ${order.gender} [Рост: ${order.specs.height}см]<br>
-                        <strong>Параметры худи:</strong> ${order.color}, ${order.fabric}<br>
-                        <strong>Файл принта:</strong> ${order.print}<br>
-                        <strong style="color: var(--gold)">Сумма заказа:</strong> ${order.price} GY-Coins
+                        <strong>Параметры:</strong> ${order.gender} [${order.size}], Рост: ${order.specs.height}см<br>
+                        <strong>Качество:</strong> ${order.fabric} (${order.color})<br>
+                        <strong>Принт:</strong> ${order.print}<br>
+                        <strong style="color: var(--gold)">Стоимость:</strong> ${order.price} GY-Coins
                     </div>
                     <div class="order-buttons">
                         ${actionBtnHTML}
-                        <button class="mini-btn" style="border-color: #ff3333; color: #ff3333;" onclick="deleteOrder(${index})">Отменить</button>
+                        <button class="mini-btn" style="border-color: #ff3333; color: #ff3333;" onclick="deleteOrder(${index})">Отмена</button>
                     </div>
                 `;
                 listContainer.appendChild(card);
@@ -787,14 +1001,20 @@
 
         function updateOrderStatus(index, newStatus) {
             let orders = JSON.parse(localStorage.getItem('gygy_studio_orders')) || [];
-            if (!orders[index]) return;
             orders[index].status = newStatus;
+            
+            if (newStatus === 'shipped') {
+                alert(`📦 Заказ #${orders[index].id} передан в службу доставки!\n\nДеньги из Сейфа Клуба GY-GY разблокированы и автоматически начислены на баланс Подрядчика (за вычетом 10% комиссии Клуба).`);
+            } else {
+                alert(`✂️ Заказ #${orders[index].id} принят в работу. Швеи приступили к раскрою лекал!`);
+            }
+
             localStorage.setItem('gygy_studio_orders', JSON.stringify(orders));
             renderFactoryOrders();
         }
 
         function deleteOrder(index) {
-            if (confirm("Отменить этот заказ? Средства будут возвращены клиенту.")) {
+            if (confirm("Вы уверены, что хотите отменить и удалить этот заказ? Деньги вернутся на счет резидента.")) {
                 let orders = JSON.parse(localStorage.getItem('gygy_studio_orders')) || [];
                 orders.splice(index, 1);
                 localStorage.setItem('gygy_studio_orders', JSON.stringify(orders));
@@ -802,73 +1022,44 @@
             }
         }
 
-        // --- ИНТЕРФЕЙС ВКЛАДОК ---
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
-
-            const priceWidget = document.getElementById('common-price-widget');
-            if (tabId === 'tab-factory') {
-                priceWidget.style.display = 'none';
-            } else {
-                priceWidget.style.display = 'block';
-                const actionBtn = document.getElementById('main-action-btn');
-                actionBtn.innerText = tabId === 'tab-checkout' ? "Оплатить и отправить ТЗ" : "Оформить ТЗ на пошив";
-            }
-        }
-
-        // --- ВРАЩЕНИЕ КАМЕРЫ (УПРАВЛЕНИЕ МЫШЬЮ И ТАЧЕМ) ---
+        // --- УПРАВЛЕНИЕ КАМЕРОЙ ---
         let isDragging = false;
         let prevMousePos = { x: 0, y: 0 };
 
         function setupControls(element) {
-            element.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                prevMousePos = { x: e.offsetX, y: e.offsetY };
-            });
-
+            element.addEventListener('mousedown', () => isDragging = true);
             element.addEventListener('mousemove', (e) => {
-                if (!isDragging || !mannequinGroup) return;
                 const delta = { x: e.offsetX - prevMousePos.x, y: e.offsetY - prevMousePos.y };
-                mannequinGroup.rotation.y += delta.x * 0.007;
+                if (isDragging && mannequin) {
+                    mannequin.rotation.y += delta.x * 0.007;
+                    mannequin.rotation.x += delta.y * 0.005;
+                }
                 prevMousePos = { x: e.offsetX, y: e.offsetY };
             });
-
             window.addEventListener('mouseup', () => isDragging = false);
 
             element.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 0) return;
                 isDragging = true;
-                const rect = element.getBoundingClientRect();
-                prevMousePos = { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+                prevMousePos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             });
-
             element.addEventListener('touchmove', (e) => {
-                if (!isDragging || !mannequinGroup || e.touches.length === 0) return;
-                const rect = element.getBoundingClientRect();
-                const currentX = e.touches[0].clientX - rect.left;
-                const delta = currentX - prevMousePos.x;
-                mannequinGroup.rotation.y += delta * 0.008;
-                prevMousePos = { x: currentX, y: e.touches[0].clientY - rect.top };
+                if (!isDragging || !mannequin) return;
+                const delta = { x: e.touches[0].clientX - prevMousePos.x, y: e.touches[0].clientY - prevMousePos.y };
+                mannequin.rotation.y += delta.x * 0.008;
+                mannequin.rotation.x += delta.y * 0.006;
+                prevMousePos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             });
-
             window.addEventListener('touchend', () => isDragging = false);
         }
 
         // --- РЕНДЕР ЦИКЛ ---
         function animate() {
             requestAnimationFrame(animate);
-            if (!isDragging && mannequinGroup) {
-                mannequinGroup.rotation.y += 0.002; // Мягкий плавный осмотр
+            if (!isDragging && mannequin) {
+                mannequin.rotation.y += 0.0015;
             }
-            if (renderer && scene && camera) {
-                renderer.render(scene, camera);
-            }
+            renderer.render(scene, camera);
         }
-        animate();
     </script>
 </body>
 </html>
