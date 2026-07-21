@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Уличная одежда 004 </title>
+  <title>Уличная одежда 005 </title>
   <style>
     :root {
       --bg: #0d0f12;
@@ -343,28 +343,28 @@
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
 
+    // Камера смотрит прямо на плоскость (ортогональный вид для 2D)
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 0.2, 3.2);
+    camera.position.set(0, 0, 3.0); 
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    // Убираем OrbitControls, так как мы делаем плоский 2D-вид
+    // const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5); // Яркий свет для 2D
     scene.add(ambientLight);
 
     const state = {
       mannequinFile: 'man.png',
       gender: 'male',
       fit: 'standard',
+      color: 'white',
       fabric: 'cotton',
       neck: 'round',
-      color: 'white',
       basePrice: 1200,
       neckModifier: 0
     };
@@ -373,57 +373,73 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    // Материал футболки с полупрозрачностью, чтобы манекен просматривался под ней
-    const tshirtMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0xffffff, 
-      roughness: 0.6,
-      transparent: true,
-      opacity: 0.75  // Подбирайте прозрачность: от 0.1 до 1.0
-    });
+    // Функция для создания плоской панели (Plane) с текстурой
+    function createPlane(textureUrl, width, height, zIndex, opacity = 1) {
+      return new Promise((resolve) => {
+        textureLoader.load(textureUrl, (texture) => {
+          // Важно для прозрачности в PNG
+          const material = new THREE.MeshBasicMaterial({ 
+            map: texture, 
+            transparent: true, 
+            opacity: opacity,
+            depthWrite: false, // Отключаем запись в буфер глубины, чтобы избежать z-fighting
+            depthTest: false   // Отключаем тест глубины
+          });
+          const geometry = new THREE.PlaneGeometry(width, height);
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.position.set(0, 0, zIndex); // Позиция по Z определяет порядок слоев
+          // mesh.renderOrder = zIndex; // Принудительный порядок отрисовки (дополнительная страховка)
+          resolve(mesh);
+        });
+      });
+    }
 
-    const printMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.95 });
-
-    function buildModel() {
+    async function buildModel() {
+      // Очищаем сцену
       while(atelierGroup.children.length > 0){ 
         atelierGroup.remove(atelierGroup.children[0]); 
       }
 
-      let scale = state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.9 : 1.0);
+      const scale = state.gender === 'child' ? 0.7 : (state.gender === 'female' ? 0.85 : 1.0);
+      const width = 1.6 * scale;
+      const height = 2.4 * scale;
 
-      // 1. Слои: Манекен (Сзади, Z = 0)
-      textureLoader.load(state.mannequinFile, (texture) => {
-        const manMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false });
-        const manGeo = new THREE.PlaneGeometry(1.2 * scale, 2.0 * scale);
-        const mannequinMesh = new THREE.Mesh(manGeo, manMat);
-        mannequinMesh.position.set(0, 0, 0);
+      // --- ПОРЯДОК СЛОЕВ (zIndex) ОЧЕНЬ ВАЖЕН ---
+
+      // 1. СЛОЙ 0: МАНЕКЕН (Самый нижний)
+      try {
+        const mannequinMesh = await createPlane(state.mannequinFile, width, height, 0);
         atelierGroup.add(mannequinMesh);
-      });
+      } catch (e) { console.error("Ошибка загрузки манекена"); }
 
-      // 2. Слои: 3D-Футболка (Посередине, Z = 0.05)
-      let fitMult = (state.fit === 'oversize') ? 1.2 : 1.0;
-      let tRadiusTop = 0.32 * scale * fitMult;
-      let tRadiusBot = 0.28 * scale * fitMult;
-      let tHeight = 0.72 * scale;
+      // 2. СЛОЙ 1: ФУТБОЛКА (Посередине)
+      // Здесь должна быть ссылка на PNG с силуэтом футболки
+      // Например: 'tshirt_' + state.color + '_' + state.fit + '.png'
+      // Пока используем заглушку, но вы подставьте свои файлы!
+      const tshirtFile = 'tshirt_blank.png'; // ЗАМЕНИТЕ НА СВОЙ PNG СИЛУЭТ!
+      try {
+        const tshirtMesh = await createPlane(tshirtFile, width, height, 1);
+        // Если файлов силуэтов пока нет, можно временно подкрасить плоскость (но это будет "простыня")
+        if (tshirtFile === 'tshirt_blank.png') {
+            tshirtMesh.material.color.setHex(state.color === 'white' ? 0xffffff : 0x222222);
+            tshirtMesh.material.opacity = 0.8; // Временная прозрачность, пока нет силуэта
+        }
+        atelierGroup.add(tshirtMesh);
+      } catch (e) { console.error("Ошибка загрузки силуэта футболки"); }
 
-      const tshirtGeo = new THREE.CylinderGeometry(tRadiusTop, tRadiusBot, tHeight, 32);
-      const tshirtMesh = new THREE.Mesh(tshirtGeo, tshirtMaterial);
-      tshirtMesh.position.set(0, -0.05 * scale, 0.05);
-      atelierGroup.add(tshirtMesh);
-
-      // 3. Слои: Принт (Спереди, Z = tRadiusTop + 0.06)
-      const printWidth = 0.28 * scale * fitMult;
-      const printGeo = new THREE.PlaneGeometry(printWidth, printWidth);
-      const printMesh = new THREE.Mesh(printGeo, printMaterial);
-      printMesh.position.set(0, 0.02 * scale, 0.05 + tRadiusTop + 0.01);
+      // 3. СЛОЙ 2: ПРИНТ (Самый верхний)
+      const printWidth = 0.4 * scale * (state.fit === 'oversize' ? 1.2 : 1.0);
+      const printMesh = await createPlane(currentPrintUrl || 'clear.png', printWidth, printWidth, 2);
+      // clear.png - это прозрачный PNG 1x1 пиксель, если принт не выбран
+      printMesh.position.y = 0.2 * scale; // Смещение принта на грудь
       atelierGroup.add(printMesh);
 
-      updateShirtColor();
+      updatePricing();
     }
 
-    function updateShirtColor() {
-      tshirtMaterial.color.setHex(state.color === 'white' ? 0xfcfcfc : 0x181818);
-    }
+    let currentPrintUrl = null;
 
+    // ... (Остальные функции updatePricing, обработчики кнопок остаются БЕЗ ИЗМЕНЕНИЙ) ...
     function updatePricing() {
       let base = state.basePrice;
       let neckExtra = base * state.neckModifier;
@@ -434,6 +450,7 @@
       document.getElementById('price-total').innerText = Math.round(total).toLocaleString('ru-RU') + ' ₽';
     }
 
+    // Обработчики выбора
     document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
@@ -479,24 +496,19 @@
         document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
         e.currentTarget.classList.add('active');
         state.color = e.currentTarget.dataset.color;
-        updateShirtColor();
+        buildModel(); // Перерисовываем, чтобы загрузить силуэт нужного цвета
       });
     });
 
+    // Загрузка принта
     document.getElementById('print-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
         document.getElementById('upload-label').innerText = '✓ ' + file.name;
         const reader = new FileReader();
         reader.onload = function(event) {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            const texture = new THREE.Texture(img);
-            texture.needsUpdate = true;
-            printMaterial.map = texture;
-            printMaterial.needsUpdate = true;
-          };
+          currentPrintUrl = event.target.result;
+          buildModel(); // Перерисовываем сцену с новым принтом
         };
         reader.readAsDataURL(file);
       }
@@ -508,12 +520,12 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
+    // Стартовая сборка
     buildModel();
     updatePricing();
 
     function animate() {
       requestAnimationFrame(animate);
-      controls.update();
       renderer.render(scene, camera);
     }
     animate();
