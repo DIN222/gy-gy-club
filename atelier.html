@@ -1,900 +1,674 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кибер-Ателье: Конструктор Футболок</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Montserrat:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Цифровое Ателье: Конструктор Футболок 02 </title>
+  <style>
+    :root {
+      --bg: #0d0f12;
+      --panel: #161920;
+      --panel-border: #262c38;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --white: #ffffff;
+      --black: #111111;
+    }
 
-    <style>
-        :root {
-            --neon-cyan: #00f0ff;
-            --neon-magenta: #ff007f;
-            --neon-green: #39ff14;
-            --neon-yellow: #ffea00;
-            --dark-space: #06060c;
-            --card-glass: rgba(10, 10, 20, 0.75);
-            --border-glow: rgba(0, 240, 255, 0.15);
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--dark-space);
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+    }
 
-        .cyber-font {
-            font-family: 'Orbitron', sans-serif;
-        }
+    /* 3D Canvas Area */
+    #canvas-container {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      background: radial-gradient(circle at center, #1e2430 0%, #0d0f12 100%);
+    }
 
-        .mono-font {
-            font-family: 'JetBrains Mono', monospace;
-        }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-        .scanner-line {
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            position: absolute;
-            top: 0;
-            left: 0;
-            animation: scan 4s linear infinite;
-            pointer-events: none;
-            z-index: 10;
-            box-shadow: 0 0 12px var(--neon-cyan);
-        }
+    /* Control Panel */
+    .panel {
+      width: 420px;
+      height: 100%;
+      background: var(--panel);
+      border-left: 1px solid var(--panel-border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      z-index: 10;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
 
-        @keyframes scan {
-            0% { top: 0%; opacity: 0; }
-            5% { opacity: 1; }
-            95% { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
+    .panel-header {
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 16px;
+    }
 
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(0, 240, 255, 0.3);
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-cyan);
-        }
+    .panel-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text);
+    }
 
-        .cyan-glow-text {
-            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-        }
-        .magenta-glow-text {
-            text-shadow: 0 0 8px rgba(255, 0, 127, 0.6);
-        }
+    .panel-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
 
-        .cyber-panel {
-            background: var(--card-glass);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
-                        inset 0 0 12px rgba(0, 240, 255, 0.05);
-            position: relative;
-        }
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
 
-        .cyber-panel::after {
-            content: '';
-            position: absolute;
-            top: -1px; left: -1px;
-            width: 10px; height: 10px;
-            border-top: 2px solid var(--neon-cyan);
-            border-left: 2px solid var(--neon-cyan);
-        }
+    .group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-        .cyber-panel::before {
-            content: '';
-            position: absolute;
-            bottom: -1px; right: -1px;
-            width: 10px; height: 10px;
-            border-bottom: 2px solid var(--neon-cyan);
-            border-right: 2px solid var(--neon-cyan);
-        }
+    /* Segmented Button Selectors */
+    .btn-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 8px;
+    }
 
-        .active-btn {
-            background: linear-gradient(90deg, rgba(0, 240, 255, 0.2), rgba(255, 0, 127, 0.1));
-            border-color: var(--neon-cyan) !important;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-        }
+    .btn-option {
+      background: var(--bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
 
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255, 255, 255, 0.1);
-            height: 4px;
-            border-radius: 2px;
-            outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--neon-cyan);
-            cursor: pointer;
-            box-shadow: 0 0 8px var(--neon-cyan);
-            transition: transform 0.1s;
-        }
-        input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
-        }
-    </style>
+    .btn-option:hover {
+      border-color: var(--accent);
+    }
+
+    .btn-option.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Color Swatches */
+    .color-swatches {
+      display: flex;
+      gap: 12px;
+    }
+
+    .swatch-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--panel-border);
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .swatch-btn.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+
+    .swatch-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .swatch-circle.white { background-color: #ffffff; }
+    .swatch-circle.black { background-color: #111111; }
+
+    /* File Input / Print Upload */
+    .file-upload {
+      position: relative;
+      border: 2px dashed var(--panel-border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      background: var(--bg);
+    }
+
+    .file-upload:hover {
+      border-color: var(--accent);
+    }
+
+    .file-upload input {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-upload span {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    /* Price Summary Box */
+    .summary-card {
+      margin-top: auto;
+      background: var(--bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .summary-row.total {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      border-top: 1px solid var(--panel-border);
+      padding-top: 10px;
+      margin-bottom: 0;
+    }
+
+    .badge {
+      font-size: 10px;
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--accent-hover);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Custom Scrollbar */
+    .panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .panel::-webkit-scrollbar-thumb {
+      background: var(--panel-border);
+      border-radius: 3px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
-    <div class="relative w-full h-full flex flex-col md:flex-row overflow-hidden select-none">
-        
-        <!-- Interactive 3D Canvas space -->
-        <div class="relative flex-grow h-2/3 md:h-full w-full">
-            <canvas id="viz-canvas" class="w-full h-full block"></canvas>
-            
-            <!-- Scanning neon visual filter line -->
-            <div class="scanner-line"></div>
-            
-            <div class="absolute top-4 left-4 pointer-events-none flex flex-col gap-2">
-                <div class="cyber-panel px-4 py-2 flex items-center gap-3">
-                    <span class="w-2.5 h-2.5 rounded-full bg-[#39ff14] animate-pulse"></span>
-                    <div>
-                        <div class="cyber-font text-xs tracking-wider text-gray-400">КАЛИБРОВКА ЛЕКАЛА ФУТБОЛОК</div>
-                        <div class="cyber-font text-sm text-[#00f0ff] font-bold cyan-glow-text">T-SHIRT // ATELIER V4.9</div>
-                    </div>
-                </div>
-                <div class="cyber-panel px-4 py-3 min-w-[200px] flex flex-col gap-1">
-                    <div class="text-[10px] mono-font text-gray-500 uppercase">Метрика модели</div>
-                    <div class="text-xs font-semibold flex justify-between">
-                        <span class="text-gray-400">Полигоны ткани:</span>
-                        <span class="mono-font text-white" id="stat-polys">--</span>
-                    </div>
-                    <div class="text-xs font-semibold flex justify-between">
-                        <span class="text-gray-400">Нагрузка GPU:</span>
-                        <span class="mono-font text-[#ff007f]" id="stat-fps">60 FPS</span>
-                    </div>
-                </div>
-            </div>
+  <div id="canvas-container"></div>
 
-            <!-- Streaming diagnostic telemetry overlay -->
-            <div class="absolute bottom-4 left-4 pointer-events-none hidden lg:flex flex-col gap-1 cyber-panel p-3 min-w-[260px] max-h-[140px] overflow-hidden opacity-80">
-                <div class="text-[10px] mono-font text-cyan-400 uppercase tracking-widest border-b border-cyan-900 pb-1 mb-1 flex justify-between">
-                    <span>Телеметрия кроя футболки</span>
-                    <span class="animate-pulse">● LIVE</span>
-                </div>
-                <div class="mono-font text-[9px] text-gray-400 flex flex-col gap-1 leading-tight" id="system-log">
-                    <div>[SYS] Инициализация среды моделирования...</div>
-                    <div>[SYS] Загрузка выкройки оверсайз-футболки...</div>
-                    <div>[SYS] Текстурный атлас Т-модели смонтирован.</div>
-                </div>
-            </div>
-
-            <!-- Help control hint widget -->
-            <div class="absolute bottom-4 right-4 pointer-events-none hidden sm:block">
-                <div class="cyber-panel px-3 py-1.5 text-[10px] mono-font text-gray-400 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-cyan-400"></i>
-                    <span>ЛКМ для вращения • Колесо для зума футболки</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-full md:w-[380px] h-1/3 md:h-full border-t md:border-t-0 md:border-l border-cyan-900/40 bg-[#07070f]/90 flex flex-col z-20">
-            
-            <!-- Control Header block -->
-            <div class="p-5 border-b border-cyan-900/40 flex items-center justify-between">
-                <div>
-                    <h1 class="cyber-font text-base font-bold text-white tracking-widest uppercase flex items-center gap-2">
-                        <i class="fa-solid fa-shirt text-[#ff007f] magenta-glow-text"></i>
-                        <span>Futura T-Shirt</span>
-                    </h1>
-                    <p class="text-[10px] text-cyan-400 tracking-wider font-semibold uppercase">Лаборатория дизайна футболок</p>
-                </div>
-                <button onclick="triggerReset()" class="w-8 h-8 rounded-lg border border-cyan-500/30 hover:border-cyan-400 flex items-center justify-center text-cyan-400 hover:text-white transition-all bg-cyan-950/20 active:scale-90" title="Сбросить параметры">
-                    <i class="fa-solid fa-rotate-left"></i>
-                </button>
-            </div>
-
-            <!-- Scrollable adjustment parameters panel -->
-            <div class="flex-grow overflow-y-auto p-5 space-y-6 custom-scrollbar">
-                
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase">Основа манекена</span>
-                        <i class="fa-solid fa-user-gear text-[10px] text-cyan-500"></i>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setAvatarType('Male')" id="btn-avatar-Male" class="cyber-panel py-2 px-3 text-[11px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase active-btn">
-                            Мужской
-                        </button>
-                        <button onclick="setAvatarType('Female')" id="btn-avatar-Female" class="cyber-panel py-2 px-3 text-[11px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase">
-                            Женский
-                        </button>
-                        <button onclick="setAvatarType('Unisex')" id="btn-avatar-Unisex" class="cyber-panel py-2 px-3 text-[11px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase">
-                            Унисекс
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase">Силуэт и Крой</span>
-                        <i class="fa-solid fa-scissors text-[10px] text-cyan-500"></i>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setFitStyle('Slim')" id="btn-fit-Slim" class="cyber-panel py-2 px-1 text-[11px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase">
-                            Slim Fit
-                        </button>
-                        <button onclick="setFitStyle('Regular')" id="btn-fit-Regular" class="cyber-panel py-2 px-1 text-[11px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase active-btn">
-                            Regular
-                        </button>
-                        <button onclick="setFitStyle('Oversize')" id="btn-fit-Oversize" class="cyber-panel py-2 px-1 text-[11px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase">
-                            Oversize
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-semibold tracking-wider text-cyan-400 uppercase">Длина рукава</span>
-                        <span class="mono-font text-[#ff007f] font-bold" id="val-sleeve">Regular</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <input type="range" id="slider-sleeve" min="1" max="3" step="1" value="2" class="flex-grow" oninput="updateSleeveLength(this.value)">
-                    </div>
-                    <div class="flex justify-between text-[9px] text-gray-500 uppercase px-1">
-                        <span>Короткий</span>
-                        <span>Стандарт</span>
-                        <span>Удлиненный</span>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase">Текстура ткани</span>
-                        <i class="fa-solid fa-wand-magic-sparkles text-[10px] text-cyan-500"></i>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="setMaterialType('Cyber Mesh')" id="btn-mat-Cyber Mesh" class="cyber-panel py-2 px-3 text-xs font-semibold hover:border-cyan-400/60 transition-all text-left uppercase active-btn flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"></span> Кибер-Сетка
-                        </button>
-                        <button onclick="setMaterialType('Liquid Chrome')" id="btn-mat-Liquid Chrome" class="cyber-panel py-2 px-3 text-xs font-semibold hover:border-cyan-400/60 transition-all text-left uppercase flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-gradient-to-br from-white to-gray-400"></span> Хром
-                        </button>
-                        <button onclick="setMaterialType('Matte Carbon')" id="btn-mat-Matte Carbon" class="cyber-panel py-2 px-3 text-xs font-semibold hover:border-cyan-400/60 transition-all text-left uppercase flex items-center gap-2 col-span-2">
-                            <span class="w-3 h-3 rounded-full bg-neutral-800"></span> Карбоновое волокно
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase">Интерактивный Принт</span>
-                        <i class="fa-solid fa-image text-[10px] text-cyan-500"></i>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setDecalStyle('None')" id="btn-decal-None" class="cyber-panel py-2 px-1 text-[10px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase">
-                            Без него
-                        </button>
-                        <button onclick="setDecalStyle('Core')" id="btn-decal-Core" class="cyber-panel py-2 px-1 text-[10px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase active-btn">
-                            Энерго-ядро
-                        </button>
-                        <button onclick="setDecalStyle('Glitch')" id="btn-decal-Glitch" class="cyber-panel py-2 px-1 text-[10px] tracking-wider font-semibold hover:border-cyan-400/60 transition-all text-center uppercase">
-                            Глитч-Матрица
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase">Цветовая схема футболки</span>
-                        <i class="fa-solid fa-palette text-[10px] text-cyan-500"></i>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2">
-                        <button onclick="setGarmentColor('Cyber Pink')" id="btn-color-Cyber Pink" class="w-full h-8 rounded-lg bg-[#ff007f] border-2 border-transparent transition-all active:scale-95 flex items-center justify-center text-white text-xs active-btn" title="Кибер Розовый">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <button onclick="setGarmentColor('Neon Orange')" id="btn-color-Neon Orange" class="w-full h-8 rounded-lg bg-[#ff5500] border-2 border-transparent transition-all active:scale-95 flex items-center justify-center text-white text-xs" title="Неоновый Оранжевый">
-                        </button>
-                        <button onclick="setGarmentColor('Toxic Green')" id="btn-color-Toxic Green" class="w-full h-8 rounded-lg bg-[#00ff66] border-2 border-transparent transition-all active:scale-95 flex items-center justify-center text-neutral-900 text-xs" title="Токсичный Зеленый">
-                        </button>
-                        <button onclick="setGarmentColor('Void Black')" id="btn-color-Void Black" class="w-full h-8 rounded-lg bg-[#111115] border-2 border-transparent transition-all active:scale-95 flex items-center justify-center text-white text-xs" title="Угольно Черный">
-                        </button>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-2">
-                    <div class="flex justify-between items-center border-t border-cyan-900/30 pt-3">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase">Режимы визуализации</span>
-                        <i class="fa-solid fa-eye text-[10px] text-cyan-500"></i>
-                    </div>
-                    
-                    <div class="flex items-center justify-between py-1">
-                        <div class="flex flex-col">
-                            <span class="text-xs font-medium text-gray-300">Неоновый Каркас</span>
-                            <span class="text-[9px] text-gray-500">Отобразить полигональную сетку</span>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-wireframe" class="sr-only peer" onchange="toggleWireframe(this.checked)">
-                            <div class="w-11 h-6 bg-cyan-950/60 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-cyan-400 after:border-cyan-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600/40 border border-cyan-800/80"></div>
-                        </label>
-                    </div>
-
-                    <div class="flex items-center justify-between py-1">
-                        <div class="flex flex-col">
-                            <span class="text-xs font-medium text-gray-300">Тепловая карта натяжения</span>
-                            <span class="text-[9px] text-gray-500">Нагрузка швов футболки</span>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-heatmap" class="sr-only peer" onchange="toggleHeatmap(this.checked)">
-                            <div class="w-11 h-6 bg-cyan-950/60 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-cyan-400 after:border-cyan-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600/40 border border-cyan-800/80"></div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="space-y-3 pt-2">
-                    <div class="flex justify-between items-center border-t border-cyan-900/30 pt-3">
-                        <span class="text-xs font-semibold tracking-wider text-cyan-400 uppercase text-xs">Скорость вращения</span>
-                        <span class="mono-font text-[#ffea00] text-xs font-bold" id="val-speed">1x</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <input type="range" id="slider-speed" min="0" max="4" step="0.5" value="1" class="flex-grow" oninput="updateSpeed(this.value)">
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="p-4 border-t border-cyan-900/40 bg-black/60 text-[10px] text-center text-cyan-600 flex justify-between items-center px-6">
-                <span>© CYBER-ATELIER CO</span>
-                <span>PATTERN SECURE V3</span>
-            </div>
-
-        </div>
-
+  <div class="panel">
+    <div class="panel-header">
+      <h1>Ателье Футболок</h1>
+      <p>Конструктор индивидуального пошива</p>
     </div>
 
-    <script>
-        const state = {
-            avatarType: 'Male',
-            fitStyle: 'Regular',      // Slim, Regular, Oversize
-            sleeveLength: 'Regular',  // Short, Regular, Streetwear
-            material: 'Cyber Mesh',
-            decalStyle: 'Core',       // None, Core, Glitch
-            garmentColor: 'Cyber Pink',
-            wireframe: false,
-            heatmap: false,
-            rotationSpeed: 1,
-            activeEffects: []
+    <!-- 1. Модель манекена -->
+    <div class="group">
+      <div class="section-title">Тип Манекена</div>
+      <div class="btn-group" id="group-gender">
+        <button class="btn-option active" data-val="male">Мужской</button>
+        <button class="btn-option" data-val="female">Женский</button>
+        <button class="btn-option" data-val="child">Детский</button>
+      </div>
+    </div>
+
+    <!-- 2. Силуэт / Посадка -->
+    <div class="group">
+      <div class="section-title">Силуэт Модели</div>
+      <div class="btn-group" id="group-fit">
+        <button class="btn-option active" data-val="standard">Стандарт</button>
+        <button class="btn-option" data-val="oversize">Оверсайз</button>
+      </div>
+    </div>
+
+    <!-- 3. Материал / Ткань -->
+    <div class="group">
+      <div class="section-title">Состав Ткани</div>
+      <div class="btn-group" id="group-fabric">
+        <button class="btn-option active" data-val="cotton" data-price="1200">100% Хлопок (Пенье)</button>
+        <button class="btn-option" data-val="stretch" data-price="1400">Стрейч (95/5)</button>
+      </div>
+    </div>
+
+    <!-- 4. Форма горловины -->
+    <div class="group">
+      <div class="section-title">Вырез Горловины</div>
+      <div class="btn-group" id="group-neck">
+        <button class="btn-option active" data-val="round" data-extra="0">Круглый</button>
+        <button class="btn-option" data-val="vneck" data-extra="0.15">V-Образный <span class="badge">+15%</span></button>
+      </div>
+    </div>
+
+    <!-- 5. Цвет полотна -->
+    <div class="group">
+      <div class="section-title">Цвет Ткани</div>
+      <div class="color-swatches">
+        <button class="swatch-btn active" data-color="white">
+          <span class="swatch-circle white"></span> Белый
+        </button>
+        <button class="swatch-btn" data-color="black">
+          <span class="swatch-circle black"></span> Черный
+        </button>
+      </div>
+    </div>
+
+    <!-- 6. Принт / Загрузка -->
+    <div class="group">
+      <div class="section-title">Принт на груди</div>
+      <div class="file-upload">
+        <input type="file" id="print-input" accept="image/*">
+        <span id="upload-label">📁 Загрузить изображение принта</span>
+      </div>
+    </div>
+
+    <!-- Итоговая Смета -->
+    <div class="summary-card">
+      <div class="summary-row">
+        <span>Базовая ткань:</span>
+        <span id="price-fabric">1 200 ₽</span>
+      </div>
+      <div class="summary-row">
+        <span>Крой / Вырез:</span>
+        <span id="price-neck">+0 ₽</span>
+      </div>
+      <div class="summary-row total">
+        <span>Итого:</span>
+        <span id="price-total">1 200 ₽</span>
+      </div>
+    </div>
+
+    <button class="btn-submit" onclick="alert('Заказ сформирован и отправлен в производство!')">Оформить Заказ</button>
+  </div>
+
+  <script>
+    // --- ИНИЦИАЛИЗАЦИЯ THREE.JS ---
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 0.4, 3.2);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2 + 0.1;
+    controls.minDistance = 1.8;
+    controls.maxDistance = 5.0;
+
+    // --- ОСВЕЩЕНИЕ ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    mainLight.position.set(2, 4, 3);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 2048;
+    mainLight.shadow.mapSize.height = 2048;
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0x90b0ff, 0.4);
+    fillLight.position.set(-2, 2, -2);
+    scene.add(fillLight);
+
+    // --- ПОДИУМ ---
+    const floorGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.05, 64);
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x1a1f2c, roughness: 0.6, metalness: 0.2 });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.position.y = -1.05;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // --- СОСТОЯНИЕ КОНСТРУКТОРА ---
+    const state = {
+      gender: 'male',      // male, female, child
+      fit: 'standard',     // standard, oversize
+      fabric: 'cotton',    // cotton, stretch
+      neck: 'round',       // round, vneck
+      color: 'white',      // white, black
+      basePrice: 1200,
+      neckModifier: 0,
+      printTexture: null
+    };
+
+    // --- ТЕКСТУРА ПО УМОЛЧАНИЮ (ПРИНТ ЗАГЛУШКА) ---
+    function createDefaultPrintTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 512, 512);
+
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 12;
+      ctx.strokeRect(40, 40, 432, 432);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 36px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('ВАШ ПРИНТ', 256, 240);
+      ctx.font = '20px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('Загрузите файл', 256, 280);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    }
+
+    let defaultPrint = createDefaultPrintTexture();
+
+    // --- МАТЕРИАЛЫ ---
+    const tshirtMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.85,
+      metalness: 0.05
+    });
+
+    const printMaterial = new THREE.MeshBasicMaterial({
+      map: defaultPrint,
+      transparent: true,
+      opacity: 0.95
+    });
+
+    const mannequinMaterial = new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      roughness: 0.5,
+      metalness: 0.1
+    });
+
+    // --- ГРУППА 3D ОБЪЕКТОВ ---
+    const atelierGroup = new THREE.Group();
+    scene.add(atelierGroup);
+
+    let mannequinMesh, tshirtMesh, neckMesh, printMesh;
+
+    // --- ПОСТРОЕНИЕ ГЕОМЕТРИИ МАНЕКЕНА И ФУТБОЛКИ ---
+    function buildModel() {
+      // Очистка старых объектов
+      while(atelierGroup.children.length > 0){ 
+        atelierGroup.remove(atelierGroup.children[0]); 
+      }
+
+      // Масштаб под манекен
+      let scaleY = 1.0;
+      let scaleXZ = 1.0;
+      let isChild = state.gender === 'child';
+
+      if (state.gender === 'female') {
+        scaleXZ = 0.88;
+      } else if (isChild) {
+        scaleY = 0.7;
+        scaleXZ = 0.75;
+      }
+
+      // 1. Построение манекена (Торс)
+      const bodyGeo = new THREE.CylinderGeometry(0.28 * scaleXZ, 0.22 * scaleXZ, 0.9 * scaleY, 32);
+      mannequinMesh = new THREE.Mesh(bodyGeo, mannequinMaterial);
+      mannequinMesh.position.y = -0.1 * scaleY;
+      mannequinMesh.castShadow = true;
+      atelierGroup.add(mannequinMesh);
+
+      // Голова манекена
+      const headGeo = new THREE.SphereGeometry(0.14 * scaleXZ, 32, 32);
+      const headMesh = new THREE.Mesh(headGeo, mannequinMaterial);
+      headMesh.position.y = 0.48 * scaleY;
+      atelierGroup.add(headMesh);
+
+      // Стойка манекена
+      const poleGeo = new THREE.CylinderGeometry(0.02, 0.02, 1.2, 16);
+      const poleMesh = new THREE.Mesh(poleGeo, mannequinMaterial);
+      poleMesh.position.y = -0.6;
+      atelierGroup.add(poleMesh);
+
+      // 2. Построение Футболки (Тело)
+      let fitMult = (state.fit === 'oversize') ? 1.22 : 1.04;
+      let tRadiusTop = 0.30 * scaleXZ * fitMult;
+      let tRadiusBot = 0.28 * scaleXZ * fitMult;
+      let tHeight = 0.75 * scaleY * (state.fit === 'oversize' ? 1.08 : 1.0);
+
+      const tshirtGeo = new THREE.CylinderGeometry(tRadiusTop, tRadiusBot, tHeight, 32);
+      tshirtMesh = new THREE.Mesh(tshirtGeo, tshirtMaterial);
+      tshirtMesh.position.y = -0.12 * scaleY;
+      tshirtMesh.castShadow = true;
+      atelierGroup.add(tshirtMesh);
+
+      // 3. Рукава
+      const sleeveRadius = 0.1 * scaleXZ * fitMult;
+      const sleeveLen = (state.fit === 'oversize' ? 0.35 : 0.26) * scaleY;
+      const sleeveGeo = new THREE.CylinderGeometry(sleeveRadius * 1.1, sleeveRadius, sleeveLen, 24);
+
+      // Левый рукав
+      const leftSleeve = new THREE.Mesh(sleeveGeo, tshirtMaterial);
+      leftSleeve.position.set(-tRadiusTop * 0.95, 0.18 * scaleY, 0);
+      leftSleeve.rotation.z = Math.PI / 3.5;
+      leftSleeve.castShadow = true;
+      atelierGroup.add(leftSleeve);
+
+      // Правый рукав
+      const rightSleeve = new THREE.Mesh(sleeveGeo, tshirtMaterial);
+      rightSleeve.position.set(tRadiusTop * 0.95, 0.18 * scaleY, 0);
+      rightSleeve.rotation.z = -Math.PI / 3.5;
+      rightSleeve.castShadow = true;
+      atelierGroup.add(rightSleeve);
+
+      // 4. Горловина (Круглая или V-образная)
+      if (state.neck === 'round') {
+        const neckGeo = new THREE.TorusGeometry(tRadiusTop * 0.55, 0.025, 16, 32);
+        neckMesh = new THREE.Mesh(neckGeo, tshirtMaterial);
+        neckMesh.rotation.x = Math.PI / 2;
+        neckMesh.position.set(0, 0.25 * scaleY, 0);
+      } else {
+        // V-образная горловина
+        const vShapeGeo = new THREE.ConeGeometry(tRadiusTop * 0.65, 0.2 * scaleY, 4);
+        neckMesh = new THREE.Mesh(vShapeGeo, tshirtMaterial);
+        neckMesh.rotation.y = Math.PI / 4;
+        neckMesh.position.set(0, 0.2 * scaleY, tRadiusTop * 0.4);
+      }
+      atelierGroup.add(neckMesh);
+
+      // 5. Плоскость для Нанесения Принта
+      const printWidth = 0.26 * scaleXZ * (state.fit === 'oversize' ? 1.15 : 1.0);
+      const printHeight = 0.26 * scaleXZ * (state.fit === 'oversize' ? 1.15 : 1.0);
+      const printGeo = new THREE.PlaneGeometry(printWidth, printHeight);
+
+      printMesh = new THREE.Mesh(printGeo, printMaterial);
+      // Смещение вперед для исключения Z-fighting
+      printMesh.position.set(0, 0.02 * scaleY, tRadiusTop + 0.005);
+      atelierGroup.add(printMesh);
+
+      // Обновляем цвет материалу
+      updateShirtColor();
+    }
+
+    function updateShirtColor() {
+      if (state.color === 'white') {
+        tshirtMaterial.color.setHex(0xfcfcfc);
+      } else {
+        tshirtMaterial.color.setHex(0x181818);
+      }
+    }
+
+    // --- РАСЧЕТ СТОИМОСТИ ---
+    function updatePricing() {
+      let base = state.basePrice;
+      let neckExtra = base * state.neckModifier;
+      let total = base + neckExtra;
+
+      document.getElementById('price-fabric').innerText = base.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-neck').innerText = '+' + Math.round(neckExtra).toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-total').innerText = Math.round(total).toLocaleString('ru-RU') + ' ₽';
+    }
+
+    // --- ОБРАБОТЧИКИ СОБЫТИЙ ИНТЕРФЕЙСА ---
+
+    // Пол / Возраст
+    document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        state.gender = e.target.dataset.val;
+        buildModel();
+      });
+    });
+
+    // Посадка / Оверсайз
+    document.querySelectorAll('#group-fit .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-fit .btn-option').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        state.fit = e.target.dataset.val;
+        buildModel();
+      });
+    });
+
+    // Состав Ткани
+    document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        state.fabric = e.target.dataset.val;
+        state.basePrice = parseInt(e.target.dataset.price);
+        updatePricing();
+      });
+    });
+
+    // Горловина (+15%)
+    document.querySelectorAll('#group-neck .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-neck .btn-option').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        state.neck = e.target.dataset.val;
+        state.neckModifier = parseFloat(e.target.dataset.extra);
+        buildModel();
+        updatePricing();
+      });
+    });
+
+    // Выбор цвета (Белый/Черный)
+    document.querySelectorAll('.swatch-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
+        const target = e.currentTarget;
+        target.classList.add('active');
+        state.color = target.dataset.color;
+        updateShirtColor();
+      });
+    });
+
+    // Загрузка файла принта
+    const printInput = document.getElementById('print-input');
+    printInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('upload-label').innerText = '✓ ' + file.name;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const texture = new THREE.Texture(img);
+            texture.needsUpdate = true;
+            printMaterial.map = texture;
+            printMaterial.needsUpdate = true;
+          };
         };
-
-        const polysElement = document.getElementById('stat-polys');
-        const systemLogElement = document.getElementById('system-log');
-
-        let audioCtx = null;
-        function playSynthesizerTone(freq, duration = 0.1, type = 'sine') {
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                
-                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {
-                // Audio not allowed
-            }
-        }
-
-        function pushLog(message) {
-            const date = new Date();
-            const timestamp = `[${date.toTimeString().split(' ')[0]}]`;
-            const logLine = document.createElement('div');
-            logLine.textContent = `${timestamp} ${message}`;
-            systemLogElement.appendChild(logLine);
-            if (systemLogElement.children.length > 5) {
-                systemLogElement.removeChild(systemLogElement.firstChild);
-            }
-        }
-
-        let scene, camera, renderer, controls;
-        let mannequinGroup;
-
-        const GEOS = {
-            head: new THREE.IcosahedronGeometry(3.3, 2),
-            neck: new THREE.CylinderGeometry(1.2, 1.4, 3),
-            torso: new THREE.CapsuleGeometry(4.8, 12, 4, 16),
-            limb: new THREE.CapsuleGeometry(1.6, 8, 4, 8),
-            joint: new THREE.SphereGeometry(1.8, 8, 8)
-        };
-
-        function initScene() {
-            const canvas = document.getElementById('viz-canvas');
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x05050c);
-            scene.fog = new THREE.FogExp2(0x05050c, 0.012);
-
-            camera = new THREE.PerspectiveCamera(40, canvas.clientWidth / canvas.clientHeight, 1, 1000);
-            camera.position.set(0, 25, 75);
-
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.3;
-
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.maxPolarAngle = Math.PI / 2 + 0.05;
-            controls.minDistance = 20;
-            controls.maxDistance = 120;
-            controls.target.set(0, 20, 0);
-
-            // Lighting setup
-            const ambient = new THREE.AmbientLight(0xffffff, 0.1);
-            scene.add(ambient);
-
-            const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
-            keyLight.position.set(20, 50, 40);
-            scene.add(keyLight);
-
-            const fillLight = new THREE.DirectionalLight(0x00f0ff, 0.9);
-            fillLight.position.set(-20, 20, -20);
-            scene.add(fillLight);
-
-            const backLight = new THREE.DirectionalLight(0xff007f, 1.2);
-            backLight.position.set(10, 5, -40);
-            scene.add(backLight);
-
-            const gridHelper = new THREE.GridHelper(120, 24, 0x00f0ff, 0x222244);
-            gridHelper.position.y = 0;
-            scene.add(gridHelper);
-
-            // Platform Base stand
-            const baseGeo = new THREE.CylinderGeometry(15, 16, 1.5, 32);
-            const baseMat = new THREE.MeshStandardMaterial({
-                color: 0x0f0f1c,
-                roughness: 0.15,
-                metalness: 0.9
-            });
-            const baseMesh = new THREE.Mesh(baseGeo, baseMat);
-            baseMesh.position.y = 0.75;
-            scene.add(baseMesh);
-
-            const ringGeo = new THREE.TorusGeometry(15.5, 0.15, 8, 48);
-            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
-            const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-            ringMesh.rotation.x = Math.PI / 2;
-            ringMesh.position.y = 1.5;
-            scene.add(ringMesh);
-
-            mannequinGroup = new THREE.Group();
-            scene.add(mannequinGroup);
-
-            pushLog("3D-Среда загружена успешно.");
-        }
-
-        function createMannequinMaterial() {
-            // High premium transparent body shell to highlight the T-shirt
-            return new THREE.MeshPhysicalMaterial({
-                color: 0x111122,
-                roughness: 0.4,
-                metalness: 0.1,
-                transmission: 0.6,
-                ior: 1.2,
-                transparent: true,
-                opacity: 0.85,
-                side: THREE.DoubleSide
-            });
-        }
-
-        function createTshirtMaterial(isHeat = false) {
-            if (isHeat) {
-                // Tension heatmap simulation for joints and seams
-                return new THREE.MeshPhongMaterial({
-                    color: 0xff3300,
-                    emissive: 0xff0055,
-                    emissiveIntensity: 0.8,
-                    transparent: true,
-                    opacity: 0.45,
-                    side: THREE.DoubleSide
-                });
-            }
-
-            let colorHex = 0xff007f;
-            if (state.garmentColor === 'Neon Orange') colorHex = 0xff5500;
-            if (state.garmentColor === 'Toxic Green') colorHex = 0x00ff66;
-            if (state.garmentColor === 'Void Black') colorHex = 0x0d0d12;
-
-            switch (state.material) {
-                case 'Cyber Mesh':
-                    return new THREE.MeshStandardMaterial({
-                        color: colorHex,
-                        wireframe: state.wireframe,
-                        transparent: true,
-                        opacity: 0.8,
-                        metalness: 0.3,
-                        roughness: 0.2,
-                        side: THREE.DoubleSide
-                    });
-                case 'Liquid Chrome':
-                    return new THREE.MeshStandardMaterial({
-                        color: colorHex,
-                        metalness: 1.0,
-                        roughness: 0.08,
-                        wireframe: state.wireframe,
-                        side: THREE.DoubleSide
-                    });
-                case 'Matte Carbon':
-                    return new THREE.MeshStandardMaterial({
-                        color: colorHex,
-                        metalness: 0.1,
-                        roughness: 0.8,
-                        flatShading: true,
-                        wireframe: state.wireframe,
-                        side: THREE.DoubleSide
-                    });
-                default:
-                    return new THREE.MeshStandardMaterial({ color: 0x888888 });
-            }
-        }
-
-        function rebuildAvatar() {
-            mannequinGroup.clear();
-
-            const bodyMat = createMannequinMaterial();
-            const shirtMat = createTshirtMaterial(false);
-
-            // Anatomy adjustments based on standard gender shapes
-            let p = { shoulderW: 8, hipW: 6, torsoH: 1, legL: 1 };
-            if (state.avatarType === 'Male') p = { shoulderW: 9.5, hipW: 6.5, torsoH: 1.1, legL: 1.1 };
-            if (state.avatarType === 'Female') p = { shoulderW: 6.8, hipW: 8.5, torsoH: 0.92, legL: 1.0 };
-            if (state.avatarType === 'Unisex') p = { shoulderW: 8.2, hipW: 7.5, torsoH: 1.0, legL: 1.05 };
-
-            const buildPart = (geo, pos, rot = [0, 0, 0], scale = [1, 1, 1], customMat = null) => {
-                const mesh = new THREE.Mesh(geo, customMat || bodyMat);
-                mesh.position.set(...pos);
-                mesh.rotation.set(...rot);
-                mesh.scale.set(...scale);
-                mannequinGroup.add(mesh);
-                return mesh;
-            };
-
-            // Assemble mannequin anatomy base
-            buildPart(GEOS.head, [0, 38, 0]);
-            buildPart(GEOS.neck, [0, 34, 0]);
-            buildPart(GEOS.torso, [0, 24, 0], [0, 0, 0], [p.shoulderW / 8, p.torsoH, p.hipW / 7]);
-
-            // Limbs
-            const armY = 30;
-            buildPart(GEOS.limb, [p.shoulderW * 0.7, armY - 5, 0], [0, 0, 0.22]); 
-            buildPart(GEOS.limb, [-p.shoulderW * 0.7, armY - 5, 0], [0, 0, -0.22]);
-            const legY = 12;
-            buildPart(GEOS.limb, [p.hipW * 0.4, legY - 4, 0], [0, 0, 0.05], [1, p.legL, 1]);
-            buildPart(GEOS.limb, [-p.hipW * 0.4, legY - 4, 0], [0, 0, -0.05], [1, p.legL, 1]);
-
-            // Shoulder and hip joints
-            buildPart(GEOS.joint, [p.shoulderW * 0.7, armY, 0]);
-            buildPart(GEOS.joint, [-p.shoulderW * 0.7, armY, 0]);
-            buildPart(GEOS.joint, [p.hipW * 0.4, legY, 0]);
-            buildPart(GEOS.joint, [-p.hipW * 0.4, legY, 0]);
-
-            let fitFactor = 1.05; // Slim
-            if (state.fitStyle === 'Regular') fitFactor = 1.15;
-            if (state.fitStyle === 'Oversize') fitFactor = 1.32;
-
-            // 1. T-Shirt Torso Core (Cylindrical cover with subtle taper)
-            const shirtTorsoGeo = new THREE.CylinderGeometry(
-                5.0 * (p.shoulderW / 8.5) * fitFactor, 
-                4.8 * (p.hipW / 7.5) * fitFactor, 
-                15 * p.torsoH, 
-                24, 8, true
-            );
-            const shirtTorso = buildPart(shirtTorsoGeo, [0, 23, 0], [0, 0, 0], [1, 1, 1.05], shirtMat);
-            state.activeEffects.push(shirtTorso);
-
-            // 2. Collar Trim (Futuristic crew-neck ring)
-            const collarGeo = new THREE.TorusGeometry(3.5 * fitFactor, 0.4, 8, 32);
-            const collar = buildPart(collarGeo, [0, 30.5, 0], [Math.PI/2 - 0.2, 0, 0], [1, 1, 0.8], shirtMat);
-            state.activeEffects.push(collar);
-
-            // 3. Sleeve lengths logic
-            let sleeveLenVal = 4; // Short
-            if (state.sleeveLength === 'Regular') sleeveLenVal = 6.2;
-            if (state.sleeveLength === 'Streetwear') sleeveLenVal = 8.8;
-
-            const leftSleeveGeo = new THREE.CylinderGeometry(
-                2.3 * fitFactor, 
-                2.1 * fitFactor, 
-                sleeveLenVal, 
-                16, 4, true
-            );
-            const rightSleeveGeo = leftSleeveGeo.clone();
-
-            // Symmetrical Sleeve alignment
-            const leftSleeve = buildPart(
-                leftSleeveGeo, 
-                [p.shoulderW * 0.78, armY - (sleeveLenVal / 2) + 0.5, 0], 
-                [0, 0, 0.25], 
-                [1.05, 1, 1.05], 
-                shirtMat
-            );
-            const rightSleeve = buildPart(
-                rightSleeveGeo, 
-                [-p.shoulderW * 0.78, armY - (sleeveLenVal / 2) + 0.5, 0], 
-                [0, 0, -0.25], 
-                [1.05, 1, 1.05], 
-                shirtMat
-            );
-            state.activeEffects.push(leftSleeve, rightSleeve);
-
-            if (state.decalStyle !== 'None') {
-                let decalMat;
-                let decalGeo = new THREE.PlaneGeometry(3.5, 3.5);
-                
-                if (state.decalStyle === 'Core') {
-                    // Floating energetic chest nucleus
-                    decalGeo = new THREE.TorusGeometry(1.6, 0.15, 8, 32);
-                    decalMat = new THREE.MeshBasicMaterial({
-                        color: 0x00f0ff,
-                        transparent: true,
-                        opacity: 0.9,
-                        side: THREE.DoubleSide
-                    });
-                    const coreDecal = buildPart(decalGeo, [0, 24.5, 5.0 * fitFactor], [0, 0, 0], [1, 1, 1], decalMat);
-                    state.activeEffects.push(coreDecal);
-
-                    // Core center pixel
-                    const coreDotGeo = new THREE.SphereGeometry(0.5, 16, 16);
-                    const coreDotMat = new THREE.MeshBasicMaterial({ color: 0xff007f });
-                    const coreDot = buildPart(coreDotGeo, [0, 24.5, 5.0 * fitFactor], [0, 0, 0], [1, 1, 1], coreDotMat);
-                    state.activeEffects.push(coreDot);
-                } else if (state.decalStyle === 'Glitch') {
-                    // Digital glitch striped projection
-                    const gridGrp = new THREE.Group();
-                    const stripGeo = new THREE.BoxGeometry(2.4, 0.15, 0.15);
-                    const stripMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
-                    for(let i = 0; i < 4; i++) {
-                        const s = new THREE.Mesh(stripGeo, stripMat);
-                        s.position.set(0, 24.5 + (i * 0.4), 4.9 * fitFactor);
-                        gridGrp.add(s);
-                    }
-                    mannequinGroup.add(gridGrp);
-                    state.activeEffects.push(gridGrp);
-                }
-            }
-
-            // 4. Mesh stress strain heatmap overlay
-            if (state.heatmap) {
-                const heatMat = createTshirtMaterial(true);
-                const tHeat = buildPart(shirtTorsoGeo, [0, 23, 0], [0, 0, 0], [1.02, 1.02, 1.07], heatMat);
-                const lHeat = buildPart(leftSleeveGeo, [p.shoulderW * 0.78, armY - (sleeveLenVal / 2) + 0.5, 0], [0, 0, 0.25], [1.07, 1.02, 1.07], heatMat);
-                const rHeat = buildPart(rightSleeveGeo, [-p.shoulderW * 0.78, armY - (sleeveLenVal / 2) + 0.5, 0], [0, 0, -0.25], [1.07, 1.02, 1.07], heatMat);
-                state.activeEffects.push(tHeat, lHeat, rHeat);
-            }
-
-            // Calculate overall model polycounts dynamically
-            let polyCount = 0;
-            scene.traverse(node => {
-                if(node.isMesh && node.geometry) {
-                    polyCount += node.geometry.index ? node.geometry.index.count / 3 : node.geometry.attributes.position.count / 3;
-                }
-            });
-            polysElement.textContent = Math.round(polyCount).toLocaleString();
-        }
-
-        function setAvatarType(type) {
-            if (state.avatarType === type) return;
-            state.avatarType = type;
-            ['Male', 'Female', 'Unisex'].forEach(t => {
-                document.getElementById(`btn-avatar-${t}`).classList.remove('active-btn');
-            });
-            document.getElementById(`btn-avatar-${type}`).classList.add('active-btn');
-            playSynthesizerTone(260 + 50 * ['Male', 'Female', 'Unisex'].indexOf(type), 0.15, 'sawtooth');
-            pushLog(`Анатомия манекена: ${type}`);
-            rebuildAvatar();
-        }
-
-        function setFitStyle(fit) {
-            if (state.fitStyle === fit) return;
-            state.fitStyle = fit;
-            ['Slim', 'Regular', 'Oversize'].forEach(f => {
-                document.getElementById(`btn-fit-${f}`).classList.remove('active-btn');
-            });
-            document.getElementById(`btn-fit-${fit}`).classList.add('active-btn');
-            playSynthesizerTone(320 + 40 * ['Slim', 'Regular', 'Oversize'].indexOf(fit), 0.12, 'triangle');
-            pushLog(`Силуэт кроя футболки: ${fit}`);
-            rebuildAvatar();
-        }
-
-        function updateSleeveLength(val) {
-            let label = 'Короткий';
-            if (val == 1) { state.sleeveLength = 'Short'; label = 'Короткий'; }
-            if (val == 2) { state.sleeveLength = 'Regular'; label = 'Стандарт'; }
-            if (val == 3) { state.sleeveLength = 'Streetwear'; label = 'Удлиненный'; }
-            
-            document.getElementById('val-sleeve').textContent = label;
-            playSynthesizerTone(180 + val * 60, 0.08, 'sine');
-            rebuildAvatar();
-        }
-
-        function setMaterialType(mat) {
-            if (state.material === mat) return;
-            state.material = mat;
-            ['Cyber Mesh', 'Liquid Chrome', 'Matte Carbon'].forEach(m => {
-                document.getElementById(`btn-mat-${m}`).classList.remove('active-btn');
-            });
-            document.getElementById(`btn-mat-${mat}`).classList.add('active-btn');
-            playSynthesizerTone(440, 0.1, 'square');
-            pushLog(`Материал футболки: ${mat}`);
-            rebuildAvatar();
-        }
-
-        function setDecalStyle(decal) {
-            if (state.decalStyle === decal) return;
-            state.decalStyle = decal;
-            ['None', 'Core', 'Glitch'].forEach(d => {
-                document.getElementById(`btn-decal-${d}`).classList.remove('active-btn');
-            });
-            document.getElementById(`btn-decal-${decal}`).classList.add('active-btn');
-            playSynthesizerTone(580, 0.14, 'sine');
-            pushLog(`Принт футболки: ${decal}`);
-            rebuildAvatar();
-        }
-
-        function setGarmentColor(color) {
-            if (state.garmentColor === color) return;
-            state.garmentColor = color;
-            ['Cyber Pink', 'Neon Orange', 'Toxic Green', 'Void Black'].forEach(c => {
-                document.getElementById(`btn-color-${c}`).classList.remove('active-btn');
-                document.getElementById(`btn-color-${c}`).innerHTML = '';
-            });
-            const btn = document.getElementById(`btn-color-${color}`);
-            btn.classList.add('active-btn');
-            btn.innerHTML = color === 'Toxic Green' ? '<i class="fa-solid fa-check text-neutral-900"></i>' : '<i class="fa-solid fa-check text-white"></i>';
-            playSynthesizerTone(620, 0.12, 'sine');
-            pushLog(`Цвет футболки: ${color}`);
-            rebuildAvatar();
-        }
-
-        function toggleWireframe(enabled) {
-            state.wireframe = enabled;
-            playSynthesizerTone(enabled ? 880 : 440, 0.2, 'triangle');
-            pushLog(`Отображение сетки каркаса: ${enabled ? 'ВКЛ' : 'ВЫКЛ'}`);
-            rebuildAvatar();
-        }
-
-        function toggleHeatmap(enabled) {
-            state.heatmap = enabled;
-            playSynthesizerTone(enabled ? 980 : 330, 0.25, 'sawtooth');
-            pushLog(`Тепловая карта натяжения ткани: ${enabled ? 'ВКЛ' : 'ВЫКЛ'}`);
-            rebuildAvatar();
-        }
-
-        function updateSpeed(value) {
-            state.rotationSpeed = parseFloat(value);
-            document.getElementById('val-speed').textContent = `${value}x`;
-            playSynthesizerTone(250 + value * 60, 0.08, 'sine');
-        }
-
-        function triggerReset() {
-            state.avatarType = 'Male';
-            state.fitStyle = 'Regular';
-            state.sleeveLength = 'Regular';
-            state.material = 'Cyber Mesh';
-            state.decalStyle = 'Core';
-            state.garmentColor = 'Cyber Pink';
-            state.wireframe = false;
-            state.heatmap = false;
-            state.rotationSpeed = 1;
-
-            document.getElementById('slider-sleeve').value = 2;
-            document.getElementById('val-sleeve').textContent = 'Стандарт';
-            document.getElementById('slider-speed').value = 1;
-            document.getElementById('val-speed').textContent = '1x';
-            document.getElementById('toggle-wireframe').checked = false;
-            document.getElementById('toggle-heatmap').checked = false;
-
-            // Reset UI lists active classes
-            ['Male', 'Female', 'Unisex'].forEach(t => document.getElementById(`btn-avatar-${t}`).classList.remove('active-btn'));
-            document.getElementById('btn-avatar-Male').classList.add('active-btn');
-
-            ['Slim', 'Regular', 'Oversize'].forEach(f => document.getElementById(`btn-fit-${f}`).classList.remove('active-btn'));
-            document.getElementById('btn-fit-Regular').classList.add('active-btn');
-
-            ['Cyber Mesh', 'Liquid Chrome', 'Matte Carbon'].forEach(m => document.getElementById(`btn-mat-${m}`).classList.remove('active-btn'));
-            document.getElementById('btn-mat-Cyber Mesh').classList.add('active-btn');
-
-            ['None', 'Core', 'Glitch'].forEach(d => document.getElementById(`btn-decal-${d}`).classList.remove('active-btn'));
-            document.getElementById('btn-decal-Core').classList.add('active-btn');
-
-            ['Cyber Pink', 'Neon Orange', 'Toxic Green', 'Void Black'].forEach(c => {
-                document.getElementById(`btn-color-${c}`).classList.remove('active-btn');
-                document.getElementById(`btn-color-${c}`).innerHTML = '';
-            });
-            document.getElementById('btn-color-Cyber Pink').classList.add('active-btn');
-            document.getElementById('btn-color-Cyber Pink').innerHTML = '<i class="fa-solid fa-check"></i>';
-
-            playSynthesizerTone(120, 0.5, 'sawtooth');
-            pushLog("Параметры лекала футболки сброшены к дефолтным.");
-            rebuildAvatar();
-        }
-
-        window.onload = function() {
-            initScene();
-            rebuildAvatar();
-
-            window.addEventListener('resize', () => {
-                const canvas = document.getElementById('viz-canvas');
-                camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-            });
-
-            const clock = new THREE.Clock();
-            function animate() {
-                requestAnimationFrame(animate);
-
-                const dt = clock.getDelta();
-                const time = clock.getElapsedTime();
-
-                // Smoothly rotate the mannequin and simulated T-shirt garment
-                if (mannequinGroup) {
-                    mannequinGroup.rotation.y += 0.22 * state.rotationSpeed * dt;
-                    
-                    // Natural dynamic hovering displacement
-                    mannequinGroup.position.y = Math.sin(time * 0.9) * 0.6;
-                }
-
-                // Dynamic pulse/flicker shader for decals & heatmaps
-                state.activeEffects.forEach(obj => {
-                    if (mannequinGroup) {
-                        obj.position.y = mannequinGroup.position.y;
-                    }
-
-                    // Rotating animated energy emblem prints
-                    if (state.decalStyle === 'Core' && obj instanceof THREE.Mesh && obj.geometry instanceof THREE.TorusGeometry) {
-                        obj.rotation.z = time * 1.5;
-                    }
-
-                    // Pulse emissive values
-                    if (obj.material && obj.material.opacity !== undefined && state.heatmap) {
-                        obj.material.opacity = 0.35 + Math.sin(time * 3.5) * 0.15;
-                    }
-                });
-
-                controls.update();
-                renderer.render(scene, camera);
-            }
-
-            animate();
-        };
-    </script>
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // --- РЕСАЙЗ ОКНА ---
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    // --- ИНИЦИАЛИЗАЦИЯ И РЕНДЕР-ПЕТЛЯ ---
+    buildModel();
+    updatePricing();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+
+      // Медленное вращение подиума для презентации
+      atelierGroup.rotation.y += 0.003;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
 </body>
 </html>
