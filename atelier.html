@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Конструктор v1.0.8</title>
+  <title>GY-GY Atelier | Конструктор v1.1.0</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -78,37 +78,63 @@
       border-radius: 3px;
     }
 
+    /* Шапка: Двойная стрелка слева, Логотип GY-GY и Версия справа */
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
-      padding-bottom: 10px;
-      margin-bottom: 2px;
+      padding-bottom: 12px;
+      margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
     }
 
-    .panel-header h1 {
+    .nav-arrows {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      background: #121212;
+      border: 1px solid var(--gold-dark);
+      color: var(--gold-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      line-height: 1;
+    }
+
+    .nav-btn:hover {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .brand-logo {
       font-size: 18px;
       font-weight: 900;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       color: var(--gold-primary);
       text-transform: uppercase;
       text-shadow: 0 0 10px var(--gold-glow);
     }
 
-    .panel-header p {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
     .version-tag {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--gold-primary);
-      border: 1px solid var(--gold-dark);
-      padding: 2px 6px;
-      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
     }
 
     .section-title {
@@ -164,8 +190,7 @@
     }
 
     /* ==========================================
-       СТИЛИ КНОПОК («Максимум через минимум»)
-       Буквы неизменны. Активность = Рамка + Свечение рамки.
+       СТИЛИ КНОПОК
        ========================================== */
     .btn-option, .swatch-btn, .btn-submit {
       background-color: #121212;
@@ -187,11 +212,10 @@
       box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
     }
 
-    /* Активное состояние: Яркая золотая рамка и её неоновое свечение */
     .btn-option.active, .swatch-btn.active {
       background-color: #121212 !important;
       border: 1.5px solid var(--gold-light) !important;
-      color: var(--gold-primary) !important; /* Буквы принципиально не трогаем */
+      color: var(--gold-primary) !important;
       box-shadow: 
         0 0 12px rgba(245, 215, 127, 0.6),
         inset 0 0 6px rgba(212, 175, 55, 0.3) !important;
@@ -354,17 +378,20 @@
   <div class="main-wrapper">
     <!-- ПАНЕЛЬ НАСТРОЕК -->
     <div class="panel">
+      <!-- Шапка: Стрелки слева, Логотип GY-GY и v1.1.0 справа -->
       <div class="panel-header">
-        <div>
-          <h1>Ателье Уличной Одежды</h1>
-          <p>Конструктор и примерка изделий</p>
+        <div class="nav-arrows">
+          <button class="nav-btn" onclick="history.back()" title="Шаг назад">‹</button>
+          <button class="nav-btn" onclick="location.href='/'" title="К двери клуба">«</button>
         </div>
-        <span class="version-tag">v1.0.8</span>
+        <div class="brand-box">
+          <div class="brand-logo">GY-GY</div>
+          <span class="version-tag">v1.1.0</span>
+        </div>
       </div>
 
-      <!-- Модель Изделия -->
+      <!-- Выбор изделия -->
       <div class="group">
-        <div class="section-title">Модель Изделия</div>
         <select class="apparel-selector" id="apparel-type">
           <option value="tshirt">👕 Футболка</option>
           <option value="hoodie">🧥 Худи с капюшоном</option>
@@ -381,7 +408,7 @@
         </div>
       </div>
 
-      <!-- Размеры (Без заглавной надписи "Размер") -->
+      <!-- Размеры -->
       <div class="group">
         <div class="btn-group size-grid" id="group-size"></div>
       </div>
@@ -409,7 +436,7 @@
         </div>
       </div>
 
-      <!-- Ракурс / Сторона (Без заглавной надписи "Сторона") -->
+      <!-- Ракурс / Сторона -->
       <div class="group">
         <div class="btn-group" id="group-view">
           <button class="btn-option active" data-view="front">Спереди (Грудь)</button>
