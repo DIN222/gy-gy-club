@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Золотой Стандарт 009 </title>
+  <title>Ателье Уличной Одежды | Конструктор [v1.0.X]</title>
   <style>
     :root {
       --bg: #050505;
@@ -13,7 +13,7 @@
       --gold-primary: #d4af37; 
       --gold-light: #f5d77f;
       --gold-dark: #6e5812;
-      --gold-glow: rgba(212, 175, 55, 0.2);
+      --gold-glow: rgba(212, 175, 55, 0.3);
       
       --text: #ffffff;
       --text-muted: #8a806b;
@@ -42,6 +42,7 @@
       height: 100%;
     }
 
+    /* ПАНЕЛЬ УПРАВЛЕНИЯ */
     .panel {
       width: 420px;
       height: 100%;
@@ -110,6 +111,36 @@
       font-weight: 700;
     }
 
+    /* ВЫПАДАЮЩИЙ СПИСОК ИЗДЕЛИЙ (Как выбор языка) */
+    .apparel-selector {
+      width: 100%;
+      padding: 12px;
+      background: #121212;
+      border: 1px solid var(--gold-dark);
+      border-radius: 4px;
+      color: var(--gold-primary);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 4px rgba(212, 175, 55, 0.2);
+    }
+
+    .apparel-selector:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      text-shadow: 0 0 8px rgba(245, 215, 127, 0.5);
+    }
+
+    .apparel-selector option {
+      background: #0d0d0d;
+      color: var(--gold-primary);
+      padding: 10px;
+    }
+
     .group {
       display: flex;
       flex-direction: column;
@@ -122,39 +153,36 @@
       gap: 8px;
     }
 
+    /* СТИЛЬ КНОПОК: ВСЕГДА ЧЕРНЫЙ ФОН И ЗОЛОТОЙ ТЕКСТ */
     .btn-option {
       background-color: #121212 !important;
-      border: 1px solid var(--gold-dark) !important;
-      color: var(--gold-primary) !important;
+      border: 1px solid var(--gold-dark);
+      color: var(--gold-primary);
       padding: 9px 6px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
       text-align: center;
       text-transform: uppercase;
+      text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
     }
 
     .btn-option:hover {
-      border-color: var(--gold-primary) !important;
-      color: var(--gold-light) !important;
-      background-color: #1a1a1a !important;
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      text-shadow: 0 0 8px rgba(245, 215, 127, 0.6);
     }
 
+    /* АКТИВНОЕ СОСТОЯНИЕ: УВЕЛИЧЕННАЯ ИНТЕНСИВНОСТЬ СВЕЧЕНИЯ */
     .btn-option.active {
-      background: linear-gradient(135deg, #d4af37 0%, #f5d77f 100%) !important;
-      border-color: #f5d77f !important;
-      color: #000000 !important;
-      font-weight: 900;
-      box-shadow: 0 0 12px var(--gold-glow);
-    }
-
-    .btn-option.disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      border-style: dashed !important;
-      pointer-events: none;
+      background-color: #121212 !important;
+      border-color: var(--gold-light) !important;
+      color: #ffffff !important;
+      font-weight: 900 !important;
+      text-shadow: 0 0 6px #f5d77f, 0 0 12px #d4af37, 0 0 18px #d4af37 !important;
+      box-shadow: 0 0 12px var(--gold-glow), inset 0 0 6px var(--gold-glow) !important;
     }
 
     .color-swatches {
@@ -176,11 +204,22 @@
       cursor: pointer;
       font-size: 11px;
       font-weight: 700;
+      transition: all 0.25s;
+      text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
+    .swatch-btn:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-light);
+      text-shadow: 0 0 8px rgba(245, 215, 127, 0.6);
     }
 
     .swatch-btn.active {
-      border-color: var(--gold-light);
-      background-color: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold-light) !important;
+      color: #ffffff !important;
+      font-weight: 900 !important;
+      text-shadow: 0 0 6px #f5d77f, 0 0 12px #d4af37 !important;
+      box-shadow: 0 0 12px var(--gold-glow), inset 0 0 6px var(--gold-glow) !important;
     }
 
     .swatch-circle {
@@ -216,7 +255,6 @@
       text-transform: uppercase;
     }
 
-    /* Ползунки подгонки принта */
     .print-controls {
       display: flex;
       flex-direction: column;
@@ -265,6 +303,7 @@
       border-top: 1px solid var(--gold-dark);
       padding-top: 6px;
       margin-bottom: 0;
+      text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
     }
 
     .badge {
@@ -278,9 +317,9 @@
 
     .btn-submit {
       width: 100%;
-      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 100%);
-      color: var(--text-dark);
-      border: none;
+      background: #121212;
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
       padding: 12px;
       border-radius: 4px;
       font-size: 12px;
@@ -288,6 +327,15 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-submit:hover {
+      border-color: var(--gold-light);
+      color: #ffffff;
+      text-shadow: 0 0 8px #f5d77f, 0 0 14px #d4af37;
+      box-shadow: 0 0 14px var(--gold-glow);
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
@@ -303,13 +351,14 @@
         <p>Конструктор и примерка изделий</p>
       </div>
 
-      <!-- Тип Изделия -->
+      <!-- ВЫБОРОЧНЫЙ СПИСОК ИЗДЕЛИЯ (DROPDOWN) -->
       <div class="group">
-        <div class="section-title">Тип Изделия</div>
-        <div class="btn-group">
-          <button class="btn-option active">Футболка</button>
-          <button class="btn-option disabled">Худи <span class="badge">Скоро</span></button>
-        </div>
+        <div class="section-title">Выбор Изделия</div>
+        <select class="apparel-selector" id="apparel-type">
+          <option value="tshirt">👕 Футболка</option>
+          <option value="hoodie">🧥 Худи с капюшоном</option>
+          <option value="sweatshirt">👔 Свитшот</option>
+        </select>
       </div>
 
       <!-- Манекен -->
@@ -331,28 +380,13 @@
         </div>
       </div>
 
-      <!-- Ткань -->
-      <div class="group">
-        <div class="section-title">Состав Ткани</div>
-        <div class="btn-group" id="group-fabric">
-          <button class="btn-option active" data-val="cotton" data-price="1200">Хлопок 100%</button>
-          <button class="btn-option" data-val="stretch" data-price="1400">Стрейч</button>
-        </div>
-      </div>
-
-      <!-- Вырез -->
-      <div class="group">
-        <div class="section-title">Вырез Горловины</div>
-        <div class="btn-group" id="group-neck">
-          <button class="btn-option active" data-val="round" data-extra="0">Круглый</button>
-          <button class="btn-option" data-val="vneck" data-extra="0.15">V-Вырез <span class="badge">+15%</span></button>
-        </div>
-      </div>
+      <!-- ДИНАМИЧЕСКИЕ ПАРАМЕТРЫ (Меняются при выборе типа изделия) -->
+      <div id="dynamic-params"></div>
 
       <!-- Цвет -->
       <div class="group">
-        <div class="section-title">Цвет Футболки</div>
-        <div class="color-swatches">
+        <div class="section-title">Цвет Изделия</div>
+        <div class="color-swatches" id="group-color">
           <button class="swatch-btn active" data-color="white">
             <span class="swatch-circle white"></span> Белый
           </button>
@@ -370,7 +404,6 @@
           <span id="upload-label">📁 Загрузить файл (PNG)</span>
         </div>
 
-        <!-- Регулировки принта -->
         <div class="print-controls" id="print-controls">
           <div class="control-row">
             <span>Размер лого:</span>
@@ -386,12 +419,12 @@
       <!-- Смета -->
       <div class="summary-card">
         <div class="summary-row">
-          <span>Базовое изделие:</span>
+          <span>Изделие и Ткань:</span>
           <span id="price-fabric">1 200 ₽</span>
         </div>
         <div class="summary-row">
           <span>Модификация кроя:</span>
-          <span id="price-neck">+0 ₽</span>
+          <span id="price-extra">+0 ₽</span>
         </div>
         <div class="summary-row total">
           <span>Итого:</span>
@@ -425,16 +458,14 @@
     scene.add(ambientLight);
 
     const state = {
+      apparelType: 'tshirt',
       mannequinFile: 'man.png',
       gender: 'male',
       fit: 'standard',
       color: 'white',
-      fabric: 'cotton',
-      neck: 'round',
       basePrice: 1200,
-      neckModifier: 0,
+      extraPrice: 0,
       
-      // Настройки принта
       printScale: 0.32,
       printOffsetY: 0.12,
       hasPrint: false
@@ -444,7 +475,7 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    // Материал принта (ПО УМОЛЧАНИЮ ПРОЗРАЧНЫЙ opacity: 0)
+    // Прозрачный материал принта по умолчанию
     const printMaterial = new THREE.MeshBasicMaterial({ 
       transparent: true, 
       opacity: 0, 
@@ -452,25 +483,107 @@
       depthWrite: false
     });
 
-    let printMesh = null;
+    // Уникальные параметры под каждое изделие
+    const apparelConfigs = {
+      tshirt: {
+        basePrice: 1200,
+        html: `
+          <div class="group">
+            <div class="section-title">Состав Ткани</div>
+            <div class="btn-group" id="group-fabric">
+              <button class="btn-option active" data-price="1200">Хлопок 100%</button>
+              <button class="btn-option" data-price="1400">Стрейч</button>
+            </div>
+          </div>
+          <div class="group">
+            <div class="section-title">Вырез Горловины</div>
+            <div class="btn-group" id="group-extra">
+              <button class="btn-option active" data-extra="0">Круглый</button>
+              <button class="btn-option" data-extra="200">V-Вырез <span class="badge">+200₽</span></button>
+            </div>
+          </div>
+        `
+      },
+      hoodie: {
+        basePrice: 3200,
+        html: `
+          <div class="group">
+            <div class="section-title">Утепление</div>
+            <div class="btn-group" id="group-fabric">
+              <button class="btn-option active" data-price="3200">Без начеса</button>
+              <button class="btn-option" data-price="3600">С начесом <span class="badge">+400₽</span></button>
+            </div>
+          </div>
+          <div class="group">
+            <div class="section-title">Тип Капюшона</div>
+            <div class="btn-group" id="group-extra">
+              <button class="btn-option active" data-extra="0">Стандарт</button>
+              <button class="btn-option" data-extra="300">Двойной Оверсайз <span class="badge">+300₽</span></button>
+            </div>
+          </div>
+        `
+      },
+      sweatshirt: {
+        basePrice: 2500,
+        html: `
+          <div class="group">
+            <div class="section-title">Плотность Ткани</div>
+            <div class="btn-group" id="group-fabric">
+              <button class="btn-option active" data-price="2500">320 г/м²</button>
+              <button class="btn-option" data-price="2900">400 г/м² (Плотный)</button>
+            </div>
+          </div>
+          <div class="group">
+            <div class="section-title">Крой Рукава</div>
+            <div class="btn-group" id="group-extra">
+              <button class="btn-option active" data-extra="0">Втачной</button>
+              <button class="btn-option" data-extra="250">Реглан <span class="badge">+250₽</span></button>
+            </div>
+          </div>
+        `
+      }
+    };
+
+    function renderDynamicParams() {
+      const config = apparelConfigs[state.apparelType];
+      document.getElementById('dynamic-params').innerHTML = config.html;
+      state.basePrice = config.basePrice;
+      state.extraPrice = 0;
+
+      document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          state.basePrice = parseInt(e.currentTarget.dataset.price);
+          updatePricing();
+        });
+      });
+
+      document.querySelectorAll('#group-extra .btn-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('#group-extra .btn-option').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          state.extraPrice = parseInt(e.currentTarget.dataset.extra);
+          updatePricing();
+        });
+      });
+
+      updatePricing();
+    }
 
     function buildModel() {
-      // Очищаем сцену
       while(atelierGroup.children.length > 0){ 
         const obj = atelierGroup.children[0];
         if (obj.geometry) obj.geometry.dispose();
         atelierGroup.remove(obj); 
       }
 
-      // Пропорции манекенов
       const genderMult = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0));
       const fitMult = (state.fit === 'oversize' ? 1.12 : 1.0);
 
-      // Высота 1.8 (на 10% ниже исходных 2.0)
       const width = 1.2 * genderMult * fitMult;
       const height = 1.8 * genderMult; 
 
-      // 1. Загружаем сам манекен
       textureLoader.load(state.mannequinFile, (texture) => {
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -482,30 +595,29 @@
         atelierGroup.add(mannequinMesh);
       });
 
-      // 2. Создаем идеальный плоскостной холст под принт
-      // Позиция Y адаптируется под рост манекена
       const baseChestY = (state.gender === 'child' ? 0.08 : (state.gender === 'female' ? 0.10 : 0.12));
       const printSize = state.printScale * genderMult;
 
       const printGeo = new THREE.PlaneGeometry(printSize, printSize);
-      printMesh = new THREE.Mesh(printGeo, printMaterial);
-      
-      // Накладываем ровно поверх груди (Z = 0.01 чтобы принт не мерцал)
+      const printMesh = new THREE.Mesh(printGeo, printMaterial);
       printMesh.position.set(0, (baseChestY + state.printOffsetY) * genderMult, 0.01);
       atelierGroup.add(printMesh);
     }
 
     function updatePricing() {
-      let base = state.basePrice;
-      let neckExtra = base * state.neckModifier;
-      let total = base + neckExtra;
-
-      document.getElementById('price-fabric').innerText = base.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('price-neck').innerText = '+' + Math.round(neckExtra).toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('price-total').innerText = Math.round(total).toLocaleString('ru-RU') + ' ₽';
+      let total = state.basePrice + state.extraPrice;
+      document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-extra').innerText = '+' + state.extraPrice.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
-    // Обработчики кнопок
+    // События
+    document.getElementById('apparel-type').addEventListener('change', (e) => {
+      state.apparelType = e.target.value;
+      renderDynamicParams();
+      buildModel();
+    });
+
     document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
@@ -525,36 +637,14 @@
       });
     });
 
-    document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
+    document.querySelectorAll('#group-color .swatch-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.fabric = e.currentTarget.dataset.val;
-        state.basePrice = parseInt(e.currentTarget.dataset.price);
-        updatePricing();
-      });
-    });
-
-    document.querySelectorAll('#group-neck .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-neck .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.neck = e.currentTarget.dataset.val;
-        state.neckModifier = parseFloat(e.currentTarget.dataset.extra);
-        buildModel();
-        updatePricing();
-      });
-    });
-
-    document.querySelectorAll('.swatch-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#group-color .swatch-btn').forEach(b => b.classList.remove('active'));
         e.currentTarget.classList.add('active');
         state.color = e.currentTarget.dataset.color;
       });
     });
 
-    // Ползунки точной подгонки принта
     document.getElementById('scale-slider').addEventListener('input', (e) => {
       state.printScale = parseFloat(e.target.value);
       buildModel();
@@ -565,7 +655,6 @@
       buildModel();
     });
 
-    // Загрузка файла принта
     document.getElementById('print-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -582,7 +671,7 @@
             texture.needsUpdate = true;
             
             printMaterial.map = texture;
-            printMaterial.opacity = 0.98; // ДЕЛАЕМ ВИДИМЫМ ТОЛЬКО ПОСЛЕ ЗАГРУЗКИ
+            printMaterial.opacity = 0.98;
             printMaterial.needsUpdate = true;
             state.hasPrint = true;
           };
@@ -597,8 +686,9 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
+    // Инициализация
+    renderDynamicParams();
     buildModel();
-    updatePricing();
 
     function animate() {
       requestAnimationFrame(animate);
