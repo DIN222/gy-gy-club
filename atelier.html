@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Конструктор v1.0.5 </title>
+  <title>Ателье Уличной Одежды | Конструктор v1.0.7</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -54,7 +54,7 @@
        ПАНЕЛЬ УПРАВЛЕНИЯ
        ========================================== */
     .panel {
-      width: 400px;
+      width: 420px;
       height: 100%;
       background: var(--panel);
       border-right: 1px solid var(--panel-border);
@@ -81,7 +81,10 @@
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
       padding-bottom: 10px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
     }
 
     .panel-header h1 {
@@ -99,6 +102,15 @@
       margin-top: 2px;
     }
 
+    .version-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--gold-dark);
+      border: 1px solid var(--gold-dark);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
     .section-title {
       font-size: 10px;
       text-transform: uppercase;
@@ -108,7 +120,6 @@
       font-weight: 700;
     }
 
-    /* ВЫПАДАЮЩИЙ СПИСОК */
     .apparel-selector {
       width: 100%;
       padding: 12px;
@@ -146,8 +157,12 @@
 
     .btn-group {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
       gap: 8px;
+    }
+
+    .btn-group.size-grid {
+      grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     }
 
     /* ==========================================
@@ -157,7 +172,7 @@
       background-color: #121212;
       border: 1px solid var(--gold-dark);
       color: var(--gold-primary);
-      padding: 10px 6px;
+      padding: 10px 4px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 700;
@@ -191,7 +206,6 @@
         inset 0 0 6px rgba(212, 175, 55, 0.25) !important;
     }
 
-    /* Переключатели цвета */
     .color-swatches {
       display: flex;
       gap: 8px;
@@ -215,7 +229,6 @@
     .swatch-circle.white { background-color: #ffffff; }
     .swatch-circle.black { background-color: #111111; }
 
-    /* Загрузка принта */
     .file-upload {
       position: relative;
       border: 1px dashed var(--gold-primary);
@@ -272,7 +285,7 @@
       cursor: pointer;
     }
 
-    /* Итоговая сметный блок */
+    /* Итоговый сметный блок */
     .summary-card {
       margin-top: auto;
       background: #080808;
@@ -351,8 +364,11 @@
     <!-- ПАНЕЛЬ НАСТРОЕК -->
     <div class="panel">
       <div class="panel-header">
-        <h1>Ателье Уличной Одежды</h1>
-        <p>Конструктор и примерка изделий</p>
+        <div>
+          <h1>Ателье Уличной Одежды</h1>
+          <p>Конструктор и примерка изделий</p>
+        </div>
+        <span class="version-tag">v1.0.7</span>
       </div>
 
       <!-- Модель Изделия -->
@@ -372,6 +388,12 @@
           <button class="btn-option" data-file="wom.png" data-val="female">Женский</button>
           <button class="btn-option" data-file="Chil.png" data-val="child">Детский</button>
         </div>
+      </div>
+
+      <!-- Размеры (Динамические) -->
+      <div class="group">
+        <div class="section-title" id="size-title">Размер</div>
+        <div class="btn-group size-grid" id="group-size"></div>
       </div>
 
       <!-- Силуэт -->
@@ -397,9 +419,23 @@
         </div>
       </div>
 
+      <!-- Ракурс / Сторона Нанесения -->
+      <div class="group">
+        <div class="section-title">Сторона Нанесения</div>
+        <div class="btn-group" id="group-view">
+          <button class="btn-option active" data-view="front">Спереди (Грудь)</button>
+          <button class="btn-option" data-view="back">Сзади (Спина)</button>
+        </div>
+      </div>
+
       <!-- Нанесение принта -->
       <div class="group">
-        <div class="section-title">Нанесение Принта</div>
+        <div class="section-title">Технология и Принт</div>
+        <div class="btn-group" id="group-tech" style="margin-bottom: 6px;">
+          <button class="btn-option active" data-tech-price="0">DTF-Печать</button>
+          <button class="btn-option" data-tech-price="350">Вышивка <span class="badge">+350₽</span></button>
+        </div>
+
         <div class="file-upload">
           <input type="file" id="print-input" accept="image/*">
           <span id="upload-label">📁 Загрузить файл (PNG)</span>
@@ -424,7 +460,7 @@
           <span id="price-fabric">1 200 ₽</span>
         </div>
         <div class="summary-row">
-          <span>Модификация:</span>
+          <span>Модификация и Нанесение:</span>
           <span id="price-extra">+0 ₽</span>
         </div>
         <div class="summary-row total">
@@ -459,18 +495,24 @@
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
 
+    const adultSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
+    const childSizes = ['104', '116', '128', '140', '152'];
+
     const state = {
       apparelType: 'tshirt',
       mannequinFile: 'man.png',
       gender: 'male',
       fit: 'standard',
+      size: 'M',
       color: 'white',
+      view: 'front', // 'front' | 'back'
+      
       basePrice: 1200,
       extraPrice: 0,
+      techPrice: 0,
       
-      printScale: 0.32,
-      printOffsetY: 0.12,
-      hasPrint: false
+      frontPrint: { scale: 0.32, posY: 0.12, texture: null },
+      backPrint: { scale: 0.32, posY: 0.12, texture: null }
     };
 
     const textureLoader = new THREE.TextureLoader();
@@ -484,7 +526,6 @@
       depthWrite: false
     });
 
-    /* Конфигурация кнопок с понятными префиксами */
     const apparelConfigs = {
       tshirt: {
         basePrice: 1200,
@@ -539,6 +580,28 @@
       }
     };
 
+    function updateSizeButtons() {
+      const sizeContainer = document.getElementById('group-size');
+      const sizeTitle = document.getElementById('size-title');
+      const sizes = (state.gender === 'child') ? childSizes : adultSizes;
+      
+      sizeTitle.innerText = (state.gender === 'child') ? 'Размер (Рост, см)' : 'Размер';
+      
+      sizeContainer.innerHTML = sizes.map((sz, index) => {
+        const isActive = (state.size === sz) || (index === 2 && !sizes.includes(state.size));
+        if (isActive) state.size = sz;
+        return `<button class="btn-option ${isActive ? 'active' : ''}" data-val="${sz}">${sz}</button>`;
+      }).join('');
+
+      sizeContainer.querySelectorAll('.btn-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          sizeContainer.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          state.size = e.currentTarget.dataset.val;
+        });
+      });
+    }
+
     function renderDynamicParams() {
       const config = apparelConfigs[state.apparelType];
       document.getElementById('dynamic-params').innerHTML = config.html;
@@ -579,6 +642,8 @@
       const width = 1.2 * genderMult * fitMult;
       const height = 1.8 * genderMult; 
 
+      atelierGroup.rotation.y = (state.view === 'back') ? Math.PI : 0;
+
       textureLoader.load(state.mannequinFile, (texture) => {
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -590,19 +655,41 @@
         atelierGroup.add(mannequinMesh);
       });
 
+      const currentPrintData = (state.view === 'front') ? state.frontPrint : state.backPrint;
+      
+      if (currentPrintData.texture) {
+        printMaterial.map = currentPrintData.texture;
+        printMaterial.opacity = 0.98;
+      } else {
+        printMaterial.opacity = 0;
+      }
+      printMaterial.needsUpdate = true;
+
+      document.getElementById('scale-slider').value = currentPrintData.scale;
+      document.getElementById('posY-slider').value = currentPrintData.posY;
+
       const baseChestY = (state.gender === 'child' ? 0.08 : (state.gender === 'female' ? 0.10 : 0.12));
-      const printSize = state.printScale * genderMult;
+      const printSize = currentPrintData.scale * genderMult;
 
       const printGeo = new THREE.PlaneGeometry(printSize, printSize);
       const printMesh = new THREE.Mesh(printGeo, printMaterial);
-      printMesh.position.set(0, (baseChestY + state.printOffsetY) * genderMult, 0.01);
+      
+      const zOffset = (state.view === 'front') ? 0.01 : -0.01;
+      printMesh.position.set(0, (baseChestY + currentPrintData.posY) * genderMult, zOffset);
+      
+      if (state.view === 'back') {
+        printMesh.rotation.y = Math.PI;
+      }
+
       atelierGroup.add(printMesh);
     }
 
     function updatePricing() {
-      let total = state.basePrice + state.extraPrice;
+      let extraTotal = state.extraPrice + state.techPrice;
+      let total = state.basePrice + extraTotal;
+      
       document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('price-extra').innerText = '+' + state.extraPrice.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-extra').innerText = '+' + extraTotal.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
@@ -619,6 +706,7 @@
         e.currentTarget.classList.add('active');
         state.gender = e.currentTarget.dataset.val;
         state.mannequinFile = e.currentTarget.dataset.file;
+        updateSizeButtons();
         buildModel();
       });
     });
@@ -640,13 +728,35 @@
       });
     });
 
+    document.querySelectorAll('#group-view .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-view .btn-option').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        state.view = e.currentTarget.dataset.view;
+        buildModel();
+      });
+    });
+
+    document.querySelectorAll('#group-tech .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-tech .btn-option').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        state.techPrice = parseInt(e.currentTarget.dataset.techPrice);
+        updatePricing();
+      });
+    });
+
     document.getElementById('scale-slider').addEventListener('input', (e) => {
-      state.printScale = parseFloat(e.target.value);
+      const val = parseFloat(e.target.value);
+      if (state.view === 'front') state.frontPrint.scale = val;
+      else state.backPrint.scale = val;
       buildModel();
     });
 
     document.getElementById('posY-slider').addEventListener('input', (e) => {
-      state.printOffsetY = parseFloat(e.target.value);
+      const val = parseFloat(e.target.value);
+      if (state.view === 'front') state.frontPrint.posY = val;
+      else state.backPrint.posY = val;
       buildModel();
     });
 
@@ -665,10 +775,10 @@
             texture.magFilter = THREE.LinearFilter;
             texture.needsUpdate = true;
             
-            printMaterial.map = texture;
-            printMaterial.opacity = 0.98;
-            printMaterial.needsUpdate = true;
-            state.hasPrint = true;
+            if (state.view === 'front') state.frontPrint.texture = texture;
+            else state.backPrint.texture = texture;
+
+            buildModel();
           };
         };
         reader.readAsDataURL(file);
@@ -681,7 +791,8 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // Стартовая инициализация
+    // Инициализация
+    updateSizeButtons();
     renderDynamicParams();
     buildModel();
 
