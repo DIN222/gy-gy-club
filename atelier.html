@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Золотой Стандарт 006 </title>
+  <title>Ателье Уличной Одежды | Золотой Стандарт 007 </title>
   <style>
     :root {
-      /* Глубокая черная база и насыщенное золото */
+      /* Темный фон и чистое благородное золото */
       --bg: #050505;
       --panel: #0d0d0d;
-      --panel-border: #221c08;
+      --panel-border: #332a10;
       
       /* Золотая палитра */
       --gold-primary: #d4af37; 
-      --gold-light: #f5d77f;
-      --gold-dark: #8c711a;
+      --gold-light: #fbe396;
+      --gold-dark: #6e5812;
       --gold-glow: rgba(212, 175, 55, 0.25);
       
       /* Текст */
-      --text: #f0f0f0;
-      --text-muted: #8a806b;
-      --text-dark: #050505;
+      --text: #ffffff;
+      --text-muted: #a0957d;
+      --text-dark: #000000;
     }
 
     * {
@@ -50,17 +50,17 @@
       width: 420px;
       height: 100%;
       background: var(--panel);
-      border-right: 1px solid var(--gold-dark);
+      border-right: 1px solid var(--panel-border);
       padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
       overflow-y: auto;
       z-index: 10;
       box-shadow: 10px 0 35px rgba(0,0,0,0.85);
     }
 
-    /* ФОН ПРИМЕРОЧНОЙ (Справа, Предыдущее фото с неоном) */
+    /* ФОН ПРИМЕРОЧНОЙ (Справа) */
     #canvas-container {
       flex: 1;
       height: 100%;
@@ -70,12 +70,12 @@
       background-position: center;
     }
 
-    /* Мягкий затемняющий градиент для фокусировки на манекене */
+    /* Затемнение фона для выделения манекена */
     #canvas-container::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.2) 0%, rgba(5, 5, 5, 0.8) 100%);
+      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.75) 100%);
       z-index: 1;
     }
 
@@ -87,40 +87,41 @@
       z-index: 2;
     }
 
-    /* ЗОЛОТЫЕ СТИЛИ ПАНЕЛИ */
+    /* ЗАГОЛОВОК И НАИМЕНОВАНИЕ */
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
-      padding-bottom: 16px;
+      padding-bottom: 14px;
     }
 
     .panel-header h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       color: var(--gold-primary);
       text-transform: uppercase;
-      text-shadow: 0 0 10px var(--gold-glow);
+      text-shadow: 0 0 12px var(--gold-glow);
+      line-height: 1.2;
     }
 
     .panel-header p {
       font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
     .section-title {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       color: var(--gold-primary);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: 700;
     }
 
     .group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .btn-group {
@@ -129,30 +130,30 @@
       gap: 10px;
     }
 
-    /* Все кнопки параметров теперь выдержаны в Золоте на Черном */
+    /* ЧЕТКИЕ НЕ-ЗАЛИТЫЕ КНОПКИ ПАРАМЕТРОВ */
     .btn-option {
-      background: rgba(13, 13, 13, 0.9);
+      background: rgba(20, 20, 20, 0.85);
       border: 1px solid var(--gold-dark);
       color: var(--gold-primary);
-      padding: 12px 10px;
+      padding: 12px 8px;
       border-radius: 4px;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .btn-option:hover {
-      border-color: var(--gold-light);
+      border-color: var(--gold-primary);
       color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.1);
+      background: rgba(212, 175, 55, 0.12);
       box-shadow: 0 0 10px var(--gold-glow);
     }
 
-    /* Активная кнопка: сияющее золото с черным текстом */
+    /* АКТИВНАЯ КНОПКА (Золотая заливка + контрастный темный текст) */
     .btn-option.active {
       background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 100%);
       border-color: var(--gold-light);
@@ -161,9 +162,17 @@
       box-shadow: 0 0 15px var(--gold-glow);
     }
 
+    /* КНОПКА В РАЗРАБОТКЕ */
+    .btn-option.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      border-style: dashed;
+      pointer-events: none;
+    }
+
     .color-swatches {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .swatch-btn {
@@ -171,27 +180,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 12px;
+      gap: 8px;
+      padding: 10px;
       border-radius: 4px;
       border: 1px solid var(--gold-dark);
-      background: rgba(13, 13, 13, 0.9);
+      background: rgba(20, 20, 20, 0.85);
       color: var(--gold-primary);
       cursor: pointer;
       font-size: 12px;
       font-weight: 700;
-      transition: all 0.25s;
+      transition: all 0.2s;
     }
 
     .swatch-btn.active {
       border-color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.15);
+      background: rgba(212, 175, 55, 0.2);
       box-shadow: 0 0 12px var(--gold-glow);
     }
 
     .swatch-circle {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       border: 1px solid var(--gold-primary);
     }
@@ -203,7 +212,7 @@
       position: relative;
       border: 1px dashed var(--gold-primary);
       border-radius: 4px;
-      padding: 18px;
+      padding: 14px;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
@@ -229,15 +238,14 @@
       display: block;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .summary-card {
       margin-top: auto;
-      background: rgba(10, 10, 10, 0.9);
+      background: rgba(10, 10, 10, 0.95);
       border: 1px solid var(--gold-dark);
       border-radius: 6px;
-      padding: 18px;
+      padding: 16px;
     }
 
     .summary-row {
@@ -250,11 +258,11 @@
     }
 
     .summary-row.total {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 900;
       color: var(--gold-primary);
       border-top: 1px solid var(--gold-dark);
-      padding-top: 12px;
+      padding-top: 10px;
       margin-bottom: 0;
     }
 
@@ -262,7 +270,7 @@
       font-size: 9px;
       background: rgba(212, 175, 55, 0.2);
       color: var(--gold-light);
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 3px;
       margin-left: 4px;
       border: 1px solid var(--gold-dark);
@@ -273,9 +281,9 @@
       background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 100%);
       color: var(--text-dark);
       border: none;
-      padding: 16px;
+      padding: 15px;
       border-radius: 4px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       cursor: pointer;
       transition: all 0.3s;
@@ -296,11 +304,20 @@
 <body>
 
   <div class="main-wrapper">
-    <!-- ПАНЕЛЬ ПАРАМЕТРОВ (Слева) -->
+    <!-- ПАНЕЛЬ ПАРАМЕТРОВ -->
     <div class="panel">
       <div class="panel-header">
-        <h1>Ателье</h1>
-        <p>Кастомный конструктор одежды</p>
+        <h1>Ателье Уличной Одежды</h1>
+        <p>3D-Конструктор и примерка изделий</p>
+      </div>
+
+      <!-- Тип Изделия -->
+      <div class="group">
+        <div class="section-title">Тип Изделия</div>
+        <div class="btn-group" id="group-apparel">
+          <button class="btn-option active">Футболка</button>
+          <button class="btn-option disabled">Худи <span class="badge">В разработке</span></button>
+        </div>
       </div>
 
       <!-- Манекен -->
@@ -342,7 +359,7 @@
 
       <!-- Цвет -->
       <div class="group">
-        <div class="section-title">Цвет Ткани</div>
+        <div class="section-title">Цвет Изделия</div>
         <div class="color-swatches">
           <button class="swatch-btn active" data-color="white">
             <span class="swatch-circle white"></span> Белый
@@ -362,7 +379,7 @@
         </div>
       </div>
 
-      <!-- Смета -->
+      <!-- Расчет цены -->
       <div class="summary-card">
         <div class="summary-row">
           <span>Базовое изделие:</span>
@@ -381,7 +398,7 @@
       <button class="btn-submit" onclick="alert('Заказ успешно сформирован!')">Оформить Заказ</button>
     </div>
 
-    <!-- МАНЕКЕН (Справа) -->
+    <!-- МАНЕКЕН СПРАВА -->
     <div id="canvas-container"></div>
   </div>
 
@@ -390,7 +407,7 @@
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 0.2, 3.2);
+    camera.position.set(0, 0.1, 3.2);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -419,16 +436,11 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    const tshirtMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0xffffff, 
-      roughness: 0.85
-    });
-
-    // МАТЕРИАЛ ПРИНТА С СГЛАЖИВАНИЕМ КРАЕВ (Борьба с пиксельной ступенькой)
+    // Материал принта
     const printMaterial = new THREE.MeshBasicMaterial({ 
       transparent: true, 
       opacity: 0.98,
-      alphaTest: 0.15, // Срезает рваные прозрачные края
+      alphaTest: 0.15,
       depthWrite: false
     });
 
@@ -437,40 +449,28 @@
         atelierGroup.remove(atelierGroup.children[0]); 
       }
 
-      const scale = state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0);
-      let fitMult = (state.fit === 'oversize') ? 1.15 : 1.0;
+      // Высота манекена уменьшена на 10% (scaleY с коэффициентом 0.9)
+      const scaleX = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0)) * (state.fit === 'oversize' ? 1.12 : 1.0);
+      const scaleY = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0)) * 0.9; 
 
-      // 1. Плоский Манекен
+      // Отображаем манекен
       textureLoader.load(state.mannequinFile, (texture) => {
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
+        
         const manMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false });
-        const manGeo = new THREE.PlaneGeometry(1.2 * scale, 2.0 * scale);
+        const manGeo = new THREE.PlaneGeometry(1.2 * scaleX, 2.0 * scaleY);
         const mannequinMesh = new THREE.Mesh(manGeo, manMat);
         mannequinMesh.position.set(0, 0, 0);
         atelierGroup.add(mannequinMesh);
       });
 
-      // 2. 3D Футболка
-      let tRadius = 0.33 * scale * fitMult;
-      let tHeight = 0.72 * scale;
-      const tshirtGeo = new THREE.CylinderGeometry(tRadius, tRadius * 0.92, tHeight, 32);
-      const tshirtMesh = new THREE.Mesh(tshirtGeo, tshirtMaterial);
-      tshirtMesh.position.set(0, -0.02 * scale, 0.05);
-      atelierGroup.add(tshirtMesh);
-
-      // 3. Область под Принт
-      const printWidth = 0.32 * scale * fitMult;
-      const printGeo = new THREE.PlaneGeometry(printWidth, printWidth);
+      // Нанесение принта
+      const printSize = 0.4 * scaleX;
+      const printGeo = new THREE.PlaneGeometry(printSize, printSize);
       const printMesh = new THREE.Mesh(printGeo, printMaterial);
-      printMesh.position.set(0, 0.05 * scale, 0.05 + tRadius + 0.005);
+      printMesh.position.set(0, 0.05 * scaleY, 0.01);
       atelierGroup.add(printMesh);
-
-      updateShirtColor();
-    }
-
-    function updateShirtColor() {
-      tshirtMaterial.color.setHex(state.color === 'white' ? 0xfcfcfc : 0x141414);
     }
 
     function updatePricing() {
@@ -483,7 +483,7 @@
       document.getElementById('price-total').innerText = Math.round(total).toLocaleString('ru-RU') + ' ₽';
     }
 
-    // Обработчики кнопок
+    // Обработчики кликов
     document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
@@ -529,11 +529,10 @@
         document.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('active'));
         e.currentTarget.classList.add('active');
         state.color = e.currentTarget.dataset.color;
-        updateShirtColor();
       });
     });
 
-    // Загрузка принта с включением сглаживания фильтрацией
+    // Загрузка файла
     document.getElementById('print-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -544,7 +543,6 @@
           img.src = event.target.result;
           img.onload = () => {
             const texture = new THREE.Texture(img);
-            // Аппаратное сглаживание текстуры при масштабировании
             texture.generateMipmaps = true;
             texture.minFilter = THREE.LinearMipmapLinearFilter;
             texture.magFilter = THREE.LinearFilter;
