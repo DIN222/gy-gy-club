@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Золотой Стандарт 007 </title>
+  <title>Ателье Уличной Одежды | Золотой Стандарт008</title>
   <style>
     :root {
-      /* Темный фон и чистое благородное золото */
+      /* Темная база */
       --bg: #050505;
       --panel: #0d0d0d;
-      --panel-border: #332a10;
+      --panel-border: #221c08;
       
-      /* Золотая палитра */
+      /* Благородное золото */
       --gold-primary: #d4af37; 
-      --gold-light: #fbe396;
+      --gold-light: #f5d77f;
       --gold-dark: #6e5812;
-      --gold-glow: rgba(212, 175, 55, 0.25);
+      --gold-glow: rgba(212, 175, 55, 0.2);
       
       /* Текст */
       --text: #ffffff;
-      --text-muted: #a0957d;
+      --text-muted: #8a806b;
       --text-dark: #000000;
     }
 
@@ -54,7 +54,7 @@
       padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       overflow-y: auto;
       z-index: 10;
       box-shadow: 10px 0 35px rgba(0,0,0,0.85);
@@ -70,12 +70,12 @@
       background-position: center;
     }
 
-    /* Затемнение фона для выделения манекена */
+    /* Затемнение фона */
     #canvas-container::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.75) 100%);
+      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.8) 100%);
       z-index: 1;
     }
 
@@ -87,34 +87,34 @@
       z-index: 2;
     }
 
-    /* ЗАГОЛОВОК И НАИМЕНОВАНИЕ */
+    /* ЗАГОЛОВОК */
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
-      padding-bottom: 14px;
+      padding-bottom: 12px;
     }
 
     .panel-header h1 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: 1.2px;
       color: var(--gold-primary);
       text-transform: uppercase;
-      text-shadow: 0 0 12px var(--gold-glow);
+      text-shadow: 0 0 10px var(--gold-glow);
       line-height: 1.2;
     }
 
     .panel-header p {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .section-title {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       color: var(--gold-primary);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 700;
     }
 
@@ -127,17 +127,17 @@
     .btn-group {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
-      gap: 10px;
+      gap: 8px;
     }
 
-    /* ЧЕТКИЕ НЕ-ЗАЛИТЫЕ КНОПКИ ПАРАМЕТРОВ */
+    /* КНОПКИ ПАРАМЕТРОВ: Строгий черный фон с золотым контуром (БЕЗ ЖЕЛТОЙ ЗАЛИВКИ) */
     .btn-option {
-      background: rgba(20, 20, 20, 0.85);
-      border: 1px solid var(--gold-dark);
-      color: var(--gold-primary);
-      padding: 12px 8px;
+      background-color: #121212 !important;
+      border: 1px solid var(--gold-dark) !important;
+      color: var(--gold-primary) !important;
+      padding: 10px 6px;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -147,32 +147,31 @@
     }
 
     .btn-option:hover {
-      border-color: var(--gold-primary);
-      color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.12);
-      box-shadow: 0 0 10px var(--gold-glow);
+      border-color: var(--gold-primary) !important;
+      color: var(--gold-light) !important;
+      background-color: #1a1a1a !important;
     }
 
-    /* АКТИВНАЯ КНОПКА (Золотая заливка + контрастный темный текст) */
+    /* АКТИВНАЯ КНОПКА (Сияющее золото с черным текстом) */
     .btn-option.active {
-      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 100%);
-      border-color: var(--gold-light);
-      color: var(--text-dark);
+      background: linear-gradient(135deg, #d4af37 0%, #f5d77f 100%) !important;
+      border-color: #f5d77f !important;
+      color: #000000 !important;
       font-weight: 900;
-      box-shadow: 0 0 15px var(--gold-glow);
+      box-shadow: 0 0 12px var(--gold-glow);
     }
 
     /* КНОПКА В РАЗРАБОТКЕ */
     .btn-option.disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
-      border-style: dashed;
+      border-style: dashed !important;
       pointer-events: none;
     }
 
     .color-swatches {
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
     .swatch-btn {
@@ -184,23 +183,23 @@
       padding: 10px;
       border-radius: 4px;
       border: 1px solid var(--gold-dark);
-      background: rgba(20, 20, 20, 0.85);
+      background-color: #121212;
       color: var(--gold-primary);
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       transition: all 0.2s;
     }
 
     .swatch-btn.active {
       border-color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.2);
-      box-shadow: 0 0 12px var(--gold-glow);
+      background-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 0 10px var(--gold-glow);
     }
 
     .swatch-circle {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       border: 1px solid var(--gold-primary);
     }
@@ -212,17 +211,16 @@
       position: relative;
       border: 1px dashed var(--gold-primary);
       border-radius: 4px;
-      padding: 14px;
+      padding: 12px;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
-      background: rgba(212, 175, 55, 0.03);
+      background: rgba(212, 175, 55, 0.02);
     }
 
     .file-upload:hover { 
       border-color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.08);
-      box-shadow: 0 0 15px var(--gold-glow);
+      background: rgba(212, 175, 55, 0.06);
     }
 
     .file-upload input {
@@ -233,7 +231,7 @@
     }
 
     .file-upload span {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--gold-primary);
       display: block;
       font-weight: 700;
@@ -242,37 +240,37 @@
 
     .summary-card {
       margin-top: auto;
-      background: rgba(10, 10, 10, 0.95);
+      background: #080808;
       border: 1px solid var(--gold-dark);
       border-radius: 6px;
-      padding: 16px;
+      padding: 14px;
     }
 
     .summary-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .summary-row.total {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 900;
       color: var(--gold-primary);
       border-top: 1px solid var(--gold-dark);
-      padding-top: 10px;
+      padding-top: 8px;
       margin-bottom: 0;
     }
 
     .badge {
-      font-size: 9px;
+      font-size: 8px;
       background: rgba(212, 175, 55, 0.2);
       color: var(--gold-light);
-      padding: 2px 5px;
+      padding: 2px 4px;
       border-radius: 3px;
-      margin-left: 4px;
+      margin-left: 3px;
       border: 1px solid var(--gold-dark);
     }
 
@@ -281,20 +279,20 @@
       background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 100%);
       color: var(--text-dark);
       border: none;
-      padding: 15px;
+      padding: 14px;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       cursor: pointer;
       transition: all 0.3s;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 4px 20px var(--gold-glow);
+      box-shadow: 0 4px 15px var(--gold-glow);
     }
 
     .btn-submit:hover { 
       transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(212, 175, 55, 0.4);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
@@ -379,7 +377,7 @@
         </div>
       </div>
 
-      <!-- Расчет цены -->
+      <!-- Смета -->
       <div class="summary-card">
         <div class="summary-row">
           <span>Базовое изделие:</span>
@@ -407,7 +405,7 @@
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 0.1, 3.2);
+    camera.position.set(0, 0, 3.2);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -436,7 +434,7 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    // Материал принта
+    // Материал принта (без рваных граней)
     const printMaterial = new THREE.MeshBasicMaterial({ 
       transparent: true, 
       opacity: 0.98,
@@ -445,31 +443,38 @@
     });
 
     function buildModel() {
+      // Полная очистка группы от старых объектов
       while(atelierGroup.children.length > 0){ 
-        atelierGroup.remove(atelierGroup.children[0]); 
+        const obj = atelierGroup.children[0];
+        if (obj.geometry) obj.geometry.dispose();
+        atelierGroup.remove(obj); 
       }
 
-      // Высота манекена уменьшена на 10% (scaleY с коэффициентом 0.9)
-      const scaleX = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0)) * (state.fit === 'oversize' ? 1.12 : 1.0);
-      const scaleY = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0)) * 0.9; 
+      // Базовые коэффициенты
+      const genderMult = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0));
+      const fitMult = (state.fit === 'oversize' ? 1.12 : 1.0);
 
-      // Отображаем манекен
+      // Высота жестко уменьшена на 10% (1.8 вместо 2.0)
+      const width = 1.2 * genderMult * fitMult;
+      const height = 1.8 * genderMult; 
+
+      // Отображаем ТОЛЬКО ЧИСТЫЙ МАНЕКЕН (никаких 3D-цилиндров/простыней)
       textureLoader.load(state.mannequinFile, (texture) => {
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
         
         const manMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false });
-        const manGeo = new THREE.PlaneGeometry(1.2 * scaleX, 2.0 * scaleY);
+        const manGeo = new THREE.PlaneGeometry(width, height);
         const mannequinMesh = new THREE.Mesh(manGeo, manMat);
         mannequinMesh.position.set(0, 0, 0);
         atelierGroup.add(mannequinMesh);
       });
 
-      // Нанесение принта
-      const printSize = 0.4 * scaleX;
+      // Нанесение слоя принта прямо на манекен
+      const printSize = 0.38 * genderMult * fitMult;
       const printGeo = new THREE.PlaneGeometry(printSize, printSize);
       const printMesh = new THREE.Mesh(printGeo, printMaterial);
-      printMesh.position.set(0, 0.05 * scaleY, 0.01);
+      printMesh.position.set(0, 0.05 * genderMult, 0.01);
       atelierGroup.add(printMesh);
     }
 
@@ -483,13 +488,13 @@
       document.getElementById('price-total').innerText = Math.round(total).toLocaleString('ru-RU') + ' ₽';
     }
 
-    // Обработчики кликов
+    // Слушатели кнопок
     document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        state.gender = e.target.dataset.val;
-        state.mannequinFile = e.target.dataset.file;
+        e.currentTarget.classList.add('active');
+        state.gender = e.currentTarget.dataset.val;
+        state.mannequinFile = e.currentTarget.dataset.file;
         buildModel();
       });
     });
@@ -497,8 +502,8 @@
     document.querySelectorAll('#group-fit .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-fit .btn-option').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        state.fit = e.target.dataset.val;
+        e.currentTarget.classList.add('active');
+        state.fit = e.currentTarget.dataset.val;
         buildModel();
       });
     });
@@ -506,9 +511,9 @@
     document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        state.fabric = e.target.dataset.val;
-        state.basePrice = parseInt(e.target.dataset.price);
+        e.currentTarget.classList.add('active');
+        state.fabric = e.currentTarget.dataset.val;
+        state.basePrice = parseInt(e.currentTarget.dataset.price);
         updatePricing();
       });
     });
@@ -516,9 +521,9 @@
     document.querySelectorAll('#group-neck .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
         document.querySelectorAll('#group-neck .btn-option').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        state.neck = e.target.dataset.val;
-        state.neckModifier = parseFloat(e.target.dataset.extra);
+        e.currentTarget.classList.add('active');
+        state.neck = e.currentTarget.dataset.val;
+        state.neckModifier = parseFloat(e.currentTarget.dataset.extra);
         buildModel();
         updatePricing();
       });
@@ -532,7 +537,7 @@
       });
     });
 
-    // Загрузка файла
+    // Загрузка принта
     document.getElementById('print-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
