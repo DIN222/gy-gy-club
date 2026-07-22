@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Конструктор [v1.0.4]</title>
+  <title>Ателье Уличной Одежды | Конструктор v1.0.5 </title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -11,7 +11,7 @@
 
   <style>
     /* ==========================================
-       [v1.0.4] ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
+       ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
        ========================================== */
     :root {
       --bg: #050505;
@@ -51,23 +51,22 @@
     }
 
     /* ==========================================
-       ПАНЕЛЬ УПРАВЛЕНИЯ (ЛЕВАЯ КОЛОНКА)
+       ПАНЕЛЬ УПРАВЛЕНИЯ
        ========================================== */
     .panel {
-      width: 420px;
+      width: 400px;
       height: 100%;
       background: var(--panel);
       border-right: 1px solid var(--panel-border);
       padding: 24px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       overflow-y: auto;
       z-index: 10;
       box-shadow: 10px 0 35px rgba(0,0,0,0.85);
     }
 
-    /* Кастомная полоса прокрутки */
     .panel::-webkit-scrollbar {
       width: 6px;
     }
@@ -82,6 +81,7 @@
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
       padding-bottom: 10px;
+      margin-bottom: 4px;
     }
 
     .panel-header h1 {
@@ -100,11 +100,11 @@
     }
 
     .section-title {
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 1.2px;
       color: var(--gold-primary);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       font-weight: 700;
     }
 
@@ -151,14 +151,13 @@
     }
 
     /* ==========================================
-       [v1.0.4] ЛОГИКА СВЕЧЕНИЯ И СОХРАНЕНИЯ АКТИВНОСТИ
+       СТИЛИ КНОПОК И СВЕЧЕНИЯ
        ========================================== */
-    /* 1. Исходное (обычное) состояние */
     .btn-option, .swatch-btn, .btn-submit {
       background-color: #121212;
       border: 1px solid var(--gold-dark);
       color: var(--gold-primary);
-      padding: 9px 6px;
+      padding: 10px 6px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 700;
@@ -169,7 +168,6 @@
       text-shadow: 0 0 3px rgba(212, 175, 55, 0.25);
     }
 
-    /* 2. Состояние при наведении (Hover) */
     .btn-option:hover, .swatch-btn:hover, .btn-submit:hover {
       border-color: var(--gold-primary);
       color: var(--gold-light);
@@ -179,7 +177,6 @@
       box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
     }
 
-    /* 3. Сохранение активности ПОСЛЕ КЛИКА (.active) +5% к интенсивности */
     .btn-option.active, .swatch-btn.active {
       background-color: #121212 !important;
       border-color: var(--gold-light) !important;
@@ -206,7 +203,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 9px;
+      padding: 10px;
     }
 
     .swatch-circle {
@@ -218,7 +215,7 @@
     .swatch-circle.white { background-color: #ffffff; }
     .swatch-circle.black { background-color: #111111; }
 
-    /* Загрузка и настройки принта */
+    /* Загрузка принта */
     .file-upload {
       position: relative;
       border: 1px dashed var(--gold-primary);
@@ -257,7 +254,7 @@
       border: 1px solid var(--gold-dark);
       padding: 10px;
       border-radius: 4px;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .control-row {
@@ -275,7 +272,7 @@
       cursor: pointer;
     }
 
-    /* Блок сметы и стоимости */
+    /* Итоговая сметный блок */
     .summary-card {
       margin-top: auto;
       background: #080808;
@@ -320,7 +317,7 @@
     }
 
     /* ==========================================
-       3D КАНВАС (ПРАВАЯ ОБЛАСТЬ)
+       3D ВЬЮПОРТ
        ========================================== */
     #canvas-container {
       flex: 1;
@@ -355,12 +352,12 @@
     <div class="panel">
       <div class="panel-header">
         <h1>Ателье Уличной Одежды</h1>
-        <p>Конструктор и примерка изделий [v1.0.4]</p>
+        <p>Конструктор и примерка изделий</p>
       </div>
 
-      <!-- Выбор типа изделия -->
+      <!-- Модель Изделия -->
       <div class="group">
-        <div class="section-title">Выбор Изделия</div>
+        <div class="section-title">Модель Изделия</div>
         <select class="apparel-selector" id="apparel-type">
           <option value="tshirt">👕 Футболка</option>
           <option value="hoodie">🧥 Худи с капюшоном</option>
@@ -368,9 +365,8 @@
         </select>
       </div>
 
-      <!-- Выбор манекена -->
+      <!-- Пол манекена -->
       <div class="group">
-        <div class="section-title">Тип Манекена</div>
         <div class="btn-group" id="group-gender">
           <button class="btn-option active" data-file="man.png" data-val="male">Мужской</button>
           <button class="btn-option" data-file="wom.png" data-val="female">Женский</button>
@@ -378,21 +374,19 @@
         </div>
       </div>
 
-      <!-- Выбор силуэта -->
+      <!-- Силуэт -->
       <div class="group">
-        <div class="section-title">Силуэт</div>
         <div class="btn-group" id="group-fit">
           <button class="btn-option active" data-val="standard">Стандарт</button>
           <button class="btn-option" data-val="oversize">Оверсайз</button>
         </div>
       </div>
 
-      <!-- ДИНАМИЧЕСКИЕ НАСТРОЙКИ (Заполняются через JS) -->
+      <!-- Динамические параметры (Капюшон, Рукав, Горловина, Ткань) -->
       <div id="dynamic-params"></div>
 
-      <!-- Цвет изделия -->
+      <!-- Цвет -->
       <div class="group">
-        <div class="section-title">Цвет Изделия</div>
         <div class="color-swatches" id="group-color">
           <button class="swatch-btn active" data-color="white">
             <span class="swatch-circle white"></span> Белый
@@ -403,9 +397,9 @@
         </div>
       </div>
 
-      <!-- Загрузка принта -->
+      <!-- Нанесение принта -->
       <div class="group">
-        <div class="section-title">Ваш Принт</div>
+        <div class="section-title">Нанесение Принта</div>
         <div class="file-upload">
           <input type="file" id="print-input" accept="image/*">
           <span id="upload-label">📁 Загрузить файл (PNG)</span>
@@ -413,24 +407,24 @@
 
         <div class="print-controls" id="print-controls">
           <div class="control-row">
-            <span>Размер лого:</span>
+            <span>Масштаб:</span>
             <input type="range" id="scale-slider" min="0.1" max="0.6" step="0.02" value="0.32">
           </div>
           <div class="control-row">
-            <span>Высота на груди:</span>
+            <span>Высота:</span>
             <input type="range" id="posY-slider" min="-0.2" max="0.4" step="0.02" value="0.12">
           </div>
         </div>
       </div>
 
-      <!-- Карточка расчетов -->
+      <!-- Смета -->
       <div class="summary-card">
         <div class="summary-row">
-          <span>Изделие и Ткань:</span>
+          <span>Основа и Ткань:</span>
           <span id="price-fabric">1 200 ₽</span>
         </div>
         <div class="summary-row">
-          <span>Модификация кроя:</span>
+          <span>Модификация:</span>
           <span id="price-extra">+0 ₽</span>
         </div>
         <div class="summary-row total">
@@ -442,13 +436,11 @@
       <button class="btn-submit" onclick="alert('Заказ успешно сформирован!')">Оформить Заказ</button>
     </div>
 
-    <!-- ВЬЮПОРТ THREE.JS -->
+    <!-- 3D КАНВАС -->
     <div id="canvas-container"></div>
   </div>
 
-  <!-- ЛОГИКА 3D И ИНТЕРФЕЙСА -->
   <script>
-    // Инициализация 3D сцены
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
 
@@ -467,7 +459,6 @@
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
 
-    // Состояние приложения
     const state = {
       apparelType: 'tshirt',
       mannequinFile: 'man.png',
@@ -486,7 +477,6 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    // Материал принта
     const printMaterial = new THREE.MeshBasicMaterial({ 
       transparent: true, 
       opacity: 0, 
@@ -494,23 +484,21 @@
       depthWrite: false
     });
 
-    // Конфигурации вариантов одежды
+    /* Конфигурация кнопок с понятными префиксами */
     const apparelConfigs = {
       tshirt: {
         basePrice: 1200,
         html: `
           <div class="group">
-            <div class="section-title">Состав Ткани</div>
             <div class="btn-group" id="group-fabric">
               <button class="btn-option active" data-price="1200">Хлопок 100%</button>
               <button class="btn-option" data-price="1400">Стрейч</button>
             </div>
           </div>
           <div class="group">
-            <div class="section-title">Вырез Горловины</div>
             <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Круглый</button>
-              <button class="btn-option" data-extra="200">V-Вырез <span class="badge">+200₽</span></button>
+              <button class="btn-option active" data-extra="0">Горловина О</button>
+              <button class="btn-option" data-extra="200">Горловина V <span class="badge">+200₽</span></button>
             </div>
           </div>
         `
@@ -519,17 +507,15 @@
         basePrice: 3200,
         html: `
           <div class="group">
-            <div class="section-title">Утепление</div>
             <div class="btn-group" id="group-fabric">
               <button class="btn-option active" data-price="3200">Без начеса</button>
               <button class="btn-option" data-price="3600">С начесом <span class="badge">+400₽</span></button>
             </div>
           </div>
           <div class="group">
-            <div class="section-title">Тип Капюшона</div>
             <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Стандарт</button>
-              <button class="btn-option" data-extra="300">Двойной Оверсайз <span class="badge">+300₽</span></button>
+              <button class="btn-option active" data-extra="0">Капюшон Стандарт</button>
+              <button class="btn-option" data-extra="300">Капюшон Оверсайз <span class="badge">+300₽</span></button>
             </div>
           </div>
         `
@@ -538,24 +524,21 @@
         basePrice: 2500,
         html: `
           <div class="group">
-            <div class="section-title">Плотность Ткани</div>
             <div class="btn-group" id="group-fabric">
               <button class="btn-option active" data-price="2500">320 г/м²</button>
               <button class="btn-option" data-price="2900">400 г/м² (Плотный)</button>
             </div>
           </div>
           <div class="group">
-            <div class="section-title">Крой Рукава</div>
             <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Втачной</button>
-              <button class="btn-option" data-extra="250">Реглан <span class="badge">+250₽</span></button>
+              <button class="btn-option active" data-extra="0">Рукав Втачной</button>
+              <button class="btn-option" data-extra="250">Рукав Реглан <span class="badge">+250₽</span></button>
             </div>
           </div>
         `
       }
     };
 
-    // Отрисовка динамических параметров
     function renderDynamicParams() {
       const config = apparelConfigs[state.apparelType];
       document.getElementById('dynamic-params').innerHTML = config.html;
@@ -583,7 +566,6 @@
       updatePricing();
     }
 
-    // Пересборка 3D модели
     function buildModel() {
       while(atelierGroup.children.length > 0){ 
         const obj = atelierGroup.children[0];
@@ -617,7 +599,6 @@
       atelierGroup.add(printMesh);
     }
 
-    // Обновление стоимости
     function updatePricing() {
       let total = state.basePrice + state.extraPrice;
       document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
@@ -625,7 +606,7 @@
       document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
-    // Обработчики событий
+    // Слушатели событий
     document.getElementById('apparel-type').addEventListener('change', (e) => {
       state.apparelType = e.target.value;
       renderDynamicParams();
@@ -700,7 +681,7 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // Старт
+    // Стартовая инициализация
     renderDynamicParams();
     buildModel();
 
