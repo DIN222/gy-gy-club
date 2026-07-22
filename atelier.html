@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Конструктор v1.0.7</title>
+  <title>Ателье Уличной Одежды | Конструктор v1.0.8</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -20,7 +20,7 @@
       
       --gold-primary: #d4af37; 
       --gold-light: #f5d77f;
-      --gold-dark: #6e5812;
+      --gold-dark: #3a2e0a;
       --gold-glow: rgba(212, 175, 55, 0.35);
       
       --text: #ffffff;
@@ -105,7 +105,7 @@
     .version-tag {
       font-size: 10px;
       font-weight: 800;
-      color: var(--gold-dark);
+      color: var(--gold-primary);
       border: 1px solid var(--gold-dark);
       padding: 2px 6px;
       border-radius: 4px;
@@ -139,8 +139,6 @@
 
     .apparel-selector:hover {
       border-color: var(--gold-primary);
-      color: var(--gold-light);
-      text-shadow: 0 0 12px rgba(245, 215, 127, 0.75);
     }
 
     .apparel-selector option {
@@ -166,7 +164,8 @@
     }
 
     /* ==========================================
-       СТИЛИ КНОПОК И СВЕЧЕНИЯ
+       СТИЛИ КНОПОК («Максимум через минимум»)
+       Буквы неизменны. Активность = Рамка + Свечение рамки.
        ========================================== */
     .btn-option, .swatch-btn, .btn-submit {
       background-color: #121212;
@@ -177,33 +176,25 @@
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
       text-align: center;
       text-transform: uppercase;
       text-shadow: 0 0 3px rgba(212, 175, 55, 0.25);
     }
 
     .btn-option:hover, .swatch-btn:hover, .btn-submit:hover {
-      border-color: var(--gold-primary);
-      color: var(--gold-light);
-      text-shadow: 
-        0 0 4px #f5d77f,
-        0 0 10px rgba(212, 175, 55, 0.7);
+      border-color: rgba(212, 175, 55, 0.6);
       box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
     }
 
+    /* Активное состояние: Яркая золотая рамка и её неоновое свечение */
     .btn-option.active, .swatch-btn.active {
       background-color: #121212 !important;
-      border-color: var(--gold-light) !important;
-      color: var(--gold-light) !important;
-      font-weight: 800 !important;
-      text-shadow: 
-        0 0 5px #f5d77f,
-        0 0 12px #d4af37,
-        0 0 20px rgba(212, 175, 55, 0.9) !important;
+      border: 1.5px solid var(--gold-light) !important;
+      color: var(--gold-primary) !important; /* Буквы принципиально не трогаем */
       box-shadow: 
-        0 0 12px rgba(212, 175, 55, 0.4),
-        inset 0 0 6px rgba(212, 175, 55, 0.25) !important;
+        0 0 12px rgba(245, 215, 127, 0.6),
+        inset 0 0 6px rgba(212, 175, 55, 0.3) !important;
     }
 
     .color-swatches {
@@ -368,7 +359,7 @@
           <h1>Ателье Уличной Одежды</h1>
           <p>Конструктор и примерка изделий</p>
         </div>
-        <span class="version-tag">v1.0.7</span>
+        <span class="version-tag">v1.0.8</span>
       </div>
 
       <!-- Модель Изделия -->
@@ -390,9 +381,8 @@
         </div>
       </div>
 
-      <!-- Размеры (Динамические) -->
+      <!-- Размеры (Без заглавной надписи "Размер") -->
       <div class="group">
-        <div class="section-title" id="size-title">Размер</div>
         <div class="btn-group size-grid" id="group-size"></div>
       </div>
 
@@ -419,9 +409,8 @@
         </div>
       </div>
 
-      <!-- Ракурс / Сторона Нанесения -->
+      <!-- Ракурс / Сторона (Без заглавной надписи "Сторона") -->
       <div class="group">
-        <div class="section-title">Сторона Нанесения</div>
         <div class="btn-group" id="group-view">
           <button class="btn-option active" data-view="front">Спереди (Грудь)</button>
           <button class="btn-option" data-view="back">Сзади (Спина)</button>
@@ -505,7 +494,7 @@
       fit: 'standard',
       size: 'M',
       color: 'white',
-      view: 'front', // 'front' | 'back'
+      view: 'front',
       
       basePrice: 1200,
       extraPrice: 0,
@@ -582,10 +571,7 @@
 
     function updateSizeButtons() {
       const sizeContainer = document.getElementById('group-size');
-      const sizeTitle = document.getElementById('size-title');
       const sizes = (state.gender === 'child') ? childSizes : adultSizes;
-      
-      sizeTitle.innerText = (state.gender === 'child') ? 'Размер (Рост, см)' : 'Размер';
       
       sizeContainer.innerHTML = sizes.map((sz, index) => {
         const isActive = (state.size === sz) || (index === 2 && !sizes.includes(state.size));
