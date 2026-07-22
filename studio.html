@@ -36,7 +36,7 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ (СЛЕВА) */
+        /* НАВИГАЦИЯ (СЛЕВА) — Выход в Холл (<) и ко Входу (<<) */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
@@ -53,6 +53,7 @@
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
             display: flex; align-items: center; justify-content: center;
             user-select: none;
+            pointer-events: none;
         }
         .user-avatar {
             width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
@@ -66,9 +67,10 @@
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
             user-select: none;
+            pointer-events: none;
         }
 
-        /* АКТИВНЫЕ ЗОНЫ (ФИОЛЕТОВЫЕ СТРЕЛКИ) */
+        /* АКТИВНЫЕ ЗОНЫ (ФИОЛЕТОВЫЕ СТРЕЛКИ ВНУТРИ СТУДИИ) */
         .studio-zone {
             position: absolute;
             cursor: pointer;
@@ -106,11 +108,11 @@
 <body oncontextmenu="return false;">
 
     <div class="studio-page">
-        <!-- НАВИГАЦИЯ -->
+        <!-- НАВИГАЦИЯ СЛЕВА -->
         <div class="notranslate ui-nav-arrows">
-            <!-- Одинарная стрелка — В Холл -->
+            <!-- Одинарная стрелка — Шаг назад в Холл -->
             <a href="hall.html" class="back-arrow" title="В Холл">&lt;</a>
-            <!-- Двойная стрелка — Ко входу в клуб (Index) -->
+            <!-- Двойная стрелка — Ко входу в клуб -->
             <a href="index.html" class="back-arrow" title="Ко входу в клуб">&lt;&lt;</a>
         </div>
 
@@ -122,7 +124,7 @@
         <!-- ЛОГОТИП -->
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <!-- ИНТЕРАКТИВНЫЕ ФИОЛЕТОВЫЕ СТРЕЛКИ (ЛОКАЦИИ) -->
+        <!-- ИНТЕРАКТИВНЫЕ ФИОЛЕТОВЫЕ СТРЕЛКИ (ЛОКАЦИИ СТУДИИ) -->
         <div id="zone-wear" class="studio-zone zone-wear" onclick="goToLocation('wear')" title="Переход в Ателье">
             <span class="cue-arrow-studio">↑</span>
         </div>
@@ -154,10 +156,9 @@
             }
         });
 
-        // Навигация по фиолетовым стрелкам
+        // Навигация по локациям Студии
         function goToLocation(type) {
             if (type === 'wear') {
-                // Переход в Ателье (файл atelier.html)
                 window.location.href = 'atelier.html';
             } else if (type === 'gifts') {
                 alert('Модуль GIFTS в разработке');
