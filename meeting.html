@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.3 - MEETING ROOM</title>
+    <title>GY-GY Club v4.5.33 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root { 
             --gold: #d4af37; 
-            --violet: #8A2BE2; 
         }
         * { 
             -webkit-tap-highlight-color: transparent !important; 
@@ -39,7 +38,7 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В ЛЕВОМ ВЕРХНЕМ УГЛУ */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В ВЕРХНЕМ ЛЕВОМ УГЛУ (БЕЗ РАМОК И ПОДЛОЖЕК) */
         .ui-nav-arrows {
             position: fixed; 
             top: 18px; 
@@ -53,15 +52,23 @@
             color: var(--gold); 
             line-height: 1; 
             letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
         }
+        
         .back-arrow { 
             transition: opacity 0.2s, transform 0.2s; 
             text-decoration: none; 
             color: var(--gold); 
             display: inline-block;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
         }
+        
         .back-arrow:hover { 
             opacity: 0.8; 
             transform: scale(1.1);
@@ -82,7 +89,7 @@
             pointer-events: none;
         }
 
-        /* Аватар без золотой рамки, обводок и теней */
+        /* Чистый аватар без золотой рамки, обводок и теней */
         .user-avatar {
             width: 42px; 
             height: 42px; 
@@ -116,14 +123,10 @@
             pointer-events: none;
         }
 
-        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (БЕЗ РАМОК И ФОНА) */
+        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (НЕВИДИМЫЕ КЛИКАБЕЛЬНЫЕ ОБЛАСТИ БЕЗ СТРЕЛОК) */
         .meeting-zone {
             position: absolute;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             z-index: 100;
             background: transparent !important;
             border: none !important;
@@ -131,37 +134,16 @@
             box-shadow: none !important;
         }
 
-        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ СТРЕЛКИ КАК В ОФИСЕ */
-        .cue-arrow-meeting { 
-            color: var(--violet); 
-            font-size: 38px; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
-            pointer-events: none; 
-            user-select: none;
-            z-index: 10;
-            transition: opacity 0.2s, transform 0.2s;
-            border: none !important;
-            outline: none !important;
-            background: none !important;
-        }
-
-        .meeting-zone:hover .cue-arrow-meeting { 
-            opacity: 0.85; 
-            transform: scale(1.15);
-        }
-
-        /* Координаты зон Переговорной */
-        .zone-table { top: 40vh; left: 45vw; width: 100px; height: 80px; }
-        .zone-screen { top: 18vh; left: 28vw; width: 100px; height: 80px; }
-        .zone-board { top: 20vh; left: 68vw; width: 100px; height: 80px; }
+        /* Координаты кликабельных зон комнаты */
+        .zone-table { top: 40vh; left: 40vw; width: 20vw; height: 20vh; }
+        .zone-screen { top: 15vh; left: 25vw; width: 15vw; height: 20vh; }
+        .zone-board { top: 18vh; left: 65vw; width: 15vw; height: 20vh; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="meeting-page">
-        <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ (СЛЕВА ВВЕРХУ) -->
+        <!-- ЧИСТЫЕ НАВИГАЦИОННЫЕ СТРЕЛКИ ВЕРХУ (БЕЗ РАМОК И ПОДЛОЖЕК) -->
         <div class="notranslate ui-nav-arrows">
             <!-- Одинарная стрелка — шаг назад в Офис -->
             <a href="office.html" class="back-arrow" title="В Офис">&lt;</a>
@@ -178,18 +160,10 @@
         <!-- ЛОГОТИП GY-GY -->
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <!-- ИНТЕРАКТИВНЫЕ ФИОЛЕТОВЫЕ СТРЕЛКИ ПЕРЕГОВОРНОЙ -->
-        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Переговорный стол">
-            <span class="cue-arrow-meeting">↑</span>
-        </div>
-
-        <div id="zone-screen" class="meeting-zone zone-screen" onclick="goToModule('screen')" title="Презентация">
-            <span class="cue-arrow-meeting">↑</span>
-        </div>
-
-        <div id="zone-board" class="meeting-zone zone-board" onclick="goToModule('board')" title="Идейная доска">
-            <span class="cue-arrow-meeting">↑</span>
-        </div>
+        <!-- КЛИКАБЕЛЬНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ (БЕЗ НЕОНОВЫХ СТРЕЛОК) -->
+        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Переговорный стол"></div>
+        <div id="zone-screen" class="meeting-zone zone-screen" onclick="goToModule('screen')" title="Презентация"></div>
+        <div id="zone-board" class="meeting-zone zone-board" onclick="goToModule('board')" title="Идейная доска"></div>
     </div>
 
     <script>
