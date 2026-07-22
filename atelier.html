@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GY-GY Atelier | Ателье «Уличная одежда» v1.1.2</title>
+  <title>GY-GY Atelier | Ателье «Уличная одежда» v1.1.3</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+  <!-- ШРИФТЫ: Montserrat (для интерфейса) + UnifrakturMaguntia (Креативный стритвир акцент) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=UnifrakturMaguntia&family=Russo+One&display=swap" rel="stylesheet">
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
@@ -26,6 +28,10 @@
       --text: #ffffff;
       --text-muted: #8a806b;
       --text-dark: #000000;
+      
+      /* Переменные шрифтов */
+      --font-main: 'Montserrat', sans-serif;
+      --font-streetwear: 'UnifrakturMaguntia', cursive; /* Попробуйте также 'Russo One', sans-serif */
     }
 
     * {
@@ -36,7 +42,7 @@
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: var(--font-main);
       background-color: var(--bg);
       color: var(--text);
       overflow: hidden;
@@ -78,7 +84,7 @@
       border-radius: 3px;
     }
 
-    /* Шапка: Навигация, Логотип и Версия */
+    /* Шапка */
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
       padding-bottom: 12px;
@@ -146,24 +152,34 @@
       font-weight: 700;
     }
 
-    /* Блок названия ателье */
+    /* КРЕАТИВНАЯ ПЛАШКА НАЗВАНИЯ АТЕЛЬЕ */
     .atelier-title-badge {
-      background: rgba(212, 175, 55, 0.08);
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.12) 0%, rgba(13, 13, 13, 0.8) 100%);
       border: 1px solid var(--gold-dark);
       color: var(--gold-light);
-      padding: 10px 14px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
+      padding: 12px 14px;
+      border-radius: 6px;
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      text-shadow: 0 0 8px var(--gold-glow);
-      box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.05);
+      gap: 10px;
+      box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.08), 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .atelier-title-badge .title-text {
+      font-family: var(--font-streetwear);
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-transform: none;
+      color: var(--gold-light);
+      text-shadow: 0 0 10px var(--gold-glow);
+      line-height: 1.1;
+    }
+
+    .atelier-title-badge .icon {
+      font-size: 18px;
+      filter: drop-shadow(0 0 4px var(--gold-glow));
     }
 
     .apparel-selector {
@@ -173,7 +189,7 @@
       border: 1px solid var(--gold-dark);
       border-radius: 4px;
       color: var(--gold-primary);
-      font-family: 'Montserrat', sans-serif;
+      font-family: var(--font-main);
       font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
@@ -209,9 +225,7 @@
       grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     }
 
-    /* ==========================================
-       СТИЛИ КНОПОК
-       ========================================== */
+    /* СТИЛИ КНОПОК */
     .btn-option, .swatch-btn, .btn-submit {
       background-color: #121212;
       border: 1px solid var(--gold-dark);
@@ -320,7 +334,6 @@
       cursor: pointer;
     }
 
-    /* Итоговый сметный блок */
     .summary-card {
       margin-top: auto;
       background: #080808;
@@ -364,9 +377,6 @@
       letter-spacing: 1px;
     }
 
-    /* ==========================================
-       3D ВЬЮПОРТ
-       ========================================== */
     #canvas-container {
       flex: 1;
       height: 100%;
@@ -396,9 +406,8 @@
 <body>
 
   <div class="main-wrapper">
-    <!-- ПАНЕЛЬ НАСТРОЕК -->
     <div class="panel">
-      <!-- Шапка: Навигация слева, Логотип GY-GY и Версия справа -->
+      <!-- Шапка -->
       <div class="panel-header">
         <div class="nav-arrows">
           <button class="nav-btn" id="btn-nav-back" title="Вернуться в Студио">‹</button>
@@ -406,13 +415,14 @@
         </div>
         <div class="brand-box">
           <div class="brand-logo">GY-GY</div>
-          <span class="version-tag">v1.1.2</span>
+          <span class="version-tag">v1.1.3</span>
         </div>
       </div>
 
-      <!-- Плашка: Ателье «Уличная одежда» -->
+      <!-- Обновленная креативная плашка названия -->
       <div class="atelier-title-badge">
-        <span>🛹</span> Ателье «Уличная одежда»
+        <span class="icon">🛹</span>
+        <span class="title-text">Ателье «Уличная Одежда»</span>
       </div>
 
       <!-- Выбор изделия -->
@@ -446,7 +456,7 @@
         </div>
       </div>
 
-      <!-- Динамические параметры (Капюшон, Рукав, Горловина, Ткань) -->
+      <!-- Динамические параметры -->
       <div id="dynamic-params"></div>
 
       <!-- Цвет -->
@@ -461,7 +471,7 @@
         </div>
       </div>
 
-      <!-- Ракурс / Сторона -->
+      <!-- Ракурс -->
       <div class="group">
         <div class="btn-group" id="group-view">
           <button class="btn-option active" data-view="front">Спереди (Грудь)</button>
@@ -518,10 +528,6 @@
   </div>
 
   <script>
-    // ==========================================
-    // ОБРАБОТКА НАВИГАЦИИ
-    // ==========================================
-
     document.getElementById('btn-nav-back').addEventListener('click', () => {
       if (window.history.length > 1) {
         window.history.back();
@@ -534,9 +540,6 @@
       window.location.href = 'index.html';
     });
 
-    // ==========================================
-    // THREE.JS И КОНСТРУКТОР
-    // ==========================================
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
 
@@ -750,7 +753,6 @@
       document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
-    // Слушатели событий
     document.getElementById('apparel-type').addEventListener('change', (e) => {
       state.apparelType = e.target.value;
       renderDynamicParams();
@@ -848,7 +850,6 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // Инициализация
     updateSizeButtons();
     renderDynamicParams();
     buildModel();
