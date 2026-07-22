@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Конструктор [v1.0.X]</title>
+  <title>Ателье Уличной Одежды | Конструктор [v1.0.2]</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
   <style>
+    /* ==========================================
+       [v1.0.2] ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
+       ========================================== */
     :root {
       --bg: #050505;
       --panel: #0d0d0d;
@@ -13,7 +21,7 @@
       --gold-primary: #d4af37; 
       --gold-light: #f5d77f;
       --gold-dark: #6e5812;
-      --gold-glow: rgba(212, 175, 55, 0.3);
+      --gold-glow: rgba(212, 175, 55, 0.35);
       
       --text: #ffffff;
       --text-muted: #8a806b;
@@ -42,7 +50,9 @@
       height: 100%;
     }
 
-    /* ПАНЕЛЬ УПРАВЛЕНИЯ */
+    /* ==========================================
+       ПАНЕЛЬ УПРАВЛЕНИЯ (ЛЕВАЯ КОЛОНКА)
+       ========================================== */
     .panel {
       width: 420px;
       height: 100%;
@@ -57,29 +67,16 @@
       box-shadow: 10px 0 35px rgba(0,0,0,0.85);
     }
 
-    #canvas-container {
-      flex: 1;
-      height: 100%;
-      position: relative;
-      background-image: url('astudio_bg.jpg');
-      background-size: cover;
-      background-position: center;
+    /* Кастомная полоса прокрутки */
+    .panel::-webkit-scrollbar {
+      width: 6px;
     }
-
-    #canvas-container::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.8) 100%);
-      z-index: 1;
+    .panel::-webkit-scrollbar-track {
+      background: #080808;
     }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      position: relative;
-      z-index: 2;
+    .panel::-webkit-scrollbar-thumb {
+      background: var(--gold-dark);
+      border-radius: 3px;
     }
 
     .panel-header {
@@ -111,7 +108,7 @@
       font-weight: 700;
     }
 
-    /* ВЫПАДАЮЩИЙ СПИСОК ИЗДЕЛИЙ (Как выбор языка) */
+    /* ВЫПАДАЮЩИЙ СПИСОК */
     .apparel-selector {
       width: 100%;
       padding: 12px;
@@ -126,13 +123,13 @@
       cursor: pointer;
       outline: none;
       transition: all 0.3s ease;
-      text-shadow: 0 0 4px rgba(212, 175, 55, 0.2);
+      text-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
     }
 
     .apparel-selector:hover {
       border-color: var(--gold-primary);
       color: var(--gold-light);
-      text-shadow: 0 0 8px rgba(245, 215, 127, 0.5);
+      text-shadow: 0 0 8px rgba(245, 215, 127, 0.6);
     }
 
     .apparel-selector option {
@@ -153,11 +150,13 @@
       gap: 8px;
     }
 
-    /* СТИЛЬ КНОПОК: ВСЕГДА ЧЕРНЫЙ ФОН И ЗОЛОТОЙ ТЕКСТ */
-    .btn-option {
+    /* ==========================================
+       [v1.0.2] КНОПКИ УПРАВЛЕНИЯ (GLOW EFFECT)
+       ========================================== */
+    .btn-option, .swatch-btn {
       background-color: #121212 !important;
       border: 1px solid var(--gold-dark);
-      color: var(--gold-primary);
+      color: var(--gold-primary) !important; /* Текст всегда золотой */
       padding: 9px 6px;
       border-radius: 4px;
       font-size: 11px;
@@ -166,25 +165,33 @@
       transition: all 0.25s ease;
       text-align: center;
       text-transform: uppercase;
-      text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
+      text-shadow: 0 0 3px rgba(212, 175, 55, 0.25);
     }
 
-    .btn-option:hover {
+    .btn-option:hover, .swatch-btn:hover {
       border-color: var(--gold-primary);
-      color: var(--gold-light);
-      text-shadow: 0 0 8px rgba(245, 215, 127, 0.6);
+      color: var(--gold-light) !important;
+      text-shadow: 0 0 8px rgba(245, 215, 127, 0.7);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
     }
 
-    /* АКТИВНОЕ СОСТОЯНИЕ: УВЕЛИЧЕННАЯ ИНТЕНСИВНОСТЬ СВЕЧЕНИЯ */
-    .btn-option.active {
+    /* Активное состояние — усиленная интенсивность без белого цвета */
+    .btn-option.active, .swatch-btn.active {
       background-color: #121212 !important;
       border-color: var(--gold-light) !important;
-      color: #ffffff !important;
+      color: var(--gold-light) !important;
       font-weight: 900 !important;
-      text-shadow: 0 0 6px #f5d77f, 0 0 12px #d4af37, 0 0 18px #d4af37 !important;
-      box-shadow: 0 0 12px var(--gold-glow), inset 0 0 6px var(--gold-glow) !important;
+      text-shadow: 
+        0 0 4px #f5d77f,
+        0 0 10px #d4af37,
+        0 0 18px #d4af37,
+        0 0 24px rgba(212, 175, 55, 0.8) !important;
+      box-shadow: 
+        0 0 14px rgba(212, 175, 55, 0.5),
+        inset 0 0 8px rgba(212, 175, 55, 0.3) !important;
     }
 
+    /* Переключатели цвета */
     .color-swatches {
       display: flex;
       gap: 8px;
@@ -197,29 +204,6 @@
       justify-content: center;
       gap: 8px;
       padding: 9px;
-      border-radius: 4px;
-      border: 1px solid var(--gold-dark);
-      background-color: #121212;
-      color: var(--gold-primary);
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-      transition: all 0.25s;
-      text-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
-    }
-
-    .swatch-btn:hover {
-      border-color: var(--gold-primary);
-      color: var(--gold-light);
-      text-shadow: 0 0 8px rgba(245, 215, 127, 0.6);
-    }
-
-    .swatch-btn.active {
-      border-color: var(--gold-light) !important;
-      color: #ffffff !important;
-      font-weight: 900 !important;
-      text-shadow: 0 0 6px #f5d77f, 0 0 12px #d4af37 !important;
-      box-shadow: 0 0 12px var(--gold-glow), inset 0 0 6px var(--gold-glow) !important;
     }
 
     .swatch-circle {
@@ -231,6 +215,7 @@
     .swatch-circle.white { background-color: #ffffff; }
     .swatch-circle.black { background-color: #111111; }
 
+    /* Загрузка и настройки принта */
     .file-upload {
       position: relative;
       border: 1px dashed var(--gold-primary);
@@ -239,6 +224,12 @@
       text-align: center;
       cursor: pointer;
       background: rgba(212, 175, 55, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    .file-upload:hover {
+      background: rgba(212, 175, 55, 0.06);
+      border-color: var(--gold-light);
     }
 
     .file-upload input {
@@ -263,6 +254,7 @@
       border: 1px solid var(--gold-dark);
       padding: 10px;
       border-radius: 4px;
+      margin-top: 6px;
     }
 
     .control-row {
@@ -280,6 +272,7 @@
       cursor: pointer;
     }
 
+    /* Блок сметы и стоимости */
     .summary-card {
       margin-top: auto;
       background: #080808;
@@ -333,25 +326,51 @@
 
     .btn-submit:hover {
       border-color: var(--gold-light);
-      color: #ffffff;
-      text-shadow: 0 0 8px #f5d77f, 0 0 14px #d4af37;
-      box-shadow: 0 0 14px var(--gold-glow);
+      color: var(--gold-light);
+      text-shadow: 0 0 10px #f5d77f, 0 0 18px #d4af37;
+      box-shadow: 0 0 16px var(--gold-glow);
+    }
+
+    /* ==========================================
+       3D КАНВАС (ПРАВАЯ ОБЛАСТЬ)
+       ========================================== */
+    #canvas-container {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      background-image: url('astudio_bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    #canvas-container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.8) 100%);
+      z-index: 1;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      position: relative;
+      z-index: 2;
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
   <div class="main-wrapper">
+    <!-- ПАНЕЛЬ НАСТРОЕК -->
     <div class="panel">
       <div class="panel-header">
         <h1>Ателье Уличной Одежды</h1>
-        <p>Конструктор и примерка изделий</p>
+        <p>Конструктор и примерка изделий [v1.0.2]</p>
       </div>
 
-      <!-- ВЫБОРОЧНЫЙ СПИСОК ИЗДЕЛИЯ (DROPDOWN) -->
+      <!-- Выбор типа изделия -->
       <div class="group">
         <div class="section-title">Выбор Изделия</div>
         <select class="apparel-selector" id="apparel-type">
@@ -361,7 +380,7 @@
         </select>
       </div>
 
-      <!-- Манекен -->
+      <!-- Выбор манекена -->
       <div class="group">
         <div class="section-title">Тип Манекена</div>
         <div class="btn-group" id="group-gender">
@@ -371,7 +390,7 @@
         </div>
       </div>
 
-      <!-- Посадка -->
+      <!-- Выбор силуэта -->
       <div class="group">
         <div class="section-title">Силуэт</div>
         <div class="btn-group" id="group-fit">
@@ -380,10 +399,10 @@
         </div>
       </div>
 
-      <!-- ДИНАМИЧЕСКИЕ ПАРАМЕТРЫ (Меняются при выборе типа изделия) -->
+      <!-- ДИНАМИЧЕСКИЕ НАСТРОЙКИ (Заполняются через JS) -->
       <div id="dynamic-params"></div>
 
-      <!-- Цвет -->
+      <!-- Цвет изделия -->
       <div class="group">
         <div class="section-title">Цвет Изделия</div>
         <div class="color-swatches" id="group-color">
@@ -396,7 +415,7 @@
         </div>
       </div>
 
-      <!-- Принт -->
+      <!-- Загрузка принта -->
       <div class="group">
         <div class="section-title">Ваш Принт</div>
         <div class="file-upload">
@@ -416,7 +435,7 @@
         </div>
       </div>
 
-      <!-- Смета -->
+      <!-- Карточка расчетов -->
       <div class="summary-card">
         <div class="summary-row">
           <span>Изделие и Ткань:</span>
@@ -435,10 +454,13 @@
       <button class="btn-submit" onclick="alert('Заказ успешно сформирован!')">Оформить Заказ</button>
     </div>
 
+    <!-- ВЬЮПОРТ THREE.JS -->
     <div id="canvas-container"></div>
   </div>
 
+  <!-- ЛОГИКА 3D И ИНТЕРФЕЙСА -->
   <script>
+    // Инициализация 3D сцены
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
 
@@ -457,6 +479,7 @@
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
 
+    // Состояние приложения
     const state = {
       apparelType: 'tshirt',
       mannequinFile: 'man.png',
@@ -475,7 +498,7 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    // Прозрачный материал принта по умолчанию
+    // Материал принта
     const printMaterial = new THREE.MeshBasicMaterial({ 
       transparent: true, 
       opacity: 0, 
@@ -483,7 +506,7 @@
       depthWrite: false
     });
 
-    // Уникальные параметры под каждое изделие
+    // Конфигурации вариантов одежды
     const apparelConfigs = {
       tshirt: {
         basePrice: 1200,
@@ -544,6 +567,7 @@
       }
     };
 
+    // Отрисовка динамических параметров
     function renderDynamicParams() {
       const config = apparelConfigs[state.apparelType];
       document.getElementById('dynamic-params').innerHTML = config.html;
@@ -571,6 +595,7 @@
       updatePricing();
     }
 
+    // Пересборка 3D модели
     function buildModel() {
       while(atelierGroup.children.length > 0){ 
         const obj = atelierGroup.children[0];
@@ -604,6 +629,7 @@
       atelierGroup.add(printMesh);
     }
 
+    // Обновление стоимости
     function updatePricing() {
       let total = state.basePrice + state.extraPrice;
       document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
@@ -611,7 +637,7 @@
       document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
-    // События
+    // Обработчики событий
     document.getElementById('apparel-type').addEventListener('change', (e) => {
       state.apparelType = e.target.value;
       renderDynamicParams();
@@ -686,7 +712,7 @@
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // Инициализация
+    // Старт
     renderDynamicParams();
     buildModel();
 
