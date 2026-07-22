@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье Уличной Одежды | Конструктор [v1.0.2]</title>
+  <title>Ателье Уличной Одежды | Конструктор [v1.0.3]</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -11,7 +11,7 @@
 
   <style>
     /* ==========================================
-       [v1.0.2] ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
+       [v1.0.3] ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
        ========================================== */
     :root {
       --bg: #050505;
@@ -129,7 +129,7 @@
     .apparel-selector:hover {
       border-color: var(--gold-primary);
       color: var(--gold-light);
-      text-shadow: 0 0 8px rgba(245, 215, 127, 0.6);
+      text-shadow: 0 0 12px rgba(245, 215, 127, 0.75);
     }
 
     .apparel-selector option {
@@ -151,12 +151,13 @@
     }
 
     /* ==========================================
-       [v1.0.2] КНОПКИ УПРАВЛЕНИЯ (GLOW EFFECT)
+       [v1.0.3] ТОЛЬКО 2 СОСТОЯНИЯ КНОПОК
        ========================================== */
-    .btn-option, .swatch-btn {
-      background-color: #121212 !important;
+    /* 1. Исходное (неактивное) состояние */
+    .btn-option, .swatch-btn, .btn-submit {
+      background-color: #121212;
       border: 1px solid var(--gold-dark);
-      color: var(--gold-primary) !important; /* Текст всегда золотой */
+      color: var(--gold-primary);
       padding: 9px 6px;
       border-radius: 4px;
       font-size: 11px;
@@ -168,27 +169,23 @@
       text-shadow: 0 0 3px rgba(212, 175, 55, 0.25);
     }
 
-    .btn-option:hover, .swatch-btn:hover {
-      border-color: var(--gold-primary);
-      color: var(--gold-light) !important;
-      text-shadow: 0 0 8px rgba(245, 215, 127, 0.7);
-      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+    /* 2. Состояние при наведении (+5% к интенсивности свечения) */
+    .btn-option:hover, .swatch-btn:hover, .btn-submit:hover {
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+      font-weight: 800;
+      text-shadow: 
+        0 0 5px #f5d77f,
+        0 0 11px #d4af37,
+        0 0 19px rgba(212, 175, 55, 0.85);
+      box-shadow: 
+        0 0 10px rgba(212, 175, 55, 0.3),
+        inset 0 0 6px rgba(212, 175, 55, 0.2);
     }
 
-    /* Активное состояние — усиленная интенсивность без белого цвета */
-    .btn-option.active, .swatch-btn.active {
-      background-color: #121212 !important;
-      border-color: var(--gold-light) !important;
-      color: var(--gold-light) !important;
-      font-weight: 900 !important;
-      text-shadow: 
-        0 0 4px #f5d77f,
-        0 0 10px #d4af37,
-        0 0 18px #d4af37,
-        0 0 24px rgba(212, 175, 55, 0.8) !important;
-      box-shadow: 
-        0 0 14px rgba(212, 175, 55, 0.5),
-        inset 0 0 8px rgba(212, 175, 55, 0.3) !important;
+    /* При нажатии — легкий отклик */
+    .btn-option:active, .swatch-btn:active, .btn-submit:active {
+      transform: scale(0.98);
     }
 
     /* Переключатели цвета */
@@ -310,25 +307,10 @@
 
     .btn-submit {
       width: 100%;
-      background: #121212;
-      border: 1px solid var(--gold-primary);
-      color: var(--gold-primary);
       padding: 12px;
-      border-radius: 4px;
       font-size: 12px;
       font-weight: 900;
-      cursor: pointer;
-      text-transform: uppercase;
       letter-spacing: 1px;
-      transition: all 0.3s ease;
-      text-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
-    }
-
-    .btn-submit:hover {
-      border-color: var(--gold-light);
-      color: var(--gold-light);
-      text-shadow: 0 0 10px #f5d77f, 0 0 18px #d4af37;
-      box-shadow: 0 0 16px var(--gold-glow);
     }
 
     /* ==========================================
@@ -367,7 +349,7 @@
     <div class="panel">
       <div class="panel-header">
         <h1>Ателье Уличной Одежды</h1>
-        <p>Конструктор и примерка изделий [v1.0.2]</p>
+        <p>Конструктор и примерка изделий [v1.0.3]</p>
       </div>
 
       <!-- Выбор типа изделия -->
@@ -384,7 +366,7 @@
       <div class="group">
         <div class="section-title">Тип Манекена</div>
         <div class="btn-group" id="group-gender">
-          <button class="btn-option active" data-file="man.png" data-val="male">Мужской</button>
+          <button class="btn-option" data-file="man.png" data-val="male">Мужской</button>
           <button class="btn-option" data-file="wom.png" data-val="female">Женский</button>
           <button class="btn-option" data-file="Chil.png" data-val="child">Детский</button>
         </div>
@@ -394,7 +376,7 @@
       <div class="group">
         <div class="section-title">Силуэт</div>
         <div class="btn-group" id="group-fit">
-          <button class="btn-option active" data-val="standard">Стандарт</button>
+          <button class="btn-option" data-val="standard">Стандарт</button>
           <button class="btn-option" data-val="oversize">Оверсайз</button>
         </div>
       </div>
@@ -406,7 +388,7 @@
       <div class="group">
         <div class="section-title">Цвет Изделия</div>
         <div class="color-swatches" id="group-color">
-          <button class="swatch-btn active" data-color="white">
+          <button class="swatch-btn" data-color="white">
             <span class="swatch-circle white"></span> Белый
           </button>
           <button class="swatch-btn" data-color="black">
@@ -514,14 +496,14 @@
           <div class="group">
             <div class="section-title">Состав Ткани</div>
             <div class="btn-group" id="group-fabric">
-              <button class="btn-option active" data-price="1200">Хлопок 100%</button>
+              <button class="btn-option" data-price="1200">Хлопок 100%</button>
               <button class="btn-option" data-price="1400">Стрейч</button>
             </div>
           </div>
           <div class="group">
             <div class="section-title">Вырез Горловины</div>
             <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Круглый</button>
+              <button class="btn-option" data-extra="0">Круглый</button>
               <button class="btn-option" data-extra="200">V-Вырез <span class="badge">+200₽</span></button>
             </div>
           </div>
@@ -533,14 +515,14 @@
           <div class="group">
             <div class="section-title">Утепление</div>
             <div class="btn-group" id="group-fabric">
-              <button class="btn-option active" data-price="3200">Без начеса</button>
+              <button class="btn-option" data-price="3200">Без начеса</button>
               <button class="btn-option" data-price="3600">С начесом <span class="badge">+400₽</span></button>
             </div>
           </div>
           <div class="group">
             <div class="section-title">Тип Капюшона</div>
             <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Стандарт</button>
+              <button class="btn-option" data-extra="0">Стандарт</button>
               <button class="btn-option" data-extra="300">Двойной Оверсайз <span class="badge">+300₽</span></button>
             </div>
           </div>
@@ -552,14 +534,14 @@
           <div class="group">
             <div class="section-title">Плотность Ткани</div>
             <div class="btn-group" id="group-fabric">
-              <button class="btn-option active" data-price="2500">320 г/м²</button>
+              <button class="btn-option" data-price="2500">320 г/м²</button>
               <button class="btn-option" data-price="2900">400 г/м² (Плотный)</button>
             </div>
           </div>
           <div class="group">
             <div class="section-title">Крой Рукава</div>
             <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Втачной</button>
+              <button class="btn-option" data-extra="0">Втачной</button>
               <button class="btn-option" data-extra="250">Реглан <span class="badge">+250₽</span></button>
             </div>
           </div>
@@ -576,8 +558,6 @@
 
       document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
           state.basePrice = parseInt(e.currentTarget.dataset.price);
           updatePricing();
         });
@@ -585,8 +565,6 @@
 
       document.querySelectorAll('#group-extra .btn-option').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          document.querySelectorAll('#group-extra .btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
           state.extraPrice = parseInt(e.currentTarget.dataset.extra);
           updatePricing();
         });
@@ -646,8 +624,6 @@
 
     document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
         state.gender = e.currentTarget.dataset.val;
         state.mannequinFile = e.currentTarget.dataset.file;
         buildModel();
@@ -656,8 +632,6 @@
 
     document.querySelectorAll('#group-fit .btn-option').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-fit .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
         state.fit = e.currentTarget.dataset.val;
         buildModel();
       });
@@ -665,8 +639,6 @@
 
     document.querySelectorAll('#group-color .swatch-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-color .swatch-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
         state.color = e.currentTarget.dataset.color;
       });
     });
