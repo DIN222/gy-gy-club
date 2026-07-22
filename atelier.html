@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GY-GY Atelier | Конструктор v1.1.0</title>
+  <title>GY-GY Atelier | Конструктор v1.1.1 </title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -78,7 +78,7 @@
       border-radius: 3px;
     }
 
-    /* Шапка: Двойная стрелка слева, Логотип GY-GY и Версия справа */
+    /* Шапка: Стрелки слева, Логотип GY-GY и Версия справа */
     .panel-header {
       border-bottom: 2px solid var(--gold-dark);
       padding-bottom: 12px;
@@ -378,11 +378,11 @@
   <div class="main-wrapper">
     <!-- ПАНЕЛЬ НАСТРОЕК -->
     <div class="panel">
-      <!-- Шапка: Стрелки слева, Логотип GY-GY и v1.1.0 справа -->
+      <!-- Шапка: Навигация слева, Логотип GY-GY и Версия справа -->
       <div class="panel-header">
         <div class="nav-arrows">
-          <button class="nav-btn" onclick="history.back()" title="Шаг назад">‹</button>
-          <button class="nav-btn" onclick="location.href='/'" title="К двери клуба">«</button>
+          <button class="nav-btn" id="btn-nav-back" title="Вернуться в Студио">‹</button>
+          <button class="nav-btn" id="btn-nav-door" title="Перейти в Index">«</button>
         </div>
         <div class="brand-box">
           <div class="brand-logo">GY-GY</div>
@@ -493,6 +493,27 @@
   </div>
 
   <script>
+    // ==========================================
+    // ОБРАБОТКА НАВИГАЦИИ
+    // ==========================================
+
+    // Одинарная стрелка (‹) — Возврат в Студио
+    document.getElementById('btn-nav-back').addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back(); // Возврат назад в Студио по истории браузера
+      } else {
+        window.location.href = 'studio.html'; // Прямая ссылка на студию, если зашли по прямой ссылке
+      }
+    });
+
+    // Двойная стрелка («) — Переход на Index
+    document.getElementById('btn-nav-door').addEventListener('click', () => {
+      window.location.href = 'index.html'; // Прямой переход в index.html
+    });
+
+    // ==========================================
+    // THREE.JS И КОНСТРУКТОР
+    // ==========================================
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
 
@@ -549,7 +570,7 @@
           <div class="group">
             <div class="btn-group" id="group-fabric">
               <button class="btn-option active" data-price="1200">Хлопок 100%</button>
-              <button class="btn-option" data-price="1400">Стрейч 95/5 </button>
+              <button class="btn-option" data-price="1400">Стрейч</button>
             </div>
           </div>
           <div class="group">
