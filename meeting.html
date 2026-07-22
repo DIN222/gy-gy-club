@@ -2,503 +2,169 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club — Комната Переговоров v4.6.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club v4.5.32 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --gold: #d4af37;
-            --dark: #0a0a0a;
-            --dark-gray: #141414;
-            --light-gray: #222222;
-            --text: #f0f0f0;
-            --glow: 0 0 10px rgba(212, 175, 55, 0.4);
+        :root { 
+            --gold: #d4af37; 
+            --violet: #8A2BE2; 
+        }
+        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+            position: fixed; 
+            margin: 0; 
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--dark);
-            color: var(--text);
-            font-family: 'Share Tech Mono', monospace;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 100px;
-            overflow-x: hidden;
-        }
-
-        /* ==========================================================
-           СТАТИЧНАЯ ВЕРХНЯЯ ПАНЕЛЬ — ЖЕЛЕЗНЫЙ СТАНДАРТ GY-GY
-           ========================================================== */
-        .fixed-header {
+        /* Фоновое изображение Переговорной */
+        .meeting-page {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: rgba(10, 10, 10, 0.95);
-            border-bottom: 2px solid var(--gold);
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            padding: 0 30px;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-        }
-
-        /* ЛЕВАЯ ЧАСТЬ: Одинарный (<) и Двойной (≪) */
-        .header-left {
+            inset: 0;
+            background: url('meeting_bg.jpg') center/95% no-repeat #000;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            justify-content: flex-start;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: 1.5px solid var(--gold);
-            color: var(--gold);
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: bold;
-            transition: 0.3s;
-            display: inline-flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            z-index: 10;
         }
 
-        .nav-btn:hover {
-            background: rgba(212, 175, 55, 0.2);
-            box-shadow: var(--glow);
+        /* НАВИГАЦИЯ (СЛЕВА) — Выход в Холл/Офис (<) и ко Входу (<<) */
+        .ui-nav-arrows {
+            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
+            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
+            cursor: pointer; color: var(--gold); 
+            line-height: 1; letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none;
+        }
+        .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
+        .back-arrow:hover { opacity: 0.8; }
+
+        /* СКВОЗНОЙ АВАТАР */
+        .ui-header-center {
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
+            display: flex; align-items: center; justify-content: center;
+            user-select: none;
+            pointer-events: none;
+        }
+        .user-avatar {
+            width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
+            object-fit: cover; background: #fff !important; display: block;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
         }
 
-        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ: Твой аватар, ник и флаг страны */
-        .header-center {
+        /* ЛОГОТИП GY-GY */
+        .ui-header-right { 
+            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* АКТИВНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ */
+        .meeting-zone {
+            position: absolute;
+            cursor: pointer;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0);
         }
 
-        .header-avatar-zone {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--light-gray);
-            border: 1.5px solid var(--gold);
-            padding: 6px 18px;
-            border-radius: 25px;
-            box-shadow: var(--glow);
+        .cue-arrow-meeting { 
+            color: var(--violet); 
+            font-size: 38px; 
+            font-weight: 900; 
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
+            pointer-events: none; 
+            user-select: none;
+            z-index: 10;
+            transition: opacity 0.2s, transform 0.2s;
         }
 
-        .header-flag {
-            font-size: 1.3rem;
-            line-height: 1;
+        .meeting-zone:hover .cue-arrow-meeting { 
+            opacity: 0.8; 
+            transform: scale(1.1);
         }
 
-        .header-avatar-zone img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1.5px solid var(--gold);
-            object-fit: cover;
-        }
-
-        .header-avatar-zone span.nickname {
-            color: var(--gold);
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        /* ПРАВАЯ ЧАСТЬ: Логотип GY-GY */
-        .header-right {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .gy-logo {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--gold);
-            text-shadow: var(--glow);
-            text-decoration: none;
-            letter-spacing: 4px;
-        }
-
-        /* ==========================================================
-           ИНТЕРФЕЙС ПЕРЕГОВОРНОЙ
-           ========================================================== */
-        .meeting-room {
-            width: 95%;
-            max-width: 900px;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .sidebar {
-            background: var(--dark-gray);
-            border: 2px solid var(--gold);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .sidebar h3 {
-            color: var(--gold);
-            font-size: 1.1rem;
-            border-bottom: 1px solid rgba(212,175,55,0.3);
-            padding-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .participant-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .participant-card {
-            background: var(--light-gray);
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-        }
-
-        .participant-card img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 1px solid var(--gold);
-        }
-
-        .invite-box {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-            border-top: 1.5px dashed #333;
-            padding-top: 15px;
-        }
-
-        .chat-area {
-            background: var(--dark-gray);
-            border: 2px solid var(--gold);
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            height: 600px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .chat-header {
-            padding: 15px;
-            border-bottom: 1px solid rgba(212,175,55,0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .communication-modes {
-            display: flex;
-            gap: 8px;
-        }
-
-        .mode-btn {
-            background: var(--light-gray);
-            border: 1px solid var(--gold);
-            color: var(--text);
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border-radius: 4px;
-            font-family: inherit;
-        }
-
-        .mode-btn.active {
-            background: var(--gold);
-            color: var(--dark);
-            font-weight: bold;
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #0d0d0d;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 8px;
-            line-height: 1.4;
-            font-size: 0.95rem;
-        }
-
-        .message.system {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 3px solid var(--gold);
-            align-self: center;
-            max-width: 90%;
-            font-size: 0.85rem;
-            color: #ccc;
-        }
-
-        .message.user {
-            background: var(--light-gray);
-            border: 1px solid #333;
-            align-self: flex-start;
-        }
-
-        .message-meta {
-            font-size: 0.75rem;
-            color: var(--gold);
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .chat-input-panel {
-            padding: 15px;
-            border-top: 1px solid rgba(212,175,55,0.3);
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-field {
-            background: #080808;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 6px;
-            padding: 10px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .input-field:focus {
-            border-color: var(--gold);
-        }
-
-        .btn {
-            background: var(--gold);
-            color: var(--dark);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            background: #fff;
-        }
+        /* Примерные координаты интерактивов Переговорной (настройте под картинку) */
+        .zone-table { top: 40vh; left: 45vw; width: 140px; height: 100px; } /* Переговорный стол */
+        .zone-screen { top: 15vh; left: 30vw; width: 120px; height: 80px; } /* Экран/Презентация */
+        .zone-board { top: 18vh; left: 65vw; width: 120px; height: 80px; }  /* Доска задач / Идеи */
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-    <!-- СТАТИЧНАЯ ВЕРХНЯЯ ПАНЕЛЬ GY-GY -->
-    <header class="fixed-header">
-        
-        <!-- ЛЕВАЯ ЧАСТЬ: Одинарный угол (< - на предыдущий уровень) и Двойной угол (≪ - в начало к дверям) -->
-        <div class="header-left">
-            <a href="office.html" class="nav-btn" title="Назад в Офис">&lt;</a>
-            <a href="index.html" class="nav-btn" title="В начало к дверям">≪</a>
+    <div class="meeting-page">
+        <!-- НАВИГАЦИЯ СЛЕВА -->
+        <div class="notranslate ui-nav-arrows">
+            <!-- Шаг назад (в Холл или Офис) -->
+            <a href="hall.html" class="back-arrow" title="В Холл">&lt;</a>
+            <!-- Двойная стрелка — Ко входу в клуб -->
+            <a href="index.html" class="back-arrow" title="Ко входу в клуб">&lt;&lt;</a>
         </div>
 
-        <!-- ЦЕНТРАЛЬНАЯ ЧАСТЬ: Твой аватар, никнейм и флаг страны -->
-        <div class="header-center">
-            <div class="header-avatar-zone" id="header-avatar-zone">
-                <span class="header-flag" id="header-user-flag">🇺🇦</span>
-                <img id="header-avatar-img" src="" alt="Avatar" style="display: none;">
-                <span class="nickname" id="header-avatar-nick">@GUEST</span>
-            </div>
+        <!-- АВАТАР -->
+        <div class="ui-header-center notranslate">
+            <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
         </div>
 
-        <!-- ПРАВАЯ ЧАСТЬ: Логотип GY-GY -->
-        <div class="header-right">
-            <a href="index.html" class="gy-logo">GY-GY</a>
+        <!-- ЛОГОТИП -->
+        <div class="ui-header-right notranslate">GY-GY</div>
+
+        <!-- ИНТЕРАКТИВНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ -->
+        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Занять стол переговоров">
+            <span class="cue-arrow-meeting">↑</span>
         </div>
-        
-    </header>
 
-    <!-- ИНТЕРФЕЙС КОМНАТЫ ПЕРЕГОВОРОВ -->
-    <main class="meeting-room">
-        
-        <!-- Левая колонка: Участники -->
-        <section class="sidebar">
-            <h3>👥 Участники</h3>
-            <div class="participant-list" id="participant-list">
-                <!-- Твой профиль подтянется скриптом -->
-            </div>
+        <div id="zone-screen" class="meeting-zone zone-screen" onclick="goToModule('screen')" title="Презентация">
+            <span class="cue-arrow-meeting">↑</span>
+        </div>
 
-            <div class="invite-box">
-                <h3>🔑 Добавить по ID</h3>
-                <p style="font-size: 0.75rem; color: #888; margin-bottom: 5px;">Пригласить резидента:</p>
-                <input type="text" id="invite-id" class="input-field" placeholder="GY-654321">
-                <button class="btn" style="padding: 8px; margin-top: 5px;" onclick="inviteByPassport()">Пригласить</button>
-            </div>
-        </section>
-
-        <!-- Правая колонка: Чат -->
-        <section class="chat-area">
-            <div class="chat-header">
-                <span style="font-weight: bold; color: var(--gold);">📡 ЛИНГВО-СЕМАНТИЧЕСКИЙ КАНАЛ</span>
-                
-                <div class="communication-modes">
-                    <button class="mode-btn active" onclick="switchMode(this, 'text')">Текст</button>
-                    <button class="mode-btn" onclick="switchMode(this, 'code')">Код</button>
-                    <button class="mode-btn" onclick="switchMode(this, 'joke')">Мем-Режим</button>
-                </div>
-            </div>
-
-            <div class="chat-messages" id="chat-messages">
-                <div class="message system">
-                    Система: Инициализировано безопасное лингво-смысловое пространство. Ожидание сигналов.
-                </div>
-            </div>
-
-            <div class="chat-input-panel">
-                <input type="text" id="message-input" class="input-field" style="flex-grow: 1;" placeholder="Введите смысловой пакет..." onkeydown="if(event.key==='Enter') sendMessage()">
-                <button class="btn" onclick="sendMessage()">Отправить</button>
-            </div>
-        </section>
-
-    </main>
+        <div id="zone-board" class="meeting-zone zone-board" onclick="goToModule('board')" title="Идейная доска">
+            <span class="cue-arrow-meeting">↑</span>
+        </div>
+    </div>
 
     <script>
-        let currentMode = 'text';
-
-        window.addEventListener('load', () => {
-            const savedAvatar = localStorage.getItem('gygy_avatar') || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="24" height="24"><rect width="100" height="100" fill="%23d4af37"/><circle cx="50" cy="50" r="30" fill="%23000"/></svg>';
-            const savedNickname = localStorage.getItem('gygy_nickname') || 'Шеф МодерМех';
-            const savedID = localStorage.getItem('gygy_id') || 'GY-000000';
-            const savedFlag = localStorage.getItem('gygy_country_flag') || '🇺🇦';
-
-            const headerImg = document.getElementById('header-avatar-img');
-            const headerNick = document.getElementById('header-avatar-nick');
-            const headerFlag = document.getElementById('header-user-flag');
+        document.addEventListener("DOMContentLoaded", function() {
+            // Загрузка аватара из localStorage
+            const savedAvatar = localStorage.getItem('gygy_avatar') || 
+                                localStorage.getItem('gy_user_img') || 
+                                localStorage.getItem('user_avatar');
+                                
+            const avatarEl = document.getElementById('header-avatar');
             
-            if (headerImg) {
-                headerImg.src = savedAvatar;
-                headerImg.style.display = 'block';
+            if (savedAvatar && avatarEl) {
+                avatarEl.src = savedAvatar;
+                avatarEl.style.display = 'block';
+            } else if (avatarEl) {
+                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+                avatarEl.style.display = 'block';
             }
-            if (headerNick) {
-                headerNick.innerText = '@' + savedNickname;
-            }
-            if (headerFlag) {
-                headerFlag.innerText = savedFlag;
-            }
-
-            const list = document.getElementById('participant-list');
-            list.innerHTML = `
-                <div class="participant-card" style="border-color: var(--gold);">
-                    <img src="${savedAvatar}" alt="Avatar">
-                    <div>
-                        <div style="font-weight:bold; color: var(--gold);">${savedNickname} (Вы) ${savedFlag}</div>
-                        <div style="font-size:0.7rem; color: #888;">${savedID}</div>
-                    </div>
-                </div>
-            `;
         });
 
-        function switchMode(btn, mode) {
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentMode = mode;
-            addSystemMessage(`Режим коммуникации переключен на: [${mode.toUpperCase()}]`);
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const chatMessages = document.getElementById('chat-messages');
-            const userNick = localStorage.getItem('gygy_nickname') || 'Шеф';
-            const savedFlag = localStorage.getItem('gygy_country_flag') || '🇺🇦';
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message user';
-
-            let processedText = text;
-            if (currentMode === 'joke') {
-                processedText = text + " (Ха-ха! Смешно до слёз! 🚀)";
-            } else if (currentMode === 'code') {
-                processedText = `<code>console.log("${text}");</code>`;
+        // Обработка кликов по интерактивным зонам
+        function goToModule(type) {
+            if (type === 'table') {
+                alert('Модуль ПЕРЕГОВОРНЫЙ СТОЛ в разработке');
+            } else if (type === 'screen') {
+                alert('Модуль ПРЕЗЕНТАЦИИ в разработке');
+            } else if (type === 'board') {
+                alert('Модуль ИДЕЙНАЯ ДОСКА в разработке');
             }
-
-            msgDiv.innerHTML = `
-                <div class="message-meta">
-                    <span>@${userNick} ${savedFlag}</span>
-                    <span>${new Date().toLocaleTimeString()}</span>
-                </div>
-                <div>${processedText}</div>
-            `;
-
-            chatMessages.appendChild(msgDiv);
-            input.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function inviteByPassport() {
-            const idInput = document.getElementById('invite-id');
-            const idValue = idInput.value.trim();
-            if (!idValue) return;
-
-            const list = document.getElementById('participant-list');
-            const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-            const randomAvatar = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="24" height="24"><rect width="100" height="100" fill="%23${hex}"/><circle cx="50" cy="50" r="25" fill="%23000"/></svg>`;
-            
-            const newCard = document.createElement('div');
-            newCard.className = 'participant-card';
-            newCard.innerHTML = `
-                <img src="${randomAvatar}" alt="Avatar">
-                <div>
-                    <div style="font-weight:bold;">Резидент_${idValue.split('-')[1] || 'Guest'}</div>
-                    <div style="font-size:0.7rem; color: #888;">${idValue}</div>
-                </div>
-            `;
-            list.appendChild(newCard);
-            addSystemMessage(`Резидент ${idValue} подключен по защищенному лингво-каналу.`);
-            idInput.value = '';
-        }
-
-        function addSystemMessage(text) {
-            const chatMessages = document.getElementById('chat-messages');
-            const sysDiv = document.createElement('div');
-            sysDiv.className = 'message system';
-            sysDiv.innerText = `Система: ${text}`;
-            chatMessages.appendChild(sysDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
     </script>
 </body>
