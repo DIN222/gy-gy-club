@@ -1,219 +1,262 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.36 - STUDIO 024</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { 
-            --gold: #d4af37; 
-            --violet: #8A2BE2; 
-            --super-neon: #bf00ff; 
-        }
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; 
-            position: fixed; 
-            margin: 0; 
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GY-GY Studio | Выбор Локации 001 </title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
 
-        /* Задний фон Студии */
-        .studio-page {
-            position: fixed;
-            inset: 0;
-            background: url('studio_bg.jpg') center/95% no-repeat #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
+  <style>
+    /* ==========================================
+       ГЛОБАЛЬНЫЕ СТИЛИ
+       ========================================== */
+    :root {
+      --bg: #050505;
+      --panel: #0d0d0d;
+      --panel-border: #221c08;
+      
+      --gold-primary: #d4af37; 
+      --gold-light: #f5d77f;
+      --gold-dark: #3a2e0a;
+      
+      --purple-accent: #8a2be2;
+      --purple-glow: rgba(138, 43, 226, 0.5);
+      
+      --text: #ffffff;
+      --text-muted: #8a806b;
+    }
 
-        /* ТОЧНЫЙ СТАНДАРТ НАВИГАЦИИ ИЗ ОФИСА */
-        .ui-nav-arrows {
-            position: fixed; 
-            top: 18px; 
-            left: 20px; 
-            z-index: 9999999; 
-            display: flex; 
-            gap: 20px; 
-            font-size: 26px; 
-            font-weight: 900 !important; 
-            cursor: pointer; 
-            color: var(--gold); 
-            line-height: 1; 
-            letter-spacing: -2px; 
-            font-family: 'Courier New', Courier, monospace;
-            user-select: none;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-        }
-        .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
-        .arrow-item:hover { opacity: 0.8; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
 
-        /* ВЫНОСНАЯ ШАПКА В САМЫЙ ВЕРХ ИЕРАРХИИ БРАУЗЕРА */
-        .ui-header-center {
-            position: fixed; 
-            top: 12px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 9999999; /* Выше любого фона */
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            user-select: none;
-            width: 42px;
-            height: 42px;
-        }
-        
-        .badge-avatar-wrapper {
-            position: relative;
-            display: block;
-            width: 42px;
-            height: 42px;
-        }
-        
-        .user-avatar {
-            width: 42px !important;
-            height: 42px !important;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            object-fit: cover;
-            background: #fff !important;
-            display: block;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-        }
-        
-        /* ЖЕСТКАЯ АБСОЛЮТНАЯ ПРИВЯЗКА К АВАТАРУ */
-        .badge-avatar-wrapper .badge-flag {
-            position: absolute !important;
-            bottom: -2px !important;
-            right: -2px !important;
-            font-size: 14px !important;
-            background: #000 !important;
-            border-radius: 50% !important;
-            padding: 1px !important;
-            line-height: 1 !important;
-            z-index: 100000000 !important; /* На самый верх */
-            display: block !important;
-            text-shadow: none !important;
-        }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        /* ЛОГОТИП GY-GY */
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 9999999; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            user-select: none;
-        }
+    /* ==========================================
+       ШАПКА (HEADER)
+       ========================================== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--panel-border);
+    }
 
-        /* ЗОНЫ СТУДИИ */
-        .studio-zone {
-            position: absolute;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            background: rgba(0,0,0,0);
-        }
+    .nav-arrows {
+      display: flex;
+      gap: 10px;
+    }
 
-        .cue-arrow-studio { 
-            color: var(--super-neon); 
-            font-size: 38px; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 5px #fff, 0 0 10px var(--super-neon), 0 0 20px var(--super-neon); 
-            pointer-events: none; 
-            user-select: none;
-        }
+    .nav-btn {
+      background: #121212;
+      border: 1px solid var(--gold-dark);
+      color: var(--gold-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      line-height: 1;
+    }
 
-        .zone-wear { top: 24vh; left: 29vw; width: 120px; height: 90px; }
-        .zone-gifts { top: 11vh; left: 55vw; width: 120px; height: 90px; }
-        .zone-vintage { top: 4vh; left: 78vw; width: 120px; height: 90px; }
-    </style>
+    .nav-btn:hover {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+    }
+
+    .brand-logo {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--gold-primary);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+    }
+
+    /* ==========================================
+       КОНТЕНТ СТУДИИ
+       ========================================== */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--gold-primary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .grid {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1000px;
+    }
+
+    /* Карточки локаций */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 30px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold-primary);
+    }
+
+    .card-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold-primary);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    /* ФИОЛЕТОВАЯ КНОПКА W.E.A.R. */
+    .btn-purple {
+      background: #8a2be2;
+      border: 1px solid #a040ff;
+      color: #ffffff;
+      width: 100%;
+      padding: 14px;
+      border-radius: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px var(--purple-glow);
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-purple:hover {
+      background: #9d38f5;
+      box-shadow: 0 0 25px var(--purple-glow);
+      transform: scale(1.02);
+    }
+
+    /* Заглушка для неактивных кнопок */
+    .btn-disabled {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #555;
+      width: 100%;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div class="notranslate ui-nav-arrows">
-        <a href="index.html#block-hall" class="arrow-item">&lt;</a>
-        <a href="index.html" class="arrow-item">&lt;&lt;</a>
+  <!-- ШАПКА -->
+  <header class="header">
+    <div class="nav-arrows">
+      <!-- Одинарная стрелка: Назад в Холл -->
+      <a href="hall.html" class="nav-btn" title="В Холл">‹</a>
+      <!-- Двойная стрелка: Ко входу в клуб (Index) -->
+      <a href="index.html" class="nav-btn" title="Ко входу в клуб (Index)">«</a>
     </div>
+    <div class="brand-logo">GY-GY STUDIO</div>
+  </header>
 
-    <div class="ui-header-center notranslate">
-        <div class="badge-avatar-wrapper">
-            <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-            <!-- Флаг теперь живет строго внутри контейнера аватара -->
-            <span class="badge-flag notranslate" id="current-flag">🇷🇺</span>
-        </div>
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
+  <div class="container">
+    <h1 class="title">Рабочие Локации</h1>
+    <p class="subtitle">Выберите модуль для перехода к проектированию</p>
+
+    <div class="grid">
+      
+      <!-- ЛОКАЦИЯ WEAR (АТЕЛЬЕ) -->
+      <div class="card">
+        <div class="card-icon">👕</div>
+        <div class="card-title">Модуль WEAR</div>
+        <div class="card-desc">Конструктор одежды, выбор тканей, мерки и нанесение кастомных принтов.</div>
+        
+        <!-- Фиолетовая кнопка веден на atelier_v1.1.1.html -->
+        <button class="btn-purple" id="btn-wear">
+          Открыть Ателье
+        </button>
+      </div>
+
+      <!-- ДОПОЛНИТЕЛЬНАЯ ЛОКАЦИЯ -->
+      <div class="card">
+        <div class="card-icon">👟</div>
+        <div class="card-title">Модуль SHOES</div>
+        <div class="card-desc">Кастомизация обуви, материалов подошвы и аксессуаров.</div>
+        <button class="btn-disabled" disabled>В разработке</button>
+      </div>
+
     </div>
+  </div>
 
-    <div class="ui-header-right notranslate">GY-GY</div>
-
-    <div class="studio-page">
-        <div id="zone-wear" class="studio-zone zone-wear" onclick="selectCategory('wear')">
-            <span class="cue-arrow-studio">↑</span>
-        </div>
-
-        <div id="zone-gifts" class="studio-zone zone-gifts" onclick="selectCategory('gifts')">
-            <span class="cue-arrow-studio">↑</span>
-        </div>
-
-        <div id="zone-vintage" class="studio-zone zone-vintage" onclick="selectCategory('vintage')">
-            <span class="cue-arrow-studio">↑</span>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Загрузка аватара
-            const savedAvatar = localStorage.getItem('gygy_avatar') || 
-                                localStorage.getItem('gy_user_img') || 
-                                localStorage.getItem('user_avatar');
-            const avatarEl = document.getElementById('header-avatar');
-            
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-                avatarEl.style.display = 'block';
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
-                avatarEl.style.display = 'block';
-            }
-
-            // Тотальный поиск языка по хранилищу и системе
-            const userLang = localStorage.getItem('gy_lang') ||
-                             localStorage.getItem('gygy_lang') || 
-                             localStorage.getItem('lang') || 
-                             localStorage.getItem('user_lang') || 
-                             localStorage.getItem('selected_lang') || 
-                             localStorage.getItem('current_lang') || 
-                             localStorage.getItem('registration_lang') || 
-                             navigator.language || 'ru';
-
-            const flagElement = document.getElementById('current-flag');
-            if (flagElement) {
-                const cleanLang = userLang.toLowerCase().trim();
-                if (cleanLang.includes('fr')) {
-                    flagElement.textContent = '🇫🇷';
-                } else if (cleanLang.includes('en') || cleanLang.includes('us')) {
-                    flagElement.textContent = '🇺🇸';
-                } else {
-                    flagElement.textContent = '🇷🇺';
-                }
-            }
-        });
-
-        function selectCategory(type) {
-            alert(`Переход в рабочий шаг локации: ${type.toUpperCase()}`);
-        }
-    </script>
+  <script>
+    // Обработка клика по фиолетовой кнопке WEAR (переход в atelier_v1.1.1.html)
+    document.getElementById('btn-wear').addEventListener('click', () => {
+      window.location.href = 'atelier_v1.1.1.html';
+    });
+  </script>
 </body>
 </html>
