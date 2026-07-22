@@ -11,7 +11,10 @@
             --gold: #d4af37; 
             --violet: #8A2BE2; 
         }
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+        * { 
+            -webkit-tap-highlight-color: transparent !important; 
+            box-sizing: border-box; 
+        }
         
         html, body { 
             width: 100%; 
@@ -36,41 +39,84 @@
             z-index: 10;
         }
 
-        /* НАВИГАЦИЯ (СЛЕВА) — Выход в Холл/Офис (<) и ко Входу (<<) */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В ЛЕВОМ ВЕРХНЕМ УГЛУ */
         .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 25px; font-size: 26px; font-weight: 900 !important; 
-            cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
+            position: fixed; 
+            top: 18px; 
+            left: 20px; 
+            z-index: 9999999; 
+            display: flex; 
+            gap: 25px; 
+            font-size: 26px; 
+            font-weight: 900 !important; 
+            cursor: pointer; 
+            color: var(--gold); 
+            line-height: 1; 
+            letter-spacing: -2px; 
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
         }
-        .back-arrow { transition: opacity 0.2s; text-decoration: none; color: var(--gold); }
-        .back-arrow:hover { opacity: 0.8; }
+        .back-arrow { 
+            transition: opacity 0.2s, transform 0.2s; 
+            text-decoration: none; 
+            color: var(--gold); 
+            display: inline-block;
+        }
+        .back-arrow:hover { 
+            opacity: 0.8; 
+            transform: scale(1.1);
+        }
 
-        /* СКВОЗНОЙ АВАТАР */
+        /* ЦЕНТРАЛЬНЫЙ БЛОК: ЧИСТЫЙ АВАТАР И ФЛАГ ЯЗЫКА */
         .ui-header-center {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 1000000;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed; 
+            top: 12px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 1000000;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
             user-select: none;
             pointer-events: none;
         }
+
+        /* Аватар без золотой рамки, обводок и теней */
         .user-avatar {
-            width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
-            object-fit: cover; background: #fff !important; display: block;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            width: 42px; 
+            height: 42px; 
+            border-radius: 50%; 
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            object-fit: cover; 
+            background: transparent; 
+            display: block;
+        }
+
+        /* Флаг выбранного языка */
+        .lang-flag {
+            font-size: 20px;
+            line-height: 1;
+            display: inline-block;
         }
 
         /* ЛОГОТИП GY-GY */
         .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, -1px 1px 0 #000;
+            position: fixed; 
+            top: 18px; 
+            right: 25px; 
+            z-index: 1000000; 
+            font-size: 24px; 
+            letter-spacing: 5px; 
+            font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
             pointer-events: none;
         }
 
-        /* АКТИВНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ */
+        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (БЕЗ РАМОК И ФОНА) */
         .meeting-zone {
             position: absolute;
             cursor: pointer;
@@ -79,9 +125,13 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
-            background: rgba(0, 0, 0, 0);
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
         }
 
+        /* ФИОЛЕТОВЫЕ НЕОНОВЫЕ СТРЕЛКИ КАК В ОФИСЕ */
         .cue-arrow-meeting { 
             color: var(--violet); 
             font-size: 38px; 
@@ -92,40 +142,44 @@
             user-select: none;
             z-index: 10;
             transition: opacity 0.2s, transform 0.2s;
+            border: none !important;
+            outline: none !important;
+            background: none !important;
         }
 
         .meeting-zone:hover .cue-arrow-meeting { 
-            opacity: 0.8; 
-            transform: scale(1.1);
+            opacity: 0.85; 
+            transform: scale(1.15);
         }
 
-        /* Примерные координаты интерактивов Переговорной (настройте под картинку) */
-        .zone-table { top: 40vh; left: 45vw; width: 140px; height: 100px; } /* Переговорный стол */
-        .zone-screen { top: 15vh; left: 30vw; width: 120px; height: 80px; } /* Экран/Презентация */
-        .zone-board { top: 18vh; left: 65vw; width: 120px; height: 80px; }  /* Доска задач / Идеи */
+        /* Координаты зон Переговорной */
+        .zone-table { top: 40vh; left: 45vw; width: 100px; height: 80px; }
+        .zone-screen { top: 18vh; left: 28vw; width: 100px; height: 80px; }
+        .zone-board { top: 20vh; left: 68vw; width: 100px; height: 80px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="meeting-page">
-        <!-- НАВИГАЦИЯ СЛЕВА -->
+        <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ (СЛЕВА ВВЕРХУ) -->
         <div class="notranslate ui-nav-arrows">
-            <!-- Шаг назад (в Холл или Офис) -->
-            <a href="hall.html" class="back-arrow" title="В Холл">&lt;</a>
-            <!-- Двойная стрелка — Ко входу в клуб -->
+            <!-- Одинарная стрелка — шаг назад в Офис -->
+            <a href="office.html" class="back-arrow" title="В Офис">&lt;</a>
+            <!-- Двойная стрелка — переход к Входу -->
             <a href="index.html" class="back-arrow" title="Ко входу в клуб">&lt;&lt;</a>
         </div>
 
-        <!-- АВАТАР -->
+        <!-- ЦЕНТРАЛЬНЫЙ БЛОК: ЧИСТЫЙ АВАТАР И ФЛАГ -->
         <div class="ui-header-center notranslate">
             <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+            <span id="header-lang-flag" class="lang-flag"></span>
         </div>
 
-        <!-- ЛОГОТИП -->
+        <!-- ЛОГОТИП GY-GY -->
         <div class="ui-header-right notranslate">GY-GY</div>
 
-        <!-- ИНТЕРАКТИВНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ -->
-        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Занять стол переговоров">
+        <!-- ИНТЕРАКТИВНЫЕ ФИОЛЕТОВЫЕ СТРЕЛКИ ПЕРЕГОВОРНОЙ -->
+        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Переговорный стол">
             <span class="cue-arrow-meeting">↑</span>
         </div>
 
@@ -140,7 +194,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Загрузка аватара из localStorage
+            // 1. Подгрузка чистого аватара без рамок
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -154,9 +208,27 @@
                 avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
                 avatarEl.style.display = 'block';
             }
+
+            // 2. Отображение выбранного на первой странице флага
+            const langFlags = {
+                'ru': '🇷🇺',
+                'en': '🇬🇧',
+                'zh': '🇨🇳',
+                'es': '🇪🇸',
+                'de': '🇩🇪'
+            };
+            
+            const savedLang = localStorage.getItem('gygy_lang') || 
+                              localStorage.getItem('gy_lang') || 
+                              localStorage.getItem('user_lang') || 'ru';
+                              
+            const flagEl = document.getElementById('header-lang-flag');
+            if (flagEl) {
+                flagEl.textContent = langFlags[savedLang.toLowerCase()] || '🌐';
+            }
         });
 
-        // Обработка кликов по интерактивным зонам
+        // Функция перехода по модулям
         function goToModule(type) {
             if (type === 'table') {
                 alert('Модуль ПЕРЕГОВОРНЫЙ СТОЛ в разработке');
