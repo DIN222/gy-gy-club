@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.39 - MEETING ROOM</title>
+    <title>GY-GY Club v4.5.40 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -11,6 +11,8 @@
             --gold: #d4af37; 
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
+            --tg-blue: #0088cc;
+            --tg-blue-bg: rgba(0, 136, 204, 0.15);
         }
 
         * { 
@@ -122,7 +124,6 @@
             line-height: 1;
         }
 
-        /* КНОПКА ДОБАВЛЕНИЯ СОТРУДНИКА */
         .add-member-btn {
             width: 36px;
             height: 36px;
@@ -192,6 +193,14 @@
             gap: 5px;
         }
 
+        .msg-tg-badge {
+            display: inline-block;
+            font-size: 10px;
+            color: var(--tg-blue);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
         .msg-time {
             font-size: 9px;
             opacity: 0.5;
@@ -199,7 +208,7 @@
             text-align: right;
         }
 
-        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА */
+        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА С РАСШИРЕННЫМИ КНОПКАМИ */
         .chat-input-bar {
             padding: 12px 15px;
             background: #050505;
@@ -208,7 +217,8 @@
 
         .input-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            align-items: center;
         }
 
         .chat-input {
@@ -225,20 +235,58 @@
 
         .chat-input:focus { border-color: var(--gold); }
 
+        /* Кнопка отправки со стрелкой + словом "Отправить" */
         .send-btn {
             background: var(--gold-bg);
             border: 1px solid var(--gold);
             color: var(--gold);
-            padding: 0 18px;
+            padding: 0 14px;
+            height: 42px;
             border-radius: 6px;
             font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
         }
 
         .send-btn:hover { background: var(--gold); color: #000; }
 
-        /* 4. МОДАЛЬНОЕ ОКНО ВЫБОРА СОТРУДНИКОВ */
+        /* Специальная кнопка отправки в Telegram */
+        .send-tg-btn {
+            background: var(--tg-blue-bg);
+            border: 1px solid var(--tg-blue);
+            color: var(--tg-blue);
+            padding: 0 12px;
+            height: 42px;
+            border-radius: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .send-tg-btn:hover { 
+            background: var(--tg-blue); 
+            color: #fff; 
+        }
+
+        .tg-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* 4. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -324,7 +372,6 @@
                     <img id="header-avatar" class="member-avatar" src="" alt="Me">
                     <span id="header-lang-flag" class="member-flag"></span>
                 </div>
-                <!-- Добавленные аватары отобразятся здесь -->
             </div>
 
             <div class="add-member-btn" onclick="openStaffModal()" title="Добавить собеседника">+</div>
@@ -335,11 +382,24 @@
         <!-- ОКНО СООБЩЕНИЙ -->
         <div id="chat-messages" class="chat-messages"></div>
 
-        <!-- ВВОД -->
+        <!-- НИЖНЯЯ ПАНЕЛЬ ВВОДА С ОБНОВЛЕННЫМИ КНОПКАМИ -->
         <div class="chat-input-bar">
             <div class="input-row">
-                <input type="text" id="chat-input" class="chat-input" placeholder="..." autocomplete="off" onkeypress="handleKeyPress(event)">
-                <button class="send-btn" onclick="sendMessage()">➔</button>
+                <input type="text" id="chat-input" class="chat-input" placeholder="Сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
+                
+                <!-- Кнопка 1: Стрелка + Отправить -->
+                <button class="send-btn" onclick="sendMessage(false)" title="Отправить в веб-чат">
+                    <span>➔</span>
+                    <span>Отправить</span>
+                </button>
+
+                <!-- Кнопка 2: Значок Telegram + Имя -->
+                <button class="send-tg-btn" onclick="sendMessage(true)" title="Отправить через Telegram">
+                    <svg class="tg-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.25.38-.51 1.07-.78 4.2-1.82 7-3.03 8.4-3.61 4-.16 4.83.53 4.78 2.47z"/>
+                    </svg>
+                    <span>Telegram</span>
+                </button>
             </div>
         </div>
     </div>
@@ -354,7 +414,6 @@
     </div>
 
     <script>
-        // Список сотрудников организации
         const allStaff = [
             { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
             { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
@@ -366,7 +425,6 @@
         let activeTargetMember = null;
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Загрузка собственного аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
             
@@ -383,11 +441,9 @@
             renderStaffList();
         });
 
-        // Открытие/закрытие списка сотрудников
         function openStaffModal() { document.getElementById('staff-modal').style.display = 'flex'; }
         function closeStaffModal() { document.getElementById('staff-modal').style.display = 'none'; }
 
-        // Отрисовка зарегистрированных сотрудников в модальном окне
         function renderStaffList() {
             const container = document.getElementById('staff-list');
             container.innerHTML = '';
@@ -411,7 +467,6 @@
             });
         }
 
-        // Переключение сотрудников в верхнюю панель
         function toggleStaff(id) {
             if (selectedStaffIds.has(id)) {
                 selectedStaffIds.delete(id);
@@ -421,10 +476,8 @@
             updateHeaderParticipants();
         }
 
-        // Обновление ленты аватаров в шапке
         function updateHeaderParticipants() {
             const container = document.getElementById('header-participants');
-            // Оставляем первый элемент (моей учетной записи)
             const myItem = document.getElementById('my-header-avatar-item');
             container.innerHTML = '';
             container.appendChild(myItem);
@@ -449,8 +502,8 @@
             updateHeaderParticipants();
         }
 
-        // Отправка сообщений
-        function sendMessage() {
+        // Отправка сообщений (isTelegram = true/false)
+        function sendMessage(isTelegram = false) {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
             if (!text) return;
@@ -460,7 +513,9 @@
 
             const msgDiv = document.createElement('div');
             msgDiv.className = 'msg msg-outgoing';
-            msgDiv.innerHTML = `${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
+            
+            let tgBadgeHTML = isTelegram ? '<div class="msg-tg-badge">► Telegram</div>' : '';
+            msgDiv.innerHTML = `${tgBadgeHTML}${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
 
             chatMessages.appendChild(msgDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -473,7 +528,9 @@
                 setTimeout(() => {
                     const replyDiv = document.createElement('div');
                     replyDiv.className = 'msg msg-incoming';
+                    let replyBadge = isTelegram ? '<div class="msg-tg-badge">◄ Telegram Bot</div>' : '';
                     replyDiv.innerHTML = `
+                        ${replyBadge}
                         <div class="msg-author">${staff.flag} ${staff.name}</div>
                         Принято.
                         <div class="msg-time">${timeStr}</div>
@@ -484,7 +541,7 @@
             }
         }
 
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(false); }
         function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
     </script>
 </body>
