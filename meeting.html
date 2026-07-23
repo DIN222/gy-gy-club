@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.34 - MEETING ROOM</title>
+    <title>GY-GY Club v4.5.37 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root { 
             --gold: #d4af37; 
+            --gold-bg: rgba(212, 175, 55, 0.1);
+            --gold-border: rgba(212, 175, 55, 0.3);
+            --tg-color: #0088cc;
         }
+
         * { 
             -webkit-tap-highlight-color: transparent !important; 
             box-sizing: border-box; 
+            margin: 0;
+            padding: 0;
         }
         
         html, body { 
@@ -22,30 +28,34 @@
             color: var(--gold); 
             font-family: 'Share Tech Mono', monospace; 
             overflow: hidden; 
-            position: fixed; 
-            margin: 0; 
         }
 
-        /* ОСНОВНАЯ СЦЕНА ПЕРЕГОВОРНОЙ */
-        .meeting-page {
-            position: fixed;
-            inset: 0;
-            /* Фоновый цвет #111 на случай, если картинка meeting_bg.jpg еще не загрузилась */
-            background: #111 url('meeting_bg.jpg') center/cover no-repeat;
+        /* ОСНОВНОЙ КОНТЕЙНЕР ЧАТА ПЕРЕГОВОРНОЙ (БЕЗ КАРТИНОК И ФОНА) */
+        .chat-page {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #050508;
+            position: relative;
+        }
+
+        /* 1. ВЕРХНЯЯ ПАНЕЛЬ */
+        .header-bar {
+            height: 60px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            z-index: 10;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gold-border);
+            background: #000;
+            z-index: 100;
         }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ: НАВИГАЦИЯ СЛЕВА (БЕЗ РАМОК И ПОДЛОЖЕК) */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В ЛЕВОМ ВЕРХНЕМ УГЛУ (БЕЗ РАМОК) */
         .ui-nav-arrows {
-            position: fixed; 
-            top: 18px; 
-            left: 20px; 
-            z-index: 9999999; 
             display: flex; 
-            gap: 25px; 
+            gap: 20px; 
             font-size: 26px; 
             font-weight: 900 !important; 
             cursor: pointer; 
@@ -53,9 +63,6 @@
             line-height: 1; 
             letter-spacing: -2px; 
             user-select: none;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
         }
         
         .back-arrow { 
@@ -74,25 +81,19 @@
             transform: scale(1.1);
         }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ: ЦЕНТР (ЧИСТЫЙ АВАТАР + ФЛАГ) */
+        /* ЦЕНТР: ЧИСТЫЙ АВАТАР И ФЛАГ ЯЗЫКА */
         .ui-header-center {
-            position: fixed; 
-            top: 12px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            z-index: 1000000;
             display: flex; 
             align-items: center; 
             justify-content: center; 
             gap: 8px;
             user-select: none;
-            pointer-events: none;
         }
 
-        /* Чистый аватар без золотых рамок, обводок и теней */
+        /* Аватар без золотых рамок и обводок */
         .user-avatar {
-            width: 42px; 
-            height: 42px; 
+            width: 40px; 
+            height: 40px; 
             border-radius: 50%; 
             border: none !important;
             outline: none !important;
@@ -102,91 +103,210 @@
             display: block;
         }
 
-        /* Флаг выбранного языка */
         .lang-flag {
             font-size: 20px;
             line-height: 1;
             display: inline-block;
         }
 
-        /* ВЕРХНЯЯ ПАНЕЛЬ: СТРАВА (ЛОГОТИП GY-GY) */
+        /* СПРАВА: ЛОГОТИП GY-GY */
         .ui-header-right { 
-            position: fixed; 
-            top: 18px; 
-            right: 25px; 
-            z-index: 1000000; 
-            font-size: 24px; 
-            letter-spacing: 5px; 
+            font-size: 22px; 
+            letter-spacing: 4px; 
             font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
-            pointer-events: none;
         }
 
-        /* ИНТЕРАКТИВНЫЕ ЗОНЫ НА СЦЕНЕ (БЕЗ СТРЕЛОК) */
-        .meeting-zone {
-            position: absolute;
-            cursor: pointer;
-            z-index: 100;
-            background: rgba(212, 175, 55, 0.03); /* Едва заметный фон для отладки */
-            border: 1px dashed rgba(212, 175, 55, 0.2); /* Легкий пунктир зон */
+        /* 2. ЛИНГВО-СМЫСЛОВАЯ ОБЛАСТЬ ЧАТА */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: radial-gradient(circle at center, #0a0a12 0%, #020204 100%);
+        }
+
+        /* Сообщения */
+        .msg {
+            max-width: 80%;
+            padding: 12px 16px;
             border-radius: 8px;
-            transition: all 0.2s ease;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .msg-system {
+            align-self: center;
+            background: transparent;
+            border: 1px dashed var(--gold-border);
+            color: rgba(212, 175, 55, 0.7);
+            font-size: 13px;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .msg-incoming {
+            align-self: flex-start;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold-border);
+            color: var(--gold);
+        }
+
+        .msg-outgoing {
+            align-self: flex-end;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--gold);
+            color: #fff;
+        }
+
+        .msg-tg-badge {
+            display: inline-block;
+            font-size: 10px;
+            color: var(--tg-color);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            opacity: 0.5;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА И ТELEGRAM ТРАНСЛЯЦИИ */
+        .chat-input-bar {
+            padding: 12px 15px;
+            background: #000;
+            border-top: 1px solid var(--gold-border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Панель переключения каналов связи */
+        .channel-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .toggle-tg-mode {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-tg-mode input {
+            accent-color: var(--gold);
+            cursor: pointer;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #0c0c12;
+            border: 1px solid var(--gold-border);
+            border-radius: 6px;
+            padding: 12px 15px;
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--gold);
+        }
+
+        .send-btn {
+            background: var(--gold-bg);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0 20px;
+            border-radius: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--gold);
-            font-size: 14px;
-            text-shadow: 0 0 5px #000;
         }
 
-        .meeting-zone:hover {
-            background: rgba(212, 175, 55, 0.15);
-            border-color: var(--gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        .send-btn:hover {
+            background: var(--gold);
+            color: #000;
         }
-
-        /* Координаты зон на экране */
-        .zone-table { top: 45vh; left: 35vw; width: 30vw; height: 25vh; }
-        .zone-screen { top: 15vh; left: 20vw; width: 20vw; height: 22vh; }
-        .zone-board { top: 15vh; left: 60vw; width: 20vw; height: 22vh; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="meeting-page">
-        <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ (БЕЗ РАМОК И ПОДЛОЖЕК) -->
-        <div class="notranslate ui-nav-arrows">
-            <a href="office.html" class="back-arrow" title="В Офис">&lt;</a>
-            <a href="index.html" class="back-arrow" title="Ко входу в клуб">&lt;&lt;</a>
+    <div class="chat-page">
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+        <div class="header-bar">
+            <!-- НАВИГАЦИЯ СЛЕВА (БЕЗ РАМОК) -->
+            <div class="notranslate ui-nav-arrows">
+                <a href="office.html" class="back-arrow" title="В Офис">&lt;</a>
+                <a href="index.html" class="back-arrow" title="Ко входу в клуб">&lt;&lt;</a>
+            </div>
+
+            <!-- ЧИСТЫЙ АВАТАР И ФЛАГ -->
+            <div class="ui-header-center notranslate">
+                <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+                <span id="header-lang-flag" class="lang-flag"></span>
+            </div>
+
+            <!-- ЛОГОТИП GY-GY -->
+            <div class="ui-header-right notranslate">GY-GY</div>
         </div>
 
-        <!-- ЧИСТЫЙ АВАТАР И ФЛАГ ЯЗЫКА -->
-        <div class="ui-header-center notranslate">
-            <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-            <span id="header-lang-flag" class="lang-flag"></span>
+        <!-- ОКНО ОБЩЕНИЯ И ЛИНГВО-СМЫСЛОВОГО ОБМЕНА -->
+        <div id="chat-messages" class="chat-messages">
+            <div class="msg msg-system">
+                [ ЛИНГВО-СМЫСЛОВАЯ ПЕРЕГОВОРНАЯ КОМНАТА v4.5.37 ИНИЦИАЛИЗИРОВАНА ]<br>
+                Канал связи: Веб-ЧАТ / Telegram Bridge
+            </div>
+            
+            <div class="msg msg-incoming">
+                Добро пожаловать в Переговорную. Здесь вы можете вести прямой лингвистический обмен или транслировать смыслы в Telegram-канал.
+                <div class="msg-time">12:00</div>
+            </div>
         </div>
 
-        <!-- ЛОГОТИП GY-GY -->
-        <div class="ui-header-right notranslate">GY-GY</div>
+        <!-- ПАНЕЛЬ ВВОДА СООБЩЕНИЙ -->
+        <div class="chat-input-bar">
+            <div class="channel-selector">
+                <label class="toggle-tg-mode">
+                    <input type="checkbox" id="tg-sync-checkbox">
+                    <span>Дублировать в Telegram (TG Bot)</span>
+                </label>
+                <span style="opacity:0.6;">Канал: #MeetingRoom</span>
+            </div>
 
-        <!-- КЛИКАБЕЛЬНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ (БЕЗ НЕОНОВЫХ СТРЕЛОК) -->
-        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Переговорный стол">
-            <span>[ Стол Переговоров ]</span>
-        </div>
-        
-        <div id="zone-screen" class="meeting-zone zone-screen" onclick="goToModule('screen')" title="Презентация">
-            <span>[ Экран ]</span>
-        </div>
-        
-        <div id="zone-board" class="meeting-zone zone-board" onclick="goToModule('board')" title="Идейная доска">
-            <span>[ Доска ]</span>
+            <div class="input-row">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Введите текстовое или смысловое сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">ОТПРАВИТЬ</button>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. Подгрузка чистого аватара без рамок
+            // 1. Подгрузка чистого аватара
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
@@ -197,11 +317,11 @@
                 avatarEl.src = savedAvatar;
                 avatarEl.style.display = 'block';
             } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
                 avatarEl.style.display = 'block';
             }
 
-            // 2. Отображение выбранного на первой странице флага
+            // 2. Отображение флага выбранного языка
             const langFlags = {
                 'ru': '🇷🇺',
                 'en': '🇬🇧',
@@ -220,15 +340,55 @@
             }
         });
 
-        // Функция перехода по модулям
-        function goToModule(type) {
-            if (type === 'table') {
-                alert('Модуль ПЕРЕГОВОРНЫЙ СТОЛ в разработке');
-            } else if (type === 'screen') {
-                alert('Модуль ПРЕЗЕНТАЦИИ в разработке');
-            } else if (type === 'board') {
-                alert('Модуль ИДЕЙНАЯ ДОСКА в разработке');
+        // Отправка сообщений
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const isTgSync = document.getElementById('tg-sync-checkbox').checked;
+            
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            // Создание элемента сообщения
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg msg-outgoing';
+            
+            let tgBadgeHTML = isTgSync ? '<div class="msg-tg-badge">► Отправлено в Telegram</div>' : '';
+            msgDiv.innerHTML = `${tgBadgeHTML}${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
+
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            input.value = '';
+
+            // Эмуляция ответа переговорной системы
+            if (isTgSync) {
+                setTimeout(() => {
+                    const replyDiv = document.createElement('div');
+                    replyDiv.className = 'msg msg-incoming';
+                    replyDiv.innerHTML = `<div class="msg-tg-badge">◄ Telegram Bridge</div>Смысловое сообщение подтверждено и синхронизировано.<div class="msg-time">${timeStr}</div>`;
+                    chatMessages.appendChild(replyDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
             }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
     </script>
 </body>
