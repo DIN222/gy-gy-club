@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.32 - MEETING ROOM</title>
+    <title>GY-GY Club v4.5.34 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -26,19 +26,19 @@
             margin: 0; 
         }
 
-        /* Фоновое изображение Переговорной */
+        /* ОСНОВНАЯ СЦЕНА ПЕРЕГОВОРНОЙ */
         .meeting-page {
             position: fixed;
             inset: 0;
-            background: url('meeting_bg.jpg') center/95% no-repeat #000;
+            /* Фоновый цвет #111 на случай, если картинка meeting_bg.jpg еще не загрузилась */
+            background: #111 url('meeting_bg.jpg') center/cover no-repeat;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 10;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В ВЕРХНЕМ ЛЕВОМ УГЛУ (БЕЗ РАМОК И ФОНА) */
+        /* ВЕРХНЯЯ ПАНЕЛЬ: НАВИГАЦИЯ СЛЕВА (БЕЗ РАМОК И ПОДЛОЖЕК) */
         .ui-nav-arrows {
             position: fixed; 
             top: 18px; 
@@ -53,7 +53,7 @@
             line-height: 1; 
             letter-spacing: -2px; 
             user-select: none;
-            background: none !important;
+            background: transparent !important;
             border: none !important;
             box-shadow: none !important;
         }
@@ -74,7 +74,7 @@
             transform: scale(1.1);
         }
 
-        /* ЦЕНТРАЛЬНЫЙ БЛОК: ЧИСТЫЙ АВАТАР И ФЛАГ ЯЗЫКА */
+        /* ВЕРХНЯЯ ПАНЕЛЬ: ЦЕНТР (ЧИСТЫЙ АВАТАР + ФЛАГ) */
         .ui-header-center {
             position: fixed; 
             top: 12px; 
@@ -89,7 +89,7 @@
             pointer-events: none;
         }
 
-        /* Чистый аватар без золотой рамки, обводок и теней */
+        /* Чистый аватар без золотых рамок, обводок и теней */
         .user-avatar {
             width: 42px; 
             height: 42px; 
@@ -109,7 +109,7 @@
             display: inline-block;
         }
 
-        /* ЛОГОТИП GY-GY */
+        /* ВЕРХНЯЯ ПАНЕЛЬ: СТРАВА (ЛОГОТИП GY-GY) */
         .ui-header-right { 
             position: fixed; 
             top: 18px; 
@@ -123,35 +123,45 @@
             pointer-events: none;
         }
 
-        /* ИНТЕРАКТИВНЫЕ ЗОНЫ (НЕВИДИМЫЕ КЛИКАБЕЛЬНЫЕ ОБЛАСТИ БЕЗ СТРЕЛОК) */
+        /* ИНТЕРАКТИВНЫЕ ЗОНЫ НА СЦЕНЕ (БЕЗ СТРЕЛОК) */
         .meeting-zone {
             position: absolute;
             cursor: pointer;
             z-index: 100;
-            background: transparent !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: none !important;
+            background: rgba(212, 175, 55, 0.03); /* Едва заметный фон для отладки */
+            border: 1px dashed rgba(212, 175, 55, 0.2); /* Легкий пунктир зон */
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            font-size: 14px;
+            text-shadow: 0 0 5px #000;
         }
 
-        /* Координаты кликабельных зон комнаты */
-        .zone-table { top: 40vh; left: 40vw; width: 20vw; height: 20vh; }
-        .zone-screen { top: 15vh; left: 25vw; width: 15vw; height: 20vh; }
-        .zone-board { top: 18vh; left: 65vw; width: 15vw; height: 20vh; }
+        .meeting-zone:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Координаты зон на экране */
+        .zone-table { top: 45vh; left: 35vw; width: 30vw; height: 25vh; }
+        .zone-screen { top: 15vh; left: 20vw; width: 20vw; height: 22vh; }
+        .zone-board { top: 15vh; left: 60vw; width: 20vw; height: 22vh; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="meeting-page">
-        <!-- ЧИСТЫЕ НАВИГАЦИОННЫЕ СТРЕЛКИ ВЕРХУ (БЕЗ РАМОК И ПОДЛОЖЕК) -->
+        <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ (БЕЗ РАМОК И ПОДЛОЖЕК) -->
         <div class="notranslate ui-nav-arrows">
-            <!-- Одинарная стрелка — шаг назад в Офис -->
             <a href="office.html" class="back-arrow" title="В Офис">&lt;</a>
-            <!-- Двойная стрелка — переход к Входу -->
             <a href="index.html" class="back-arrow" title="Ко входу в клуб">&lt;&lt;</a>
         </div>
 
-        <!-- ЦЕНТРАЛЬНЫЙ БЛОК: ЧИСТЫЙ АВАТАР И ФЛАГ -->
+        <!-- ЧИСТЫЙ АВАТАР И ФЛАГ ЯЗЫКА -->
         <div class="ui-header-center notranslate">
             <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
             <span id="header-lang-flag" class="lang-flag"></span>
@@ -161,9 +171,17 @@
         <div class="ui-header-right notranslate">GY-GY</div>
 
         <!-- КЛИКАБЕЛЬНЫЕ ЗОНЫ ПЕРЕГОВОРНОЙ (БЕЗ НЕОНОВЫХ СТРЕЛОК) -->
-        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Переговорный стол"></div>
-        <div id="zone-screen" class="meeting-zone zone-screen" onclick="goToModule('screen')" title="Презентация"></div>
-        <div id="zone-board" class="meeting-zone zone-board" onclick="goToModule('board')" title="Идейная доска"></div>
+        <div id="zone-table" class="meeting-zone zone-table" onclick="goToModule('table')" title="Переговорный стол">
+            <span>[ Стол Переговоров ]</span>
+        </div>
+        
+        <div id="zone-screen" class="meeting-zone zone-screen" onclick="goToModule('screen')" title="Презентация">
+            <span>[ Экран ]</span>
+        </div>
+        
+        <div id="zone-board" class="meeting-zone zone-board" onclick="goToModule('board')" title="Идейная доска">
+            <span>[ Доска ]</span>
+        </div>
     </div>
 
     <script>
