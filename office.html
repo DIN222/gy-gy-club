@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club - OFFICE</title> 035
+    <title>GY-GY Club - OFFICE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -48,6 +48,7 @@
             border-bottom: 1px solid var(--gold-border);
             background: #000;
             z-index: 100;
+            flex-shrink: 0;
         }
 
         .ui-nav-arrows {
@@ -105,17 +106,18 @@
 
         /* ОСНОВНАЯ СЕТКА ИЗ 6 ПРЯМОУГОЛЬНИКОВ */
         .office-grid {
-            flex: 1;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            padding: 30px;
+            gap: 15px;
+            padding: 20px;
             align-items: center;
             justify-content: center;
             max-width: 1200px;
             width: 100%;
             margin: 0 auto;
+            height: 45vh;
+            flex-shrink: 0;
         }
 
         .office-card {
@@ -129,7 +131,7 @@
             justify-content: center;
             text-decoration: none;
             color: var(--gold);
-            padding: 20px;
+            padding: 15px;
             transition: all 0.3s ease;
             cursor: pointer;
             user-select: none;
@@ -140,19 +142,109 @@
             background: rgba(212, 175, 55, 0.2);
             border-color: var(--gold);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            transform: translateY(-4px);
+            transform: translateY(-2px);
         }
 
         .card-num {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.5;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             letter-spacing: 2px;
+        }
+
+        /* ЧАТ В НИЖНЕЙ ЧАСТИ */
+        .office-chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--gold-border);
+            background: rgba(5, 5, 10, 0.8);
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .msg-incoming {
+            align-self: flex-start;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold-border);
+            color: var(--gold);
+        }
+
+        .msg-outgoing {
+            align-self: flex-end;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--gold);
+            color: #fff;
+        }
+
+        .msg-time {
+            font-size: 9px;
+            opacity: 0.5;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .chat-input-bar {
+            padding: 10px 15px;
+            background: #000;
+            border-top: 1px solid var(--gold-border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #0a0a0f;
+            border: 1px solid var(--gold-border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--gold);
+        }
+
+        .send-btn {
+            background: var(--gold-bg);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0 16px;
+            border-radius: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: var(--gold);
+            color: #000;
         }
 
         /* Адаптив для мобильных экранов */
@@ -160,11 +252,12 @@
             .office-grid {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(3, 1fr);
-                gap: 12px;
-                padding: 15px;
+                gap: 10px;
+                padding: 10px;
+                height: 40vh;
             }
             .card-title {
-                font-size: 15px;
+                font-size: 13px;
             }
         }
     </style>
@@ -200,8 +293,8 @@
                 <div class="card-title">ДОКУМЕНТЫ</div>
             </a>
 
-            <!-- 3. ПЕРЕГОВОРНАЯ (ПЕРЕХОД В meeting.html) -->
-            <a href="meeting.html" class="office-card">
+            <!-- 3. ПЕРЕГОВОРНАЯ -->
+            <a href="#" class="office-card" onclick="alert('Модуль 3 в разработке')">
                 <div class="card-num">[ 03 ]</div>
                 <div class="card-title">ПЕРЕГОВОРНАЯ</div>
             </a>
@@ -223,6 +316,21 @@
                 <div class="card-num">[ 06 ]</div>
                 <div class="card-title">НАСТРОЙКИ</div>
             </a>
+        </div>
+
+        <!-- НИЖНИЙ ЧАТ ОФИСА -->
+        <div class="office-chat-section">
+            <div id="chat-messages" class="chat-messages">
+                <div class="msg msg-incoming">
+                    Добро пожаловать в Офис GY-GY Club!
+                    <div class="msg-time">System</div>
+                </div>
+            </div>
+            
+            <div class="chat-input-bar">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Напишите сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">➔</button>
+            </div>
         </div>
     </div>
 
@@ -261,6 +369,33 @@
                 flagEl.textContent = langFlags[savedLang.toLowerCase()] || '🌐';
             }
         });
+
+        // Функция отправки сообщений
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg msg-outgoing';
+            msgDiv.innerHTML = `${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
+
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            input.value = '';
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
     </script>
 </body>
 </html>
