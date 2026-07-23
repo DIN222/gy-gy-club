@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.37 - MEETING ROOM</title>
+    <title>GY-GY Club v4.5.38 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -30,7 +30,7 @@
             overflow: hidden; 
         }
 
-        /* ОСНОВНОЙ КОНТЕЙНЕР ЧАТА ПЕРЕГОВОРНОЙ (БЕЗ КАРТИНОК И ФОНА) */
+        /* ОСНОВНОЙ КОНТЕЙНЕР ЧАТА ПЕРЕГОВОРНОЙ */
         .chat-page {
             width: 100vw;
             height: 100vh;
@@ -52,7 +52,7 @@
             z-index: 100;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В ЛЕВОМ ВЕРХНЕМ УГЛУ (БЕЗ РАМОК) */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ СЛЕВА (БЕЗ РАМОК) */
         .ui-nav-arrows {
             display: flex; 
             gap: 20px; 
@@ -81,16 +81,16 @@
             transform: scale(1.1);
         }
 
-        /* ЦЕНТР: ЧИСТЫЙ АВАТАР И ФЛАГ ЯЗЫКА */
+        /* ЦЕНТР: ЧИСТЫЙ АВАТАР С ФЛАГОМ */
         .ui-header-center {
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            gap: 8px;
+            gap: 10px;
             user-select: none;
         }
 
-        /* Аватар без золотых рамок и обводок */
+        /* Чистый аватар без золотых рамок */
         .user-avatar {
             width: 40px; 
             height: 40px; 
@@ -103,10 +103,12 @@
             display: block;
         }
 
+        /* Флаг страны/языка рядом с аватаром */
         .lang-flag {
-            font-size: 20px;
+            font-size: 22px;
             line-height: 1;
             display: inline-block;
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.8));
         }
 
         /* СПРАВА: ЛОГОТИП GY-GY */
@@ -189,7 +191,6 @@
             gap: 10px;
         }
 
-        /* Панель переключения каналов связи */
         .channel-selector {
             display: flex;
             align-items: center;
@@ -277,7 +278,7 @@
         <!-- ОКНО ОБЩЕНИЯ И ЛИНГВО-СМЫСЛОВОГО ОБМЕНА -->
         <div id="chat-messages" class="chat-messages">
             <div class="msg msg-system">
-                [ ЛИНГВО-СМЫСЛОВАЯ ПЕРЕГОВОРНАЯ КОМНАТА v4.5.37 ИНИЦИАЛИЗИРОВАНА ]<br>
+                [ ЛИНГВО-СМЫСЛОВАЯ ПЕРЕГОВОРНАЯ КОМНАТА v4.5.38 ИНИЦИАЛИЗИРОВАНА ]<br>
                 Канал связи: Веб-ЧАТ / Telegram Bridge
             </div>
             
@@ -321,13 +322,15 @@
                 avatarEl.style.display = 'block';
             }
 
-            // 2. Отображение флага выбранного языка
+            // 2. Отображение флага выбранной страны / языка рядом с аватаром
             const langFlags = {
                 'ru': '🇷🇺',
                 'en': '🇬🇧',
                 'zh': '🇨🇳',
                 'es': '🇪🇸',
-                'de': '🇩🇪'
+                'de': '🇩🇪',
+                'fr': '🇫🇷',
+                'it': '🇮🇹'
             };
             
             const savedLang = localStorage.getItem('gygy_lang') || 
@@ -340,7 +343,7 @@
             }
         });
 
-        // Отправка сообщений
+        // Функция отправки сообщений
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
@@ -352,7 +355,6 @@
             const now = new Date();
             const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-            // Создание элемента сообщения
             const msgDiv = document.createElement('div');
             msgDiv.className = 'msg msg-outgoing';
             
@@ -364,12 +366,12 @@
 
             input.value = '';
 
-            // Эмуляция ответа переговорной системы
+            // Ответ системы
             if (isTgSync) {
                 setTimeout(() => {
                     const replyDiv = document.createElement('div');
                     replyDiv.className = 'msg msg-incoming';
-                    replyDiv.innerHTML = `<div class="msg-tg-badge">◄ Telegram Bridge</div>Смысловое сообщение подтверждено и синхронизировано.<div class="msg-time">${timeStr}</div>`;
+                    replyDiv.innerHTML = `<div class="msg-tg-badge">◄ Telegram Bridge</div>Смысловое сообщение подтверждено и транслировано.<div class="msg-time">${timeStr}</div>`;
                     chatMessages.appendChild(replyDiv);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 }, 1000);
