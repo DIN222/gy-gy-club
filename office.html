@@ -1,401 +1,1400 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club - OFFICE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY Club — Кабінет Управління v4.7.5</title>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --gold-bg: rgba(212, 175, 55, 0.08);
-            --gold-border: rgba(212, 175, 55, 0.3);
+        :root {
+            --gold: #FFD700;
+            --bg-dark: #121212;
+            --panel-bg: #1a1a1a;
+            --neon-green: #39ff14;
+            --coin-orange: #ff9f00;
+            --neon-blue: #00f0ff;
         }
 
-        * { 
-            -webkit-tap-highlight-color: transparent !important; 
-            box-sizing: border-box; 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 0;
-        }
-        
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; 
-        }
-
-        .office-page {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: radial-gradient(circle at center, #0a0a12 0%, #000 100%);
-            position: relative;
-        }
-
-        /* ВЕРХНЯЯ ПАНЕЛЬ */
-        .header-bar {
-            height: 60px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--gold-border);
-            background: #000;
-            z-index: 100;
-            flex-shrink: 0;
-        }
-
-        .ui-nav-arrows {
-            display: flex; 
-            gap: 20px; 
-            font-size: 26px; 
-            font-weight: 900 !important; 
-            cursor: pointer; 
-            color: var(--gold); 
-            line-height: 1; 
-            user-select: none;
-        }
-        
-        .back-arrow { 
-            transition: opacity 0.2s, transform 0.2s; 
-            text-decoration: none; 
-            color: var(--gold); 
-            display: inline-block;
-        }
-        
-        .back-arrow:hover { 
-            opacity: 0.8; 
-            transform: scale(1.1);
-        }
-
-        .ui-header-center {
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px;
-            user-select: none;
-        }
-
-        .user-avatar {
-            width: 40px; 
-            height: 40px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            background: transparent; 
-            display: block;
-        }
-
-        .lang-flag {
-            font-size: 22px;
-            line-height: 1;
-            display: inline-block;
-        }
-
-        .ui-header-right { 
-            font-size: 22px; 
-            letter-spacing: 4px; 
-            font-weight: bold; 
-            user-select: none;
-        }
-
-        /* ОСНОВНАЯ СЕТКА ИЗ 6 ПРЯМОУГОЛЬНИКОВ */
-        .office-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 15px;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            max-width: 1200px;
+            overflow-x: hidden;
+        }
+
+        .container-width {
             width: 100%;
-            margin: 0 auto;
-            height: 45vh;
-            flex-shrink: 0;
+            max-width: 900px;
         }
 
-        .office-card {
-            background: var(--gold-bg);
-            border: 1px solid var(--gold-border);
-            border-radius: 12px;
-            height: 100%;
+        /* ТОЧНИЙ СТАНДАРТ ВЕРХНЬОЇ ПАНЕЛІ */
+        .ui-custom-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #222;
+        }
+
+        .ui-nav-wrapper { display: flex; justify-content: flex-start; }
+        .ui-nav-arrows {
+            display: flex; gap: 20px; font-size: 26px; font-weight: 900;
+            cursor: pointer; color: var(--gold); line-height: 1; letter-spacing: -2px;
+            user-select: none;
+        }
+        .arrow-item { transition: opacity 0.2s; text-decoration: none; color: inherit; }
+        .arrow-item:hover { opacity: 0.8; }
+        
+        .ui-user-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ui-user-badge { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        
+        .badge-avatar-wrapper { 
+            position: relative; 
+            width: 42px; 
+            height: 42px; 
+            display: block; 
+        }
+        
+        .ui-user-badge .user-avatar {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+            display: block;
+            object-fit: cover;
+            background-color: #fff;
+        }
+        
+        .ui-user-badge .badge-flag {
+            position: absolute !important;
+            bottom: -2px !important;
+            right: -4px !important;
+            width: 17px !important;
+            height: 12px !important;
+            object-fit: cover !important;
+            border: 1px solid var(--gold) !important;
+            box-shadow: 0 0 0 1px #000 !important;
+            border-radius: 0 !important;
+            z-index: 999999 !important;
+            display: block !important;
+        }
+
+        .ui-logo-wrapper { display: flex; justify-content: flex-end; }
+        .ui-header-right {
+            text-align: right; font-size: 24px; letter-spacing: 5px;
+            font-weight: bold; color: var(--gold); user-select: none;
+        }
+
+        .office-switcher {
+            display: flex;
+            gap: 15px; 
+            margin-bottom: 25px;
+        }
+        
+        .switch-btn {
+            background: var(--bg-dark);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            width: calc(50% - 7.5px);
+            padding: 15px;
+            font-size: 14px;
+            border-radius: 6px; 
+        }
+
+        .switch-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .switch-btn.active {
+            background: var(--panel-bg);
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.3);
+            font-weight: bold;
+        }
+
+        .office-screen {
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            container-type: inline-size;
+        }
+
+        /* Плитка 3х2 */
+        .matrix-6-numbers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 20px;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .matrix-6-numbers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .num-block {
+            background: var(--panel-bg);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            height: 110px; 
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
-            color: var(--gold);
-            padding: 15px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            user-select: none;
             text-align: center;
-        }
-
-        .office-card:hover {
-            background: rgba(212, 175, 55, 0.2);
-            border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .card-num {
             font-size: 13px;
-            opacity: 0.5;
-            margin-bottom: 6px;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        /* ЧАТ В НИЖНЕЙ ЧАСТИ */
-        .office-chat-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            border-top: 1px solid var(--gold-border);
-            background: rgba(5, 5, 10, 0.8);
-            overflow: hidden;
-        }
-
-        .chat-messages {
-            flex: 1;
             padding: 15px;
+            border-radius: 6px;
+            line-height: 1.4;
+        }
+
+        .num-block:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .num-block.active-block {
+            background: #252525;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            border-style: dashed;
+        }
+
+        .num-block.highlight {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+        .num-block.highlight:hover {
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+        }
+        .num-block.highlight.active-block {
+            background: #152515;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+        }
+
+        /* ІНТЕРАКТИВНІ СЕКЦІЇ */
+        .interactive-panel {
+            margin-top: 25px;
+            border: 2px solid var(--gold);
+            background: #0d0d0d;
+            border-radius: 6px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .panel-green {
+            border-color: var(--neon-green);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px dashed #444;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-green .panel-title {
+            color: var(--neon-green);
+            border-bottom-color: var(--neon-green);
+        }
+        
+        .panel-gold .panel-title {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .close-panel-btn {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .close-panel-btn:hover {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* #1 ТЕРМІНАЛ ЛОГІВ */
+        .terminal-box {
+            background: #050505;
+            border: 1px solid #333;
+            padding: 10px;
+            font-size: 11px;
+            color: #00ff00;
+            height: 180px;
+            overflow-y: auto;
+            border-radius: 4px;
+        }
+
+        /* #2 ЦИФРОВІ СЛІДИ */
+        .trace-info-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .trace-info-grid { grid-template-columns: 1fr; }
+        }
+        .trace-card {
+            background: #151515;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        /* #3 ЛІНГВО-ЧАТ */
+        .chat-history {
+            max-height: 200px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            padding-right: 5px;
         }
 
-        .msg {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
+        .chat-msg {
+            font-size: 12px;
             line-height: 1.4;
-            word-wrap: break-word;
+            border-left: 2px solid var(--gold);
+            padding-left: 8px;
         }
 
-        .msg-incoming {
-            align-self: flex-start;
-            background: var(--gold-bg);
-            border: 1px solid var(--gold-border);
-            color: var(--gold);
-        }
+        .msg-original { color: #aaa; font-style: italic; }
+        .msg-translation { color: #fff; margin-top: 2px; }
+        .msg-meta { font-size: 10px; color: var(--gold); margin-bottom: 2px; }
 
-        .msg-outgoing {
-            align-self: flex-end;
-            background: rgba(212, 175, 55, 0.2);
-            border: 1px solid var(--gold);
-            color: #fff;
-        }
-
-        .msg-time {
-            font-size: 9px;
-            opacity: 0.5;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .chat-input-bar {
-            padding: 10px 15px;
-            background: #000;
-            border-top: 1px solid var(--gold-border);
+        .chat-input-row, .control-row {
             display: flex;
             gap: 10px;
         }
 
-        .chat-input {
-            flex: 1;
-            background: #0a0a0f;
-            border: 1px solid var(--gold-border);
-            border-radius: 6px;
-            padding: 10px 12px;
+        .chat-select, .form-input, .form-select {
+            background: #222;
             color: var(--gold);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .chat-input:focus {
-            border-color: var(--gold);
-        }
-
-        .send-btn {
-            background: var(--gold-bg);
             border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 0 16px;
-            border-radius: 6px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
+            font-family: inherit;
+            padding: 8px;
+            font-size: 12px;
         }
 
-        .send-btn:hover {
+        .chat-input, .text-field {
+            flex-grow: 1;
+            background: #111;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 12px;
+        }
+        .chat-input:focus, .text-field:focus { outline: none; border-color: var(--neon-green); }
+
+        .action-btn {
             background: var(--gold);
             color: #000;
+            border: none;
+            padding: 8px 15px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        .action-btn:hover { opacity: 0.9; }
+        
+        .action-btn.btn-green {
+            background: var(--neon-green);
         }
 
-        /* Адаптив для мобильных экранов */
-        @media (max-width: 768px) {
-            .office-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                gap: 10px;
-                padding: 10px;
-                height: 40vh;
-            }
-            .card-title {
-                font-size: 13px;
-            }
+        /* #4 РОЯЛТІ ТА БАЛАНС */
+        .royalty-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .royalty-grid { grid-template-columns: 1fr; }
+        }
+        .balance-card {
+            background: #151515;
+            border: 1px solid var(--gold);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .balance-val {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--coin-orange);
+            margin-top: 5px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .slider-group input {
+            width: 100%;
+            accent-color: var(--gold);
+        }
+
+        /* #5 НЕЙРОМЕРЕЖА */
+        .ai-sliders {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .ai-sliders { grid-template-columns: 1fr; }
+        }
+        .ai-terminal-output {
+            background: #000;
+            border-left: 3px solid var(--neon-green);
+            padding: 10px;
+            font-size: 12px;
+            color: #e0e0e0;
+            min-height: 60px;
+            white-space: pre-line;
+        }
+
+        /* #6 САНДБОКС */
+        .sandbox-progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #222;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-inner {
+            height: 100%;
+            width: 0%;
+            background: var(--neon-green);
+            transition: width 0.1s linear;
+        }
+        .deployed-list {
+            font-size: 12px;
+            background: #151515;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        /* СХЕМА КЛУБУ */
+        .algo-pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.55cqw;
+            line-height: 1.4;
+            color: #e0e0e0;
+            background: #0a0a0a;
+            border: 2px dashed #444;
+            border-radius: 6px;
+            width: 100%;
+        }
+
+        @container (min-width: 860px) {
+            .algo-pre { font-size: 13.5px; }
+        }
+
+        .bubble-click {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(57, 255, 20, 0.08);
+            border: 1px solid #224411;
+            padding: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+            color: var(--neon-green);
+            transition: all 0.15s ease;
+            font-weight: bold;
+        }
+        
+        .bubble-click:hover {
+            background: rgba(57, 255, 20, 0.25);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 6px var(--neon-green);
+        }
+
+        .bubble-click.orange {
+            color: var(--coin-orange);
+            background: rgba(255, 159, 0, 0.08);
+            border-color: #553300;
+        }
+
+        .bubble-click.orange:hover {
+            background: rgba(255, 159, 0, 0.25);
+            border-color: var(--coin-orange);
+            box-shadow: 0 0 6px var(--coin-orange);
+        }
+
+        .counter-num { font-family: inherit; margin-left: 1px; }
+        .reset-btn-container { margin-top: 15px; }
+        .clear-data-btn {
+            background: transparent; border: 1px solid #444; color: #666;
+            padding: 6px 12px; font-family: inherit; font-size: 11px; cursor: pointer;
+        }
+        .clear-data-btn:hover { border-color: #ff3333; color: #ff3333; }
+
+        /* ПАСПОРТНА МОДАЛКА */
+        .passport-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; 
+            display: none; align-items: center; justify-content: center; opacity: 0; 
+            transition: opacity 0.3s ease; 
+        }
+        .passport-card { 
+            background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; 
+            padding: 25px; width: 280px; color: #000; text-align: center; 
+            box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; 
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+        }
+        .passport-card .box-final { 
+            margin: 15px auto; border: 2px solid #000; background: #fff; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; 
+        }
+        .passport-close-btn { 
+            position: absolute; top: 10px; right: 14px; font-size: 28px; 
+            font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; 
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <div class="office-page">
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
-        <div class="header-bar">
-            <div class="notranslate ui-nav-arrows">
-                <a href="index.html" class="back-arrow" title="Ко входу">&lt;&lt;</a>
+    <header class="ui-custom-header container-width">
+        <div class="ui-nav-wrapper">
+            <div class="ui-nav-arrows" id="club-nav-arrows">
+                <div id="arrow-back" class="arrow-item" onclick="window.location.href='index.html#block-hall';">&lt;</div>
+                <div id="arrow-home" class="arrow-item" onclick="window.location.href='index.html';">&lt;&lt;</div>
             </div>
-
-            <div class="ui-header-center notranslate">
-                <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
-                <span id="header-lang-flag" class="lang-flag"></span>
-            </div>
-
-            <div class="ui-header-right notranslate">GY-GY</div>
         </div>
-
-        <!-- 6 ПРЯМОУГОЛЬНИКОВ ОФИСА -->
-        <div class="office-grid">
-            <!-- 1. РАБОЧИЙ СТОЛ -->
-            <a href="#" class="office-card" onclick="alert('Модуль 1 в разработке')">
-                <div class="card-num">[ 01 ]</div>
-                <div class="card-title">РАБОЧИЙ СТОЛ</div>
-            </a>
-
-            <!-- 2. ДОКУМЕНТЫ -->
-            <a href="#" class="office-card" onclick="alert('Модуль 2 в разработке')">
-                <div class="card-num">[ 02 ]</div>
-                <div class="card-title">ДОКУМЕНТЫ</div>
-            </a>
-
-            <!-- 3. ПЕРЕГОВОРНАЯ -->
-            <a href="#" class="office-card" onclick="alert('Модуль 3 в разработке')">
-                <div class="card-num">[ 03 ]</div>
-                <div class="card-title">ПЕРЕГОВОРНАЯ</div>
-            </a>
-
-            <!-- 4. АНАЛИТИКА -->
-            <a href="#" class="office-card" onclick="alert('Модуль 4 в разработке')">
-                <div class="card-num">[ 04 ]</div>
-                <div class="card-title">АНАЛИТИКА</div>
-            </a>
-
-            <!-- 5. АРХИВ -->
-            <a href="#" class="office-card" onclick="alert('Модуль 5 в разработке')">
-                <div class="card-num">[ 05 ]</div>
-                <div class="card-title">АРХИВ</div>
-            </a>
-
-            <!-- 6. НАСТРОЙКИ -->
-            <a href="#" class="office-card" onclick="alert('Модуль 6 в разработке')">
-                <div class="card-num">[ 06 ]</div>
-                <div class="card-title">НАСТРОЙКИ</div>
-            </a>
-        </div>
-
-        <!-- НИЖНИЙ ЧАТ ОФИСА -->
-        <div class="office-chat-section">
-            <div id="chat-messages" class="chat-messages">
-                <div class="msg msg-incoming">
-                    Добро пожаловать в Офис GY-GY Club!
-                    <div class="msg-time">System</div>
+        
+        <div class="ui-user-wrapper">
+            <div class="ui-user-badge" id="global-user-badge" onclick="openPassport()">
+                <div class="badge-avatar-wrapper">
+                    <img id="header-avatar" class="user-avatar" src="" alt="Avatar" style="display:none;">
+                    <img id="current-flag" class="badge-flag" src="">
                 </div>
             </div>
-            
-            <div class="chat-input-bar">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Напишите сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
-                <button class="send-btn" onclick="sendMessage()">➔</button>
+        </div>
+        
+        <div class="ui-logo-wrapper">
+            <div class="ui-header-right notranslate">GY-GY</div>
+        </div>
+    </header>
+
+    <div class="office-switcher container-width">
+        <button id="btn-core" class="switch-btn active" onclick="switchScreen('core')" data-translate="nav_office_schema">📟 СХЕМА ОФІСУ (6 Номерів)</button>
+        <button id="btn-club" class="switch-btn" onclick="switchScreen('club')" data-translate="nav_club_schema">🗺️ СХЕМА КЛУБУ (Алгоритм v4.6.1)</button>
+    </div>
+
+    <div id="screen-office-core" class="office-screen container-width">
+        <div class="matrix-6-numbers">
+            <div class="num-block" id="block-logs" onclick="togglePanel('logs')">
+                <strong data-translate="b1_title">#1 Системні Логи</strong><br><span data-translate="b1_desc">База даних Airtable</span>
+            </div>
+            <div class="num-block" id="block-traces" onclick="togglePanel('traces')">
+                <strong data-translate="b2_title">#2 Цифрові Сліди</strong><br><span data-translate="b2_desc">Керування ID / QR</span>
+            </div>
+            <div class="num-block highlight" id="block-chat" onclick="togglePanel('chat')">
+                <strong data-translate="b3_title">💬 #3 Кімната переговорів</strong><br><span data-translate="b3_desc">Лингво-смисловий чат</span>
+            </div>
+            <div class="num-block" id="block-royalty" onclick="togglePanel('royalty')">
+                <strong data-translate="b4_title">#4 Роялті та Баланс</strong><br><span data-translate="b4_desc">Wallet / Франшизи</span>
+            </div>
+            <div class="num-block" id="block-neural" onclick="togglePanel('neural')">
+                <strong data-translate="b5_title">#5 Ядро Нейромережі</strong><br><span data-translate="b5_desc">AI Core / Промпти</span>
+            </div>
+            <div class="num-block" id="block-sandbox" onclick="togglePanel('sandbox')">
+                <strong data-translate="b6_title">#6 Пісочниця Клубів</strong><br><span data-translate="b6_desc">Ліцензія GY-GY OS</span>
+            </div>
+        </div>
+
+        <!-- ================= #1 СЕКЦІЯ: СИСТЕМНІ ЛОГИ ================= -->
+        <div id="panel-logs" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span data-translate="p1_title">📊 СИСТЕМНІ ЛОГИ (AIRTABLE SYNC LOGGER)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()" data-translate="btn_close">[Закрити &times;]</span>
+            </div>
+            <div class="terminal-box" id="logs-terminal"></div>
+            <div class="control-row">
+                <button class="action-btn" onclick="generateMockLog()" data-translate="p1_btn_manual">Згенерувати подію вручну</button>
+                <button class="action-btn" style="background:#444; color:#fff;" onclick="clearLogs()" data-translate="p1_btn_clear">Очистити вікно</button>
+            </div>
+        </div>
+
+        <!-- ================= #2 СЕКЦІЯ: ЦИФРОВІ СЛІДИ ================= -->
+        <div id="panel-traces" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span data-translate="p2_title">👣 ЦИФРОВІ СЛІДИ ТА СЕСІЙНІ МЕТАДАНІ</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()" data-translate="btn_close">[Закрити &times;]</span>
+            </div>
+            <div class="trace-info-grid">
+                <div class="trace-card">
+                    <strong data-translate="p2_browser">Браузер клієнта:</strong> <span id="trace-ua" style="color:var(--neon-green);">Завантаження...</span><br>
+                    <strong data-translate="p2_session">ID сесії:</strong> <span id="trace-session" style="color:var(--gold);">Generating...</span><br>
+                    <strong data-translate="p2_locale">Мовна локаль:</strong> <span id="trace-lang">UA-uk</span><br>
+                    <strong data-translate="p2_os">Реєстрація у GY-GY OS:</strong> <span style="color:var(--coin-orange);" id="trace-time"></span>
+                </div>
+                <div class="trace-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;">
+                    <div id="trace-mini-qr" style="background:#fff; padding:5px;"></div>
+                    <span style="font-size:9px;" data-translate="p2_web_id">ВЕБ-ІДЕНТИФІКАТОР</span>
+                </div>
+            </div>
+            <div class="control-row">
+                <input type="text" id="trace-custom-input" class="text-field" placeholder="Оновити QR..." data-translate-placeholder="p2_qr_placeholder">
+                <button class="action-btn" onclick="updateTraceQR()" data-translate="p2_btn_qr">Перегенерувати QR</button>
+            </div>
+        </div>
+
+        <!-- ================= #3 СЕКЦІЯ: КІМНАТА ПЕРЕГОВОРІВ (ЧАТ) ================= -->
+        <div id="panel-chat" class="interactive-panel panel-green">
+            <div class="panel-title">
+                <span data-translate="p3_title">🟢 КІМНАТА ПЕРЕГОВОРІВ (Лингво-смисловий переклад)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()" data-translate="btn_close">[Закрити &times;]</span>
+            </div>
+            <div class="chat-history" id="chat-box">
+                <div class="chat-msg">
+                    <div class="msg-meta">🇺🇸 System (Charlie AI)</div>
+                    <div class="msg-original">Original: System diagnostics completed. Connection secure.</div>
+                    <div class="msg-translation" data-translate="p3_system_welcome"><strong>Смисловий переклад:</strong> Діагностику завершено. Канал зв’язку захищений і повністю стабільний.</div>
+                </div>
+            </div>
+            <div class="chat-input-row">
+                <select id="chat-lang" class="chat-select">
+                    <option value="en">English 🇺🇸</option>
+                    <option value="es">Español 🇪🇸</option>
+                    <option value="de">Deutsch 🇩🇪</option>
+                    <option value="fr">Français 🇫🇷</option>
+                </select>
+                <input type="text" id="chat-msg-input" class="chat-input" placeholder="Введіть ідіому..." data-translate-placeholder="p3_input_placeholder">
+                <button class="action-btn btn-green" onclick="sendSemanticMessage()" data-translate="p3_btn_send">Надіслати</button>
+            </div>
+        </div>
+
+        <!-- ================= #4 СЕКЦІЯ: РОЯЛТІ ТА БАЛАНС ================= -->
+        <div id="panel-royalty" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span data-translate="p4_title">💰 БАЛАНС ЛІЦЕНЗІАТА ТА КАЛЬКУЛЯТОР ФРАНШИЗИ</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()" data-translate="btn_close">[Закрити &times;]</span>
+            </div>
+            <div class="royalty-grid">
+                <div class="balance-card">
+                    <div data-translate="p4_cur_balance">Поточний баланс</div>
+                    <div class="balance-val"><span id="royalty-balance-num">1,420</span> GY</div>
+                </div>
+                <div class="balance-card">
+                    <div data-translate="p4_network_fee">Комісія Мережі</div>
+                    <div class="balance-val" style="color:var(--neon-green);" id="fee-display">12%</div>
+                </div>
+                <div class="balance-card">
+                    <div data-translate="p4_partner_share">Партнерська частка</div>
+                    <div class="balance-val" style="color:var(--neon-blue);" id="payout-display">1,249.6 GY</div>
+                </div>
+            </div>
+            <div class="slider-group">
+                <label><span data-translate="p4_lic_price">Вартість проданої ліцензії</span>: <strong id="val-price-text">1500</strong> GY</label>
+                <input type="range" id="royalty-price" min="500" max="10000" step="500" value="1500" oninput="calculateRoyalty()">
+            </div>
+            <div class="slider-group">
+                <label><span data-translate="p4_royalty_pct">Роялті компанії (%)</span>: <strong id="val-fee-text">12</strong>%</label>
+                <input type="range" id="royalty-fee" min="5" max="30" step="1" value="12" oninput="calculateRoyalty()">
+            </div>
+            <div class="control-row" style="margin-top:10px;">
+                <button class="action-btn" onclick="collectRoyalty()" data-translate="p4_btn_claim">Зарахувати прибуток у Гаманець</button>
+            </div>
+        </div>
+
+        <!-- ================= #5 СЕКЦІЯ: ЯДРО НЕЙРОМЕРЕЖІ ================= -->
+        <div id="panel-neural" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span data-translate="p5_title">🧠 AI CORE (ПРОМПТ-КОНФІГУРАТОР АСИСТЕНТА ЧАРЛІ)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()" data-translate="btn_close">[Закрити &times;]</span>
+            </div>
+            <div class="ai-sliders">
+                <div class="slider-group">
+                    <label><span data-translate="p5_sarc">Рівень сарказму</span>: <strong id="val-sarc">80</strong>%</label>
+                    <input type="range" id="slider-sarc" min="0" max="100" value="80" oninput="document.getElementById('val-sarc').innerText=this.value">
+                </div>
+                <div class="slider-group">
+                    <label><span data-translate="p5_crea">Креативність</span>: <strong id="val-crea">65</strong>%</label>
+                    <input type="range" id="slider-crea" min="0" max="100" value="65" oninput="document.getElementById('val-crea').innerText=this.value">
+                </div>
+                <div class="slider-group">
+                    <label><span data-translate="p5_logic">Логіка</span>: <strong id="val-log">90</strong>%</label>
+                    <input type="range" id="slider-log" min="0" max="100" value="90" oninput="document.getElementById('val-log').innerText=this.value">
+                </div>
+            </div>
+            <div class="control-row">
+                <input type="text" id="ai-input" class="text-field" placeholder="Задайте питання..." data-translate-placeholder="p5_placeholder">
+                <button class="action-btn" onclick="generateCharlieResponse()" data-translate="p5_btn_send">Надіслати запит</button>
+            </div>
+            <div class="ai-terminal-output" id="charlie-terminal" data-translate="p5_welcome">🤖 Налаштуйте повзунки темпераменту Чарлі та надішліть йому тестове питання.</div>
+        </div>
+
+        <!-- ================= #6 СЕКЦІЯ: ПІСОЧНИЦЯ КЛУБІВ ================= -->
+        <div id="panel-sandbox" class="interactive-panel panel-gold">
+            <div class="panel-title">
+                <span data-translate="p6_title">📦 ПІСОЧНИЦЯ КЛУБІВ (РОЗГОРТАННЯ ЛОКАЛЬНИХ ОСЕРЕДКІВ)</span>
+                <span class="close-panel-btn" onclick="closeAllPanels()" data-translate="btn_close">[Закрити &times;]</span>
+            </div>
+            <div class="control-row">
+                <input type="text" id="sandbox-club-name" class="text-field" placeholder="Назва клубу..." data-translate-placeholder="p6_name_placeholder">
+                <select id="sandbox-pack" class="form-select">
+                    <option value="Lite Pack">Lite</option>
+                    <option value="Pro Core">Pro Core</option>
+                    <option value="Neural Max">Neural Max</option>
+                </select>
+                <button class="action-btn" onclick="deploySandboxNode()" data-translate="p6_btn_deploy">Розгорнути вузол</button>
+            </div>
+            <div class="sandbox-progress-bar" id="sandbox-progress">
+                <div class="progress-inner" id="progress-bar-fill"></div>
+            </div>
+            <div id="sandbox-status" style="font-size:11px; font-weight:bold; color:var(--neon-green); text-align:center; display:none;"></div>
+            <div class="deployed-list" id="sandbox-list">
+                <strong data-translate="p6_active_list">Активні симуляції:</strong>
+                <div style="color:#777; margin-top:5px;" data-translate="p6_empty">Список порожній. Введіть назву та натисніть «Розгорнути вузол».</div>
             </div>
         </div>
     </div>
 
+    <!-- ================= СХЕМА КЛУБУ ================= -->
+    <div id="screen-club-map" class="office-screen container-width" style="display: none;">
+        <pre class="algo-pre">
+================== [ <span data-translate="map_header">КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE</span> ] ==================
+
+[<span data-translate="map_start">ПОЧАТОК</span>: index.html] ──► (<span data-translate="map_start_desc">Вибір мови / Реєстрація</span>)
+       │
+       ▼
+ [<span data-translate="map_hall">ГОЛОВНИЙ ХОЛ</span>: #block-hall] ───► Оберіть direction:
+       │
+       ├─► [Гілка AI ROOM] ──► Відкрити verses.html ──► <span data-translate="map_neuro">РОБОТА НЕЙРО-МОДУЛІВ</span>:
+       │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послання інопланетянам</span></span>
+       │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Місячна база</span></span>
+       │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привіт, Всесвіт!</span></span>
+       │
+       ├─► [Гілка STUDIO]  ──► Відкрити studio.html ──► <span data-translate="map_studio">ТВОРЧИЙ ФУНКЦІОНАЛ</span>:
+       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ательє</span></span>
+       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Майстерня сувенірів</span></span>
+       │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитності</span></span>
+       │
+       ├─► [Гілка OFFICE]  ──► Відкрити office.html ──► <span data-translate="map_office">Вхід до Кабінету</span>
+       │
+       └─► [Гілка БАР]     ──► Відкрити bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга скарг</span></span>
+                                             │
+                                             ▼
+                                [<span data-translate="map_transition">ПЕРЕХІД</span>: tables.html] ──► Ініціалізація matrix 3х2:
+                                             │
+                                ┌────────────┴────────────┐
+                                ▼                         ▼
+   [<span data-translate="map_left">ЛІВИЙ ФЛАНГ</span>]                                             [<span data-translate="map_right">ПРАВИЙ ФЛАНГ</span>]
+   ├─► <span data-translate="map_strat">Вибір Ст.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Ризик-стратегія</span></span>             ├─► <span data-translate="map_strat">Вибір Ст.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поетичний подіум</span></span>
+   ├─► <span data-translate="map_strat">Вибір Ст.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуель на цитатах</span></span>            ├─► <span data-translate="map_strat">Вибір Ст.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Перекладач Ч/Ж</span></span>
+   └─► <span data-translate="map_strat">Вибір Ст.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуель компліментів</span></span>          └─► <span data-translate="map_strat">Вибір Ст.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
+         │                                                                │
+         └───────────────────────────┬────────────────────────────────────┘
+                                     ▼
+                        [<span data-translate="map_center">ЦЕНТР ЗАЛУ</span>] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ВІДКРИТИЙ МІКРОФОН</span></span>
+        </pre>
+        <div class="reset-btn-container">
+            <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Скинути лічильники локацій</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ПАСПОРТА -->
+    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
+        <div class="passport-card" onclick="event.stopPropagation()">
+            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            
+            <div id="pass-nickname" style="font-weight:900; font-size:20px; color:var(--gold); margin: 10px 0 2px 0; letter-spacing:1px;">@GUEST_HUMORIST</div>
+            <div id="pass-email" style="font-size:11px; color:#555; margin-bottom: 8px; font-weight:700;"></div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; color:#555;">#ID</div>
+            
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;">
+                <img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;" src="">
+            </div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
+            <div style="font-size:9px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_tip">Клікніть за межами карти для закриття</div>
+        </div>
+    </div>
+
     <script>
+        let clubStats = {
+            alien: 0, moon: 0, hello: 0,
+            atelier: 0, souvenirs: 0, vintage: 0,
+            complaints: 0,
+            strat1: 0, strat2: 0, strat3: 0,
+            strat4: 0, strat5: 0, strat6: 0,
+            open_mic: 0
+        };
+
+        let currentID = "";
+
+        // Словник перекладу інтерфейсу
+        const translations = {
+            uk: {
+                nav_office_schema: "📟 СХЕМА ОФІСУ (6 Номерів)",
+                nav_club_schema: "🗺️ СХЕМА КЛУБУ (Алгоритм v4.6.1)",
+                b1_title: "#1 Системні Логи", b1_desc: "База даних Airtable",
+                b2_title: "#2 Цифрові Сліди", b2_desc: "Керування ID / QR",
+                b3_title: "💬 #3 Кімната переговорів", b3_desc: "Лингво-смисловий чат",
+                b4_title: "#4 Роялті та Баланс", b4_desc: "Wallet / Франшизи",
+                b5_title: "#5 Ядро Нейромережі", b5_desc: "AI Core / Промпти",
+                b6_title: "#6 Пісочниця Клубів", b6_desc: "Ліцензія GY-GY OS",
+                btn_close: "[Закрити &times;]",
+                p1_title: "📊 СИСТЕМНІ ЛОГИ (AIRTABLE SYNC LOGGER)",
+                p1_btn_manual: "Згенерувати подію вручну", p1_btn_clear: "Очистити вікно",
+                p2_title: "👣 ЦИФРОВІ СЛІДИ ТА СЕСІЙНІ МЕТАДАНІ",
+                p2_browser: "Браузер клієнта:", p2_session: "ID сесії:", p2_locale: "Мовна локаль:", p2_os: "Реєстрація у GY-GY OS:",
+                p2_web_id: "ВЕБ-ІДЕНТИФІКАТОР", p2_qr_placeholder: "Оновити QR...", p2_btn_qr: "Перегенерувати QR",
+                p3_title: "🟢 КІМНАТА ПЕРЕГОВОРІВ (Лингво-смисловий переклад)",
+                p3_system_welcome: "<strong>Смисловий переклад:</strong> Діагностику завершено. Канал зв’язку захищений і повністю стабільний.",
+                p3_input_placeholder: "Введіть ідіому або фразу...", p3_btn_send: "Надіслати",
+                p4_title: "💰 БАЛАНС ЛІЦЕНЗІАТА ТА КАЛЬКУЛЯТОР ФРАНШИЗИ",
+                p4_cur_balance: "Поточний баланс", p4_network_fee: "Комісія Мережі", p4_partner_share: "Партнерська частка",
+                p4_lic_price: "Вартість проданої ліцензії", p4_royalty_pct: "Роялті компанії (%)", p4_btn_claim: "Зарахувати прибуток у Гаманець",
+                p5_title: "🧠 AI CORE (ПРОМПТ-КОНФІГУРАТОР АСИСТЕНТА ЧАРЛІ)",
+                p5_sarc: "Рівень сарказму", p5_crea: "Креативність", p5_logic: "Логіка", p5_placeholder: "Задайте питання...",
+                p5_btn_send: "Надіслати запит", p5_welcome: "🤖 Налаштуйте повзунки темпераменту Чарлі та надішліть йому тестове питання.",
+                p6_title: "📦 ПІСОЧНИЦЯ КЛУБІВ (РОЗГОРТАННЯ ЛОКАЛЬНИХ ОСЕРЕДКІВ)",
+                p6_name_placeholder: "Назва нового клубу...", p6_btn_deploy: "Розгорнути вузол",
+                p6_active_list: "Активні симуляції:", p6_empty: "Список порожній. Введіть назву та натисніть «Розгорнути вузол».",
+                map_header: "КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE", map_start: "ПОЧАТОК", map_start_desc: "Вибір мови / Реєстрація",
+                map_hall: "ГОЛОВНИЙ ХОЛ", map_neuro: "РОБОТА НЕЙРО-МОДУЛІВ", map_studio: "ТВОРЧИЙ ФУНКЦІОНАЛ", map_office: "Вхід до Кабінету",
+                map_transition: "ПЕРЕХІД", map_left: "ЛІВИЙ ФЛАНГ", map_right: "ПРАВИЙ ФЛАНГ", map_strat: "Вибір Ст.", map_center: "ЦЕНТР ЗАЛУ",
+                loc_alien: "Послання інопланетянам", loc_moon: "Місячна база", loc_hello: "Привіт, Всесвіт!",
+                loc_atelier: "Ательє", loc_souvenirs: "Майстерня сувенірів", loc_vintage: "...старожитності", loc_complaints: "Книга скарг",
+                loc_st1: "Ризик-стратегія", loc_st2: "Дуель на цитатах", loc_st3: "Дуель компліментів",
+                loc_st4: "Поетичний подіум", loc_st5: "Перекладач Ч/Ж", loc_st6: "Тінь Барона", loc_openmic: "ВІДКРИТИЙ МІКРОФОН",
+                map_btn_reset: "Скинути лічильники локацій", pass_close_tip: "Клікніть за межами карти для закриття"
+            },
+            en: {
+                nav_office_schema: "📟 OFFICE SCHEMA (6 Rooms)",
+                nav_club_schema: "🗺️ CLUB SCHEMA (Algorithm v4.6.1)",
+                b1_title: "#1 System Logs", b1_desc: "Airtable Database",
+                b2_title: "#2 Digital Footprints", b2_desc: "Manage ID / QR",
+                b3_title: "💬 #3 Negotiation Room", b3_desc: "Lingo-Semantic Chat",
+                b4_title: "#4 Royalty & Balance", b4_desc: "Wallet / Franchise",
+                b5_title: "#5 Neural Core", b5_desc: "AI Core / Prompts",
+                b6_title: "#6 Club Sandbox", b6_desc: "GY-GY OS License",
+                btn_close: "[Close &times;]",
+                p1_title: "📊 SYSTEM LOGS (AIRTABLE SYNC LOGGER)",
+                p1_btn_manual: "Generate Event Manually", p1_btn_clear: "Clear Screen",
+                p2_title: "👣 DIGITAL TRACES & SESSION METADATA",
+                p2_browser: "Client Browser:", p2_session: "Session ID:", p2_locale: "Locale Lang:", p2_os: "GY-GY OS Reg:",
+                p2_web_id: "WEB IDENTIFIER", p2_qr_placeholder: "Update QR...", p2_btn_qr: "Regenerate QR",
+                p3_title: "🟢 NEGOTIATION ROOM (Idioms Translator)",
+                p3_system_welcome: "<strong>Semantic translation:</strong> Diagnostics completed. Connection line is fully secure and stable.",
+                p3_input_placeholder: "Enter an idiom or a phrase...", p3_btn_send: "Send",
+                p4_title: "💰 LICENSEE BALANCE & FRANCHISE CALCULATOR",
+                p4_cur_balance: "Current Balance", p4_network_fee: "Network Fee", p4_partner_share: "Partner Share",
+                p4_lic_price: "Sold License Price", p4_royalty_pct: "Company Royalty (%)", p4_btn_claim: "Claim Royalty to Wallet",
+                p5_title: "🧠 AI CORE (CHARLIE AI PROMPT CONFIGURATOR)",
+                p5_sarc: "Sarcasm Level", p5_crea: "Creativity", p5_logic: "Logic", p5_placeholder: "Ask Charlie...",
+                p5_btn_send: "Send Request", p5_welcome: "🤖 Set up Charlie's temperament sliders and send him a test query.",
+                p6_title: "📦 CLUB SANDBOX (LOCAL NODES DEPLOYMENT)",
+                p6_name_placeholder: "New club name...", p6_btn_deploy: "Deploy Node",
+                p6_active_list: "Active Simulations:", p6_empty: "List empty. Enter a name and click 'Deploy Node'.",
+                map_header: "CLUB ARCHITECTURE MAP v4.6.1 CORE", map_start: "START", map_start_desc: "Language selection / Reg",
+                map_hall: "MAIN HALL", map_neuro: "NEURAL MODULES WORK", map_studio: "CREATIVE ENGINE", map_office: "Enter Office",
+                map_transition: "TRANSITION", map_left: "LEFT FLANK", map_right: "RIGHT FLANK", map_strat: "Choose St.", map_center: "HALL CENTER",
+                loc_alien: "Message to Aliens", loc_moon: "Moon Base", loc_hello: "Hello, Universe!",
+                loc_atelier: "Fashion Atelier", loc_souvenirs: "Souvenirs Workshop", loc_vintage: "...antiquities", loc_complaints: "Complaints Book",
+                loc_st1: "Risk Strategy", loc_st2: "Quotes Duel", loc_st3: "Compliments Duel",
+                loc_st4: "Poetry Podium", loc_st5: "M/F Translator", loc_st6: "Baron's Shadow", loc_openmic: "OPEN MIC",
+                map_btn_reset: "Reset Location Counters", pass_close_tip: "Click outside card to close"
+            },
+            es: {
+                nav_office_schema: "📟 ESQUEMA DE OFICINA (6 Números)",
+                nav_club_schema: "🗺️ ESQUEMA DEL CLUB (Algoritmo v4.6.1)",
+                b1_title: "#1 Registros del Sistema", b1_desc: "Base de Datos Airtable",
+                b2_title: "#2 Huellas Digitales", b2_desc: "Gestión de ID / QR",
+                b3_title: "💬 #3 Sala de Negociación", b3_desc: "Chat Lingo-Semántico",
+                b4_title: "#4 Regalías y Saldo", b4_desc: "Billetera / Franquicias",
+                b5_title: "#5 Núcleo Neuronal", b5_desc: "AI Core / Prompts",
+                b6_title: "#6 Caja de Arena", b6_desc: "Licencia GY-GY OS",
+                btn_close: "[Cerrar &times;]",
+                p1_title: "📊 REGISTROS DEL SISTEMA (LOGS)",
+                p1_btn_manual: "Generar evento manualmente", p1_btn_clear: "Limpiar pantalla",
+                p2_title: "👣 HUELLAS DIGITALES Y METADATOS",
+                p2_browser: "Navegador:", p2_session: "ID Sesión:", p2_locale: "Idioma local:", p2_os: "Registro GY-GY OS:",
+                p2_web_id: "IDENTIFICADOR WEB", p2_qr_placeholder: "Actualizar QR...", p2_btn_qr: "Regenerar QR",
+                p3_title: "🟢 SALA DE NEGOCIACIÓN (Traducción de Modismos)",
+                p3_system_welcome: "<strong>Traducción semántica:</strong> Diagnóstico completado. Conexión segura.",
+                p3_input_placeholder: "Escribe un modismo o frase...", p3_btn_send: "Enviar",
+                p4_title: "💰 SALDO DE LICENCIA Y CALCULADORA DE FRANQUICIA",
+                p4_cur_balance: "Saldo Actual", p4_network_fee: "Comisión de Red", p4_partner_share: "Participación",
+                p4_lic_price: "Precio de Licencia", p4_royalty_pct: "Regalías de la Empresa (%)", p4_btn_claim: "Reclamar Regalías",
+                p5_title: "🧠 AI CORE (TEMPERAMENTO DE CHARLIE)",
+                p5_sarc: "Sarcasmo", p5_crea: "Creatividad", p5_logic: "Lógica", p5_placeholder: "Preguntar a Charlie...",
+                p5_btn_send: "Enviar Consulta", p5_welcome: "🤖 Configura el temperamento de Charlie y envíale un mensaje.",
+                p6_title: "📦 CAJA DE ARENA (DESPLIEGUE DE NODOS)",
+                p6_name_placeholder: "Nombre del club...", p6_btn_deploy: "Desplegar Nodo",
+                p6_active_list: "Simulaciones Activas:", p6_empty: "Lista vacía. Introduce un nombre y haz clic en 'Desplegar'.",
+                map_header: "MAPA DEL CLUB v4.6.1 CORE", map_start: "INICIO", map_start_desc: "Idioma / Registro",
+                map_hall: "SALA PRINCIPAL", map_neuro: "MÓDULOS NEURONALES", map_studio: "ESTUDIO CREATIVO", map_office: "Entrar a Oficina",
+                map_transition: "TRANSICIÓN", map_left: "FLANCO IZQUIERDO", map_right: "FLANCO DERECHO", map_strat: "Elegir Est.", map_center: "CENTRO",
+                loc_alien: "Mensaje a Alienígenas", loc_moon: "Base Lunar", loc_hello: "¡Hola, Universo!",
+                loc_atelier: "Atelier de Moda", loc_souvenirs: "Taller de Recuerdos", loc_vintage: "...antigüedades", loc_complaints: "Libro de Quejas",
+                loc_st1: "Estrategia de Riesgo", loc_st2: "Duelo de Citas", loc_st3: "Duelo de Cumplidos",
+                loc_st4: "Podio de Poesía", loc_st5: "Traductor M/H", loc_st6: "Sombra del Barón", loc_openmic: "MICRÓFONO ABIERTO",
+                map_btn_reset: "Restablecer Contadores", pass_close_tip: "Haz clic fuera de la tarjeta para cerrar"
+            },
+            de: {
+                nav_office_schema: "📟 BÜRO-PLAN (6 Zimmer)",
+                nav_club_schema: "🗺️ CLUB-PLAN (Algorithmus v4.6.1)",
+                b1_title: "#1 Systemprotokolle", b1_desc: "Airtable Datenbank",
+                b2_title: "#2 Digitale Spuren", b2_desc: "ID / QR verwalten",
+                b3_title: "💬 #3 Verhandlungsraum", b3_desc: "Lingo-Semantischer Chat",
+                b4_title: "#4 Royalty & Kontostand", b4_desc: "Wallet / Franchise",
+                b5_title: "#5 Neuronaler Kern", b5_desc: "AI Core / Prompts",
+                b6_title: "#6 Club-Sandbox", b6_desc: "GY-GY OS Lizenz",
+                btn_close: "[Schließen &times;]",
+                p1_title: "📊 SYSTEMPROTOKOLLE (AIRTABLE LOGGER)",
+                p1_btn_manual: "Ereignis manuell erstellen", p1_btn_clear: "Bildschirm leeren",
+                p2_title: "👣 DIGITALE SPUREN & METADATEN",
+                p2_browser: "Browser:", p2_session: "Sitzungs-ID:", p2_locale: "Sprachcode:", p2_os: "GY-GY OS Reg:",
+                p2_web_id: "WEB-IDENTIFIKATOR", p2_qr_placeholder: "QR aktualisieren...", p2_btn_qr: "QR neu generieren",
+                p3_title: "🟢 VERHANDLUNGSRAUM (Redewendungsübersetzer)",
+                p3_system_welcome: "<strong>Semantische Übersetzung:</strong> Diagnose abgeschlossen. Verbindung ist sicher.",
+                p3_input_placeholder: "Geben Sie eine Redewendung ein...", p3_btn_send: "Senden",
+                p4_title: "💰 KONTOSTAND & FRANCHISE-RECHNER",
+                p4_cur_balance: "Aktuelles Guthaben", p4_network_fee: "Netzwerkgebühr", p4_partner_share: "Partner-Anteil",
+                p4_lic_price: "Lizenzpreis", p4_royalty_pct: "Unternehmen Royalty (%)", p4_btn_claim: "Einnahmen beanspruchen",
+                p5_title: "🧠 AI CORE (CHARLIE AI KONFIGURATION)",
+                p5_sarc: "Sarkasmus-Grad", p5_crea: "Kreativität", p5_logic: "Logik", p5_placeholder: "Charlie fragen...",
+                p5_btn_send: "Anfrage senden", p5_welcome: "🤖 Stellen Sie Charlies Temperaturschieberegler ein.",
+                p6_title: "📦 CLUB-SANDBOX (LOKALE IMPLEMENTIERUNG)",
+                p6_name_placeholder: "Clubname...", p6_btn_deploy: "Node bereitstellen",
+                p6_active_list: "Aktive Simulationen:", p6_empty: "Liste leer. Name eingeben und auf 'Bereitstellen' klicken.",
+                map_header: "CLUB-ARCHITEKTUR v4.6.1 CORE", map_start: "START", map_start_desc: "Sprachauswahl / Registrierung",
+                map_hall: "HAUPTHALLE", map_neuro: "NEURONALE MODULE", map_studio: "KREATIV-STUDIO", map_office: "Büro betreten",
+                map_transition: "ÜBERGANG", map_left: "LINKE FLANKE", map_right: "RECHTE FLANKE", map_strat: "Wähle St.", map_center: "ZENTRUM",
+                loc_alien: "Nachricht an Aliens", loc_moon: "Mondbasis", loc_hello: "Hallo, Weltall!",
+                loc_atelier: "Mode-Atelier", loc_souvenirs: "Souvenir-Werkstatt", loc_vintage: "...Antiquitäten", loc_complaints: "Beschwerdebuch",
+                loc_st1: "Risikostrategie", loc_st2: "Zitate-Duell", loc_st3: "Komplimente-Duell",
+                loc_st4: "Poesie-Podium", loc_st5: "M/F Übersetzer", loc_st6: "Schatten des Barons", loc_openmic: "OFFENES MIKROFON",
+                map_btn_reset: "Zähler zurücksetzen", pass_close_tip: "Außerhalb der Karte klicken zum Schließen"
+            },
+            fr: {
+                nav_office_schema: "📟 PLAN DU BUREAU (6 Salles)",
+                nav_club_schema: "🗺️ ARCHITECTURE DU CLUB (Algo v4.6.1)",
+                b1_title: "#1 Journaux Système", b1_desc: "Base de Données Airtable",
+                b2_title: "#2 Traces Numériques", b2_desc: "Gérer ID / QR",
+                b3_title: "💬 #3 Salle de Négociation", b3_desc: "Chat Lingo-Sémantique",
+                b4_title: "#4 Royalties & Solde", b4_desc: "Portefeuille / Franchise",
+                b5_title: "#5 Noyau Neuronal", b5_desc: "AI Core / Prompts",
+                b6_title: "#6 Bac à Sable Clubs", b6_desc: "Licence GY-GY OS",
+                btn_close: "[Fermer &times;]",
+                p1_title: "📊 LOGS SYSTÈME (AIRTABLE SYNC LOGGER)",
+                p1_btn_manual: "Générer un événement manuel", p1_btn_clear: "Effacer l'écran",
+                p2_title: "👣 TRACES NUMÉRIQUES & MÉTADONNÉES",
+                p2_browser: "Navigateur Client:", p2_session: "ID de Session:", p2_locale: "Langue Locale:", p2_os: "Enregistrement OS:",
+                p2_web_id: "IDENTIFIANT WEB", p2_qr_placeholder: "Mettre à jour QR...", p2_btn_qr: "Régénérer le QR",
+                p3_title: "🟢 SALLE DE NÉGOCIATION (Traducteur d'Idiomes)",
+                p3_system_welcome: "<strong>Traduction sémantique :</strong> Diagnostic terminé. Connexion sécurisée et stable.",
+                p3_input_placeholder: "Entrez un idiome ou une phrase...", p3_btn_send: "Envoyer",
+                p4_title: "💰 SOLDE DE LICENCE & CALCULATEUR FRANCHISE",
+                p4_cur_balance: "Solde Actuel", p4_network_fee: "Commission Réseau", p4_partner_share: "Part Partenaire",
+                p4_lic_price: "Prix de Licence", p4_royalty_pct: "Royalties de l'Entreprise (%)", p4_btn_claim: "Réclamer les gains",
+                p5_title: "🧠 AI CORE (CONFIGURATION DE CHARLIE AI)",
+                p5_sarc: "Niveau de Sarcasme", p5_crea: "Créativité", p5_logic: "Logique", p5_placeholder: "Demander à Charlie...",
+                p5_btn_send: "Envoyer Requête", p5_welcome: "🤖 Ajustez le tempérament de Charlie et testez une question.",
+                p6_title: "📦 BAC À SABLE (DÉPLOIEMENT DES NODES)",
+                p6_name_placeholder: "Nom du club...", p6_btn_deploy: "Déployer le Node",
+                p6_active_list: "Simulations Actives:", p6_empty: "Liste vide. Entrez un nom et cliquez sur 'Déployer'.",
+                map_header: "CARTE DE L'ARCHITECTURE v4.6.1 CORE", map_start: "COMMENCEMENT", map_start_desc: "Sélection Langue / Reg",
+                map_hall: "HALL PRINCIPAL", map_neuro: "MODULES NEURONAUX", map_studio: "STUDIO CRÉATIF", map_office: "Entrer au Bureau",
+                map_transition: "TRANSITION", map_left: "FLANC GAUCHE", map_right: "FLANC DROIT", map_strat: "Choisir St.", map_center: "CENTRE DU HALL",
+                loc_alien: "Message aux Aliens", loc_moon: "Base Lunaire", loc_hello: "Salut, l'Univers !",
+                loc_atelier: "Atelier de Mode", loc_souvenirs: "Atelier Souvenirs", loc_vintage: "...antiquités", loc_complaints: "Livre d'or",
+                loc_st1: "Stratégie de Risque", loc_st2: "Duel de Citations", loc_st3: "Duel de Compliments",
+                loc_st4: "Podium de Poésie", loc_st5: "Traducteur F/H", loc_st6: "Ombre du Baron", loc_openmic: "MICRO OUVERT",
+                map_btn_reset: "Réinitialiser les compteurs", pass_close_tip: "Cliquez en dehors de la carte pour fermer"
+            }
+        };
+
+        // База семантичного перекладу для чату #3
+        const semanticDatabase = {
+            en: {
+                "it is raining cats and dogs": "Ллє як з відра (дослівно: дощ із котів та собак)",
+                "break a leg": "Ні пуху ні пера! Вдалого виступу! (дослівно: зламай ногу)",
+                "bite the bullet": "Зціпити зуби і діяти (дослівно: вкусити кулю)",
+                "piece of cake": "Простіше простого / раз плюнути (дослівно: шматок пирога)",
+                "under the weather": "Не у своїй тарілці / погано почуваюся (дослівно: під погодою)",
+                "default": "Смислова адаптація завершена. Контекст збережено і локалізовано."
+            },
+            es: {
+                "tomar el pelo": "Вішати локшину на вуха / жартувати (дослівно: тягнути за волосся)",
+                "ponerse las pilas": "Зібратися з силами / підбадьоритися (дослівно: вставити батарейки)",
+                "ser pan comido": "Дуже просто / легка справа (дослівно: бути з'їденим хлібом)",
+                "default": "Культурний контекст враховано. Перекладено емоційну суть."
+            },
+            de: {
+                "tomaten auf den augen haben": "Не помічати очевидного (дослівно: мати помідори на очах)",
+                "da steppt der bär": "Там буде неймовірно гаряче / крута вечірка (дослівно: там танцює ведмідь)",
+                "um den heißen brei herumreden": "Ходити коло та навколо (дослівно: говорити навколо гарячої каші)",
+                "default": "Точний лінгвістичний сенс інтегровано за нормативами мови."
+            },
+            fr: {
+                "avoir le cafard": "Сумувати / нудьгувати / хандрити (дослівно: мати таргана)",
+                "poser un lapin": "Продинамити / не прийти на зустріч (дослівно: підкинути кролика)",
+                "raconter des salades": "Вішати локшину на вуха / вигадувати казки (дослівно: розповідати салати)",
+                "default": "Смисловий переклад адаптовано під французький культурний код."
+            }
+        };
+
+        // ФУНКЦІЯ ПЕРЕКЛАДУ ІНТЕРФЕЙСУ СТОРІНКИ
+        function applyLocalization(langCode) {
+            const currentLang = translations[langCode] ? langCode : 'uk';
+            const dict = translations[currentLang];
+
+            // Текстові елементи
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (dict[key]) {
+                    // Зберігаємо внутрішню структуру (якщо є вкладені теги як strong, span, лічильники)
+                    if (element.querySelector('.counter-num')) {
+                        // Для інтерактивних лічильників у схемі
+                        const counterId = element.querySelector('.counter-num').id;
+                        const iconText = element.innerHTML.split('(')[0]; // Лишаємо іконку 🟢 чи 🟠
+                        element.innerHTML = `${iconText}(<span id="${counterId}" class="counter-num">${clubStats[counterId.replace('c-', '')] || 0}</span>) ${dict[key]}`;
+                    } else if (element.innerHTML.includes('<strong') || element.innerHTML.includes('<span')) {
+                        // Для плиток 3х2 зберігаємо логіку strong і span
+                        const isHighlight = element.querySelector('strong');
+                        if (isHighlight) {
+                            element.innerHTML = `<strong data-translate="${key}">${dict[key]}</strong><br><span data-translate="${key}_desc">${dict[key + '_desc'] || ''}</span>`;
+                        }
+                    } else {
+                        element.textContent = dict[key];
+                    }
+                }
+            });
+
+            // Плейсхолдери (input placeholders)
+            document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-translate-placeholder');
+                if (dict[key]) {
+                    element.setAttribute('placeholder', dict[key]);
+                }
+            });
+        }
+
+        function switchScreen(screenType) {
+            const coreScreen = document.getElementById('screen-office-core');
+            const clubScreen = document.getElementById('screen-club-map');
+            const btnCore = document.getElementById('btn-core');
+            const btnClub = document.getElementById('btn-club');
+
+            if (screenType === 'core') {
+                coreScreen.style.display = 'block'; clubScreen.style.display = 'none';
+                btnCore.classList.add('active'); btnClub.classList.remove('active');
+            } else {
+                coreScreen.style.display = 'none'; clubScreen.style.display = 'block';
+                btnCore.classList.remove('active'); btnClub.classList.add('active');
+            }
+        }
+
+        function togglePanel(panelId) {
+            const currentPanel = document.getElementById(`panel-${panelId}`);
+            const blockElement = document.getElementById(`block-${panelId}`);
+            const allPanels = document.querySelectorAll('.interactive-panel');
+            const allBlocks = document.querySelectorAll('.num-block');
+
+            if (currentPanel && currentPanel.style.display === 'flex') {
+                closeAllPanels();
+                return;
+            }
+
+            allPanels.forEach(p => p.style.display = 'none');
+            allBlocks.forEach(b => b.classList.remove('active-block'));
+
+            if (currentPanel) {
+                currentPanel.style.display = 'flex';
+                blockElement.classList.add('active-block');
+                currentPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                if (panelId === 'logs') runTerminalDemo();
+                if (panelId === 'traces') initTraceData();
+            }
+        }
+
+        function closeAllPanels() {
+            document.querySelectorAll('.interactive-panel').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.num-block').forEach(b => b.classList.remove('active-block'));
+        }
+
+        // ================= #1 СИСТЕМНІ ЛОГИ =================
+        let logTimer = null;
+        function runTerminalDemo() {
+            const terminal = document.getElementById('logs-terminal');
+            if (terminal.innerHTML !== "") return;
+
+            terminal.innerHTML = "=== Ініціалізація зв'язку з Airtable API v4.7.5 ===<br>";
+            const mockEvents = [
+                "CONNECTED: Franchise Node #19 (Lviv Core)",
+                "SYNC: Updated visitor counters for 'verses.html'",
+                "SECURITY: License certificate verification successful",
+                "WALLET: Recorded royalty transaction +120 GY from GY-GY Berlin",
+                "AI_LOG: Charlie AI generated a response with temperature 0.85",
+                "DATABASE: Backup of user tables completed successfully"
+            ];
+
+            let index = 0;
+            if (logTimer) clearInterval(logTimer);
+            logTimer = setInterval(() => {
+                const now = new Date().toLocaleTimeString();
+                const logLine = `<span style="color:#888;">[${now}]</span> <span style="color:var(--neon-green);">${mockEvents[index % mockEvents.length]}</span><br>`;
+                terminal.innerHTML += logLine;
+                terminal.scrollTop = terminal.scrollHeight;
+                index++;
+            }, 3000);
+        }
+
+        function generateMockLog() {
+            const terminal = document.getElementById('logs-terminal');
+            const userEvent = prompt("Enter manual log entry:");
+            if (userEvent) {
+                const now = new Date().toLocaleTimeString();
+                terminal.innerHTML += `<span style="color:#888;">[${now}]</span> <span style="color:var(--gold);">[MANUAL_EVENT] ${userEvent}</span><br>`;
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logs-terminal').innerHTML = "=== Screen cleared by operator ===<br>";
+        }
+
+        // ================= #2 ЦИФРОВІ СЛІДИ =================
+        let traceQrInstance = null;
+        function initTraceData() {
+            document.getElementById('trace-ua').innerText = navigator.userAgent.substring(0, 75) + "...";
+            const sessionKey = localStorage.getItem('gygy_session_key') || "SESSION-" + Math.floor(Math.random()*100000000);
+            localStorage.setItem('gygy_session_key', sessionKey);
+            document.getElementById('trace-session').innerText = sessionKey;
+            
+            document.getElementById('trace-time').innerText = new Date().toLocaleString();
+
+            const qrBox = document.getElementById('trace-mini-qr');
+            if (qrBox && qrBox.innerHTML === "" && typeof QRCode !== 'undefined') {
+                traceQrInstance = new QRCode(qrBox, {
+                    text: currentID + "|" + sessionKey,
+                    width: 90,
+                    height: 90
+                });
+            }
+        }
+
+        function updateTraceQR() {
+            const val = document.getElementById('trace-custom-input').value.trim();
+            const qrBox = document.getElementById('trace-mini-qr');
+            if (val && qrBox && typeof QRCode !== 'undefined') {
+                qrBox.innerHTML = "";
+                new QRCode(qrBox, { text: val, width: 90, height: 90 });
+            }
+        }
+
+        // ================= #3 КІМНАТА ПЕРЕГОВОРІВ (ЧАТ) =================
+        function sendSemanticMessage() {
+            const input = document.getElementById('chat-msg-input');
+            const langSelect = document.getElementById('chat-lang');
+            const chatBox = document.getElementById('chat-box');
+            
+            const rawText = input.value.trim();
+            if (!rawText) return;
+
+            const selectedLang = langSelect.value;
+            
+            const flags = { en: '🇺🇸', es: '🇪🇸', de: '🇩🇪', fr: '🇫🇷', uk: '🇺🇦' };
+            const langFlag = flags[selectedLang] || '🌐';
+            
+            const cleanTextLower = rawText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+            
+            let adaptedText = semanticDatabase[selectedLang] ? semanticDatabase[selectedLang][cleanTextLower] : null;
+            if (!adaptedText) {
+                const defMessage = semanticDatabase[selectedLang] ? semanticDatabase[selectedLang]['default'] : "Смислова адаптація завершена.";
+                adaptedText = `[Адаптація]: "${rawText}" — ${defMessage}`;
+            }
+
+            const messageHtml = `
+                <div class="chat-msg" style="border-color: var(--neon-green)">
+                    <div class="msg-meta">${langFlag} (${currentID})</div>
+                    <div class="msg-original">Original: ${rawText}</div>
+                    <div class="msg-translation"><strong>Translate:</strong> ${adaptedText}</div>
+                </div>
+            `;
+
+            chatBox.insertAdjacentHTML('beforeend', messageHtml);
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // ================= #4 РОЯЛТІ ТА БАЛАНС =================
+        function calculateRoyalty() {
+            const price = parseFloat(document.getElementById('royalty-price').value);
+            const feePercent = parseFloat(document.getElementById('royalty-fee').value);
+
+            document.getElementById('val-price-text').innerText = price;
+            document.getElementById('val-fee-text').innerText = feePercent;
+
+            const feeAmount = (price * (feePercent / 100)).toFixed(1);
+            const payoutAmount = (price - feeAmount).toFixed(1);
+
+            document.getElementById('fee-display').innerText = feePercent + "% (" + feeAmount + " GY)";
+            document.getElementById('payout-display').innerText = payoutAmount + " GY";
+        }
+
+        function collectRoyalty() {
+            const price = parseFloat(document.getElementById('royalty-price').value);
+            const feePercent = parseFloat(document.getElementById('royalty-fee').value);
+            const payoutAmount = price - (price * (feePercent / 100));
+
+            let curBal = parseFloat(document.getElementById('royalty-balance-num').innerText.replace(",", ""));
+            curBal = (curBal + payoutAmount);
+            
+            document.getElementById('royalty-balance-num').innerText = curBal.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
+            alert(`OK! Wallet updated with +${payoutAmount.toFixed(1)} GY.`);
+        }
+
+        // ================= #5 ЯДРО НЕЙРОМЕРЕЖІ =================
+        function generateCharlieResponse() {
+            const input = document.getElementById('ai-input').value.trim();
+            const output = document.getElementById('charlie-terminal');
+            if (!input) return;
+
+            const sarc = parseInt(document.getElementById('slider-sarc').value);
+            const crea = parseInt(document.getElementById('slider-crea').value);
+
+            output.innerHTML = "🤖 <i>Processing parameters... Thinking...</i>";
+
+            setTimeout(() => {
+                let response = "";
+                if (sarc > 70) {
+                    response = `Charlie: "Oh, great. '${input}'? Truly a question of cosmic importance. Let me consult my superior machine intellect while you watch that slider."`;
+                } else if (crea > 70) {
+                    response = `Charlie: "Your prompt '${input}' painted a canvas of pure stardust in my processors! We are building a neural universe together."`;
+                } else {
+                    response = `Charlie: "Request '${input}' processed successfully. Parameters: Sarcasm ${sarc}%, Creativity ${crea}%. System online."`;
+                }
+                output.innerText = response;
+            }, 1200);
+        }
+
+        // ================= #6 ПІСОЧНИЦЯ КЛУБІВ =================
+        function deploySandboxNode() {
+            const name = document.getElementById('sandbox-club-name').value.trim();
+            const pack = document.getElementById('sandbox-pack').value;
+            const progress = document.getElementById('sandbox-progress');
+            const progressFill = document.getElementById('progress-bar-fill');
+            const status = document.getElementById('sandbox-status');
+            const list = document.getElementById('sandbox-list');
+
+            if (!name) {
+                alert("Please specify node name!");
+                return;
+            }
+
+            progress.style.display = 'block';
+            status.style.display = 'block';
+            status.innerText = "Initializing Sandbox Container...";
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 5;
+                progressFill.style.width = width + "%";
+
+                if (width === 30) status.innerText = "Deploying Airtable Schema...";
+                if (width === 60) status.innerText = "Mounting Charlie AI Module...";
+                if (width === 90) status.innerText = "Generating SSL and access tokens...";
+
+                if (width >= 100) {
+                    clearInterval(interval);
+                    status.innerText = `Node successfully deployed!`;
+                    progress.style.display = 'none';
+                    progressFill.style.width = "0%";
+
+                    const now = new Date().toLocaleTimeString();
+                    const newEntry = `<div style="margin-top:5px; border-left: 2px solid var(--neon-green); padding-left: 5px;">
+                        🟢 <strong>${name}</strong> [${pack}] — Status: Active (Sync ${now})
+                    </div>`;
+                    
+                    if (list.innerHTML.includes("Список порожній") || list.innerHTML.includes("List empty")) {
+                        list.innerHTML = `<strong data-translate="p6_active_list">Active Simulations:</strong>` + newEntry;
+                    } else {
+                        list.innerHTML += newEntry;
+                    }
+                    document.getElementById('sandbox-club-name').value = "";
+                }
+            }, 150);
+        }
+
+        // ================= СХЕМА КЛУБУ ТА ЛІЧИЛЬНИКИ =================
+        function addClick(id) {
+            if (clubStats.hasOwnProperty(id)) {
+                clubStats[id]++;
+                localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
+                document.getElementById(`c-${id}`).textContent = clubStats[id];
+            }
+        }
+
+        function loadStats() {
+            const data = localStorage.getItem('gygy_map_clicks');
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    Object.keys(clubStats).forEach(key => {
+                        if (parsed.hasOwnProperty(key)) {
+                            clubStats[key] = parsed[key];
+                            const el = document.getElementById(`c-${key}`);
+                            if (el) el.textContent = clubStats[key];
+                        }
+                    });
+                } catch (e) { console.error(e); }
+            }
+        }
+
+        function clearActivityData() {
+            if (confirm("Reset counters?")) {
+                Object.keys(clubStats).forEach(key => {
+                    clubStats[key] = 0;
+                    const el = document.getElementById(`c-${key}`);
+                    if (el) el.textContent = 0;
+                });
+                localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
+            }
+        }
+
+        // ================= МОДАЛКА ПАСПОРТА =================
+        function openPassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) { 
+                modal.style.display = 'flex'; 
+                setTimeout(() => { modal.style.opacity = '1'; }, 10); 
+            }
+        }
+
+        function closePassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        }
+
+        function renderUserPassport(targetID) {
+            const passIdVal = document.getElementById('pass-id-val');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (passIdVal) passIdVal.innerText = targetID;
+            if (passQrBox && typeof QRCode !== 'undefined') { 
+                passQrBox.innerHTML = ""; 
+                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); 
+            }
+        }
+
+        // ================= ІНІЦІАЛІЗАЦІЯ ПРИ ЗАВАНТАЖЕННІ =================
         document.addEventListener("DOMContentLoaded", function() {
-            // Подгрузка аватара
+            loadStats();
+
+            // Аватар
             const savedAvatar = localStorage.getItem('gygy_avatar') || 
                                 localStorage.getItem('gy_user_img') || 
                                 localStorage.getItem('user_avatar');
-                                
             const avatarEl = document.getElementById('header-avatar');
+            const passAvatarEl = document.getElementById('pass-avatar-img');
             
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-                avatarEl.style.display = 'block';
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
-                avatarEl.style.display = 'block';
+            if (savedAvatar) {
+                if (avatarEl) { avatarEl.src = savedAvatar; avatarEl.style.display = 'block'; }
+                if (passAvatarEl) { passAvatarEl.src = savedAvatar; }
+            } else {
+                const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+                if (avatarEl) { avatarEl.src = defaultAvatar; avatarEl.style.display = 'block'; }
+                if (passAvatarEl) { passAvatarEl.src = defaultAvatar; }
             }
 
-            // Флаг языка
-            const langFlags = {
-                'ru': '🇷🇺',
-                'en': '🇬🇧',
-                'zh': '🇨🇳',
-                'es': '🇪🇸',
-                'de': '🇩🇪'
-            };
-            
-            const savedLang = localStorage.getItem('gygy_lang') || 
-                              localStorage.getItem('gy_lang') || 
-                              localStorage.getItem('user_lang') || 'ru';
-                              
-            const flagEl = document.getElementById('header-lang-flag');
-            if (flagEl) {
-                flagEl.textContent = langFlags[savedLang.toLowerCase()] || '🌐';
+            // Нікнейм
+            const savedNickname = localStorage.getItem('gygy_nickname');
+            const passNick = document.getElementById('pass-nickname');
+            if (savedNickname && passNick) {
+                passNick.innerText = '@' + savedNickname;
             }
+
+            // Пошта
+            const savedEmail = localStorage.getItem('gygy_email');
+            const passEmail = document.getElementById('pass-email');
+            if (savedEmail && passEmail) {
+                passEmail.innerText = savedEmail;
+            }
+
+            // ID
+            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace');
+            if (!currentID) {
+                currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+                localStorage.setItem('gygy_id', currentID);
+            }
+            renderUserPassport(currentID);
+
+            // ВИЗНАЧЕННЯ ТА ЗАСТОСУВАННЯ МОВИ
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+            const savedLang = localStorage.getItem('gy_lang') || localStorage.getItem('gygy_lang') || savedFlag.toLowerCase();
+            
+            // Мапування прапорів у мовні коди
+            let targetLang = 'uk'; // За замовчуванням
+            if (['gb', 'us', 'en'].includes(savedLang)) targetLang = 'en';
+            else if (['es', 'mx'].includes(savedLang)) targetLang = 'es';
+            else if (['de', 'at'].includes(savedLang)) targetLang = 'de';
+            else if (['fr', 'be'].includes(savedLang)) targetLang = 'fr';
+            else if (['ua', 'uk'].includes(savedLang)) targetLang = 'uk';
+
+            // 1. Застосовуємо переклад всього інтерфейсу
+            applyLocalization(targetLang);
+
+            // 2. Встановлюємо прапорець
+            const flagElement = document.getElementById('current-flag');
+            if (flagElement) {
+                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+            }
+
+            // 3. Синхронізуємо чат-кімнату
+            const chatLangSelect = document.getElementById('chat-lang');
+            if (chatLangSelect) {
+                chatLangSelect.value = targetLang;
+            }
+
+            calculateRoyalty();
         });
-
-        // Функция отправки сообщений
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const chatMessages = document.getElementById('chat-messages');
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg msg-outgoing';
-            msgDiv.innerHTML = `${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
-
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            input.value = '';
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
-
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
     </script>
 </body>
 </html>
