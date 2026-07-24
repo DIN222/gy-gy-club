@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GYGY Office v1.0</title>
-    <!-- Библиотека QR-кодов для паспорта -->
+    <title>GYGY Office v1.1</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --bg-dark: #000000;
             --panel-bg: #0d0e12;
-            --accent-gold: #d4af37;
+            --accent-gold: rgba(212, 175, 55, 0.5); /* Базовая интенсивность золотого (50%) */
+            --accent-gold-hover: rgba(212, 175, 55, 0.6); /* +10% интенсивности */
+            --accent-gold-active: rgba(212, 175, 55, 0.7); /* Еще +10% для активного */
             --text-color: #e0e0e0;
         }
 
@@ -22,29 +23,59 @@
             padding: 20px;
         }
 
-        /* Стандартная верхняя панель (золото на черном) */
+        /* Верхняя панель без рамки */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: var(--panel-bg);
-            border: 1px solid var(--accent-gold);
+            border: none;
             padding: 12px 20px;
             border-radius: 8px;
             margin-bottom: 25px;
         }
 
-        header h2 {
-            color: var(--accent-gold);
-            margin: 0;
+        /* Слева стрелки навигации */
+        .header-nav-arrows {
+            display: flex;
+            gap: 15px;
             font-size: 20px;
-            letter-spacing: 1px;
+            color: var(--accent-gold);
+            cursor: pointer;
         }
 
-        .user-profile {
+        .header-nav-arrows span:hover {
+            color: #fff;
+        }
+
+        /* По центру: аватары сотрудников, ник и флаг */
+        .header-center-team {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 20px;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        .team-avatars-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .user-info-block {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             cursor: pointer;
         }
 
@@ -56,12 +87,26 @@
             object-fit: cover;
         }
 
+        .user-nickname {
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
         #current-flag {
-            width: 24px;
+            width: 22px;
             border-radius: 2px;
         }
 
-        /* Две большие кнопки на весь экран */
+        /* Справа лого */
+        .header-logo {
+            color: var(--accent-gold);
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Две большие кнопки на весь экран (эффект золотого свечения без заливки) */
         .fullscreen-nav {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -71,7 +116,7 @@
 
         .nav-btn {
             background: var(--panel-bg);
-            color: var(--accent-gold);
+            color: rgb(212, 175, 55);
             border: 2px solid var(--accent-gold);
             padding: 20px;
             border-radius: 10px;
@@ -84,13 +129,12 @@
         }
 
         .nav-btn.active {
-            background: var(--accent-gold);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            border-color: var(--accent-gold-active);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
         }
 
         .nav-btn:hover {
-            opacity: 0.9;
+            border-color: var(--accent-gold-hover);
         }
 
         /* Схема офиса: аккуратные 6 прямоугольников */
@@ -117,15 +161,15 @@
         }
 
         .office-room:hover {
-            border-color: var(--accent-gold);
+            border-color: rgba(212, 175, 55, 0.6);
             color: var(--text-color);
         }
 
         /* 3-й прямоугольник — Комната переговоров */
         .office-room.meeting-room {
             border-color: var(--accent-gold);
-            color: var(--accent-gold);
-            background: #14120a;
+            color: rgb(212, 175, 55);
+            background: var(--panel-bg);
         }
 
         /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
@@ -146,7 +190,7 @@
 
         .passport-card {
             background: var(--panel-bg);
-            border: 2px solid var(--accent-gold);
+            border: 2px solid rgb(212, 175, 55);
             padding: 25px;
             border-radius: 12px;
             width: 300px;
@@ -159,7 +203,7 @@
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            border: 2px solid var(--accent-gold);
+            border: 2px solid rgb(212, 175, 55);
             object-fit: cover;
             margin-bottom: 10px;
         }
@@ -168,7 +212,7 @@
             position: absolute;
             top: 10px;
             right: 15px;
-            color: var(--accent-gold);
+            color: rgb(212, 175, 55);
             cursor: pointer;
             font-size: 22px;
         }
@@ -182,13 +226,31 @@
 </head>
 <body>
 
-    <!-- Стандартная панель сверху (золото на черном) -->
+    <!-- Верхняя панель без рамки -->
     <header>
-        <h2>GYGY OFFICE (v1.0)</h2>
-        <div class="user-profile" onclick="openPassport()">
-            <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
-            <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+        <!-- Слева стрелки навигации -->
+        <div class="header-nav-arrows">
+            <span>&#8592;</span>
+            <span>&#8594;</span>
         </div>
+
+        <!-- По центру: команда, ник, флаг -->
+        <div class="header-center-team">
+            <!-- Динамический список аватаров сотрудников -->
+            <div id="team-avatars-container" class="team-avatars-container">
+                <!-- Сюда будут добавляться аватары сотрудников динамически -->
+            </div>
+
+            <!-- Основной пользователь -->
+            <div class="user-info-block" onclick="openPassport()">
+                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                <span id="header-nickname" class="user-nickname">@User</span>
+                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+            </div>
+        </div>
+
+        <!-- Справа лого -->
+        <div class="header-logo">GYGY</div>
     </header>
 
     <!-- Две большие кнопки на весь экран -->
@@ -212,7 +274,7 @@
         <div class="passport-card">
             <span class="close-btn" onclick="closePassport()">&times;</span>
             <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
-            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--accent-gold);">@User</h3>
+            <h3 id="pass-nickname" style="margin: 5px 0; color: rgb(212, 175, 55);">@User</h3>
             <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
             <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
             <div id="pass-qr-box"></div>
@@ -246,6 +308,17 @@
             }
         }
 
+        // Функция для добавления сотрудников в верхнюю панель
+        function addTeamMember(avatarUrl) {
+            const container = document.getElementById('team-avatars-container');
+            if (container) {
+                const img = document.createElement('img');
+                img.src = avatarUrl;
+                img.className = 'team-avatar';
+                container.appendChild(img);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
@@ -258,7 +331,11 @@
             if (passAvatarEl) { passAvatarEl.src = currentAvatar; }
 
             const savedNickname = localStorage.getItem('gygy_nickname');
-            if (savedNickname) document.getElementById('pass-nickname').innerText = '@' + savedNickname;
+            if (savedNickname) {
+                const nickText = '@' + savedNickname;
+                document.getElementById('pass-nickname').innerText = nickText;
+                document.getElementById('header-nickname').innerText = nickText;
+            }
 
             const savedEmail = localStorage.getItem('gygy_email');
             if (savedEmail) document.getElementById('pass-email').innerText = savedEmail;
