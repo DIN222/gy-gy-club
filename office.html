@@ -3,185 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Global Office  003 </title>
-    <!-- Підключення бібліотеки QR-кодів -->
+    <title>GY-GY OS v4.6.1 CORE OFFICE & CLUB MAP</title>
+
+    <!-- Подключение библиотеки для генерации QR-кодов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
+        /* ==========================================================================
+           1. СИСТЕМНЫЕ ПЕРЕМЕННЫЕ И БАЗОВЫЙ СБРОС (CORE STYLES)
+           ========================================================================== */
         :root {
-            --bg-dark: #0f111a;
-            --card-bg: #1a1d2d;
-            --neon-green: #00ffcc;
-            --gold: #d4af37;
-            --text-light: #e2e8f0;
-            --border-color: #2d3748;
+            --bg-color: #07090c;
+            --panel-bg: #11141b;
+            --panel-border: #1f2532;
+            --panel-hover: #1a202c;
+            --text-color: #d1d8e0;
+            --text-muted: #6272a4;
+            --neon-green: #00ff88;
+            --neon-green-glow: rgba(0, 255, 136, 0.25);
+            --neon-blue: #00bfff;
+            --neon-blue-glow: rgba(0, 191, 255, 0.25);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.25);
+            --danger-red: #ff5555;
+            --terminal-black: #050608;
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --radius: 4px;
+            --transition-speed: 0.25s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 191, 255, 0.05) 0%, transparent 75%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 20px 20px, 20px 20px;
         }
 
-        .header-bar {
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--terminal-black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--panel-border);
+            border-radius: var(--radius);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-green);
+        }
+
+        /* ==========================================================================
+           2. ГЛАВНЫЙ КОНТЕЙНЕР И ШАПКА (HEADER & NAV)
+           ========================================================================== */
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border-bottom: 2px solid var(--gold);
-            margin-bottom: 20px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            object-fit: cover;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            flex-direction: column;
             gap: 20px;
         }
 
-        .block-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 12px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
-        .block-card h3 {
-            margin-top: 0;
+        .nav-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--panel-border);
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue-glow);
+        }
+
+        .nav-btn.active {
+            background: var(--panel-border);
+            border-color: var(--neon-green);
             color: var(--neon-green);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
+            box-shadow: 0 0 10px var(--neon-green-glow);
         }
 
-        /* Стилі для ASCII-Схеми Клубу */
-        .algo-pre {
-            background: #08090d;
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 6px;
-            font-family: monospace;
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 10px;
+            background: var(--bg-color);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .user-profile:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .flag-icon {
+            width: 20px;
+            height: 14px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            object-fit: cover;
+        }
+
+        .user-info-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .user-name {
             font-size: 11px;
-            color: var(--text-light);
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        .user-status {
+            font-size: 9px;
+            color: var(--neon-green);
+        }
+
+        /* ==========================================================================
+           3. СЕТКА БЛОКОВ CORE OFFICE (GRID SYSTEM)
+           ========================================================================== */
+        .grid-blocks {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-blocks {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .num-block {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 18px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100px;
+        }
+
+        .num-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: var(--panel-border);
+            transition: background var(--transition-speed);
+        }
+
+        .num-block:hover {
+            background: var(--panel-hover);
+            border-color: var(--neon-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .num-block:hover::before {
+            background: var(--neon-blue);
+        }
+
+        .num-block.active-block {
+            border-color: var(--neon-green);
+            background: #141b22;
+            box-shadow: 0 0 15px var(--neon-green-glow);
+        }
+
+        .num-block.active-block::before {
+            background: var(--neon-green);
+        }
+
+        .num-block-header {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .num-block-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .num-block-tag {
+            font-size: 9px;
+            background: var(--bg-color);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: var(--neon-green);
+            border: 1px solid var(--panel-border);
+        }
+
+        /* ==========================================================================
+           4. ИНТЕРАКТИВНЫЕ ПАНЕЛИ ДЕТАЛЕЙ (PANELS)
+           ========================================================================== */
+        .interactive-panel {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 5px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-title {
+            font-size: 16px;
+            color: var(--gold);
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-box {
+            background: var(--terminal-black);
+            color: var(--neon-green);
+            padding: 12px;
+            border-radius: var(--radius);
+            height: 180px;
+            overflow-y: auto;
+            font-size: 11px;
+            border: 1px solid #1a2332;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            line-height: 1.6;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-field, .select-field {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--panel-border);
+            padding: 8px 12px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            border-radius: var(--radius);
+            outline: none;
+            transition: border var(--transition-speed);
+        }
+
+        .input-field:focus, .select-field:focus {
+            border-color: var(--neon-green);
+        }
+
+        .action-btn {
+            background: var(--panel-border);
+            color: #ffffff;
+            border: 1px solid transparent;
+            padding: 8px 16px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: all var(--transition-speed);
+        }
+
+        .action-btn:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 10px var(--neon-green-glow);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            border-color: var(--panel-border);
+        }
+
+        .action-btn.secondary:hover {
+            border-color: var(--danger-red);
+            color: var(--danger-red);
+            background: transparent;
+            box-shadow: none;
+        }
+
+        /* ==========================================================================
+           5. СУБ-КОМПОНЕНТЫ ПАНЕЛЕЙ (СПЕЦИФИЧЕСКИЕ ДИЗАЙНЫ)
+           ========================================================================== */
+        /* Слайдеры */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .slider-label {
+            min-width: 140px;
+            font-size: 12px;
+        }
+
+        input[type=range] {
+            flex: 1;
+            accent-color: var(--neon-green);
+        }
+
+        /* Информационные карточки параметров */
+        .info-card {
+            background: var(--bg-color);
+            border: 1px solid var(--panel-border);
+            padding: 10px;
+            border-radius: var(--radius);
+            font-size: 12px;
+        }
+
+        .info-card-val {
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        /* Прогресс бар Sandbox */
+        .progress-bar-bg {
+            background: var(--terminal-black);
+            height: 12px;
+            border-radius: var(--radius);
+            border: 1px solid var(--panel-border);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+            height: 100%;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ==========================================================================
+           6. СХЕМА КЛУБА (CLUB MAP & ARCHITECTURE)
+           ========================================================================== */
+        .algo-pre {
+            background: var(--panel-bg);
+            padding: 25px;
+            border: 1px solid var(--panel-border);
+            border-radius: var(--radius);
             overflow-x: auto;
-            white-space: pre;
-            line-height: 1.4;
+            line-height: 1.5;
+            color: var(--text-color);
+            font-size: 13px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
         }
 
         .bubble-click {
+            color: var(--neon-green);
             cursor: pointer;
+            text-decoration: underline;
+            font-weight: bold;
             padding: 2px 4px;
-            border-radius: 3px;
-            background: rgba(0, 255, 204, 0.1);
-            transition: 0.2s;
-            display: inline-block;
+            border-radius: 2px;
+            transition: all var(--transition-speed);
         }
 
         .bubble-click:hover {
-            background: rgba(0, 255, 204, 0.3);
-            color: #fff;
-        }
-
-        .bubble-click.orange {
-            background: rgba(212, 175, 55, 0.1);
-        }
-
-        .bubble-click.orange:hover {
-            background: rgba(212, 175, 55, 0.3);
+            background: var(--neon-green);
+            color: #000;
+            text-decoration: none;
+            box-shadow: 0 0 8px var(--neon-green-glow);
         }
 
         .counter-num {
+            color: var(--gold);
             font-weight: bold;
-            color: var(--neon-green);
         }
 
-        .clear-data-btn {
-            background: #e53e3e;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .btn {
-            background: linear-gradient(45deg, var(--gold), #f39c12);
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
-
-        .btn-green {
-            background: linear-gradient(45deg, var(--neon-green), #00b386);
-        }
-
-        input, select {
-            background: #0d0f17;
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            padding: 8px;
-            border-radius: 4px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 10px;
-        }
-
-        .chat-box {
-            height: 200px;
-            overflow-y: auto;
-            background: #0d0f17;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        .chat-msg {
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--gold);
-            padding: 6px 10px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-        }
-
-        .msg-meta { font-size: 11px; color: #888; }
-        .msg-original { font-size: 13px; }
-        .msg-translation { font-size: 12px; color: var(--neon-green); }
-
-        /* Modal Passport */
+        /* ==========================================================================
+           7. МОДАЛЬНОЕ ОКНО ПАСПОРТА (PASSPORT MODAL)
+           ========================================================================== */
         .modal-overlay {
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(4px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -190,495 +466,813 @@
         }
 
         .passport-card {
-            background: var(--card-bg);
+            background: var(--panel-bg);
             border: 2px solid var(--gold);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 8px;
+            padding: 30px;
             width: 340px;
             text-align: center;
             position: relative;
+            box-shadow: 0 0 30px var(--gold-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
 
-        .close-modal {
+        .close-btn {
             position: absolute;
             top: 10px; right: 15px;
-            color: #fff;
-            font-size: 20px;
+            color: var(--text-muted);
             cursor: pointer;
+            font-size: 22px;
+            transition: color var(--transition-speed);
         }
 
-        .progress-bar {
+        .close-btn:hover {
+            color: var(--danger-red);
+        }
+
+        .passport-title {
+            color: var(--gold);
+            font-size: 16px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .passport-avatar-frame {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            padding: 3px;
+            background: var(--bg-color);
+        }
+
+        .passport-avatar-frame img {
             width: 100%;
-            background: #0d0f17;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-            display: none;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--neon-green);
-            transition: width 0.1s linear;
+        .qr-wrapper {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ВЕРХНЯ ПАНЕЛЬ -->
-    <header class="header-bar">
-        <div class="user-info">
-            <img id="header-avatar" class="avatar" src="" alt="Avatar" style="display:none;">
-            <div>
-                <strong style="color:var(--gold);">GY-GY Office</strong>
-                <div style="font-size:12px; color:#aaa;">Global Control Panel</div>
-            </div>
+<div class="app-container">
+
+    <!-- ==========================================================================
+         8. ВЕРХНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ (HEADER)
+         ========================================================================== -->
+    <div class="header-nav">
+        <div class="nav-group">
+            <button id="btn-core" class="nav-btn active" onclick="switchScreen('core')">
+                <span>⚡</span> CORE OFFICE
+            </button>
+            <button id="btn-club" class="nav-btn" onclick="switchScreen('club')">
+                <span>🗺️</span> CLUB MAP
+            </button>
         </div>
-        <div style="display:flex; align-items:center; gap:10px;">
-            <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag" style="height:14px;">
-            <button class="btn" onclick="openPassport()">🪪 Паспорт ID</button>
-        </div>
-    </header>
 
-    <!-- ОСНОВНА СІТКА БЛОКІВ -->
-    <main class="grid-container">
-
-        <!-- ================= БЛОК #1: СХЕМА КЛУБУ ================= -->
-        <section class="block-card" style="grid-column: span 1 / -1;">
-            <h3>🗺️ #1 Карта Архітектури Клубу v4.6.1 CORE</h3>
-            <div id="screen-club-map">
-                <pre class="algo-pre">
-================== [ <span data-translate="map_header">КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE</span> ] ==================
-
-[<span data-translate="map_start">ПОЧАТОК</span>: index.html] ──► (<span data-translate="map_start_desc">Вибір мови / Реєстрація</span>)
-       │
-       ▼
- [<span data-translate="map_hall">ГОЛОВНИЙ ХОЛ</span>: #block-hall] ───► Оберіть direction:
-       │
-       ├─► [Гілка AI ROOM] ──► Відкрити verses.html ──► <span data-translate="map_neuro">РОБОТА НЕЙРО-МОДУЛІВ</span>:
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послання інопланетянам</span></span>
-       │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Місячна база</span></span>
-       │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привіт, Всесвіт!</span></span>
-       │
-       ├─► [Гілка STUDIO]  ──► Відкрити studio.html ──► <span data-translate="map_studio">ТВОРЧИЙ ФУНКЦІОНАЛ</span>:
-       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ательє</span></span>
-       │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Майстерня сувенірів</span></span>
-       │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитності</span></span>
-       │
-       ├─► [Гілка OFFICE]  ──► Відкрити office.html ──► <span data-translate="map_office">Вхід до Кабінету</span>
-       │
-       └─► [Гілка БАР]     ──► Відкрити bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга скарг</span></span>
-                                             │
-                                             ▼
-                                [<span data-translate="map_transition">ПЕРЕХІД</span>: tables.html] ──► Ініціалізація matrix 3х2:
-                                             │
-                                ┌────────────┴────────────┐
-                                ▼                         ▼
-   [<span data-translate="map_left">ЛІВИЙ ФЛАНГ</span>]                                             [<span data-translate="map_right">ПРАВИЙ ФЛАНГ</span>]
-   ├─► <span data-translate="map_strat">Вибір Ст.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Ризик-стратегія</span></span>             ├─► <span data-translate="map_strat">Вибір Ст.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поетичний подіум</span></span>
-   ├─► <span data-translate="map_strat">Вибір Ст.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуель на цитатах</span></span>            ├─► <span data-translate="map_strat">Вибір Ст.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Перекладач Ч/Ж</span></span>
-   └─► <span data-translate="map_strat">Вибір Ст.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуель компліментів</span></span>          └─► <span data-translate="map_strat">Вибір Ст.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
-         │                                                               │
-         └───────────────────────────┬───────────────────────────────────┘
-                                     ▼
-                        [<span data-translate="map_center">ЦЕНТР ЗАЛУ</span>] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="c-open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ВІДКРИТИЙ МІКРОФОН</span></span>
-                </pre>
-                <div class="reset-btn-container">
-                    <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Скинути лічильники локацій</button>
-                </div>
+        <div class="user-profile" onclick="openPassport()">
+            <img id="current-flag" class="flag-icon" src="https://flagcdn.com/w20/gb.png" alt="Language">
+            <img id="header-avatar" class="user-avatar" src="" alt="Avatar">
+            <div class="user-info-text">
+                <span class="user-name" id="header-user-id">GY-000000</span>
+                <span class="user-status">ONLINE / VERIFIED</span>
             </div>
-        </section>
-
-        <!-- БЛОК #3: ВНУТРІШНІЙ СЕМАНТИЧНИЙ ЧАТ -->
-        <section class="block-card">
-            <h3>💬 #3 Внутрішній Семантичний Чат</h3>
-            <div class="chat-box" id="internal-chat-box"></div>
-            
-            <label style="font-size:11px; color:#aaa;">Мова смислової адаптації:</label>
-            <select id="chat-lang">
-                <option value="uk">🇺🇦 Українська</option>
-                <option value="en">🇺🇸 English</option>
-                <option value="es">🇪🇸 Español</option>
-                <option value="de">🇩🇪 Deutsch</option>
-                <option value="fr">🇫🇷 Français</option>
-            </select>
-
-            <input type="text" id="chat-input" placeholder="Введіть повідомлення...">
-            <button class="btn btn-green" style="width:100%;" onclick="sendSemanticMessage()">Надіслати у Внутрішній Чат</button>
-        </section>
-
-        <!-- БЛОК #4: РОЯЛТІ ТА БАЛАНС -->
-        <section class="block-card">
-            <h3>💰 #4 Калькулятор Роялті</h3>
-            <div style="font-size:14px; margin-bottom:10px;">
-                Поточний баланс: <strong id="royalty-balance-num" style="color:var(--neon-green);">1,250.0</strong> GY
-            </div>
-            
-            <label style="font-size:11px; color:#aaa;">Ціна (GY):</label>
-            <input type="number" id="royalty-price" value="100" oninput="calculateRoyalty()">
-
-            <label style="font-size:11px; color:#aaa;">Комісія (%):</label>
-            <input type="number" id="royalty-fee" value="10" oninput="calculateRoyalty()">
-
-            <div style="font-size:12px; margin-bottom:10px; background:#0d0f17; padding:8px; border-radius:4px;">
-                <div>Ціна: <span id="val-price-text">100</span> GY</div>
-                <div>Комісія (<span id="val-fee-text">10</span>%): <span id="fee-display">10% (10.0 GY)</span></div>
-                <div style="color:var(--gold); font-weight:bold; margin-top:4px;">До виплати: <span id="payout-display">90.0 GY</span></div>
-            </div>
-
-            <button class="btn" style="width:100%;" onclick="collectRoyalty()">Зарахувати Роялті</button>
-        </section>
-
-        <!-- БЛОК #5: ЯДРО НЕЙРОМЕРЕЖІ (ЧАРЛІ) -->
-        <section class="block-card">
-            <h3>🤖 #5 Ядро Нейромережі Charlie</h3>
-            
-            <label style="font-size:11px; color:#aaa;">Сарказм (%)</label>
-            <input type="range" id="slider-sarc" min="0" max="100" value="30">
-
-            <label style="font-size:11px; color:#aaa;">Креативність (%)</label>
-            <input type="range" id="slider-crea" min="0" max="100" value="80">
-
-            <input type="text" id="ai-input" placeholder="Запитайте щось у Charlie...">
-            <button class="btn btn-green" style="width:100%; margin-bottom:10px;" onclick="generateCharlieResponse()">Згенерувати відповідь</button>
-
-            <div id="charlie-terminal" style="background:#0d0f17; border:1px solid var(--border-color); padding:10px; border-radius:4px; font-family:monospace; font-size:12px; min-height:50px; color:var(--neon-green);">
-                Charlie Online. Готовий до роботи.
-            </div>
-        </section>
-
-        <!-- БЛОК #6: ПІСОЧНИЦЯ КЛУБІВ -->
-        <section class="block-card">
-            <h3>🧪 #6 Пісочниця Сімуляцій</h3>
-            
-            <input type="text" id="sandbox-club-name" placeholder="Назва ноди/клубу...">
-            <select id="sandbox-pack">
-                <option value="Standard">Пакет Standard</option>
-                <option value="Pro-VR">Пакет Pro-VR</option>
-                <option value="Enterprise">Пакет Enterprise</option>
-            </select>
-
-            <button class="btn" style="width:100%; margin-bottom:10px;" onclick="deploySandboxNode()">Розгорнути Ноду</button>
-
-            <div id="sandbox-progress" class="progress-bar">
-                <div id="progress-bar-fill" class="progress-bar-fill"></div>
-            </div>
-            <div id="sandbox-status" style="font-size:11px; color:var(--gold); display:none; margin-bottom:8px;"></div>
-
-            <div id="sandbox-list" style="font-size:12px; background:#0d0f17; padding:8px; border-radius:4px; min-height:40px;">
-                <em>Список симуляцій порожній</em>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- МОДАЛЬНЕ ВІКНО ПАСПОРТА -->
-    <div id="modal-passport" class="modal-overlay">
-        <div class="passport-card">
-            <span class="close-modal" onclick="closePassport()">&times;</span>
-            <img id="pass-avatar-img" class="avatar" style="width:70px; height:70px; margin-bottom:10px;" src="" alt="Avatar">
-            <h4 id="pass-nickname" style="margin:0; color:var(--gold);">@user</h4>
-            <div id="pass-email" style="font-size:12px; color:#aaa; margin-bottom:10px;">user@gygy.io</div>
-            
-            <div style="background:#0d0f17; padding:10px; border-radius:6px; margin-bottom:12px;">
-                <div style="font-size:11px; color:#888;">ID Користувача:</div>
-                <strong id="pass-id-val" style="color:var(--neon-green); font-family:monospace;">GY-000000</strong>
-            </div>
-
-            <div id="pass-qr-box" style="display:flex; justify-content:center; margin-top:10px;"></div>
         </div>
     </div>
 
-    <!-- СКРИПТИ ТА ЛОГІКА -->
-    <script>
-        // База даних активності всіх локацій схеми
-        const clubStats = {
-            alien: 0, moon: 0, hello: 0,
-            atelier: 0, souvenirs: 0, vintage: 0,
-            complaints: 0,
-            strat1: 0, strat2: 0, strat3: 0, strat4: 0, strat5: 0, strat6: 0,
-            open_mic: 0
-        };
+    <!-- ==========================================================================
+         9. ЭКРАН 1: CORE OFFICE (ОСНОВНАЯ ПАНЕЛЬ)
+         ========================================================================== -->
+    <div id="screen-office-core">
+        <!-- Сетка 6-ти функциональных блоков -->
+        <div class="grid-blocks">
+            <div id="block-logs" class="num-block" onclick="togglePanel('logs')">
+                <div>
+                    <div class="num-block-header">
+                        <span data-translate="p1_title">1. System Logs</span>
+                        <span class="num-block-tag">LIVE</span>
+                    </div>
+                    <div class="num-block-desc" data-translate="p1_title_desc">Airtable & API Status</div>
+                </div>
+            </div>
 
-        // База семантичних відповідей та адаптації мов
-        const semanticDatabase = {
-            uk: {
-                "привіт": "Вітання! Ласкаво просимо до нашої мережі.",
-                "default": "Смисловий контекст українською зафіксовано."
-            },
-            en: {
-                "hello": "Greetings! Welcome to our global network.",
-                "default": "English semantic meaning adapted."
-            },
-            es: {
-                "hola": "¡Hola! Bienvenido a la red.",
-                "default": "Contexto semántico en español procesado."
-            },
-            de: {
-                "hallo": "Hallo! Willkommen im Netzwerk.",
-                "default": "Deutscher semantischer Kontext verarbeitet."
-            },
-            fr: {
-                "bonjour": "Bonjour! Bienvenue sur le réseau.",
-                "default": "Contexte sémantique français traité."
-            }
-        };
+            <div id="block-traces" class="num-block" onclick="togglePanel('traces')">
+                <div>
+                    <div class="num-block-header">
+                        <span data-translate="p2_title">2. Digital Footprint</span>
+                        <span class="num-block-tag">SECURE</span>
+                    </div>
+                    <div class="num-block-desc" data-translate="p2_title_desc">Session & User Agent</div>
+                </div>
+            </div>
 
-        let currentID = "";
+            <div id="block-chat" class="num-block" onclick="togglePanel('chat')">
+                <div>
+                    <div class="num-block-header">
+                        <span data-translate="p3_title">3. Negotiation Room</span>
+                        <span class="num-block-tag">CHAT</span>
+                    </div>
+                    <div class="num-block-desc" data-translate="p3_title_desc">Semantic Multi-lang Chat</div>
+                </div>
+            </div>
 
-        // ================= ЛІЧИЛЬНИКИ ТА КАРТА АРХІТЕКТУРИ =================
-        function addClick(id) {
-            if (clubStats.hasOwnProperty(id)) {
-                clubStats[id]++;
-            } else {
-                clubStats[id] = 1;
-            }
-            localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
-            
-            const counter = document.getElementById(`c-${id}`);
-            if (counter) counter.textContent = clubStats[id];
+            <div id="block-royalty" class="num-block" onclick="togglePanel('royalty')">
+                <div>
+                    <div class="num-block-header">
+                        <span data-translate="p4_title">4. Royalty & Balance</span>
+                        <span class="num-block-tag">FINANCE</span>
+                    </div>
+                    <div class="num-block-desc" data-translate="p4_title_desc">Calculator & Wallet</div>
+                </div>
+            </div>
+
+            <div id="block-ai" class="num-block" onclick="togglePanel('ai')">
+                <div>
+                    <div class="num-block-header">
+                        <span data-translate="p5_title">5. Neural Core</span>
+                        <span class="num-block-tag">AI v4.2</span>
+                    </div>
+                    <div class="num-block-desc" data-translate="p5_title_desc">Charlie AI Simulator</div>
+                </div>
+            </div>
+
+            <div id="block-sandbox" class="num-block" onclick="togglePanel('sandbox')">
+                <div>
+                    <div class="num-block-header">
+                        <span data-translate="p6_title">6. Club Sandbox</span>
+                        <span class="num-block-tag">DEPLOY</span>
+                    </div>
+                    <div class="num-block-desc" data-translate="p6_title_desc">Deploy Virtual Nodes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ИНТЕРАКТИВНЫЕ ДЕТАЛЬНЫЕ ПАНЕЛИ -->
+
+        <!-- Панель 1: Системные Логи -->
+        <div id="panel-logs" class="interactive-panel">
+            <div class="panel-title">
+                <span>🖥️ SYSTEM LOGS TERMINAL (AIRTABLE SYNC)</span>
+                <span style="font-size: 10px; color: var(--neon-green);">STATUS: OK</span>
+            </div>
+            <div id="logs-terminal" class="terminal-box"></div>
+            <div class="control-row">
+                <button class="action-btn" onclick="generateMockLog()">Add Manual Log</button>
+                <button class="action-btn secondary" onclick="clearLogs()">Clear Terminal</button>
+            </div>
+        </div>
+
+        <!-- Панель 2: Цифровой След -->
+        <div id="panel-traces" class="interactive-panel">
+            <div class="panel-title">
+                <span>🛡️ DIGITAL FOOTPRINT & SESSION TRACKER</span>
+            </div>
+            <div class="info-card">
+                <strong>User-Agent:</strong> <span id="trace-ua" class="info-card-val">-</span>
+            </div>
+            <div class="info-card">
+                <strong>Session Key:</strong> <span id="trace-session" class="info-card-val">-</span>
+            </div>
+            <div class="info-card">
+                <strong>System Local Time:</strong> <span id="trace-time" class="info-card-val">-</span>
+            </div>
+            <div class="control-row" style="margin-top: 5px;">
+                <input type="text" id="trace-custom-input" class="input-field" style="flex: 1;" placeholder="Custom QR Data" data-translate-placeholder="p2_qr_ph">
+                <button class="action-btn" onclick="updateTraceQR()">Generate QR</button>
+            </div>
+            <div id="trace-mini-qr" class="qr-wrapper" style="width: fit-content;"></div>
+        </div>
+
+        <!-- Панель 3: Комната Переговоров -->
+        <div id="panel-chat" class="interactive-panel">
+            <div class="panel-title">
+                <span>💬 NEGOTIATION ROOM (SEMANTIC CHAT)</span>
+            </div>
+            <div id="chat-box" class="terminal-box" style="height: 160px; background: var(--bg-color);"></div>
+            <div class="control-row">
+                <select id="chat-lang" class="select-field" onchange="changeLanguage(this.value)">
+                    <option value="uk">🇺🇦 UA (Українська)</option>
+                    <option value="en">🇺🇸 EN (English)</option>
+                    <option value="es">🇪🇸 ES (Español)</option>
+                    <option value="de">🇩🇪 DE (Deutsch)</option>
+                    <option value="fr">🇫🇷 FR (Français)</option>
+                </select>
+                <input type="text" id="chat-msg-input" class="input-field" style="flex: 1;" placeholder="Type message..." data-translate-placeholder="p3_input_ph" onkeypress="if(event.key==='Enter') sendSemanticMessage()">
+                <button class="action-btn" onclick="sendSemanticMessage()">Send</button>
+            </div>
+        </div>
+
+        <!-- Панель 4: Роялти Калькулятор -->
+        <div id="panel-royalty" class="interactive-panel">
+            <div class="panel-title">
+                <span>💰 ROYALTY CALCULATOR & VAULT</span>
+            </div>
+            <div class="slider-container">
+                <span class="slider-label">Gross Revenue (GY):</span>
+                <input type="number" id="royalty-price" class="input-field" value="100" style="width: 120px;" oninput="calculateRoyalty()">
+            </div>
+            <div class="slider-container">
+                <span class="slider-label">Franchise Fee (<span id="val-fee-text">10</span>%):</span>
+                <input type="range" id="royalty-fee" min="0" max="30" value="10" oninput="calculateRoyalty()">
+            </div>
+            <div class="info-card" style="display: flex; justify-content: space-between;">
+                <span>System Fee: <strong id="fee-display" style="color: var(--danger-red);">10.0 GY</strong></span>
+                <span>Net Payout: <strong id="payout-display" style="color: var(--neon-green);">90.0 GY</strong></span>
+            </div>
+            <div class="info-card">
+                Current Wallet Balance: <strong id="royalty-balance-num" style="color: var(--gold); font-size: 14px;">1,250.0</strong> GY
+            </div>
+            <div class="control-row">
+                <button class="action-btn" onclick="collectRoyalty()">Collect Payout to Wallet</button>
+            </div>
+        </div>
+
+        <!-- Панель 5: Charlie AI Neural Core -->
+        <div id="panel-ai" class="interactive-panel">
+            <div class="panel-title">
+                <span>🧠 CHARLIE AI NEURAL CORE SIMULATION</span>
+            </div>
+            <div class="slider-container">
+                <span class="slider-label">Sarcasm Index:</span>
+                <input type="range" id="slider-sarc" min="0" max="100" value="50">
+            </div>
+            <div class="slider-container">
+                <span class="slider-label">Creativity Index:</span>
+                <input type="range" id="slider-crea" min="0" max="100" value="50">
+            </div>
+            <div class="control-row">
+                <input type="text" id="ai-input" class="input-field" style="flex: 1;" placeholder="Ask Charlie something..." data-translate-placeholder="p5_ph" onkeypress="if(event.key==='Enter') generateCharlieResponse()">
+                <button class="action-btn" onclick="generateCharlieResponse()">Generate</button>
+            </div>
+            <div id="charlie-terminal" class="terminal-box" style="height: 90px; color: var(--neon-blue);">
+                🤖 Charlie AI Ready. Adjust sliders and send a prompt.
+            </div>
+        </div>
+
+        <!-- Панель 6: Клубная Песочница -->
+        <div id="panel-sandbox" class="interactive-panel">
+            <div class="panel-title">
+                <span>🚀 CLUB SANDBOX NODE DEPLOYER</span>
+            </div>
+            <div class="control-row">
+                <input type="text" id="sandbox-club-name" class="input-field" style="flex: 1;" placeholder="Enter node name..." data-translate-placeholder="p6_ph">
+                <select id="sandbox-pack" class="select-field">
+                    <option value="Lite">Lite Node (Standard)</option>
+                    <option value="Pro Core">Pro Core (Advanced)</option>
+                    <option value="Enterprise">Enterprise (Full Cluster)</option>
+                </select>
+                <button class="action-btn" onclick="deploySandboxNode()">Deploy Node</button>
+            </div>
+
+            <div id="sandbox-progress-wrapper" style="display: none; flex-direction: column; gap: 5px;">
+                <div id="sandbox-status" style="font-size: 11px; color: var(--gold);">Preparing deployment environment...</div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div id="sandbox-list" class="info-card" style="display: flex; flex-direction: column; gap: 5px; max-height: 120px; overflow-y: auto;">
+                <div style="color: var(--text-muted); font-style: italic;">No active nodes deployed in session.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         10. ЭКРАН 2: СХЕМА КЛУБА (CLUB MAP)
+         ========================================================================== -->
+    <div id="screen-club-map" style="display: none;">
+        <pre class="algo-pre">
+===================================================================================
+                   GY-GY OS ARCHITECTURE MAP & NODES (v4.6.1)
+===================================================================================
+
+ [MAIN ENTRANCE] 
+        │
+        ├──► <span class="bubble-click" onclick="addClick('hall')" data-translate="m_hall">ГОЛОВНИЙ ХОЛ</span> (<span id="c-hall" class="counter-num">0</span>)
+        │
+        ├──► [AI ROOM BRANCH]
+        │       ├──► <span class="bubble-click" onclick="addClick('ai_core')" data-translate="m_ai_core">Ядро ШІ Charlie</span> (<span id="c-ai_core" class="counter-num">0</span>)
+        │       └──► <span class="bubble-click" onclick="addClick('ai_chat')" data-translate="m_ai_chat">Кімната Переговорів</span> (<span id="c-ai_chat" class="counter-num">0</span>)
+        │
+        ├──► [STUDIO & OFFICE]
+        │       ├──► <span class="bubble-click" onclick="addClick('studio')" data-translate="m_studio">Студія Запису</span> (<span id="c-studio" class="counter-num">0</span>)
+        │       └──► <span class="bubble-click" onclick="addClick('office')" data-translate="m_office">Офіс Франшизи</span> (<span id="c-office" class="counter-num">0</span>)
+        │
+        └──► [BAR & TABLES]
+                ├──► <span class="bubble-click" onclick="addClick('bar')" data-translate="m_bar">БАР / Роялті Стійка</span> (<span id="c-bar" class="counter-num">0</span>)
+                └──► <span class="bubble-click" onclick="addClick('center')" data-translate="m_center">Центральний Зал</span> (<span id="c-center" class="counter-num">0</span>)
+
+===================================================================================
+ Click on any interactive room node to simulate traffic and register metrics.
+===================================================================================
+        </pre>
+        <div class="control-row" style="margin-top: 15px;">
+            <button class="action-btn secondary" onclick="clearActivityData()">Reset Scheme Counters</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- ==========================================================================
+     11. МОДАЛЬНОЕ ОКНО ПАСПОРТА ПОЛЬЗОВАТЕЛЯ (PASSPORT MODAL)
+     ========================================================================== -->
+<div id="modal-passport" class="modal-overlay" onclick="closePassport()">
+    <div class="passport-card" onclick="event.stopPropagation()">
+        <span class="close-btn" onclick="closePassport()">&times;</span>
+        <div class="passport-title">GY-GY PASSPORT</div>
+        <div class="passport-avatar-frame">
+            <img id="pass-avatar-img" src="" alt="User Avatar">
+        </div>
+        <div>
+            <h3 id="pass-nickname" style="color: #fff; font-size: 14px;">@GUEST_HUMORIST</h3>
+            <p id="pass-email" style="color: var(--text-muted); font-size: 10px;">guest@gygy.club</p>
+        </div>
+        <div style="font-size: 11px;">
+            ID: <strong id="pass-id-val" style="color: var(--neon-green);">GY-000000</strong>
+        </div>
+        <div id="pass-qr-box" class="qr-wrapper"></div>
+        <div style="font-size: 9px; color: var(--gold); margin-top: 5px;">VERIFIED SYSTEM FRANCHISE MEMBER</div>
+    </div>
+</div>
+
+<!-- ==========================================================================
+     12. ПОЛНАЯ JS-ЛОГИКА СИСТЕМЫ (SCRIPT)
+     ========================================================================== -->
+<script>
+    // ================= 1. БАЗА ДАННЫХ ПЕРЕВОДОВ И ЯЗЫКИ =================
+    const translations = {
+        uk: {
+            p1_title: "1. Системні Логи", p1_title_desc: "Airtable та API Статус",
+            p2_title: "2. Цифрові Сліди", p2_title_desc: "Сесії та User Agent",
+            p3_title: "3. Кімната Переговорів", p3_title_desc: "Смисловий Чат",
+            p4_title: "4. Роялті та Баланс", p4_title_desc: "Калькулятор та Гаманець",
+            p5_title: "5. Ядро Нейромережі", p5_title_desc: "Симулятор Charlie AI",
+            p6_title: "6. Пісочниця Клубів", p6_title_desc: "Розгортання Нод",
+            m_hall: "ГОЛОВНИЙ ХОЛ", m_ai_core: "Ядро ШІ Charlie", m_ai_chat: "Кімната Переговорів",
+            m_studio: "Студія Запису", m_office: "Офіс Франшизи", m_bar: "БАР / Роялті Стійка", m_center: "Центральний Зал",
+            p2_qr_ph: "Введіть дані для QR", p3_input_ph: "Введіть повідомлення...", p5_ph: "Запитайте Чарлі...", p6_ph: "Назва ноди..."
+        },
+        en: {
+            p1_title: "1. System Logs", p1_title_desc: "Airtable & API Status",
+            p2_title: "2. Digital Footprint", p2_title_desc: "Session & User Agent",
+            p3_title: "3. Negotiation Room", p3_title_desc: "Semantic Multi-lang Chat",
+            p4_title: "4. Royalty & Balance", p4_title_desc: "Calculator & Wallet",
+            p5_title: "5. Neural Core", p5_title_desc: "Charlie AI Simulator",
+            p6_title: "6. Club Sandbox", p6_title_desc: "Deploy Virtual Nodes",
+            m_hall: "MAIN HALL", m_ai_core: "Charlie AI Core", m_ai_chat: "Negotiation Room",
+            m_studio: "Recording Studio", m_office: "Franchise Office", m_bar: "BAR / Royalty Desk", m_center: "Main Center Hall",
+            p2_qr_ph: "Custom QR data", p3_input_ph: "Type message...", p5_ph: "Ask Charlie...", p6_ph: "Node name..."
+        },
+        es: {
+            p1_title: "1. Registros del Sistema", p1_title_desc: "Estado de Airtable y API",
+            p2_title: "2. Huella Digital", p2_title_desc: "Sesión y Agente de Usuario",
+            p3_title: "3. Sala de Negociación", p3_title_desc: "Chat Multilingüe Semántico",
+            p4_title: "4. Regalías y Saldo", p4_title_desc: "Calculadora y Billetera",
+            p5_title: "5. Núcleo Neuronal", p5_title_desc: "Simulador Charlie AI",
+            p6_title: "6. Sandbox de Clubes", p6_title_desc: "Desplegar Nodos Virtuales",
+            m_hall: "VESTÍBULO PRINCIPAL", m_ai_core: "Núcleo Charlie AI", m_ai_chat: "Sala de Negociación",
+            m_studio: "Estudio de Grabación", m_office: "Oficina de Franquicia", m_bar: "BAR / Barra de Regalías", m_center: "Sala Central",
+            p2_qr_ph: "Datos para QR", p3_input_ph: "Escribe un mensaje...", p5_ph: "Pregunta a Charlie...", p6_ph: "Nombre del nodo..."
+        },
+        de: {
+            p1_title: "1. Systemprotokolle", p1_title_desc: "Airtable & API-Status",
+            p2_title: "2. Digitaler Fußabdruck", p2_title_desc: "Sitzung & User Agent",
+            p3_title: "3. Verhandlungsraum", p3_title_desc: "Semantischer Chat",
+            p4_title: "4. Lizenzgebühren", p4_title_desc: "Rechner & Geldbörse",
+            p5_title: "5. Neuronaler Kern", p5_title_desc: "Charlie AI Simulator",
+            p6_title: "6. Club-Sandbox", p6_title_desc: "Virtuelle Knoten bereitstellen",
+            m_hall: "HAUPTHALLE", m_ai_core: "Charlie AI Kern", m_ai_chat: "Verhandlungsraum",
+            m_studio: "Tonstudio", m_office: "Franchise-Büro", m_bar: "BAR / Lizenz-Theke", m_center: "Zentralhalle",
+            p2_qr_ph: "Daten für QR", p3_input_ph: "Nachricht eingeben...", p5_ph: "Frage Charlie...", p6_ph: "Knotenname..."
+        },
+        fr: {
+            p1_title: "1. Journaux Système", p1_title_desc: "Statut Airtable & API",
+            p2_title: "2. Empreinte Digitale", p2_title_desc: "Session & Agent Utilisateur",
+            p3_title: "3. Salle de Négociation", p3_title_desc: "Chat Sémantique Multilingue",
+            p4_title: "4. Redevances & Solde", p4_title_desc: "Calculateur & Portefeuille",
+            p5_title: "5. Noyau Neuronal", p5_title_desc: "Simulateur Charlie AI",
+            p6_title: "6. Sandbox de Club", p6_title_desc: "Déployer des Noeuds Virtuels",
+            m_hall: "HALLE PRINCIPALE", m_ai_core: "Noyau Charlie AI", m_ai_chat: "Salle de Négociation",
+            m_studio: "Studio d'Enregistrement", m_office: "Bureau de Franchise", m_bar: "BAR / Comptoir Redevances", m_center: "Salle Centrale",
+            p2_qr_ph: "Données pour QR", p3_input_ph: "Écrivez un message...", p5_ph: "Demandez à Charlie...", p6_ph: "Nom du noeud..."
+        }
+    };
+
+    const flagMap = {
+        uk: "https://flagcdn.com/w20/ua.png",
+        en: "https://flagcdn.com/w20/gb.png",
+        es: "https://flagcdn.com/w20/es.png",
+        de: "https://flagcdn.com/w20/de.png",
+        fr: "https://flagcdn.com/w20/fr.png"
+    };
+
+    const semanticDatabase = {
+        uk: { default: "Адаптовано для українського контексту франшизи." },
+        en: { default: "Adapted for global English franchise context." },
+        es: { default: "Adaptado para el contexto de franquicia en español." },
+        de: { default: "Für den deutschen Franchise-Kontext angepasst." },
+        fr: { default: "Adapté pour le contexte de franchise française." }
+    };
+
+    // ================= 2. СОСТОЯНИЕ И ПЕРЕМЕННЫЕ =================
+    let currentID = '';
+    let currentLanguage = 'uk';
+    let clubStats = { hall: 0, ai_core: 0, ai_chat: 0, studio: 0, office: 0, bar: 0, center: 0 };
+    let logTimer = null;
+
+    // ================= 3. ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ И ПАНЕЛЕЙ =================
+    function switchScreen(screenType) {
+        const coreScreen = document.getElementById('screen-office-core');
+        const clubScreen = document.getElementById('screen-club-map');
+        const btnCore = document.getElementById('btn-core');
+        const btnClub = document.getElementById('btn-club');
+
+        if (screenType === 'core') {
+            coreScreen.style.display = 'block';
+            clubScreen.style.display = 'none';
+            btnCore.classList.add('active');
+            btnClub.classList.remove('active');
+        } else {
+            coreScreen.style.display = 'none';
+            clubScreen.style.display = 'block';
+            btnCore.classList.remove('active');
+            btnClub.classList.add('active');
+        }
+    }
+
+    function togglePanel(panelId) {
+        const currentPanel = document.getElementById(`panel-${panelId}`);
+        const blockElement = document.getElementById(`block-${panelId}`);
+        const allPanels = document.querySelectorAll('.interactive-panel');
+        const allBlocks = document.querySelectorAll('.num-block');
+
+        if (currentPanel && currentPanel.style.display === 'flex') {
+            closeAllPanels();
+            return;
         }
 
-        function loadStats() {
-            const data = localStorage.getItem('gygy_map_clicks');
-            if (data) {
-                try {
-                    const parsed = JSON.parse(data);
-                    Object.keys(parsed).forEach(key => {
+        allPanels.forEach(p => p.style.display = 'none');
+        allBlocks.forEach(b => b.classList.remove('active-block'));
+
+        if (currentPanel) {
+            currentPanel.style.display = 'flex';
+            if (blockElement) blockElement.classList.add('active-block');
+            currentPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            if (panelId === 'logs') runTerminalDemo();
+            if (panelId === 'traces') initTraceData();
+        }
+    }
+
+    function closeAllPanels() {
+        document.querySelectorAll('.interactive-panel').forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.num-block').forEach(b => b.classList.remove('active-block'));
+    }
+
+    // ================= 4. ЯЗЫКОВАЯ ЛОКАЛИЗАЦИЯ =================
+    function changeLanguage(langCode) {
+        currentLanguage = translations[langCode] ? langCode : 'uk';
+        const flagEl = document.getElementById('current-flag');
+        if (flagEl && flagMap[currentLanguage]) {
+            flagEl.src = flagMap[currentLanguage];
+        }
+        applyLocalization(currentLanguage);
+    }
+
+    function applyLocalization(langCode) {
+        const dict = translations[langCode] || translations['uk'];
+
+        document.querySelectorAll('[data-translate]').forEach(element => {
+            const key = element.getAttribute('data-translate');
+            if (dict[key]) {
+                if (element.querySelector('.counter-num')) {
+                    const counterEl = element.querySelector('.counter-num');
+                    const counterId = counterEl.id;
+                    const rawKey = counterId.replace('c-', '');
+                    const iconText = element.innerHTML.split('(')[0];
+                    element.innerHTML = `${iconText}(<span id="${counterId}" class="counter-num">${clubStats[rawKey] || 0}</span>) ${dict[key]}`;
+                } else {
+                    element.textContent = dict[key];
+                }
+            }
+        });
+
+        document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-translate-placeholder');
+            if (dict[key]) element.setAttribute('placeholder', dict[key]);
+        });
+    }
+
+    // ================= 5. РАБОТА С ЛОГАМИ (PANEL 1) =================
+    function runTerminalDemo() {
+        const terminal = document.getElementById('logs-terminal');
+        if (!terminal || terminal.innerHTML !== "") return;
+
+        terminal.innerHTML = "=== INITIALIZING AIRTABLE API SYNC ENGINE v4.7.5 ===<br>";
+        const mockEvents = [
+            "CONNECTED: Franchise Node #19 (Kyiv Core)",
+            "SYNC: Updated visitor metrics for 'office.html'",
+            "SECURITY: SSL Certificate verified [2048-bit RSA]",
+            "WALLET: Royalty transaction executed +120 GY from Berlin Node",
+            "AI_CORE: Charlie AI response buffer warmed up"
+        ];
+
+        let index = 0;
+        if (logTimer) clearInterval(logTimer);
+        logTimer = setInterval(() => {
+            const now = new Date().toLocaleTimeString();
+            const logLine = `<span style="color:var(--text-muted);">[${now}]</span> <span style="color:var(--neon-green);">${mockEvents[index % mockEvents.length]}</span><br>`;
+            terminal.innerHTML += logLine;
+            terminal.scrollTop = terminal.scrollHeight;
+            index++;
+        }, 3000);
+    }
+
+    function generateMockLog() {
+        const terminal = document.getElementById('logs-terminal');
+        const userEvent = prompt("Enter custom log message:");
+        if (userEvent && terminal) {
+            const now = new Date().toLocaleTimeString();
+            terminal.innerHTML += `<span style="color:var(--text-muted);">[${now}]</span> <span style="color:var(--gold);">[MANUAL_ENTRY] ${userEvent}</span><br>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    }
+
+    function clearLogs() {
+        const terminal = document.getElementById('logs-terminal');
+        if (terminal) terminal.innerHTML = "=== Terminal log buffer cleared ===<br>";
+    }
+
+    // ================= 6. ЦИФРОВОЙ СЛЕД (PANEL 2) =================
+    function initTraceData() {
+        const uaEl = document.getElementById('trace-ua');
+        const sessionEl = document.getElementById('trace-session');
+        const timeEl = document.getElementById('trace-time');
+
+        if (uaEl) uaEl.innerText = navigator.userAgent;
+        
+        let sessionKey = localStorage.getItem('gygy_session_key');
+        if (!sessionKey) {
+            sessionKey = "SES-" + Math.floor(10000000 + Math.random() * 90000000);
+            localStorage.setItem('gygy_session_key', sessionKey);
+        }
+        
+        if (sessionEl) sessionEl.innerText = sessionKey;
+        if (timeEl) timeEl.innerText = new Date().toLocaleString();
+
+        const qrBox = document.getElementById('trace-mini-qr');
+        if (qrBox && qrBox.innerHTML === "" && typeof QRCode !== 'undefined') {
+            new QRCode(qrBox, { text: currentID + "|" + sessionKey, width: 80, height: 80 });
+        }
+    }
+
+    function updateTraceQR() {
+        const inputEl = document.getElementById('trace-custom-input');
+        const qrBox = document.getElementById('trace-mini-qr');
+        if (inputEl && qrBox && inputEl.value.trim() && typeof QRCode !== 'undefined') {
+            qrBox.innerHTML = "";
+            new QRCode(qrBox, { text: inputEl.value.trim(), width: 80, height: 80 });
+        }
+    }
+
+    // ================= 7. СЕМАНТИЧЕСКИЙ ЧАТ (PANEL 3) =================
+    function sendSemanticMessage() {
+        const input = document.getElementById('chat-msg-input');
+        const langSelect = document.getElementById('chat-lang');
+        const chatBox = document.getElementById('chat-box');
+        if (!input || !chatBox) return;
+
+        const rawText = input.value.trim();
+        if (!rawText) return;
+
+        const selectedLang = langSelect ? langSelect.value : 'uk';
+        const flags = { en: '🇺🇸', es: '🇪🇸', de: '🇩🇪', fr: '🇫🇷', uk: '🇺🇦' };
+        
+        const defMsg = semanticDatabase[selectedLang] ? semanticDatabase[selectedLang]['default'] : "Adapted.";
+        const adapted = `[Semantic Adapt]: "${rawText}" — ${defMsg}`;
+
+        const html = `
+            <div style="border-bottom: 1px solid var(--panel-border); padding: 6px 0; font-size: 11px;">
+                <div style="color: var(--gold); font-weight: bold;">${flags[selectedLang] || '🌐'} User (${currentID}):</div>
+                <div style="color: #fff;">${rawText}</div>
+                <div style="color: var(--neon-green); font-style: italic;">${adapted}</div>
+            </div>
+        `;
+        chatBox.insertAdjacentHTML('beforeend', html);
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // ================= 8. КАЛЬКУЛЯТОР РОЯЛТИ (PANEL 4) =================
+    function calculateRoyalty() {
+        const priceEl = document.getElementById('royalty-price');
+        const feeEl = document.getElementById('royalty-fee');
+        if (!priceEl || !feeEl) return;
+
+        const price = parseFloat(priceEl.value) || 0;
+        const feePercent = parseFloat(feeEl.value) || 0;
+
+        document.getElementById('val-fee-text').innerText = feePercent;
+        const feeAmount = (price * (feePercent / 100)).toFixed(1);
+        const payoutAmount = (price - feeAmount).toFixed(1);
+
+        document.getElementById('fee-display').innerText = feeAmount + " GY (" + feePercent + "%)";
+        document.getElementById('payout-display').innerText = payoutAmount + " GY";
+    }
+
+    function collectRoyalty() {
+        const price = parseFloat(document.getElementById('royalty-price').value) || 0;
+        const feePercent = parseFloat(document.getElementById('royalty-fee').value) || 0;
+        const payoutAmount = price - (price * (feePercent / 100));
+
+        if (payoutAmount <= 0) {
+            alert("Nothing to collect!");
+            return;
+        }
+
+        const balEl = document.getElementById('royalty-balance-num');
+        let curBal = parseFloat(balEl.innerText.replace(/,/g, "")) || 0;
+        curBal += payoutAmount;
+        
+        balEl.innerText = curBal.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
+        alert(`Success! Payout of +${payoutAmount.toFixed(1)} GY added to your Vault.`);
+    }
+
+    // ================= 9. AI NEURAL CORE SIMULATOR (PANEL 5) =================
+    function generateCharlieResponse() {
+        const inputEl = document.getElementById('ai-input');
+        const output = document.getElementById('charlie-terminal');
+        if (!inputEl || !output) return;
+
+        const input = inputEl.value.trim();
+        if (!input) return;
+
+        const sarc = parseInt(document.getElementById('slider-sarc').value) || 0;
+        const crea = parseInt(document.getElementById('slider-crea').value) || 0;
+
+        output.innerHTML = "🤖 <i>Charlie is processing prompt...</i>";
+
+        setTimeout(() => {
+            let res = "";
+            if (sarc > 70) {
+                res = `Charlie [Sarcasm ${sarc}%]: "Oh, wow. '${input}'? That's groundbreaking. Truly revolutionary."`;
+            } else if (crea > 70) {
+                res = `Charlie [Creativity ${crea}%]: "In a parallel digital dimension, '${input}' sparks a new cosmic event!"`;
+            } else {
+                res = `Charlie AI: "Processed prompt: '${input}'. System status nominal."`;
+            }
+            output.innerText = res;
+        }, 800);
+    }
+
+    // ================= 10. SANDBOX NODE DEPLOYER (PANEL 6) =================
+    function deploySandboxNode() {
+        const nameInput = document.getElementById('sandbox-club-name');
+        if (!nameInput || !nameInput.value.trim()) {
+            alert("Please specify a node name!");
+            return;
+        }
+
+        const name = nameInput.value.trim();
+        const pack = document.getElementById('sandbox-pack').value;
+        const wrapper = document.getElementById('sandbox-progress-wrapper');
+        const fill = document.getElementById('progress-bar-fill');
+        const status = document.getElementById('sandbox-status');
+        const list = document.getElementById('sandbox-list');
+
+        wrapper.style.display = 'flex';
+        status.innerText = `Deploying cluster node [${name}]...`;
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 15;
+            fill.style.width = Math.min(progress, 100) + "%";
+            if (progress >= 100) {
+                clearInterval(interval);
+                status.innerText = "Deployment Complete!";
+                setTimeout(() => {
+                    wrapper.style.display = 'none';
+                    fill.style.width = "0%";
+                    
+                    if (list.innerHTML.includes("No active nodes")) {
+                        list.innerHTML = "";
+                    }
+                    
+                    const nodeHtml = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 3px;">
+                            <span>🟢 <strong>${name}</strong> [${pack}]</span>
+                            <span style="color: var(--neon-green); font-size: 10px;">ONLINE</span>
+                        </div>
+                    `;
+                    list.insertAdjacentHTML('beforeend', nodeHtml);
+                    nameInput.value = "";
+                }, 500);
+            }
+        }, 120);
+    }
+
+    // ================= 11. СХЕМА КЛУБА И КЛИКИ =================
+    function addClick(id) {
+        if (clubStats.hasOwnProperty(id)) {
+            clubStats[id]++;
+            localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
+            const el = document.getElementById(`c-${id}`);
+            if (el) el.textContent = clubStats[id];
+        }
+    }
+
+    function loadStats() {
+        const data = localStorage.getItem('gygy_map_clicks');
+        if (data) {
+            try {
+                const parsed = JSON.parse(data);
+                Object.keys(clubStats).forEach(key => {
+                    if (parsed.hasOwnProperty(key)) {
                         clubStats[key] = parsed[key];
                         const el = document.getElementById(`c-${key}`);
                         if (el) el.textContent = clubStats[key];
-                    });
-                } catch (e) { console.error(e); }
-            }
-        }
-
-        function clearActivityData() {
-            if (confirm("Скинути лічильники всіх локацій?")) {
-                Object.keys(clubStats).forEach(key => {
-                    clubStats[key] = 0;
-                    const el = document.getElementById(`c-${key}`);
-                    if (el) el.textContent = 0;
-                });
-                localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
-            }
-        }
-
-        // ================= #3 ВНУТРІШНІЙ ЧАТ ТА СЕМАНТИКА =================
-        function sendSemanticMessage() {
-            const input = document.getElementById('chat-input');
-            const chatBox = document.getElementById('internal-chat-box');
-            const selectedLang = document.getElementById('chat-lang').value;
-            const rawText = input.value.trim();
-
-            if (!rawText) return;
-
-            const flags = { en: '🇺🇸', es: '🇪🇸', de: '🇩🇪', fr: '🇫🇷', uk: '🇺🇦' };
-            const langFlag = flags[selectedLang] || '🌐';
-            
-            const cleanTextLower = rawText.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-            
-            let adaptedText = semanticDatabase[selectedLang] ? semanticDatabase[selectedLang][cleanTextLower] : null;
-            if (!adaptedText) {
-                const defMessage = semanticDatabase[selectedLang] ? semanticDatabase[selectedLang]['default'] : "Смислова адаптація завершена.";
-                adaptedText = `[Адаптація]: "${rawText}" — ${defMessage}`;
-            }
-
-            const messageHtml = `
-                <div class="chat-msg" style="border-color: var(--neon-green)">
-                    <div class="msg-meta">${langFlag} (${currentID})</div>
-                    <div class="msg-original">Original: ${rawText}</div>
-                    <div class="msg-translation"><strong>Translate:</strong> ${adaptedText}</div>
-                </div>
-            `;
-
-            chatBox.insertAdjacentHTML('beforeend', messageHtml);
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // ================= #4 РОЯЛТІ ТА БАЛАНС =================
-        function calculateRoyalty() {
-            const price = parseFloat(document.getElementById('royalty-price').value) || 0;
-            const feePercent = parseFloat(document.getElementById('royalty-fee').value) || 0;
-
-            const valPriceEl = document.getElementById('val-price-text');
-            const valFeeEl = document.getElementById('val-fee-text');
-            if (valPriceEl) valPriceEl.innerText = price;
-            if (valFeeEl) valFeeEl.innerText = feePercent;
-
-            const feeAmount = (price * (feePercent / 100)).toFixed(1);
-            const payoutAmount = (price - feeAmount).toFixed(1);
-
-            const feeDisp = document.getElementById('fee-display');
-            const payoutDisp = document.getElementById('payout-display');
-            if (feeDisp) feeDisp.innerText = feePercent + "% (" + feeAmount + " GY)";
-            if (payoutDisp) payoutDisp.innerText = payoutAmount + " GY";
-        }
-
-        function collectRoyalty() {
-            const price = parseFloat(document.getElementById('royalty-price').value) || 0;
-            const feePercent = parseFloat(document.getElementById('royalty-fee').value) || 0;
-            const payoutAmount = price - (price * (feePercent / 100));
-
-            const balanceEl = document.getElementById('royalty-balance-num');
-            if (!balanceEl) return;
-
-            let curBal = parseFloat(balanceEl.innerText.replace(/,/g, "")) || 0;
-            curBal = (curBal + payoutAmount);
-            
-            balanceEl.innerText = curBal.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
-            alert(`Баланс оновлено на +${payoutAmount.toFixed(1)} GY.`);
-        }
-
-        // ================= #5 ЯДРО НЕЙРОМЕРЕЖІ =================
-        function generateCharlieResponse() {
-            const input = document.getElementById('ai-input').value.trim();
-            const output = document.getElementById('charlie-terminal');
-            if (!input || !output) return;
-
-            const sarc = parseInt(document.getElementById('slider-sarc').value) || 0;
-            const crea = parseInt(document.getElementById('slider-crea').value) || 0;
-
-            output.innerHTML = "🤖 <i>Аналіз запиту... Обробка...</i>";
-
-            setTimeout(() => {
-                let response = "";
-                if (sarc > 70) {
-                    response = `Charlie: "Чудово. '${input}'? Справді важливе питання століття. Чекай, поки мій процесор іронічно це перетравить."`;
-                } else if (crea > 70) {
-                    response = `Charlie: "Твій запит '${input}' запустив квантову генерацію ідей! Ми створюємо новий нейро-всесвіт."`;
-                } else {
-                    response = `Charlie: "Запит '${input}' успішно виконано. Налаштування: Сарказм ${sarc}%, Креативність ${crea}%."`;
-                }
-                output.innerText = response;
-            }, 1000);
-        }
-
-        // ================= #6 ПІСОЧНИЦЯ КЛУБІВ =================
-        function deploySandboxNode() {
-            const nameInput = document.getElementById('sandbox-club-name');
-            const packInput = document.getElementById('sandbox-pack');
-            const progress = document.getElementById('sandbox-progress');
-            const progressFill = document.getElementById('progress-bar-fill');
-            const status = document.getElementById('sandbox-status');
-            const list = document.getElementById('sandbox-list');
-
-            if (!nameInput || !nameInput.value.trim()) {
-                alert("Введіть назву ноди!");
-                return;
-            }
-
-            const name = nameInput.value.trim();
-            const pack = packInput ? packInput.value : 'Standard';
-
-            if (progress) progress.style.display = 'block';
-            if (status) {
-                status.style.display = 'block';
-                status.innerText = "Ініціалізація ноди...";
-            }
-            
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 10;
-                if (progressFill) progressFill.style.width = width + "%";
-
-                if (width >= 100) {
-                    clearInterval(interval);
-                    if (status) status.innerText = `Ноду успішно розгорнуто!`;
-                    if (progress) progress.style.display = 'none';
-                    if (progressFill) progressFill.style.width = "0%";
-
-                    const now = new Date().toLocaleTimeString();
-                    const newEntry = `<div style="margin-top:5px; border-left: 2px solid var(--neon-green); padding-left: 5px;">
-                        🟢 <strong>${name}</strong> [${pack}] — Стан: Активна (${now})
-                    </div>`;
-                    
-                    if (list) {
-                        if (list.innerHTML.includes("порожній")) {
-                            list.innerHTML = `<strong>Активні симуляції:</strong>` + newEntry;
-                        } else {
-                            list.innerHTML += newEntry;
-                        }
                     }
-                    nameInput.value = "";
-                }
-            }, 100);
+                });
+            } catch (e) {}
         }
+    }
 
-        // ================= МОДАЛКА ПАСПОРТА =================
-        function openPassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { 
-                modal.style.display = 'flex'; 
-                setTimeout(() => { modal.style.opacity = '1'; }, 10); 
-            }
+    function clearActivityData() {
+        if (confirm("Reset all scheme click counters?")) {
+            Object.keys(clubStats).forEach(key => {
+                clubStats[key] = 0;
+                const el = document.getElementById(`c-${key}`);
+                if (el) el.textContent = 0;
+            });
+            localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
         }
+    }
 
-        function closePassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) {
-                modal.style.opacity = '0';
-                setTimeout(() => { modal.style.display = 'none'; }, 300);
-            }
+    // ================= 12. МОДАЛЬНОЕ ОКНО ПАСПОРТА =================
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
         }
+    }
 
-        function renderUserPassport(targetID) {
-            const passIdVal = document.getElementById('pass-id-val');
-            const passQrBox = document.getElementById('pass-qr-box');
-            if (passIdVal) passIdVal.innerText = targetID;
-            if (passQrBox && typeof QRCode !== 'undefined') { 
-                passQrBox.innerHTML = ""; 
-                new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); 
-            }
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
+    }
 
-        // ================= ІНІЦІАЛІЗАЦІЯ ПРИ ЗАВАНТАЖЕННІ =================
-        document.addEventListener("DOMContentLoaded", function() {
-            loadStats();
+    function renderUserPassport(targetID) {
+        const passIdVal = document.getElementById('pass-id-val');
+        const passQrBox = document.getElementById('pass-qr-box');
+        if (passIdVal) passIdVal.innerText = targetID;
+        if (passQrBox && typeof QRCode !== 'undefined') {
+            passQrBox.innerHTML = "";
+            new QRCode(passQrBox, { text: targetID, width: 90, height: 90 });
+        }
+    }
 
-            // Аватар
-            const savedAvatar = localStorage.getItem('gygy_avatar') || 
-                                localStorage.getItem('gy_user_img') || 
-                                localStorage.getItem('user_avatar');
-            const avatarEl = document.getElementById('header-avatar');
-            const passAvatarEl = document.getElementById('pass-avatar-img');
-            
-            if (savedAvatar) {
-                if (avatarEl) { avatarEl.src = savedAvatar; avatarEl.style.display = 'block'; }
-                if (passAvatarEl) { passAvatarEl.src = savedAvatar; }
-            } else {
-                const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
-                if (avatarEl) { avatarEl.src = defaultAvatar; avatarEl.style.display = 'block'; }
-                if (passAvatarEl) { passAvatarEl.src = defaultAvatar; }
-            }
+    // ================= 13. ИНИЦИАЛИЗАЦИЯ ПРИ ZAGRUZKE (DOM LOAD) =================
+    document.addEventListener("DOMContentLoaded", function() {
+        loadStats();
 
-            // Нікнейм та пошта
-            const savedNickname = localStorage.getItem('gygy_nickname');
-            const passNick = document.getElementById('pass-nickname');
-            if (savedNickname && passNick) passNick.innerText = '@' + savedNickname;
+        // Аватарка по умолчанию (SVG Data-URI)
+        const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%2311141b'/><circle cx='16' cy='12' r='5' fill='%23ffd700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23ffd700'/></svg>";
+        const savedAvatar = localStorage.getItem('gygy_avatar') || defaultAvatar;
 
-            const savedEmail = localStorage.getItem('gygy_email');
-            const passEmail = document.getElementById('pass-email');
-            if (savedEmail && passEmail) passEmail.innerText = savedEmail;
+        const avatarEl = document.getElementById('header-avatar');
+        const passAvatarEl = document.getElementById('pass-avatar-img');
+        if (avatarEl) avatarEl.src = savedAvatar;
+        if (passAvatarEl) passAvatarEl.src = savedAvatar;
 
-            // ID
-            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace');
-            if (!currentID) {
-                currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
-                localStorage.setItem('gygy_id', currentID);
-            }
-            renderUserPassport(currentID);
+        // ID Пользователя
+        currentID = localStorage.getItem('gygy_id');
+        if (!currentID) {
+            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('gygy_id', currentID);
+        }
+        
+        const headerIdEl = document.getElementById('header-user-id');
+        if (headerIdEl) headerIdEl.innerText = currentID;
 
-            // Прапорець та мова
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-            const flagElement = document.getElementById('current-flag');
-            if (flagElement) flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
-
-            calculateRoyalty();
-        });
-    </script>
+        renderUserPassport(currentID);
+        applyLocalization('uk');
+        calculateRoyalty();
+    });
+</script>
 </body>
 </html>
