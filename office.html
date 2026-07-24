@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GYGY Office Dashboard 001 </title>
-    <!-- Підключення бібліотеки QR-кодів -->
+    <title>GYGY Office v1.0</title>
+    <!-- Библиотека QR-кодов для паспорта -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
-            --neon-green: #00ff88;
-            --bg-dark: #0d0e12;
-            --panel-bg: #16181e;
-            --text-color: #e0e0e0;
+            --bg-dark: #000000;
+            --panel-bg: #0d0e12;
             --accent-gold: #d4af37;
+            --text-color: #e0e0e0;
         }
 
         body {
@@ -23,148 +22,113 @@
             padding: 20px;
         }
 
+        /* Стандартная верхняя панель (золото на черном) */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--accent-gold);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        header h2 {
+            color: var(--accent-gold);
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 1px;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
         }
 
         #header-avatar {
-            width: 42px;
-            height: 42px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            border: 2px solid var(--neon-green);
+            border: 2px solid var(--accent-gold);
             object-fit: cover;
         }
 
-        /* Навігаційні кнопки на весь екран */
+        #current-flag {
+            width: 24px;
+            border-radius: 2px;
+        }
+
+        /* Две большие кнопки на весь экран */
         .fullscreen-nav {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .nav-btn {
             background: var(--panel-bg);
-            color: var(--text-color);
-            border: 2px solid #2a2d37;
-            padding: 30px;
-            border-radius: 12px;
-            font-size: 20px;
+            color: var(--accent-gold);
+            border: 2px solid var(--accent-gold);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s ease;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
 
         .nav-btn.active {
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
         .nav-btn:hover {
             opacity: 0.9;
-            transform: translateY(-2px);
         }
 
-        /* Схема офісу (6 прямокутників) */
+        /* Схема офиса: аккуратные 6 прямоугольников */
         .office-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .office-room {
             background: var(--panel-bg);
-            border: 1px solid #2a2d37;
+            border: 1px solid #333;
             border-radius: 8px;
-            min-height: 140px;
+            height: 100px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            position: relative;
+            color: #888;
+            transition: border-color 0.2s;
         }
 
+        .office-room:hover {
+            border-color: var(--accent-gold);
+            color: var(--text-color);
+        }
+
+        /* 3-й прямоугольник — Комната переговоров */
         .office-room.meeting-room {
             border-color: var(--accent-gold);
             color: var(--accent-gold);
+            background: #14120a;
         }
 
-        /* Пісочниця та інші елементи інтерфейсу */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .card {
-            background: var(--panel-bg);
-            border-radius: 8px;
-            padding: 15px;
-            border: 1px solid #2a2d37;
-        }
-
-        .progress-bar {
-            width: 100%;
-            background-color: #222;
-            border-radius: 4px;
-            overflow: hidden;
-            height: 10px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--neon-green);
-            width: 0%;
-            transition: width 0.15s ease;
-        }
-
-        button {
-            background: var(--neon-green);
-            color: #000;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            background: #222;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        /* МОДАЛЬНЕ ВІКНО ПАСПОРТА */
+        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
         .modal {
             display: none;
             position: fixed;
@@ -172,7 +136,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             justify-content: center;
             align-items: center;
             opacity: 0;
@@ -183,27 +147,30 @@
         .passport-card {
             background: var(--panel-bg);
             border: 2px solid var(--accent-gold);
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
-            width: 320px;
+            width: 300px;
             text-align: center;
             position: relative;
+            color: var(--text-color);
         }
 
         .passport-card img.avatar {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 2px solid var(--accent-gold);
+            object-fit: cover;
+            margin-bottom: 10px;
         }
 
         .close-btn {
             position: absolute;
             top: 10px;
             right: 15px;
-            color: #fff;
+            color: var(--accent-gold);
             cursor: pointer;
-            font-size: 20px;
+            font-size: 22px;
         }
 
         #pass-qr-box {
@@ -215,22 +182,22 @@
 </head>
 <body>
 
-    <!-- Стандартная панель сверху -->
+    <!-- Стандартная панель сверху (золото на черном) -->
     <header>
-        <h2>GYGY System Dashboard — Офис</h2>
+        <h2>GYGY OFFICE (v1.0)</h2>
         <div class="user-profile" onclick="openPassport()">
             <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
             <img id="header-avatar" src="" alt="Avatar" style="display:none;">
         </div>
     </header>
 
-    <!-- Две больших кнопки на весь экран -->
+    <!-- Две большие кнопки на весь экран -->
     <div class="fullscreen-nav">
-        <button class="nav-btn active" onclick="switchTab('office')">1. Схема офиса</button>
-        <button class="nav-btn" onclick="location.href='club-map.html'">2. Схема клуба</button>
+        <button class="nav-btn active">1. Схема офиса</button>
+        <a href="club-map.html" class="nav-btn">2. Схема клуба</a>
     </div>
 
-    <!-- Схема офиса: 6 прямоугольников -->
+    <!-- Схема офиса (6 компактных прямоугольников) -->
     <div class="office-grid">
         <div class="office-room">01</div>
         <div class="office-room">02</div>
@@ -240,183 +207,19 @@
         <div class="office-room">06</div>
     </div>
 
-    <div class="container">
-        <!-- ПІСОЧНИЦЯ КЛУБІВ -->
-        <div class="card">
-            <h3>#6 Песочница Клубов</h3>
-            <label for="sandbox-club-name">Имя узла:</label>
-            <input type="text" id="sandbox-club-name" placeholder="Введите название...">
-
-            <label for="sandbox-pack">Пакет:</label>
-            <select id="sandbox-pack">
-                <option value="Basic">Basic Node</option>
-                <option value="Pro">Pro Cluster</option>
-                <option value="Enterprise">Enterprise AI</option>
-            </select>
-
-            <button onclick="deploySandboxNode()">Развернуть узел</button>
-
-            <div id="sandbox-progress" class="progress-bar">
-                <div id="progress-bar-fill" class="progress-bar-fill"></div>
-            </div>
-            <div id="sandbox-status" style="display:none; margin-top:10px; font-size:12px; color:var(--neon-green);"></div>
-
-            <div id="sandbox-list" style="margin-top: 15px;">
-                <strong data-translate="p6_active_list">Активные симуляции:</strong> Список пуст
-            </div>
-        </div>
-
-        <!-- СХЕМА ТА ЛІЧИЛЬНИКИ -->
-        <div class="card">
-            <h3>Статистика Клубов</h3>
-            <p>Клики по клубам:</p>
-            <button onclick="addClick('club1')">Клуб 1: <span id="c-club1">0</span></button>
-            <button onclick="addClick('club2')">Клуб 2: <span id="c-club2">0</span></button>
-            <br><br>
-            <button onclick="clearActivityData()" style="background:#ff4444; color:white;">Сбросить счетчики</button>
-        </div>
-
-        <!-- НАЛАШТУВАННЯ ЧАТУ -->
-        <div class="card">
-            <h3>Настройки языка чата</h3>
-            <select id="chat-lang">
-                <option value="ru">Русский</option>
-                <option value="uk">Українська</option>
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="de">Deutsch</option>
-                <option value="fr">Français</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНЕ ВІКНО ПАСПОРТА -->
+    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="modal">
         <div class="passport-card">
             <span class="close-btn" onclick="closePassport()">&times;</span>
-            <img id="pass-avatar-img" class="avatar" src="" alt="Passport Avatar">
-            <h3 id="pass-nickname">@User</h3>
-            <p id="pass-email">user@example.com</p>
-            <p><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
+            <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
+            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--accent-gold);">@User</h3>
+            <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
+            <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
             <div id="pass-qr-box"></div>
         </div>
     </div>
 
     <script>
-        // Инициализация глобальных переменных
-        var clubStats = clubStats || {};
-        var currentID = "";
-
-        function switchTab(tab) {
-            if (tab === 'office') {
-                console.log("Активна схема офиса");
-            }
-        }
-
-        // Функция безопасности для избежания XSS
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
-        }
-
-        function applyLocalization(lang) {
-            console.log("Язык интерфейса установлен на: " + lang);
-        }
-
-        function calculateRoyalty() {
-            console.log("Расчет роялти выполнен.");
-        }
-
-        // ================= #6 ПЕСОЧНИЦА КЛУБОВ =================
-        function deploySandboxNode() {
-            const rawName = document.getElementById('sandbox-club-name').value.trim();
-            const pack = document.getElementById('sandbox-pack').value;
-            const progress = document.getElementById('sandbox-progress');
-            const progressFill = document.getElementById('progress-bar-fill');
-            const status = document.getElementById('sandbox-status');
-            const list = document.getElementById('sandbox-list');
-
-            if (!rawName) {
-                alert("Please specify node name!");
-                return;
-            }
-
-            const name = escapeHTML(rawName);
-
-            progress.style.display = 'block';
-            status.style.display = 'block';
-            status.innerText = "Initializing Sandbox Container...";
-            
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 5;
-                progressFill.style.width = width + "%";
-
-                if (width === 30) status.innerText = "Deploying Airtable Schema...";
-                if (width === 60) status.innerText = "Mounting Charlie AI Module...";
-                if (width === 90) status.innerText = "Generating SSL and access tokens...";
-
-                if (width >= 100) {
-                    clearInterval(interval);
-                    status.innerText = `Node successfully deployed!`;
-                    progress.style.display = 'none';
-                    progressFill.style.width = "0%";
-
-                    const now = new Date().toLocaleTimeString();
-                    const newEntry = `<div style="margin-top:5px; border-left: 2px solid var(--neon-green); padding-left: 5px;">
-                        🟢 <strong>${name}</strong> [${escapeHTML(pack)}] — Status: Active (Sync ${now})
-                    </div>`;
-                    
-                    if (list.innerHTML.includes("Список пуст") || list.innerHTML.includes("List empty")) {
-                        list.innerHTML = `<strong data-translate="p6_active_list">Active Simulations:</strong>` + newEntry;
-                    } else {
-                        list.innerHTML += newEntry;
-                    }
-                    document.getElementById('sandbox-club-name').value = "";
-                }
-            }, 150);
-        }
-
-        // ================= СХЕМА КЛУБА ТА ЛІЧИЛЬНИКИ =================
-        function addClick(id) {
-            if (!clubStats[id]) {
-                clubStats[id] = 0;
-            }
-            clubStats[id]++;
-            localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
-            const el = document.getElementById(`c-${id}`);
-            if (el) el.textContent = clubStats[id];
-        }
-
-        function loadStats() {
-            const data = localStorage.getItem('gygy_map_clicks');
-            if (data) {
-                try {
-                    const parsed = JSON.parse(data);
-                    Object.keys(parsed).forEach(key => {
-                        clubStats[key] = parsed[key];
-                        const el = document.getElementById(`c-${key}`);
-                        if (el) el.textContent = clubStats[key];
-                    });
-                } catch (e) { 
-                    console.error("Ошибка парсинга статистики:", e); 
-                }
-            }
-        }
-
-        function clearActivityData() {
-            if (confirm("Reset counters?")) {
-                Object.keys(clubStats).forEach(key => {
-                    clubStats[key] = 0;
-                    const el = document.getElementById(`c-${key}`);
-                    if (el) el.textContent = 0;
-                });
-                localStorage.setItem('gygy_map_clicks', JSON.stringify(clubStats));
-            }
-        }
-
-        // ================= МОДАЛКА ПАСПОРТА =================
         function openPassport() {
             const modal = document.getElementById('modal-passport');
             if (modal) { 
@@ -436,83 +239,39 @@
         function renderUserPassport(targetID) {
             const passIdVal = document.getElementById('pass-id-val');
             const passQrBox = document.getElementById('pass-qr-box');
-            
             if (passIdVal) passIdVal.innerText = targetID;
-            
-            if (passQrBox) { 
+            if (passQrBox && typeof QRCode !== 'undefined') { 
                 passQrBox.innerHTML = ""; 
-                if (typeof QRCode !== 'undefined') {
-                    new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); 
-                } else {
-                    passQrBox.innerText = "QR unavailable";
-                }
+                new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); 
             }
         }
 
-        // ================= ІНІЦІАЛІЗАЦІЯ ПРИ ЗАВАНТАЖЕННІ =================
         document.addEventListener("DOMContentLoaded", function() {
-            loadStats();
-
-            // Аватар
-            const savedAvatar = localStorage.getItem('gygy_avatar') || 
-                                localStorage.getItem('gy_user_img') || 
-                                localStorage.getItem('user_avatar');
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
             const passAvatarEl = document.getElementById('pass-avatar-img');
             
-            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
             const currentAvatar = savedAvatar || defaultAvatar;
 
             if (avatarEl) { avatarEl.src = currentAvatar; avatarEl.style.display = 'block'; }
             if (passAvatarEl) { passAvatarEl.src = currentAvatar; }
 
-            // Никнейм
             const savedNickname = localStorage.getItem('gygy_nickname');
-            const passNick = document.getElementById('pass-nickname');
-            if (savedNickname && passNick) {
-                passNick.innerText = '@' + savedNickname;
-            }
+            if (savedNickname) document.getElementById('pass-nickname').innerText = '@' + savedNickname;
 
-            // Почта
             const savedEmail = localStorage.getItem('gygy_email');
-            const passEmail = document.getElementById('pass-email');
-            if (savedEmail && passEmail) {
-                passEmail.innerText = savedEmail;
-            }
+            if (savedEmail) document.getElementById('pass-email').innerText = savedEmail;
 
-            // ID
-            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace');
-            if (!currentID) {
-                currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
-                localStorage.setItem('gygy_id', currentID);
-            }
+            let currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            // ЯЗЫК
             const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-            const savedLang = localStorage.getItem('gy_lang') || localStorage.getItem('gygy_lang') || savedFlag.toLowerCase();
-            
-            let targetLang = 'ru';
-            if (['gb', 'us', 'en'].includes(savedLang)) targetLang = 'en';
-            else if (['es', 'mx'].includes(savedLang)) targetLang = 'es';
-            else if (['de', 'at'].includes(savedLang)) targetLang = 'de';
-            else if (['fr', 'be'].includes(savedLang)) targetLang = 'fr';
-            else if (['ua', 'uk'].includes(savedLang)) targetLang = 'uk';
-            else if (['ru'].includes(savedLang)) targetLang = 'ru';
-
-            applyLocalization(targetLang);
-
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
             }
-
-            const chatLangSelect = document.getElementById('chat-lang');
-            if (chatLangSelect) {
-                chatLangSelect.value = targetLang;
-            }
-
-            calculateRoyalty();
         });
     </script>
 </body>
