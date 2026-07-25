@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Club Map v4.6.9 CORE</title>
+    <title>GYGY Club Map v4.7.0 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -65,19 +65,19 @@
             transform: scale(1.1);
         }
 
-        /* Шапка с сотрудниками и юзером */
+        /* Шапка: Слева сотрудники, по центру аватар с ником, справа логотип GY-GY */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: var(--panel-bg);
-            padding: 10px 20px 10px 95px; /* отступ 95px чтобы обойти стрелки */
+            padding: 10px 20px 10px 95px; /* отступ 95px слева под стрелки */
             border-radius: 8px;
             margin-bottom: 15px;
             flex-shrink: 0;
         }
 
-        /* Блок команды (сотрудников) */
+        /* Блок команды (сотрудников) слева */
         .header-team {
             display: flex;
             align-items: center;
@@ -94,7 +94,7 @@
             height: 32px;
             border-radius: 50%;
             border: 1px solid var(--accent-gold);
-            margin-left: -10px; /* эффект наложения */
+            margin-left: -10px;
             background: #222;
             box-shadow: 0 0 5px rgba(0,0,0,0.5);
             transition: transform 0.2s;
@@ -122,11 +122,13 @@
             transform: scale(1.1);
         }
 
-        /* Блок юзера (правый угол) */
+        /* Блок юзера строго по центру шапки */
         .header-center-user {
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
+            margin: 0 auto;
         }
 
         .avatar-with-flag {
@@ -159,6 +161,16 @@
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 13px;
+        }
+
+        /* Логотип GY-GY справа */
+        .header-logo {
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            flex-shrink: 0;
         }
 
         /* Контейнер Карты */
@@ -242,18 +254,16 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- СТРЕЛКИ НАВИГАЦИИ (нацелены на файл index.html) -->
+    <!-- СТРЕЛКИ НАВИГАЦИИ -->
     <div class="notranslate ui-nav-arrows">
         <a href="index.html#block-hall" class="arrow-item" title="В Холл">&lt;</a>
         <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
     </div>
 
-    <!-- ШАПКА: Слева сотрудники, справа пользователь -->
+    <!-- ШАПКА: Слева сотрудники, по центру аватар юзера, справа логотип GY-GY -->
     <header>
         <div class="header-team">
-            <div id="team-container" class="team-avatars">
-                <!-- Аватары сотрудников добавляются через JS -->
-            </div>
+            <div id="team-container" class="team-avatars"></div>
             <button class="add-emp-btn" onclick="addEmployee()" title="Нанять сотрудника">+</button>
         </div>
 
@@ -264,14 +274,15 @@
             </div>
             <span id="header-nickname" class="user-nickname">@User</span>
         </div>
+
+        <div class="header-logo notranslate">GY-GY</div>
     </header>
 
     <!-- КАРТА КЛУБА -->
     <div class="map-container">
-        <!-- Название перенесено сюда -->
-        <h2 class="map-title notranslate">GY-GY CLUB MAP</h2>
+        <h2 class="map-title notranslate">КАРТА АРХИТЕКТУРЫ КЛУБА</h2>
         
-        <pre class="algo-pre">================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.9 CORE ] ==================
+        <pre class="algo-pre">================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.7.0 CORE ] ==================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
        │
@@ -284,35 +295,34 @@
        │                      └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
        │
        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
-       │                      ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
-       │                      ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
-       │                      └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) ...древности</span>
+       │                      ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ательє</span>
+       │                      ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Майстерня сувенірів</span>
+       │                      └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) ...старожитності</span>
        │
        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет
        │
-       └─► [Ветка БАР]      ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга жалоб</span>
+       └─► [Ветка БАР]      ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга скарг</span>
                                           │
                                           ▼
-                                [ПЕРЕХОД: tables.html] ──► Инициализация matrix 3х2:
+                                [ПЕРЕХОД: tables.html] ──► Ініціалізація matrix 3х2:
                                           │
                                 ┌─────────┴─────────┐
                                 ▼                   ▼
-   [ЛЕВЫЙ ФЛАНГ]                                    [ПРАВЫЙ ФЛАНГ]
-   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
-   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>           ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
-   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>         └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
+   [ЛІВИЙ ФЛАНГ]                                    [ПРАВИЙ ФЛАНГ]
+   ├─► Вибір Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Ризик-стратегія</span>             ├─► Вибір Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поетичний подіум</span>
+   ├─► Вибір Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуель на цитатах</span>           ├─► Вибір Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Перекладач Ч/Ж</span>
+   └─► Вибір Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуель компліментів</span>         └─► Вибір Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тінь Барона</span>
                                                             │
                                 └───────────────────────────┬────────────────────────────────────┘
                                                             ▼
-                                    [ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
+                                    [ЦЕНТР ЗАЛУ] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ВІДКРИТИЙ МІКРОФОН</span>
         </pre>
         <div class="reset-btn-container">
-            <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
+            <button class="clear-data-btn" onclick="clearActivityData()">Скинути лічильники локацій</button>
         </div>
     </div>
 
     <script>
-        // === ЛОГИКА СЧЕТЧИКОВ КАРТЫ ===
         const keys = ['alien', 'moon', 'hello', 'atelier', 'souvenirs', 'vintage', 'complaints', 'strat1', 'strat2', 'strat3', 'strat4', 'strat5', 'strat6', 'open_mic'];
 
         function loadCounters() {
@@ -341,7 +351,6 @@
             }
         }
 
-        // === ЛОГИКА ПАСПОРТА (Аватар, Ник, Флаг) ===
         function loadUserPassport() {
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23FFD700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23FFD700'/></svg>";
@@ -363,7 +372,6 @@
             }
         }
 
-        // === ЛОГИКА СОТРУДНИКОВ (Генерация и сохранение) ===
         const botColors = ['%23FF5733', '%2333FF57', '%233357FF', '%23F333FF', '%2333FFF3', '%23FFD700', '%23FF8C00', '%2300FA9A'];
         
         function renderTeam(teamArray) {
@@ -389,7 +397,6 @@
                 alert("Офис заполнен! Максимум 8 сотрудников в этом блоке.");
                 return;
             }
-            // Генерируем случайного "робота-сотрудника" в стилистике клуба
             const color = botColors[Math.floor(Math.random() * botColors.length)];
             const newAvatarSrc = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23111'/><circle cx='16' cy='12' r='4' fill='${color}'/><rect x='10' y='18' width='12' height='8' fill='${color}' rx='2'/><circle cx='16' cy='12' r='1' fill='%23000'/></svg>`;
             
@@ -398,7 +405,6 @@
             renderTeam(team);
         }
 
-        // === ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===
         document.addEventListener("DOMContentLoaded", () => {
             loadCounters();
             loadUserPassport();
