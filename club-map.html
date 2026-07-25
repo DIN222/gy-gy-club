@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Club Map v4.6.8 CORE</title>
+    <title>GYGY Club Map v4.6.9 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -34,6 +34,7 @@
             padding: 15px;
         }
 
+        /* Навигация слева вверху */
         .ui-nav-arrows {
             position: fixed; 
             top: 15px; 
@@ -64,25 +65,103 @@
             transform: scale(1.1);
         }
 
+        /* Шапка с сотрудниками и юзером */
         header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             background-color: var(--panel-bg);
-            padding: 10px 20px;
+            padding: 10px 20px 10px 95px; /* отступ 95px чтобы обойти стрелки */
             border-radius: 8px;
             margin-bottom: 15px;
             flex-shrink: 0;
         }
 
-        .header-logo {
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 1px;
+        /* Блок команды (сотрудников) */
+        .header-team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
+        .team-avatars {
+            display: flex;
+            align-items: center;
+        }
+
+        .emp-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-gold);
+            margin-left: -10px; /* эффект наложения */
+            background: #222;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .emp-avatar:first-child { margin-left: 0; }
+        .emp-avatar:hover { transform: translateY(-3px); z-index: 10; }
+
+        .add-emp-btn {
+            background: transparent;
+            border: 1px dashed rgba(var(--accent-gold-rgb), 0.5);
+            color: var(--accent-gold);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+        .add-emp-btn:hover {
+            border-style: solid;
+            background: rgba(var(--accent-gold-rgb), 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Блок юзера (правый угол) */
+        .header-center-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar-with-flag {
+            position: relative;
+            width: 36px;
+            height: 36px;
+        }
+
+        #header-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            object-fit: cover;
+        }
+
+        #current-flag {
+            position: absolute;
+            bottom: -2px;
+            right: -4px;
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid var(--bg-dark);
+            object-fit: cover;
+        }
+
+        .user-nickname {
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Контейнер Карты */
         .map-container {
             flex: 1;
             background: var(--panel-bg);
@@ -95,28 +174,34 @@
             max-width: 1000px;
             margin: 0 auto;
             width: 100%;
+            position: relative;
+        }
+
+        .map-title {
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            flex-shrink: 0;
         }
 
         .algo-pre {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 11.5px;
-            line-height: 1.4;
+            font-size: 12px;
+            line-height: 1.5;
             color: #d0d0d0;
             overflow-x: auto;
             overflow-y: auto;
             flex: 1;
             white-space: pre;
             padding-right: 10px;
+            padding-bottom: 10px;
         }
 
-        .algo-pre::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .algo-pre::-webkit-scrollbar-thumb {
-            background: rgba(var(--accent-gold-rgb), 0.3);
-            border-radius: 3px;
-        }
+        .algo-pre::-webkit-scrollbar { width: 6px; height: 6px; }
+        .algo-pre::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 3px; }
 
         .bubble-click {
             color: var(--accent-gold);
@@ -125,21 +210,11 @@
             display: inline-block;
         }
 
-        .bubble-click:hover {
-            text-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.6);
-            transform: scale(1.02);
-        }
+        .bubble-click:hover { text-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.6); transform: scale(1.02); }
+        .bubble-click.orange { color: #FFA500; }
+        .bubble-click.orange:hover { text-shadow: 0 0 8px rgba(255, 165, 0, 0.6); }
 
-        .bubble-click.orange {
-            color: #FFA500;
-        }
-        .bubble-click.orange:hover {
-            text-shadow: 0 0 8px rgba(255, 165, 0, 0.6);
-        }
-
-        .counter-num {
-            font-weight: bold;
-        }
+        .counter-num { font-weight: bold; }
 
         .reset-btn-container {
             margin-top: 15px;
@@ -167,57 +242,77 @@
 </head>
 <body oncontextmenu="return false;">
 
+    <!-- СТРЕЛКИ НАВИГАЦИИ (нацелены на файл index.html) -->
     <div class="notranslate ui-nav-arrows">
-        <a href="office.html" class="arrow-item" title="В Кабинет (Офис)">&lt;</a>
+        <a href="index.html#block-hall" class="arrow-item" title="В Холл">&lt;</a>
         <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
     </div>
 
+    <!-- ШАПКА: Слева сотрудники, справа пользователь -->
     <header>
-        <div class="header-logo notranslate">GY-GY CLUB MAP</div>
+        <div class="header-team">
+            <div id="team-container" class="team-avatars">
+                <!-- Аватары сотрудников добавляются через JS -->
+            </div>
+            <button class="add-emp-btn" onclick="addEmployee()" title="Нанять сотрудника">+</button>
+        </div>
+
+        <div class="header-center-user">
+            <div class="avatar-with-flag">
+                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+            </div>
+            <span id="header-nickname" class="user-nickname">@User</span>
+        </div>
     </header>
 
+    <!-- КАРТА КЛУБА -->
     <div class="map-container">
-        <pre class="algo-pre">================== [ КАРИА АРХІТЕКТУРИ КЛУБУ v4.6.8 CORE ] ==================
+        <!-- Название перенесено сюда -->
+        <h2 class="map-title notranslate">GY-GY CLUB MAP</h2>
+        
+        <pre class="algo-pre">================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.9 CORE ] ==================
 
-[ПОЧАТОК: index.html] ──► (Вибір мови / Реєстрація)
+[НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
        │
        ▼
- [ГОЛОВНИЙ ХОЛ: #block-hall] ───► Оберіть direction:
+ [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
        │
-       ├─► [Гілка AI ROOM] ──► Відкрити verses.html ──► РОБОТА НЕЙРО-МОДУЛІВ:
-       │                      ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послання інопланетянам</span>
-       │                      ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Місячна база</span>
-       │                      └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привіт, Всесвіт!</span>
+       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
+       │                      ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послание инопланетянам</span>
+       │                      ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Лунная база</span>
+       │                      └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
        │
-       ├─► [Гілка STUDIO]  ──► Відкрити studio.html ──► ТВОРЧИЙ ФУНКЦІОНАЛ:
-       │                      ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ательє</span>
-       │                      ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Майстерня сувенірів</span>
-       │                      └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) ...старожитності</span>
+       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
+       │                      ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
+       │                      ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
+       │                      └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) ...древности</span>
        │
-       ├─► [Гілка OFFICE]  ──► Відкрити office.html ──► Вхід до Кабінету
+       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет
        │
-       └─► [Гілка БАР]      ──► Відкрити bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга скарг</span>
+       └─► [Ветка БАР]      ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга жалоб</span>
                                           │
                                           ▼
-                                [ПЕРЕХІД: tables.html] ──► Ініціалізація matrix 3х2:
+                                [ПЕРЕХОД: tables.html] ──► Инициализация matrix 3х2:
                                           │
                                 ┌─────────┴─────────┐
                                 ▼                   ▼
-   [ЛІВИЙ ФЛАНГ]                                    [ПРАВИЙ ФЛАНГ]
-   ├─► Вибір Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Ризик-стратегія</span>             ├─► Вибір Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поетичний подіум</span>
-   ├─► Вибір Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуель на цитатах</span>           ├─► Вибір Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Перекладач Ч/Ж</span>
-   └─► Вибір Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуель компліментів</span>         └─► Вибір Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тінь Барона</span>
+   [ЛЕВЫЙ ФЛАНГ]                                    [ПРАВЫЙ ФЛАНГ]
+   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
+   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>           ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
+   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>         └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
                                                             │
                                 └───────────────────────────┬────────────────────────────────────┘
                                                             ▼
-                                    [ЦЕНТР ЗАЛУ] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ВІДКРИТИЙ МІКРОФОН</span>
+                                    [ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
         </pre>
         <div class="reset-btn-container">
-            <button class="clear-data-btn" onclick="clearActivityData()">Скинути лічильники локацій</button>
+            <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
         </div>
     </div>
 
     <script>
+        // === ЛОГИКА СЧЕТЧИКОВ КАРТЫ ===
         const keys = ['alien', 'moon', 'hello', 'atelier', 'souvenirs', 'vintage', 'complaints', 'strat1', 'strat2', 'strat3', 'strat4', 'strat5', 'strat6', 'open_mic'];
 
         function loadCounters() {
@@ -241,14 +336,74 @@
 
         function clearActivityData() {
             if (confirm("Сбросить все счетчики активности?")) {
-                keys.forEach(key => {
-                    localStorage.removeItem('counter_' + key);
-                });
+                keys.forEach(key => localStorage.removeItem('counter_' + key));
                 loadCounters();
             }
         }
 
-        document.addEventListener("DOMContentLoaded", loadCounters);
+        // === ЛОГИКА ПАСПОРТА (Аватар, Ник, Флаг) ===
+        function loadUserPassport() {
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23FFD700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23FFD700'/></svg>";
+            const headerAvatarEl = document.getElementById('header-avatar');
+            if (headerAvatarEl) {
+                headerAvatarEl.src = savedAvatar || defaultAvatar;
+                headerAvatarEl.style.display = 'block';
+            }
+
+            const savedNickname = localStorage.getItem('gygy_nickname') || localStorage.getItem('gy_user_name');
+            if (savedNickname) {
+                document.getElementById('header-nickname').innerText = '@' + savedNickname.replace(/^@/, '');
+            }
+
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+            const flagElement = document.getElementById('current-flag');
+            if (flagElement) {
+                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+            }
+        }
+
+        // === ЛОГИКА СОТРУДНИКОВ (Генерация и сохранение) ===
+        const botColors = ['%23FF5733', '%2333FF57', '%233357FF', '%23F333FF', '%2333FFF3', '%23FFD700', '%23FF8C00', '%2300FA9A'];
+        
+        function renderTeam(teamArray) {
+            const container = document.getElementById('team-container');
+            container.innerHTML = '';
+            teamArray.forEach(svgSrc => {
+                const img = document.createElement('img');
+                img.src = svgSrc;
+                img.className = 'emp-avatar';
+                img.title = 'Сотрудник Офиса';
+                container.appendChild(img);
+            });
+        }
+
+        function loadTeam() {
+            const team = JSON.parse(localStorage.getItem('gygy_team_avatars') || '[]');
+            renderTeam(team);
+        }
+
+        function addEmployee() {
+            let team = JSON.parse(localStorage.getItem('gygy_team_avatars') || '[]');
+            if(team.length >= 8) {
+                alert("Офис заполнен! Максимум 8 сотрудников в этом блоке.");
+                return;
+            }
+            // Генерируем случайного "робота-сотрудника" в стилистике клуба
+            const color = botColors[Math.floor(Math.random() * botColors.length)];
+            const newAvatarSrc = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23111'/><circle cx='16' cy='12' r='4' fill='${color}'/><rect x='10' y='18' width='12' height='8' fill='${color}' rx='2'/><circle cx='16' cy='12' r='1' fill='%23000'/></svg>`;
+            
+            team.push(newAvatarSrc);
+            localStorage.setItem('gygy_team_avatars', JSON.stringify(team));
+            renderTeam(team);
+        }
+
+        // === ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===
+        document.addEventListener("DOMContentLoaded", () => {
+            loadCounters();
+            loadUserPassport();
+            loadTeam();
+        });
     </script>
 </body>
 </html>
