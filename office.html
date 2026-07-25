@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.6.4 CORE</title>
+    <title>GYGY Office v4.6.5 CORE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -68,13 +68,13 @@
             transform: scale(1.1);
         }
 
-        /* Шапка: сдвиг под фиксированные стрелки слева */
+        /* Шапка: без внешней рамки, сдвиг под фиксированные стрелки слева */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: var(--panel-bg);
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            border: none;
             padding: 10px 20px 10px 95px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -132,7 +132,7 @@
             flex-shrink: 0;
         }
 
-        /* ОСНОВНОЙ КОНТЕЙНЕР ОФИСА (СТРОГО ПО РАЗМЕРАМ ЭКРАНА) */
+        /* ОСНОВНОЙ КОНТЕЙНЕР ОФИСА */
         .office-container {
             flex: 1;
             display: flex;
@@ -272,15 +272,14 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки в углу согласно v4.6.2 -->
+    <!-- Навигационные стрелки в углу -->
     <div class="notranslate ui-nav-arrows">
-        <a href="office.html" class="arrow-item" title="Назад">&#8592;</a>
+        <a href="javascript:history.back()" class="arrow-item" title="Назад">&#8592;</a>
         <a href="hall.html" class="arrow-item" title="Ко входу в Клуб">&#8648;</a>
     </div>
 
-    <!-- Шапка по стандарту v4.6.2 -->
+    <!-- Шапка без рамки -->
     <header>
-        <!-- По центру: Паспорт юзера -->
         <div class="header-center-user" onclick="openPassport()">
             <div class="avatar-with-flag">
                 <img id="header-avatar" src="" alt="Avatar" style="display:none;">
@@ -288,20 +287,16 @@
             </div>
             <span id="header-nickname" class="user-nickname">@User</span>
         </div>
-
-        <!-- Справа: Логотип GY-GY -->
         <div class="header-logo notranslate">GY-GY</div>
     </header>
 
-    <!-- Основной контент, вписанный строго в размеры экрана (без прокрутки) -->
+    <!-- Основной контент строго по размерам экрана -->
     <div class="office-container">
-        <!-- Две большие навигационные кнопки -->
         <div class="fullscreen-nav">
             <button class="nav-btn active">1. Схема офиса</button>
             <a href="club-map.html" class="nav-btn">2. Схема клуба</a>
         </div>
 
-        <!-- Схема офиса: 6 блоков Back-End управления -->
         <div class="office-grid">
             <div class="office-room">Блок №1<br><small>Регламенты и ресурсы</small></div>
             <div class="office-room">Блок №2<br><small>Управление процессами</small></div>
