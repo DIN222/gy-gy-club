@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GYGY Office v1.1</title>
+    <title>GYGY Office v1.2</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --bg-dark: #000000;
             --panel-bg: #0d0e12;
-            --accent-gold: rgba(212, 175, 55, 0.5); /* Базовая интенсивность золотого (50%) */
-            --accent-gold-hover: rgba(212, 175, 55, 0.6); /* +10% интенсивности */
-            --accent-gold-active: rgba(212, 175, 55, 0.7); /* Еще +10% для активного */
+            --accent-gold: rgba(212, 175, 55, 0.6);
+            --accent-gold-hover: rgba(212, 175, 55, 0.7);
+            --accent-gold-active: rgba(212, 175, 55, 0.8);
             --text-color: #e0e0e0;
         }
 
@@ -35,24 +35,38 @@
             margin-bottom: 25px;
         }
 
-        /* Слева стрелки навигации */
+        /* Слева навигационные стрелки */
         .header-nav-arrows {
             display: flex;
-            gap: 15px;
-            font-size: 20px;
-            color: var(--accent-gold);
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-arrow-btn {
+            background: none;
+            border: 1px solid var(--accent-gold);
+            color: rgb(212, 175, 55);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
         }
 
-        .header-nav-arrows span:hover {
-            color: #fff;
+        .nav-arrow-btn:hover {
+            border-color: var(--accent-gold-hover);
+            background: rgba(212, 175, 55, 0.1);
         }
 
-        /* По центру: аватары сотрудников, ник и флаг */
+        /* По центру: аватары сотрудников + аватар пользователя с флагом и ник */
         .header-center-team {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
             flex-grow: 1;
         }
@@ -64,49 +78,61 @@
         }
 
         .team-avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             border: 2px solid var(--accent-gold);
             object-fit: cover;
-            cursor: pointer;
         }
 
         .user-info-block {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
         }
 
+        /* Контейнер аватара с флагом в углу */
+        .avatar-with-flag {
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
         #header-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 2px solid var(--accent-gold);
+            border: 2px solid rgb(212, 175, 55);
+            object-fit: cover;
+        }
+
+        #current-flag {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid var(--bg-dark);
             object-fit: cover;
         }
 
         .user-nickname {
-            color: var(--accent-gold);
+            color: rgb(212, 175, 55);
             font-weight: 600;
             font-size: 14px;
         }
 
-        #current-flag {
-            width: 22px;
-            border-radius: 2px;
-        }
-
         /* Справа лого */
         .header-logo {
-            color: var(--accent-gold);
+            color: rgb(212, 175, 55);
             font-size: 18px;
             font-weight: bold;
             letter-spacing: 1px;
         }
 
-        /* Две большие кнопки на весь экран (эффект золотого свечения без заливки) */
+        /* Две большие кнопки на весь экран (золотое свечение, без заливки) */
         .fullscreen-nav {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -118,7 +144,7 @@
             background: var(--panel-bg);
             color: rgb(212, 175, 55);
             border: 2px solid var(--accent-gold);
-            padding: 20px;
+            padding: 22px;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
@@ -130,14 +156,14 @@
 
         .nav-btn.active {
             border-color: var(--accent-gold-active);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
 
         .nav-btn:hover {
             border-color: var(--accent-gold-hover);
         }
 
-        /* Схема офиса: аккуратные 6 прямоугольников */
+        /* Схема офиса: 6 прямоугольников */
         .office-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -161,13 +187,12 @@
         }
 
         .office-room:hover {
-            border-color: rgba(212, 175, 55, 0.6);
+            border-color: var(--accent-gold);
             color: var(--text-color);
         }
 
-        /* 3-й прямоугольник — Комната переговоров */
         .office-room.meeting-room {
-            border-color: var(--accent-gold);
+            border-color: rgb(212, 175, 55);
             color: rgb(212, 175, 55);
             background: var(--panel-bg);
         }
@@ -228,24 +253,24 @@
 
     <!-- Верхняя панель без рамки -->
     <header>
-        <!-- Слева стрелки навигации -->
+        <!-- Слева навигационные стрелки -->
         <div class="header-nav-arrows">
-            <span>&#8592;</span>
-            <span>&#8594;</span>
+            <button class="nav-arrow-btn" onclick="history.back()" title="Назад">&#9664;</button>
+            <button class="nav-arrow-btn" onclick="history.forward()" title="Вперед">&#9654;</button>
         </div>
 
-        <!-- По центру: команда, ник, флаг -->
+        <!-- По центру: команда, аватар с флагом, ник -->
         <div class="header-center-team">
-            <!-- Динамический список аватаров сотрудников -->
-            <div id="team-avatars-container" class="team-avatars-container">
-                <!-- Сюда будут добавляться аватары сотрудников динамически -->
-            </div>
+            <!-- Контейнер для добавления сотрудников -->
+            <div id="team-avatars-container" class="team-avatars-container"></div>
 
-            <!-- Основной пользователь -->
+            <!-- Основной пользователь (аватар + флаг в углу + ник) -->
             <div class="user-info-block" onclick="openPassport()">
-                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                <div class="avatar-with-flag">
+                    <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                    <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+                </div>
                 <span id="header-nickname" class="user-nickname">@User</span>
-                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
             </div>
         </div>
 
@@ -259,7 +284,7 @@
         <a href="club-map.html" class="nav-btn">2. Схема клуба</a>
     </div>
 
-    <!-- Схема офиса (6 компактных прямоугольников) -->
+    <!-- Схема офиса (6 прямоугольников) -->
     <div class="office-grid">
         <div class="office-room">01</div>
         <div class="office-room">02</div>
@@ -324,7 +349,7 @@
             const avatarEl = document.getElementById('header-avatar');
             const passAvatarEl = document.getElementById('pass-avatar-img');
             
-            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
             const currentAvatar = savedAvatar || defaultAvatar;
 
             if (avatarEl) { avatarEl.src = currentAvatar; avatarEl.style.display = 'block'; }
