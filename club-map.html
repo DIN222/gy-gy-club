@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>club-map.html 001 </title>
-    <!-- Подключение шрифтов по манифесту офиса -->
+    <title>GY-GY Club v4.6.8 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <style>
-        :root {
-            --bg-dark: #000000;
+        :root { 
+            --gold: #d4af37; 
+            --gold-bg: rgba(212, 175, 55, 0.1);
+            --gold-border: rgba(212, 175, 55, 0.3);
+            
+            --gold-active: #ffe875; 
+            --gold-active-bg: rgba(255, 232, 117, 0.22);
+            --gold-active-border: rgba(255, 232, 117, 0.7);
+
+            --danger: #ff4d4d;
             --panel-bg: #0d0e12;
-            --accent-gold: #FFD700;
-            --gold: #FFD700;
-            --accent-gold-rgb: 255, 215, 0;
-            --text-color: #e0e0e0;
+            --bg-dark: #000000;
         }
 
         * { 
@@ -23,24 +28,31 @@
             margin: 0;
             padding: 0;
         }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+        }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-color);
-            font-family: 'Montserrat', sans-serif;
+        .club-map-page {
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            background: #000;
+            position: relative;
             padding: 15px;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ (< и <<) В УГЛУ ПО СТАНДАРТУ MANIFEST */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ (< и <<) В УГЛУ ПО СТАНДАРТУ ОФИСА */
         .ui-nav-arrows {
             position: fixed; 
-            top: 15px; 
-            left: 15px; 
+            top: 25px; 
+            left: 25px; 
             z-index: 9999999; 
             display: flex; 
             gap: 15px; 
@@ -57,28 +69,29 @@
         }
         
         .arrow-item { 
-            transition: opacity 0.2s, transform 0.2s; 
+            transition: opacity 0.2s, transform 0.2s, color 0.2s; 
             text-decoration: none;
             color: var(--gold);
             display: inline-block;
         }
         
         .arrow-item:hover { 
-            opacity: 0.8; 
+            color: var(--gold-active);
             transform: scale(1.1);
         }
 
-        /* Шапка: строго без внешней рамки, сдвиг под фиксированные стрелки слева (как в office.html) */
+        /* Шапка: точная копия офисной панели со сдвигом под стрелки */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: var(--panel-bg);
-            border: none;
+            border: 1px solid var(--gold-border);
             padding: 10px 20px 10px 95px;
             border-radius: 8px;
             margin-bottom: 15px;
             flex-shrink: 0;
+            z-index: 100;
         }
 
         /* По центру: Паспорт юзера */
@@ -100,7 +113,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            border: 2px solid var(--accent-gold);
+            border: 2px solid var(--gold);
             object-fit: cover;
         }
 
@@ -116,7 +129,7 @@
         }
 
         .user-nickname {
-            color: var(--accent-gold);
+            color: var(--gold);
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 13px;
@@ -124,7 +137,7 @@
 
         /* Справа: Логотип GY-GY */
         .header-logo {
-            color: var(--accent-gold);
+            color: var(--gold);
             font-family: 'Cinzel', serif;
             font-size: 18px;
             font-weight: bold;
@@ -132,64 +145,88 @@
             flex-shrink: 0;
         }
 
-        /* ОСНОВНОЙ КОНТЕЙНЕР КЛУБА */
-        .club-container {
+        /* 2. ОБЛАСТЬ СХЕМЫ КЛУБА */
+        .office-screen {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        /* Навигационные переключатели схем */
-        .fullscreen-nav {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            flex-shrink: 0;
-        }
-
-        .nav-btn {
-            background: var(--panel-bg);
-            color: var(--accent-gold);
-            border: 2px solid rgba(var(--accent-gold-rgb), 0.5);
             padding: 15px;
-            border-radius: 8px;
-            font-family: 'Cinzel', serif;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn.active {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 15px rgba(var(--accent-gold-rgb), 0.25);
-            filter: brightness(1.1);
-        }
-
-        .nav-btn:hover {
-            border-color: var(--accent-gold);
-            filter: brightness(1.1);
-        }
-
-        /* Рабочая область карты клуба */
-        .club-content-area {
-            background: var(--panel-bg);
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
-            border-radius: 8px;
-            flex: 1;
-            padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            overflow-y: auto;
+            background: radial-gradient(circle at center, #08080c 0%, #000 100%);
+            border: 1px solid var(--gold-border);
+            border-radius: 8px;
+        }
+
+        .container-width {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .algo-pre {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            letter-spacing: 0px;
+            color: var(--gold);
+            white-space: pre;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+        .algo-pre::-webkit-scrollbar {
+            height: 6px;
+        }
+        .algo-pre::-webkit-scrollbar-thumb {
+            background: var(--gold-border);
+            border-radius: 3px;
+        }
+
+        /* Активные золотые элементы: переключение на +10% яркости золота */
+        .bubble-click {
+            cursor: pointer;
+            padding: 1px 5px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .bubble-click:hover {
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active-border);
+            color: var(--gold-active);
+        }
+        .bubble-click.orange {
+            color: #ff9900;
+        }
+        .bubble-click.orange:hover {
+            background: rgba(255, 170, 34, 0.2);
+            border-color: rgba(255, 170, 34, 0.7);
+            color: #ffb84d;
+        }
+
+        .reset-btn-container {
+            margin-top: auto;
+            padding: 15px 0;
             text-align: center;
+        }
+
+        /* Кнопка сброса */
+        .clear-data-btn {
+            background: #000000;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .clear-data-btn:hover {
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active);
+            color: var(--gold-active);
+            box-shadow: 0 0 10px rgba(255, 232, 117, 0.2);
         }
 
         /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
@@ -210,20 +247,20 @@
 
         .passport-card {
             background: var(--panel-bg);
-            border: 2px solid var(--accent-gold);
+            border: 2px solid var(--gold);
             padding: 25px;
             border-radius: 12px;
             width: 300px;
             text-align: center;
             position: relative;
-            color: var(--text-color);
+            color: var(--text-color, #e0e0e0);
         }
 
         .passport-card img.avatar {
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            border: 2px solid var(--accent-gold);
+            border: 2px solid var(--gold);
             object-fit: cover;
             margin-bottom: 10px;
         }
@@ -232,7 +269,7 @@
             position: absolute;
             top: 10px;
             right: 15px;
-            color: var(--accent-gold);
+            color: var(--gold);
             cursor: pointer;
             font-size: 22px;
         }
@@ -249,31 +286,65 @@
     <!-- Навигационные стрелки: < в Офис, << к дверям входа -->
     <div class="notranslate ui-nav-arrows">
         <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
-        <a href="index.html" class="arrow-item" title="К дверям входа">&lt;&lt;</a>
+        <a href="index.html" class="arrow-item" title="Ко входу">&lt;&lt;</a>
     </div>
 
-    <!-- Шапка (полная копия панели из office.html) -->
-    <header>
-        <div class="header-center-user" onclick="openPassport()">
-            <div class="avatar-with-flag">
-                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
-                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+    <div class="club-map-page">
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ (АНАЛОГ ОФИСНОЙ) -->
+        <header>
+            <div class="header-center-user" onclick="openPassport()">
+                <div class="avatar-with-flag">
+                    <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                    <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+                </div>
+                <span id="header-nickname" class="user-nickname">@User</span>
             </div>
-            <span id="header-nickname" class="user-nickname">@User</span>
-        </div>
-        <div class="header-logo notranslate">GY-GY</div>
-    </header>
+            <div class="header-logo notranslate">GY-GY</div>
+        </header>
 
-    <!-- Основной контейнер клуба -->
-    <div class="club-container">
-        <div class="fullscreen-nav">
-            <a href="office.html" class="nav-btn">1. Схема офиса</a>
-            <button class="nav-btn active">2. Схема клуба</button>
-        </div>
+        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.7) ================= -->
+        <div id="screen-club-map" class="office-screen container-width">
+            <pre class="algo-pre">
+=================== [ <span data-translate="map_header">КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.7 CORE</span> ] ===================
 
-        <div class="club-content-area">
-            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 10px;">КАРТА АРХИТЕКТУРЫ КЛУБА</h2>
-            <p style="color: #aaa; font-size: 14px;">Интерактивная карта модулей и зон клуба</p>
+[<span data-translate="map_start">НАЧАЛО</span>: index.html] ──► (<span data-translate="map_start_desc">Выбор языка / Регистрация</span>)
+        │
+        ▼
+ [<span data-translate="map_hall">ГЛАВНЫЙ ХОЛ</span>: #block-hall] ───► Выберите направление:
+        │
+        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► <span data-translate="map_neuro">РАБОТА НЕЙРО-МОДУЛЕЙ</span>:
+        │                          ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послание инопланетянам</span></span>
+        │                          ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Лунная база</span></span>
+        │                          └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привет, Вселенная!</span></span>
+        │
+        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► <span data-translate="map_studio">ТВОРЧЕСКИЙ ФУНКЦИОНАЛ</span>:
+        │                          ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ателье</span></span>
+        │                          ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Мастерская сувениров</span></span>
+        │                          └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитности</span></span>
+        │
+        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► <span data-translate="map_office">Вход в Кабинет</span>:
+        │                          ├─► <span class="bubble-click" onclick="location.href='meeting.html'">🏢(<span data-translate="loc_meeting">Блок №3: Комната переговоров</span>)</span>
+        │                          └─► <span class="bubble-click" onclick="addClick('work_cab')">🟢(<span id="c-work_cab" class="counter-num">0</span>) <span data-translate="loc_workcab">Рабочие зоны</span></span>
+        │
+        └─► [Ветка БАР]     ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга жалоб</span></span>
+                                                   │
+                                                   ▼
+                                    [<span data-translate="map_transition">ПЕРЕХОД</span>: tables.html] ──► Инициализация matrix 3х2:
+                                                   │
+                                    ┌───────────────┴───────────────┐
+                                    ▼                               ▼
+   [<span data-translate="map_left">ЛЕВЫЙ ФЛАНГ</span>]                                    [<span data-translate="map_right">ПРАВЫЙ ФЛАНГ</span>]
+   ├─► <span data-translate="map_strat">Выбор Стр.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Риск-стратегия</span></span>             ├─► <span data-translate="map_strat">Выбор Стр.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поэтический подиум</span></span>
+   ├─► <span data-translate="map_strat">Выбор Стр.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуэль на цитатах</span></span>           ├─► <span data-translate="map_strat">Выбор Стр.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Переводчик М/Ж</span></span>
+   └─► <span data-translate="map_strat">Выбор Стр.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуэль комплиментов</span></span>        └─► <span data-translate="map_strat">Выбор Стр.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
+            │                                               │
+            └───────────────────────────┬───────────────────┘
+                                        ▼
+                            [<span data-translate="map_center">ЦЕНТР ЗАЛА</span>] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ОТКРЫТЫЙ МИКРОФОН</span></span>
+            </pre>
+            <div class="reset-btn-container">
+                <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Сбросить счетчики локаций</button>
+            </div>
         </div>
     </div>
 
@@ -282,7 +353,7 @@
         <div class="passport-card">
             <span class="close-btn" onclick="closePassport()">&times;</span>
             <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
-            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--accent-gold); font-family: 'Cinzel', serif;">@User</h3>
+            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--gold); font-family: 'Cinzel', serif;">@User</h3>
             <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
             <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
             <div id="pass-qr-box"></div>
@@ -290,6 +361,12 @@
     </div>
 
     <script>
+        let counters = {
+            alien: 0, moon: 0, hello: 0, atelier: 0, souvenirs: 0, 
+            vintage: 0, complaints: 0, strat1: 0, strat2: 0, 
+            strat3: 0, strat4: 0, strat5: 0, strat6: 0, open_mic: 0, work_cab: 0
+        };
+
         function openPassport() {
             const modal = document.getElementById('modal-passport');
             if (modal) { 
@@ -321,7 +398,7 @@
             const headerAvatarEl = document.getElementById('header-avatar');
             const passAvatarEl = document.getElementById('pass-avatar-img');
             
-            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23FFD700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23FFD700'/></svg>";
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
             const currentAvatar = savedAvatar || defaultAvatar;
 
             if (headerAvatarEl) { headerAvatarEl.src = currentAvatar; headerAvatarEl.style.display = 'block'; }
@@ -346,7 +423,42 @@
             if (flagElement) {
                 flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
             }
+
+            const savedCounters = localStorage.getItem('gygy_club_counters');
+            if (savedCounters) {
+                try {
+                    counters = JSON.parse(savedCounters);
+                    updateCountersUI();
+                } catch(e) {}
+            }
         });
+
+        function addClick(key) {
+            if (counters[key] !== undefined) {
+                counters[key]++;
+                updateCountersUI();
+                localStorage.setItem('gygy_club_counters', JSON.stringify(counters));
+            }
+        }
+
+        function updateCountersUI() {
+            for (let key in counters) {
+                const el = document.getElementById(key === 'open_mic' ? 'open_mic' : 'c-' + key);
+                if (el) {
+                    el.textContent = counters[key];
+                }
+            }
+        }
+
+        function clearActivityData() {
+            if (confirm('Сбросить все счетчики активности локаций?')) {
+                for (let key in counters) {
+                    counters[key] = 0;
+                }
+                updateCountersUI();
+                localStorage.removeItem('gygy_club_counters');
+            }
+        }
     </script>
 </body>
 </html>
