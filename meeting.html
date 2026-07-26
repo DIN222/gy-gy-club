@@ -13,6 +13,7 @@
             --gold-border: rgba(212, 175, 55, 0.3);
             --tg-blue: #0088cc;
             --tg-blue-bg: rgba(0, 136, 204, 0.15);
+            --danger: #ff4d4d;
         }
 
         * { 
@@ -208,7 +209,7 @@
             text-align: right;
         }
 
-        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА С РАСШИРЕННЫМИ КНОПКАМИ */
+        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА */
         .chat-input-bar {
             padding: 12px 15px;
             background: #050505;
@@ -235,7 +236,6 @@
 
         .chat-input:focus { border-color: var(--gold); }
 
-        /* Кнопка отправки со стрелкой + словом "Отправить" */
         .send-btn {
             background: var(--gold-bg);
             border: 1px solid var(--gold);
@@ -256,7 +256,6 @@
 
         .send-btn:hover { background: var(--gold); color: #000; }
 
-        /* Специальная кнопка отправки в Telegram */
         .send-tg-btn {
             background: var(--tg-blue-bg);
             border: 1px solid var(--tg-blue);
@@ -333,7 +332,6 @@
             background: rgba(212, 175, 55, 0.05);
             border: 1px solid transparent;
             border-radius: 6px;
-            cursor: pointer;
         }
         .staff-item:hover { border-color: var(--gold-border); }
 
@@ -341,6 +339,31 @@
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .staff-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delete-staff-btn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .delete-staff-btn:hover {
+            background: var(--danger);
+            color: #fff;
         }
 
         .modal-close-btn {
@@ -382,18 +405,16 @@
         <!-- ОКНО СООБЩЕНИЙ -->
         <div id="chat-messages" class="chat-messages"></div>
 
-        <!-- НИЖНЯЯ ПАНЕЛЬ ВВОДА С ОБНОВЛЕННЫМИ КНОПКАМИ -->
+        <!-- НИЖНЯЯ ПАНЕЛЬ ВВОДА -->
         <div class="chat-input-bar">
             <div class="input-row">
                 <input type="text" id="chat-input" class="chat-input" placeholder="Сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
                 
-                <!-- Кнопка 1: Стрелка + Отправить -->
                 <button class="send-btn" onclick="sendMessage(false)" title="Отправить в веб-чат">
                     <span>➔</span>
                     <span>Отправить</span>
                 </button>
 
-                <!-- Кнопка 2: Значок Telegram + Имя -->
                 <button class="send-tg-btn" onclick="sendMessage(true)" title="Отправить через Telegram">
                     <svg class="tg-icon" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.25.38-.51 1.07-.78 4.2-1.82 7-3.03 8.4-3.61 4-.16 4.83.53 4.78 2.47z"/>
@@ -414,7 +435,7 @@
     </div>
 
     <script>
-        const allStaff = [
+        let allStaff = [
             { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
             { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
             { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flag: "🇨🇳", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
@@ -448,6 +469,11 @@
             const container = document.getElementById('staff-list');
             container.innerHTML = '';
 
+            if (allStaff.length === 0) {
+                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 20px;">Список сотрудников пуст</div>';
+                return;
+            }
+
             allStaff.forEach(staff => {
                 const item = document.createElement('div');
                 item.className = 'staff-item';
@@ -461,7 +487,10 @@
                             <div style="font-size:10px;opacity:0.6">${staff.role}</div>
                         </div>
                     </div>
-                    <input type="checkbox" ${isChecked} onchange="toggleStaff(${staff.id})">
+                    <div class="staff-actions">
+                        <input type="checkbox" ${isChecked} onchange="toggleStaff(${staff.id})">
+                        <button class="delete-staff-btn" onclick="deleteStaff(event, ${staff.id})" title="Удалить сотрудника">✕</button>
+                    </div>
                 `;
                 container.appendChild(item);
             });
@@ -473,6 +502,24 @@
             } else {
                 selectedStaffIds.add(id);
             }
+            updateHeaderParticipants();
+        }
+
+        function deleteStaff(event, id) {
+            event.stopPropagation();
+            
+            // Удаляем из общего массива
+            allStaff = allStaff.filter(s => s.id !== id);
+            
+            // Удаляем из выбранных в шапке
+            selectedStaffIds.delete(id);
+            
+            // Если этот сотрудник был активным собеседником, сбрасываем выбор
+            if (activeTargetMember === id) {
+                activeTargetMember = null;
+            }
+
+            renderStaffList();
             updateHeaderParticipants();
         }
 
@@ -502,7 +549,6 @@
             updateHeaderParticipants();
         }
 
-        // Отправка сообщений (isTelegram = true/false)
         function sendMessage(isTelegram = false) {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
@@ -522,22 +568,23 @@
 
             input.value = '';
 
-            // Эмуляция ответа выбранного сотрудника
             if (activeTargetMember) {
                 const staff = allStaff.find(s => s.id === activeTargetMember);
-                setTimeout(() => {
-                    const replyDiv = document.createElement('div');
-                    replyDiv.className = 'msg msg-incoming';
-                    let replyBadge = isTelegram ? '<div class="msg-tg-badge">◄ Telegram Bot</div>' : '';
-                    replyDiv.innerHTML = `
-                        ${replyBadge}
-                        <div class="msg-author">${staff.flag} ${staff.name}</div>
-                        Принято.
-                        <div class="msg-time">${timeStr}</div>
-                    `;
-                    chatMessages.appendChild(replyDiv);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 800);
+                if (staff) {
+                    setTimeout(() => {
+                        const replyDiv = document.createElement('div');
+                        replyDiv.className = 'msg msg-incoming';
+                        let replyBadge = isTelegram ? '<div class="msg-tg-badge">◄ Telegram Bot</div>' : '';
+                        replyDiv.innerHTML = `
+                            ${replyBadge}
+                            <div class="msg-author">${staff.flag} ${staff.name}</div>
+                            Принято.
+                            <div class="msg-time">${timeStr}</div>
+                        `;
+                        chatMessages.appendChild(replyDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 800);
+                }
             }
         }
 
