@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.41 - MEETING ROOM</title>
+    <title>GY-GY Club v4.6.1 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -11,8 +11,6 @@
             --gold: #d4af37; 
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
-            --tg-blue: #0088cc;
-            --tg-blue-bg: rgba(0, 136, 204, 0.15);
             --danger: #ff4d4d;
         }
 
@@ -32,7 +30,7 @@
             overflow: hidden; 
         }
 
-        .chat-page {
+        .club-map-page {
             width: 100vw;
             height: 100vh;
             display: flex;
@@ -41,7 +39,7 @@
             position: relative;
         }
 
-        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОБЕСЕДНИКОВ */
+        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОТРУДНИКОВ */
         .header-bar {
             height: 65px;
             padding: 0 15px;
@@ -81,7 +79,6 @@
             transform: scale(1.1);
         }
 
-        /* ЛЕНТА АВАТАРОВ СОТРУДНИКОВ В ШАПКЕ */
         .header-participants {
             display: flex;
             align-items: center;
@@ -152,140 +149,83 @@
             flex-shrink: 0;
         }
 
-        /* 2. ЛИНГВО-СМЫСЛОВАЯ ОБЛАСТЬ ЧАТА */
-        .chat-messages {
+        /* 2. ОБЛАСТЬ СХЕМЫ КЛУБА */
+        .office-screen {
             flex: 1;
-            padding: 20px;
-            overflow-y: auto;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            overflow-y: auto;
             background: radial-gradient(circle at center, #08080c 0%, #000 100%);
         }
 
-        .msg {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.4;
-            word-wrap: break-word;
+        .container-width {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .msg-incoming {
-            align-self: flex-start;
-            background: var(--gold-bg);
-            border: 1px solid var(--gold-border);
+        .algo-pre {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            line-height: 1.35;
             color: var(--gold);
+            white-space: pre;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+        .algo-pre::-webkit-scrollbar {
+            height: 6px;
+        }
+        .algo-pre::-webkit-scrollbar-thumb {
+            background: var(--gold-border);
+            border-radius: 3px;
         }
 
-        .msg-outgoing {
-            align-self: flex-end;
-            background: rgba(212, 175, 55, 0.2);
-            border: 1px solid var(--gold);
-            color: #fff;
-        }
-
-        .msg-author {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-bottom: 4px;
-            display: flex;
-            gap: 5px;
-        }
-
-        .msg-tg-badge {
+        /* Стили интерактивных элементов схемы */
+        .bubble-click {
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
             display: inline-block;
-            font-size: 10px;
-            color: var(--tg-blue);
-            margin-bottom: 4px;
-            text-transform: uppercase;
+        }
+        .bubble-click:hover {
+            background: var(--gold-bg);
+            border-color: var(--gold-border);
+        }
+        .bubble-click.orange {
+            color: #ff9900;
+        }
+        .bubble-click.orange:hover {
+            background: rgba(255, 153, 0, 0.1);
+            border-color: rgba(255, 153, 0, 0.3);
         }
 
-        .msg-time {
-            font-size: 9px;
-            opacity: 0.5;
-            margin-top: 4px;
-            text-align: right;
+        .reset-btn-container {
+            margin-top: auto;
+            padding: 15px 0;
+            text-align: center;
         }
 
-        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА */
-        .chat-input-bar {
-            padding: 12px 15px;
-            background: #050505;
-            border-top: 1px solid var(--gold-border);
-        }
-
-        .input-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: #0a0a0f;
-            border: 1px solid var(--gold-border);
-            border-radius: 6px;
-            padding: 12px 15px;
-            color: var(--gold);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .chat-input:focus { border-color: var(--gold); }
-
-        .send-btn {
+        .clear-data-btn {
             background: var(--gold-bg);
             border: 1px solid var(--gold);
             color: var(--gold);
-            padding: 0 14px;
-            height: 42px;
-            border-radius: 6px;
+            padding: 10px 20px;
             font-family: 'Share Tech Mono', monospace;
             font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .send-btn:hover { background: var(--gold); color: #000; }
-
-        .send-tg-btn {
-            background: var(--tg-blue-bg);
-            border: 1px solid var(--tg-blue);
-            color: var(--tg-blue);
-            padding: 0 12px;
-            height: 42px;
             border-radius: 6px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
             transition: all 0.2s;
         }
-
-        .send-tg-btn:hover { 
-            background: var(--tg-blue); 
-            color: #fff; 
+        .clear-data-btn:hover {
+            background: var(--gold);
+            color: #000;
         }
 
-        .tg-icon {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* 4. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
+        /* 3. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -380,10 +320,10 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="chat-page">
+    <div class="club-map-page">
         <!-- ВЕРХНЯЯ ПАНЕЛЬ С АВАТАРАМИ СОТРУДНИКОВ -->
         <div class="header-bar">
-            <!-- ИСПРАВЛЕННЫЕ НАВИГАЦИОННЫЕ СТРЕЛКИ -->
+            <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ -->
             <div class="notranslate ui-nav-arrows">
                 <span class="back-arrow" onclick="location.href='office.html'" title="В Офис">&lt;</span>
                 <span class="back-arrow" onclick="location.href='index.html'" title="Ко входу">&lt;&lt;</span>
@@ -391,37 +331,57 @@
 
             <!-- ЛЕНТА АВАТАРОВ -->
             <div id="header-participants" class="header-participants">
-                <!-- Мой аватар -->
                 <div class="participant-item active" id="my-header-avatar-item">
                     <img id="header-avatar" class="member-avatar" src="" alt="Me">
                     <span id="header-lang-flag" class="member-flag"></span>
                 </div>
             </div>
 
-            <div class="add-member-btn" onclick="openStaffModal()" title="Добавить собеседника">+</div>
+            <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
 
             <div class="ui-header-right notranslate">GY-GY</div>
         </div>
 
-        <!-- ОКНО СООБЩЕНИЙ -->
-        <div id="chat-messages" class="chat-messages"></div>
+        <!-- ================= СХЕМА КЛУБУ ================= -->
+        <div id="screen-club-map" class="office-screen container-width">
+            <pre class="algo-pre">
+================== [ <span data-translate="map_header">КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE</span> ] ==================
 
-        <!-- НИЖНЯЯ ПАНЕЛЬ ВВОДА -->
-        <div class="chat-input-bar">
-            <div class="input-row">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
-                
-                <button class="send-btn" onclick="sendMessage(false)" title="Отправить в веб-чат">
-                    <span>➔</span>
-                    <span>Отправить</span>
-                </button>
-
-                <button class="send-tg-btn" onclick="sendMessage(true)" title="Отправить через Telegram">
-                    <svg class="tg-icon" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.25.38-.51 1.07-.78 4.2-1.82 7-3.03 8.4-3.61 4-.16 4.83.53 4.78 2.47z"/>
-                    </svg>
-                    <span>Telegram</span>
-                </button>
+[<span data-translate="map_start">ПОЧАТОК</span>: index.html] ──► (<span data-translate="map_start_desc">Вибір мови / Реєстрація</span>)
+        │
+        ▼
+ [<span data-translate="map_hall">ГОЛОВНИЙ ХОЛ</span>: #block-hall] ───► Оберіть direction:
+        │
+        ├─► [Гілка AI ROOM] ──► Відкрити verses.html ──► <span data-translate="map_neuro">РОБОТА НЕЙРО-МОДУЛІВ</span>:
+        │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послання інопланетянам</span></span>
+        │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Місячна база</span></span>
+        │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привіт, Всесвіт!</span></span>
+        │
+        ├─► [Гілка STUDIO]  ──► Відкрити studio.html ──► <span data-translate="map_studio">ТВОРЧИЙ ФУНКЦІОНАЛ</span>:
+        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ательє</span></span>
+        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Майстерня сувенірів</span></span>
+        │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитності</span></span>
+        │
+        ├─► [Гілка OFFICE]  ──► Відкрити office.html ──► <span data-translate="map_office">Вхід до Кабінету</span>
+        │
+        └─► [Гілка БАР]     ──► Відкрити bar.html   ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга скарг</span></span>
+                                                    │
+                                                    ▼
+                                    [<span data-translate="map_transition">ПЕРЕХІД</span>: tables.html] ──► Ініціалізація matrix 3х2:
+                                                    │
+                                    ┌───────────────┴───────────────┐
+                                    ▼                               ▼
+   [<span data-translate="map_left">ЛІВИЙ ФЛАНГ</span>]                                                   [<span data-translate="map_right">ПРАВИЙ ФЛАНГ</span>]
+   ├─► <span data-translate="map_strat">Вибір Ст.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Ризик-стратегія</span></span>             ├─► <span data-translate="map_strat">Вибір Ст.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поетичний подіум</span></span>
+   ├─► <span data-translate="map_strat">Вибір Ст.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуель на цитатах</span></span>           ├─► <span data-translate="map_strat">Вибір Ст.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Перекладач Ч/Ж</span></span>
+   └─► <span data-translate="map_strat">Вибір Ст.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуель компліментів</span></span>        └─► <span data-translate="map_strat">Вибір Ст.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
+            │                                                               │
+            └───────────────────────────┬───────────────────────────────────┘
+                                        ▼
+                            [<span data-translate="map_center">ЦЕНТР ЗАЛУ</span>] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ВІДКРИТИЙ МІКРОФОН</span></span>
+            </pre>
+            <div class="reset-btn-container">
+                <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Скинути лічильники локацій</button>
             </div>
         </div>
     </div>
@@ -436,6 +396,13 @@
     </div>
 
     <script>
+        // Инициализация счетчиков локаций
+        let counters = {
+            alien: 0, moon: 0, hello: 0, atelier: 0, souvenirs: 0, 
+            vintage: 0, complaints: 0, strat1: 0, strat2: 0, 
+            strat3: 0, strat4: 0, strat5: 0, strat6: 0, open_mic: 0
+        };
+
         let allStaff = [
             { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
             { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
@@ -447,9 +414,9 @@
         let activeTargetMember = null;
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Восстановление аватара и языка
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
-            
             if (savedAvatar && avatarEl) {
                 avatarEl.src = savedAvatar;
             } else if (avatarEl) {
@@ -460,8 +427,44 @@
             const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
             document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🌐';
 
+            // Загрузка сохраненных счетчиков
+            const savedCounters = localStorage.getItem('gygy_club_counters');
+            if (savedCounters) {
+                try {
+                    counters = JSON.parse(savedCounters);
+                    updateCountersUI();
+                } catch(e) {}
+            }
+
             renderStaffList();
         });
+
+        function addClick(key) {
+            if (counters[key] !== undefined) {
+                counters[key]++;
+                updateCountersUI();
+                localStorage.setItem('gygy_club_counters', JSON.stringify(counters));
+            }
+        }
+
+        function updateCountersUI() {
+            for (let key in counters) {
+                const el = document.getElementById(key === 'open_mic' ? 'open_mic' : 'c-' + key);
+                if (el) {
+                    el.textContent = counters[key];
+                }
+            }
+        }
+
+        function clearActivityData() {
+            if (confirm('Сбросить все счетчики активности локаций?')) {
+                for (let key in counters) {
+                    counters[key] = 0;
+                }
+                updateCountersUI();
+                localStorage.removeItem('gygy_club_counters');
+            }
+        }
 
         function openStaffModal() { document.getElementById('staff-modal').style.display = 'flex'; }
         function closeStaffModal() { document.getElementById('staff-modal').style.display = 'none'; }
@@ -508,14 +511,11 @@
 
         function deleteStaff(event, id) {
             event.stopPropagation();
-            
             allStaff = allStaff.filter(s => s.id !== id);
             selectedStaffIds.delete(id);
-            
             if (activeTargetMember === id) {
                 activeTargetMember = null;
             }
-
             renderStaffList();
             updateHeaderParticipants();
         }
@@ -545,48 +545,6 @@
             activeTargetMember = activeTargetMember === id ? null : id;
             updateHeaderParticipants();
         }
-
-        function sendMessage(isTelegram = false) {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const chatMessages = document.getElementById('chat-messages');
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg msg-outgoing';
-            
-            let tgBadgeHTML = isTelegram ? '<div class="msg-tg-badge">► Telegram</div>' : '';
-            msgDiv.innerHTML = `${tgBadgeHTML}${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
-
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            input.value = '';
-
-            if (activeTargetMember) {
-                const staff = allStaff.find(s => s.id === activeTargetMember);
-                if (staff) {
-                    setTimeout(() => {
-                        const replyDiv = document.createElement('div');
-                        replyDiv.className = 'msg msg-incoming';
-                        let replyBadge = isTelegram ? '<div class="msg-tg-badge">◄ Telegram Bot</div>' : '';
-                        replyDiv.innerHTML = `
-                            ${replyBadge}
-                            <div class="msg-author">${staff.flag} ${staff.name}</div>
-                            Принято.
-                            <div class="msg-time">${timeStr}</div>
-                        `;
-                        chatMessages.appendChild(replyDiv);
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }, 800);
-                }
-            }
-        }
-
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(false); }
-        function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
     </script>
 </body>
 </html>
