@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.1 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.3 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -11,6 +11,12 @@
             --gold: #d4af37; 
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
+            
+            /* Стандарт активности: +10% яркости для активных/интерактивных элементов */
+            --gold-active: #ffe875; 
+            --gold-active-bg: rgba(255, 232, 117, 0.22);
+            --gold-active-border: rgba(255, 232, 117, 0.7);
+
             --danger: #ff4d4d;
         }
 
@@ -100,8 +106,8 @@
         .participant-item:hover { transform: scale(1.05); }
 
         .participant-item.active .member-avatar {
-            box-shadow: 0 0 10px var(--gold) !important;
-            border: 1px solid var(--gold) !important;
+            box-shadow: 0 0 12px var(--gold-active) !important;
+            border: 1px solid var(--gold-active) !important;
         }
 
         .member-avatar {
@@ -137,7 +143,9 @@
             transition: all 0.2s;
         }
         .add-member-btn:hover {
-            background: var(--gold-bg);
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active);
+            color: var(--gold-active);
             border-style: solid;
         }
 
@@ -182,7 +190,7 @@
             border-radius: 3px;
         }
 
-        /* Стили интерактивных элементов схемы */
+        /* Демонстрация активности: элементы при наведении получают +10% яркости */
         .bubble-click {
             cursor: pointer;
             padding: 2px 6px;
@@ -192,15 +200,17 @@
             display: inline-block;
         }
         .bubble-click:hover {
-            background: var(--gold-bg);
-            border-color: var(--gold-border);
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active-border);
+            color: var(--gold-active);
         }
         .bubble-click.orange {
             color: #ff9900;
         }
         .bubble-click.orange:hover {
-            background: rgba(255, 153, 0, 0.1);
-            border-color: rgba(255, 153, 0, 0.3);
+            background: rgba(255, 170, 34, 0.2);
+            border-color: rgba(255, 170, 34, 0.7);
+            color: #ffb84d;
         }
 
         .reset-btn-container {
@@ -209,8 +219,9 @@
             text-align: center;
         }
 
+        /* Кнопка сброса: черный фон, при активности +10% яркости рамки и текста */
         .clear-data-btn {
-            background: var(--gold-bg);
+            background: #000000;
             border: 1px solid var(--gold);
             color: var(--gold);
             padding: 10px 20px;
@@ -221,8 +232,10 @@
             transition: all 0.2s;
         }
         .clear-data-btn:hover {
-            background: var(--gold);
-            color: #000;
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active);
+            color: var(--gold-active);
+            box-shadow: 0 0 10px rgba(255, 232, 117, 0.2);
         }
 
         /* 3. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
@@ -272,8 +285,12 @@
             background: rgba(212, 175, 55, 0.05);
             border: 1px solid transparent;
             border-radius: 6px;
+            transition: all 0.2s;
         }
-        .staff-item:hover { border-color: var(--gold-border); }
+        .staff-item:hover { 
+            border-color: var(--gold-active-border); 
+            background: var(--gold-active-bg);
+        }
 
         .staff-info {
             display: flex;
@@ -315,6 +332,11 @@
             font-weight: bold;
             cursor: pointer;
             border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .modal-close-btn:hover {
+            background: var(--gold-active);
+            box-shadow: 0 0 10px rgba(255, 232, 117, 0.4);
         }
     </style>
 </head>
@@ -342,46 +364,46 @@
             <div class="ui-header-right notranslate">GY-GY</div>
         </div>
 
-        <!-- ================= СХЕМА КЛУБУ ================= -->
+        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.3) ================= -->
         <div id="screen-club-map" class="office-screen container-width">
             <pre class="algo-pre">
-================== [ <span data-translate="map_header">КАРТА АРХІТЕКТУРИ КЛУБУ v4.6.1 CORE</span> ] ==================
+================== [ <span data-translate="map_header">КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.3 CORE</span> ] ==================
 
-[<span data-translate="map_start">ПОЧАТОК</span>: index.html] ──► (<span data-translate="map_start_desc">Вибір мови / Реєстрація</span>)
+[<span data-translate="map_start">НАЧАЛО</span>: index.html] ──► (<span data-translate="map_start_desc">Выбор языка / Регистрация</span>)
         │
         ▼
- [<span data-translate="map_hall">ГОЛОВНИЙ ХОЛ</span>: #block-hall] ───► Оберіть direction:
+ [<span data-translate="map_hall">ГЛАВНЫЙ ХОЛ</span>: #block-hall] ───► Выберите направление:
         │
-        ├─► [Гілка AI ROOM] ──► Відкрити verses.html ──► <span data-translate="map_neuro">РОБОТА НЕЙРО-МОДУЛІВ</span>:
-        │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послання інопланетянам</span></span>
-        │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Місячна база</span></span>
-        │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привіт, Всесвіт!</span></span>
+        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► <span data-translate="map_neuro">РАБОТА НЕЙРО-МОДУЛЕЙ</span>:
+        │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послание инопланетянам</span></span>
+        │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Лунная база</span></span>
+        │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привет, Вселенная!</span></span>
         │
-        ├─► [Гілка STUDIO]  ──► Відкрити studio.html ──► <span data-translate="map_studio">ТВОРЧИЙ ФУНКЦІОНАЛ</span>:
-        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ательє</span></span>
-        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Майстерня сувенірів</span></span>
-        │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитності</span></span>
+        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► <span data-translate="map_studio">ТВОРЧЕСКИЙ ФУНКЦИОНАЛ</span>:
+        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ателье</span></span>
+        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Мастерская сувениров</span></span>
+        │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитности</span></span>
         │
-        ├─► [Гілка OFFICE]  ──► Відкрити office.html ──► <span data-translate="map_office">Вхід до Кабінету</span>
+        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► <span data-translate="map_office">Вход в Кабинет</span>
         │
-        └─► [Гілка БАР]     ──► Відкрити bar.html   ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга скарг</span></span>
+        └─► [Ветка БАР]     ──► Открыть bar.html   ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга жалоб</span></span>
                                                     │
                                                     ▼
-                                    [<span data-translate="map_transition">ПЕРЕХІД</span>: tables.html] ──► Ініціалізація matrix 3х2:
+                                    [<span data-translate="map_transition">ПЕРЕХОД</span>: tables.html] ──► Инициализация matrix 3х2:
                                                     │
                                     ┌───────────────┴───────────────┐
                                     ▼                               ▼
-   [<span data-translate="map_left">ЛІВИЙ ФЛАНГ</span>]                                                   [<span data-translate="map_right">ПРАВИЙ ФЛАНГ</span>]
-   ├─► <span data-translate="map_strat">Вибір Ст.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Ризик-стратегія</span></span>             ├─► <span data-translate="map_strat">Вибір Ст.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поетичний подіум</span></span>
-   ├─► <span data-translate="map_strat">Вибір Ст.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуель на цитатах</span></span>           ├─► <span data-translate="map_strat">Вибір Ст.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Перекладач Ч/Ж</span></span>
-   └─► <span data-translate="map_strat">Вибір Ст.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуель компліментів</span></span>        └─► <span data-translate="map_strat">Вибір Ст.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
+   [<span data-translate="map_left">ЛЕВЫЙ ФЛАНГ</span>]                                                   [<span data-translate="map_right">ПРАВЫЙ ФЛАНГ</span>]
+   ├─► <span data-translate="map_strat">Выбор Стр.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Риск-стратегия</span></span>             ├─► <span data-translate="map_strat">Выбор Стр.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поэтический подиум</span></span>
+   ├─► <span data-translate="map_strat">Выбор Стр.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуэль на цитатах</span></span>           ├─► <span data-translate="map_strat">Выбор Стр.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Переводчик М/Ж</span></span>
+   └─► <span data-translate="map_strat">Выбор Стр.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуэль комплиментов</span></span>        └─► <span data-translate="map_strat">Выбор Стр.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
             │                                                               │
             └───────────────────────────┬───────────────────────────────────┘
                                         ▼
-                            [<span data-translate="map_center">ЦЕНТР ЗАЛУ</span>] ──► Виклик 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ВІДКРИТИЙ МІКРОФОН</span></span>
+                            [<span data-translate="map_center">ЦЕНТР ЗАЛА</span>] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ОТКРЫТЫЙ МИКРОФОН</span></span>
             </pre>
             <div class="reset-btn-container">
-                <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Скинути лічильники локацій</button>
+                <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Сбросить счетчики локаций</button>
             </div>
         </div>
     </div>
@@ -396,7 +418,6 @@
     </div>
 
     <script>
-        // Инициализация счетчиков локаций
         let counters = {
             alien: 0, moon: 0, hello: 0, atelier: 0, souvenirs: 0, 
             vintage: 0, complaints: 0, strat1: 0, strat2: 0, 
@@ -414,7 +435,6 @@
         let activeTargetMember = null;
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Восстановление аватара и языка
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
             if (savedAvatar && avatarEl) {
@@ -427,7 +447,6 @@
             const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
             document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🌐';
 
-            // Загрузка сохраненных счетчиков
             const savedCounters = localStorage.getItem('gygy_club_counters');
             if (savedCounters) {
                 try {
