@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Club Map v4.7.2 CORE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.5.41 - MEETING ROOM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --bg-dark: #000000;
-            --panel-bg: #0d0e12;
-            --accent-gold: #FFD700;
-            --gold: #FFD700;
-            --accent-gold-rgb: 255, 215, 0;
-            --text-color: #e0e0e0;
+        :root { 
+            --gold: #d4af37; 
+            --gold-bg: rgba(212, 175, 55, 0.1);
+            --gold-border: rgba(212, 175, 55, 0.3);
+            --tg-blue: #0088cc;
+            --tg-blue-bg: rgba(0, 136, 204, 0.15);
+            --danger: #ff4d4d;
         }
 
         * { 
@@ -21,415 +22,571 @@
             margin: 0;
             padding: 0;
         }
+        
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; 
+            overflow: hidden; 
+        }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-color);
-            font-family: 'Montserrat', sans-serif;
+        .chat-page {
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            padding: 15px;
+            background: #000;
+            position: relative;
         }
 
-        /* Навигация слева вверху */
+        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОБЕСЕДНИКОВ */
+        .header-bar {
+            height: 65px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gold-border);
+            background: #050505;
+            z-index: 100;
+            gap: 10px;
+        }
+
         .ui-nav-arrows {
-            position: fixed; 
-            top: 15px; 
-            left: 15px; 
-            z-index: 999999; 
             display: flex; 
             gap: 15px; 
-            font-size: 26px; 
+            font-size: 24px; 
             font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; 
             cursor: pointer; 
             color: var(--gold); 
             line-height: 1; 
-            letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
             user-select: none;
+            flex-shrink: 0;
         }
         
-        .arrow-item { 
+        .back-arrow { 
             transition: opacity 0.2s, transform 0.2s; 
-            text-decoration: none;
-            color: var(--gold);
+            cursor: pointer;
+            color: var(--gold); 
             display: inline-block;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
         }
         
-        .arrow-item:hover { 
+        .back-arrow:hover { 
             opacity: 0.8; 
             transform: scale(1.1);
         }
 
-        /* Шапка: Слева сотрудники (+/-), по центру аватар юзера, справа логотип GY-GY */
-        header {
+        /* ЛЕНТА АВАТАРОВ СОТРУДНИКОВ В ШАПКЕ */
+        .header-participants {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background-color: var(--panel-bg);
-            padding: 10px 20px 10px 95px; /* отступ 95px слева под стрелки */
-            border-radius: 8px;
-            margin-bottom: 15px;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 5px 0;
+        }
+        .header-participants::-webkit-scrollbar { display: none; }
+
+        .participant-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
             flex-shrink: 0;
-        }
-
-        /* Блок команды (сотрудников) слева */
-        .header-team {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .team-avatars {
-            display: flex;
-            align-items: center;
-        }
-
-        .emp-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 1px solid var(--accent-gold);
-            margin-left: -10px;
-            background: #222;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
             transition: transform 0.2s;
         }
-        .emp-avatar:first-child { margin-left: 0; }
-        .emp-avatar:hover { transform: translateY(-3px); z-index: 10; }
+        .participant-item:hover { transform: scale(1.05); }
 
-        .team-controls {
-            display: flex;
-            gap: 4px;
-            margin-left: 5px;
+        .participant-item.active .member-avatar {
+            box-shadow: 0 0 10px var(--gold) !important;
+            border: 1px solid var(--gold) !important;
         }
 
-        .emp-action-btn {
-            background: transparent;
-            border: 1px dashed rgba(var(--accent-gold-rgb), 0.5);
-            color: var(--accent-gold);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-        .emp-action-btn:hover {
-            border-style: solid;
-            background: rgba(var(--accent-gold-rgb), 0.1);
-            transform: scale(1.1);
+        .member-avatar {
+            width: 38px; 
+            height: 38px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            background: transparent; 
+            display: block;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        /* Блок юзера строго по центру шапки */
-        .header-center-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            margin: 0 auto;
-        }
-
-        .avatar-with-flag {
-            position: relative;
-            width: 36px;
-            height: 36px;
-        }
-
-        #header-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-gold);
-            object-fit: cover;
-        }
-
-        #current-flag {
+        .member-flag {
             position: absolute;
             bottom: -2px;
             right: -4px;
-            width: 16px;
-            height: 12px;
-            border-radius: 2px;
-            border: 1px solid var(--bg-dark);
-            object-fit: cover;
+            font-size: 14px;
+            line-height: 1;
         }
 
-        .user-nickname {
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 13px;
+        .add-member-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px dashed var(--gold);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .add-member-btn:hover {
+            background: var(--gold-bg);
+            border-style: solid;
         }
 
-        /* Логотип GY-GY справа */
-        .header-logo {
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 1px;
+        .ui-header-right { 
+            font-size: 20px; 
+            letter-spacing: 3px; 
+            font-weight: bold; 
+            user-select: none;
             flex-shrink: 0;
         }
 
-        /* Контейнер Карты */
-        .map-container {
+        /* 2. ЛИНГВО-СМЫСЛОВАЯ ОБЛАСТЬ ЧАТА */
+        .chat-messages {
             flex: 1;
-            background: var(--panel-bg);
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
-            border-radius: 8px;
-            padding: 15px;
+            padding: 20px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-            position: relative;
+            gap: 12px;
+            background: radial-gradient(circle at center, #08080c 0%, #000 100%);
         }
 
-        .map-title {
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            flex-shrink: 0;
+        .msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
         }
 
-        .algo-pre {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #d0d0d0;
-            overflow-x: auto;
-            overflow-y: auto;
-            flex: 1;
-            white-space: pre;
-            padding-right: 10px;
-            padding-bottom: 10px;
+        .msg-incoming {
+            align-self: flex-start;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold-border);
+            color: var(--gold);
         }
 
-        .algo-pre::-webkit-scrollbar { width: 6px; height: 6px; }
-        .algo-pre::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 3px; }
+        .msg-outgoing {
+            align-self: flex-end;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--gold);
+            color: #fff;
+        }
 
-        .bubble-click {
-            color: var(--accent-gold);
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .msg-author {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .msg-tg-badge {
             display: inline-block;
+            font-size: 10px;
+            color: var(--tg-blue);
+            margin-bottom: 4px;
+            text-transform: uppercase;
         }
 
-        .bubble-click:hover { text-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.6); transform: scale(1.02); }
-        .bubble-click.orange { color: #FFA500; }
-        .bubble-click.orange:hover { text-shadow: 0 0 8px rgba(255, 165, 0, 0.6); }
-
-        .counter-num { font-weight: bold; }
-
-        .reset-btn-container {
-            margin-top: 15px;
-            text-align: center;
-            flex-shrink: 0;
+        .msg-time {
+            font-size: 9px;
+            opacity: 0.5;
+            margin-top: 4px;
+            text-align: right;
         }
 
-        .clear-data-btn {
-            background: transparent;
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.5);
-            color: var(--accent-gold);
-            padding: 8px 16px;
+        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА */
+        .chat-input-bar {
+            padding: 12px 15px;
+            background: #050505;
+            border-top: 1px solid var(--gold-border);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #0a0a0f;
+            border: 1px solid var(--gold-border);
             border-radius: 6px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            padding: 12px 15px;
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 14px;
+            outline: none;
         }
 
-        .clear-data-btn:hover {
-            background: rgba(var(--accent-gold-rgb), 0.1);
-            border-color: var(--accent-gold);
+        .chat-input:focus { border-color: var(--gold); }
+
+        .send-btn {
+            background: var(--gold-bg);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0 14px;
+            height: 42px;
+            border-radius: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover { background: var(--gold); color: #000; }
+
+        .send-tg-btn {
+            background: var(--tg-blue-bg);
+            border: 1px solid var(--tg-blue);
+            color: var(--tg-blue);
+            padding: 0 12px;
+            height: 42px;
+            border-radius: 6px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .send-tg-btn:hover { 
+            background: var(--tg-blue); 
+            color: #fff; 
+        }
+
+        .tg-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* 4. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-card {
+            width: 90%;
+            max-width: 400px;
+            background: #0a0a0d;
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 80vh;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--gold-border);
+            padding-bottom: 8px;
+        }
+
+        .staff-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+        }
+
+        .staff-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid transparent;
+            border-radius: 6px;
+        }
+        .staff-item:hover { border-color: var(--gold-border); }
+
+        .staff-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .staff-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delete-staff-btn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .delete-staff-btn:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .modal-close-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- СТРЕЛКИ НАВИГАЦИИ -->
-    <div class="notranslate ui-nav-arrows">
-        <a href="index.html#block-hall" class="arrow-item" title="В Холл">&lt;</a>
-        <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
+    <div class="chat-page">
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ С АВАТАРАМИ СОТРУДНИКОВ -->
+        <div class="header-bar">
+            <!-- ИСПРАВЛЕННЫЕ НАВИГАЦИОННЫЕ СТРЕЛКИ -->
+            <div class="notranslate ui-nav-arrows">
+                <span class="back-arrow" onclick="location.href='office.html'" title="В Офис">&lt;</span>
+                <span class="back-arrow" onclick="location.href='index.html'" title="Ко входу">&lt;&lt;</span>
+            </div>
+
+            <!-- ЛЕНТА АВАТАРОВ -->
+            <div id="header-participants" class="header-participants">
+                <!-- Мой аватар -->
+                <div class="participant-item active" id="my-header-avatar-item">
+                    <img id="header-avatar" class="member-avatar" src="" alt="Me">
+                    <span id="header-lang-flag" class="member-flag"></span>
+                </div>
+            </div>
+
+            <div class="add-member-btn" onclick="openStaffModal()" title="Добавить собеседника">+</div>
+
+            <div class="ui-header-right notranslate">GY-GY</div>
+        </div>
+
+        <!-- ОКНО СООБЩЕНИЙ -->
+        <div id="chat-messages" class="chat-messages"></div>
+
+        <!-- НИЖНЯЯ ПАНЕЛЬ ВВОДА -->
+        <div class="chat-input-bar">
+            <div class="input-row">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Сообщение..." autocomplete="off" onkeypress="handleKeyPress(event)">
+                
+                <button class="send-btn" onclick="sendMessage(false)" title="Отправить в веб-чат">
+                    <span>➔</span>
+                    <span>Отправить</span>
+                </button>
+
+                <button class="send-tg-btn" onclick="sendMessage(true)" title="Отправить через Telegram">
+                    <svg class="tg-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.25.38-.51 1.07-.78 4.2-1.82 7-3.03 8.4-3.61 4-.16 4.83.53 4.78 2.47z"/>
+                    </svg>
+                    <span>Telegram</span>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- ШАПКА -->
-    <header>
-        <div class="header-team">
-            <div id="team-container" class="team-avatars"></div>
-            <div class="team-controls">
-                <button class="emp-action-btn" onclick="addEmployee()" title="Нанять сотрудника">+</button>
-                <button class="emp-action-btn" onclick="removeEmployee()" title="Уволить сотрудника">-</button>
-            </div>
-        </div>
-
-        <div class="header-center-user">
-            <div class="avatar-with-flag">
-                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
-                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
-            </div>
-            <span id="header-nickname" class="user-nickname">@User</span>
-        </div>
-
-        <div class="header-logo notranslate">GY-GY</div>
-    </header>
-
-    <!-- КАРТА КЛУБА -->
-    <div class="map-container">
-        <h2 class="map-title notranslate">КАРТА АРХИТЕКТУРЫ КЛУБА</h2>
-        
-        <pre class="algo-pre">================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.7.2 CORE ] ==================
-
-[НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
-       │
-       ▼
- [ГЛАВНЫЙ ХОЛЛ: #block-hall] ───► Выберите направление:
-       │
-       ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
-       │                      ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послание инопланетянам</span>
-       │                      ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Лунная база</span>
-       │                      └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
-       │
-       ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
-       │                      ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
-       │                      ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
-       │                      └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Древности и винтаж</span>
-       │
-       ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в Кабинет
-       │
-       └─► [Ветка БАР]      ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга жалоб</span>
-                                          │
-                                          ▼
-                                [ПЕРЕХОД: tables.html] ──► Инициализация matrix 3х2:
-                                          │
-                                ┌─────────┴─────────┐
-                                ▼                   ▼
-   [ЛЕВЫЙ ФЛАНГ]                                    [ПРАВЫЙ ФЛАНГ]
-   ├─► Выбор Ст.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Ст.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
-   ├─► Выбор Ст.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>           ├─► Выбор Ст.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
-   └─► Выбор Ст.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>         └─► Выбор Ст.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
-                                                            │
-                                └───────────────────────────┬────────────────────────────────────┘
-                                                            ▼
-                                    [ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
-        </pre>
-        <div class="reset-btn-container">
-            <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
+    <!-- МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ -->
+    <div id="staff-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-title">СОТРУДНИКИ</div>
+            <div id="staff-list" class="staff-list"></div>
+            <button class="modal-close-btn" onclick="closeStaffModal()">ГОТОВО</button>
         </div>
     </div>
 
     <script>
-        const keys = ['alien', 'moon', 'hello', 'atelier', 'souvenirs', 'vintage', 'complaints', 'strat1', 'strat2', 'strat3', 'strat4', 'strat5', 'strat6', 'open_mic'];
+        let allStaff = [
+            { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
+            { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
+            { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flag: "🇨🇳", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
+            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flag: "🇪🇸", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" }
+        ];
 
-        function loadCounters() {
-            keys.forEach(key => {
-                const val = localStorage.getItem('counter_' + key) || 0;
-                const el = document.getElementById(key === 'open_mic' ? 'open_mic' : 'c-' + key);
-                if (el) el.innerText = val;
-            });
-        }
+        let selectedStaffIds = new Set();
+        let activeTargetMember = null;
 
-        function addClick(key) {
-            let val = parseInt(localStorage.getItem('counter_' + key) || 0) + 1;
-            localStorage.setItem('counter_' + key, val);
-            const el = document.getElementById(key === 'open_mic' ? 'open_mic' : 'c-' + key);
-            if (el) {
-                el.innerText = val;
-                el.style.color = '#FFFFFF';
-                setTimeout(() => { el.style.color = ''; }, 200);
-            }
-        }
-
-        function clearActivityData() {
-            if (confirm("Сбросить все счетчики активности?")) {
-                keys.forEach(key => localStorage.removeItem('counter_' + key));
-                loadCounters();
-            }
-        }
-
-        function loadUserPassport() {
+        document.addEventListener("DOMContentLoaded", function() {
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
-            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23FFD700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23FFD700'/></svg>";
-            const headerAvatarEl = document.getElementById('header-avatar');
-            if (headerAvatarEl) {
-                headerAvatarEl.src = savedAvatar || defaultAvatar;
-                headerAvatarEl.style.display = 'block';
+            const avatarEl = document.getElementById('header-avatar');
+            
+            if (savedAvatar && avatarEl) {
+                avatarEl.src = savedAvatar;
+            } else if (avatarEl) {
+                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
             }
 
-            const savedNickname = localStorage.getItem('gygy_nickname') || localStorage.getItem('gy_user_name');
-            if (savedNickname) {
-                document.getElementById('header-nickname').innerText = '@' + savedNickname.replace(/^@/, '');
-            }
+            const langFlags = { 'ru': '🇷🇺', 'en': '🇬🇧', 'zh': '🇨🇳', 'es': '🇪🇸', 'de': '🇩🇪' };
+            const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
+            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🌐';
 
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-            const flagElement = document.getElementById('current-flag');
-            if (flagElement) {
-                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
-            }
-        }
+            renderStaffList();
+        });
 
-        const botColors = ['%23FF5733', '%2333FF57', '%233357FF', '%23F333FF', '%2333FFF3', '%23FFD700', '%23FF8C00', '%2300FA9A'];
-        
-        function renderTeam(teamArray) {
-            const container = document.getElementById('team-container');
+        function openStaffModal() { document.getElementById('staff-modal').style.display = 'flex'; }
+        function closeStaffModal() { document.getElementById('staff-modal').style.display = 'none'; }
+
+        function renderStaffList() {
+            const container = document.getElementById('staff-list');
             container.innerHTML = '';
-            teamArray.forEach(svgSrc => {
-                const img = document.createElement('img');
-                img.src = svgSrc;
-                img.className = 'emp-avatar';
-                img.title = 'Сотрудник Офиса';
-                container.appendChild(img);
+
+            if (allStaff.length === 0) {
+                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 20px;">Список сотрудников пуст</div>';
+                return;
+            }
+
+            allStaff.forEach(staff => {
+                const item = document.createElement('div');
+                item.className = 'staff-item';
+                const isChecked = selectedStaffIds.has(staff.id) ? 'checked' : '';
+                
+                item.innerHTML = `
+                    <div class="staff-info">
+                        <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
+                        <div>
+                            <div>${staff.name} ${staff.flag}</div>
+                            <div style="font-size:10px;opacity:0.6">${staff.role}</div>
+                        </div>
+                    </div>
+                    <div class="staff-actions">
+                        <input type="checkbox" ${isChecked} onchange="toggleStaff(${staff.id})">
+                        <button class="delete-staff-btn" onclick="deleteStaff(event, ${staff.id})" title="Удалить сотрудника">✕</button>
+                    </div>
+                `;
+                container.appendChild(item);
             });
         }
 
-        function loadTeam() {
-            const team = JSON.parse(localStorage.getItem('gygy_team_avatars') || '[]');
-            renderTeam(team);
+        function toggleStaff(id) {
+            if (selectedStaffIds.has(id)) {
+                selectedStaffIds.delete(id);
+            } else {
+                selectedStaffIds.add(id);
+            }
+            updateHeaderParticipants();
         }
 
-        function addEmployee() {
-            let team = JSON.parse(localStorage.getItem('gygy_team_avatars') || '[]');
-            if(team.length >= 8) {
-                alert("Офис заполнен! Максимум 8 сотрудников в этом блоке.");
-                return;
-            }
-            const color = botColors[Math.floor(Math.random() * botColors.length)];
-            const newAvatarSrc = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23111'/><circle cx='16' cy='12' r='4' fill='${color}'/><rect x='10' y='18' width='12' height='8' fill='${color}' rx='2'/><circle cx='16' cy='12' r='1' fill='%23000'/></svg>`;
+        function deleteStaff(event, id) {
+            event.stopPropagation();
             
-            team.push(newAvatarSrc);
-            localStorage.setItem('gygy_team_avatars', JSON.stringify(team));
-            renderTeam(team);
-        }
-
-        function removeEmployee() {
-            let team = JSON.parse(localStorage.getItem('gygy_team_avatars') || '[]');
-            if(team.length === 0) {
-                alert("В офисе пока нет сотрудников для увольнения.");
-                return;
+            allStaff = allStaff.filter(s => s.id !== id);
+            selectedStaffIds.delete(id);
+            
+            if (activeTargetMember === id) {
+                activeTargetMember = null;
             }
-            team.pop();
-            localStorage.setItem('gygy_team_avatars', JSON.stringify(team));
-            renderTeam(team);
+
+            renderStaffList();
+            updateHeaderParticipants();
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            loadCounters();
-            loadUserPassport();
-            loadTeam();
-        });
+        function updateHeaderParticipants() {
+            const container = document.getElementById('header-participants');
+            const myItem = document.getElementById('my-header-avatar-item');
+            container.innerHTML = '';
+            container.appendChild(myItem);
+
+            selectedStaffIds.forEach(id => {
+                const staff = allStaff.find(s => s.id === id);
+                if (!staff) return;
+
+                const item = document.createElement('div');
+                item.className = `participant-item ${activeTargetMember === staff.id ? 'active' : ''}`;
+                item.onclick = () => selectActiveMember(staff.id);
+                item.innerHTML = `
+                    <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
+                    <span class="member-flag">${staff.flag}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function selectActiveMember(id) {
+            activeTargetMember = activeTargetMember === id ? null : id;
+            updateHeaderParticipants();
+        }
+
+        function sendMessage(isTelegram = false) {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'msg msg-outgoing';
+            
+            let tgBadgeHTML = isTelegram ? '<div class="msg-tg-badge">► Telegram</div>' : '';
+            msgDiv.innerHTML = `${tgBadgeHTML}${escapeHtml(text)}<div class="msg-time">${timeStr}</div>`;
+
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            input.value = '';
+
+            if (activeTargetMember) {
+                const staff = allStaff.find(s => s.id === activeTargetMember);
+                if (staff) {
+                    setTimeout(() => {
+                        const replyDiv = document.createElement('div');
+                        replyDiv.className = 'msg msg-incoming';
+                        let replyBadge = isTelegram ? '<div class="msg-tg-badge">◄ Telegram Bot</div>' : '';
+                        replyDiv.innerHTML = `
+                            ${replyBadge}
+                            <div class="msg-author">${staff.flag} ${staff.name}</div>
+                            Принято.
+                            <div class="msg-time">${timeStr}</div>
+                        `;
+                        chatMessages.appendChild(replyDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 800);
+                }
+            }
+        }
+
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(false); }
+        function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
     </script>
 </body>
 </html>
