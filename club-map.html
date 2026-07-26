@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.6 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.7 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -12,7 +12,7 @@
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
             
-            /* Стандарт активности: +10% яркости для активных/интерактивных элементов */
+            /* Строгое правило: +10% яркости исключительно по золотому спектру для активности */
             --gold-active: #ffe875; 
             --gold-active-bg: rgba(255, 232, 117, 0.22);
             --gold-active-border: rgba(255, 232, 117, 0.7);
@@ -71,7 +71,7 @@
         }
         
         .back-arrow { 
-            transition: opacity 0.2s, transform 0.2s; 
+            transition: opacity 0.2s, transform 0.2s, color 0.2s; 
             cursor: pointer;
             color: var(--gold); 
             display: inline-block;
@@ -81,7 +81,7 @@
         }
         
         .back-arrow:hover { 
-            opacity: 0.8; 
+            color: var(--gold-active);
             transform: scale(1.1);
         }
 
@@ -191,7 +191,7 @@
             border-radius: 3px;
         }
 
-        /* Демонстрация активности: элементы при наведении получают +10% яркости */
+        /* Активные золотые элементы: переключение на +10% яркости золота */
         .bubble-click {
             cursor: pointer;
             padding: 1px 5px;
@@ -220,7 +220,7 @@
             text-align: center;
         }
 
-        /* Кнопка сброса: черный фон, при активности +10% яркости рамки и текста */
+        /* Кнопка сброса: черный фон, при активности +10% яркости золотой рамки и текста */
         .clear-data-btn {
             background: #000000;
             border: 1px solid var(--gold);
@@ -337,6 +337,7 @@
         }
         .modal-close-btn:hover {
             background: var(--gold-active);
+            color: #000;
             box-shadow: 0 0 10px rgba(255, 232, 117, 0.4);
         }
     </style>
@@ -352,7 +353,7 @@
                 <span class="back-arrow" onclick="location.href='index.html'" title="Ко входу">&lt;&lt;</span>
             </div>
 
-            <!-- ЛЕНТА АВАТАРОВ (С флагом вместо букв языка) -->
+            <!-- ЛЕНТА АВАТАРОВ -->
             <div id="header-participants" class="header-participants">
                 <div class="participant-item active" id="my-header-avatar-item">
                     <img id="header-avatar" class="member-avatar" src="" alt="Me">
@@ -365,10 +366,10 @@
             <div class="ui-header-right notranslate">GY-GY</div>
         </div>
 
-        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.5) ================= -->
+        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.6) ================= -->
         <div id="screen-club-map" class="office-screen container-width">
             <pre class="algo-pre">
-=================== [ <span data-translate="map_header">КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.5 CORE</span> ] ===================
+=================== [ <span data-translate="map_header">КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.6 CORE</span> ] ===================
 
 [<span data-translate="map_start">НАЧАЛО</span>: index.html] ──► (<span data-translate="map_start_desc">Выбор языка / Регистрация</span>)
         │
@@ -446,7 +447,7 @@
 
             const langFlags = { 'ru': '🇷🇺', 'en': '🇬🇧', 'zh': '🇨🇳', 'es': '🇪🇸', 'de': '🇩🇪' };
             const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
-            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🌐';
+            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🇷🇺';
 
             const savedCounters = localStorage.getItem('gygy_club_counters');
             if (savedCounters) {
