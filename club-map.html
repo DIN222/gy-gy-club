@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Club Map v4.7.0 CORE</title>
+    <title>GYGY Club Map v4.7.1 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -65,7 +65,7 @@
             transform: scale(1.1);
         }
 
-        /* Шапка: Слева сотрудники, по центру аватар с ником, справа логотип GY-GY */
+        /* Шапка: Слева сотрудники (+ и -), по центру аватар юзера, справа логотип GY-GY */
         header {
             display: flex;
             justify-content: space-between;
@@ -81,7 +81,7 @@
         .header-team {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .team-avatars {
@@ -102,21 +102,27 @@
         .emp-avatar:first-child { margin-left: 0; }
         .emp-avatar:hover { transform: translateY(-3px); z-index: 10; }
 
-        .add-emp-btn {
+        .team-controls {
+            display: flex;
+            gap: 4px;
+            margin-left: 5px;
+        }
+
+        .emp-action-btn {
             background: transparent;
             border: 1px dashed rgba(var(--accent-gold-rgb), 0.5);
             color: var(--accent-gold);
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 15px;
             transition: all 0.2s;
         }
-        .add-emp-btn:hover {
+        .emp-action-btn:hover {
             border-style: solid;
             background: rgba(var(--accent-gold-rgb), 0.1);
             transform: scale(1.1);
@@ -260,11 +266,14 @@
         <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
     </div>
 
-    <!-- ШАПКА: Слева сотрудники, по центру аватар юзера, справа логотип GY-GY -->
+    <!-- ШАПКА: Слева сотрудники (+/-), по центру аватар юзера, справа логотип GY-GY -->
     <header>
         <div class="header-team">
             <div id="team-container" class="team-avatars"></div>
-            <button class="add-emp-btn" onclick="addEmployee()" title="Нанять сотрудника">+</button>
+            <div class="team-controls">
+                <button class="emp-action-btn" onclick="addEmployee()" title="Нанять сотрудника">+</button>
+                <button class="emp-action-btn" onclick="removeEmployee()" title="Уволить сотрудника">-</button>
+            </div>
         </div>
 
         <div class="header-center-user">
@@ -282,7 +291,7 @@
     <div class="map-container">
         <h2 class="map-title notranslate">КАРТА АРХИТЕКТУРЫ КЛУБА</h2>
         
-        <pre class="algo-pre">================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.7.0 CORE ] ==================
+        <pre class="algo-pre">================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.7.1 CORE ] ==================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
        │
@@ -401,6 +410,17 @@
             const newAvatarSrc = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23111'/><circle cx='16' cy='12' r='4' fill='${color}'/><rect x='10' y='18' width='12' height='8' fill='${color}' rx='2'/><circle cx='16' cy='12' r='1' fill='%23000'/></svg>`;
             
             team.push(newAvatarSrc);
+            localStorage.setItem('gygy_team_avatars', JSON.stringify(team));
+            renderTeam(team);
+        }
+
+        function removeEmployee() {
+            let team = JSON.parse(localStorage.getItem('gygy_team_avatars') || '[]');
+            if(team.length === 0) {
+                alert("В офисе пока нет сотрудников для увольнения.");
+                return;
+            }
+            team.pop(); // Удаляем последнего добавленного сотрудника
             localStorage.setItem('gygy_team_avatars', JSON.stringify(team));
             renderTeam(team);
         }
