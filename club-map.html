@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.7 - CLUB MAP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
+    <title>club-map.html 001 </title>
+    <!-- Подключение шрифтов по манифесту офиса -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --gold-bg: rgba(212, 175, 55, 0.1);
-            --gold-border: rgba(212, 175, 55, 0.3);
-            
-            /* Строгое правило: +10% яркости исключительно по золотому спектру для активности */
-            --gold-active: #ffe875; 
-            --gold-active-bg: rgba(255, 232, 117, 0.22);
-            --gold-active-border: rgba(255, 232, 117, 0.7);
-
-            --danger: #ff4d4d;
+        :root {
+            --bg-dark: #000000;
+            --panel-bg: #0d0e12;
+            --accent-gold: #FFD700;
+            --gold: #FFD700;
+            --accent-gold-rgb: 255, 215, 0;
+            --text-color: #e0e0e0;
         }
 
         * { 
@@ -26,546 +23,330 @@
             margin: 0;
             padding: 0;
         }
-        
-        html, body { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
-            overflow: hidden; 
-        }
 
-        .club-map-page {
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: #000;
-            position: relative;
+            overflow: hidden;
+            padding: 15px;
         }
 
-        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОТРУДНИКОВ */
-        .header-bar {
-            height: 65px;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--gold-border);
-            background: #050505;
-            z-index: 100;
-            gap: 10px;
-        }
-
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ (< и <<) В УГЛУ ПО СТАНДАРТУ MANIFEST */
         .ui-nav-arrows {
+            position: fixed; 
+            top: 15px; 
+            left: 15px; 
+            z-index: 9999999; 
             display: flex; 
             gap: 15px; 
-            font-size: 24px; 
+            font-size: 26px; 
             font-weight: 900 !important; 
+            font-family: 'Share Tech Mono', monospace; 
             cursor: pointer; 
             color: var(--gold); 
             line-height: 1; 
+            letter-spacing: -2px; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            pointer-events: auto !important; 
             user-select: none;
-            flex-shrink: 0;
         }
         
-        .back-arrow { 
-            transition: opacity 0.2s, transform 0.2s, color 0.2s; 
-            cursor: pointer;
-            color: var(--gold); 
+        .arrow-item { 
+            transition: opacity 0.2s, transform 0.2s; 
+            text-decoration: none;
+            color: var(--gold);
             display: inline-block;
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
         }
         
-        .back-arrow:hover { 
-            color: var(--gold-active);
+        .arrow-item:hover { 
+            opacity: 0.8; 
             transform: scale(1.1);
         }
 
-        .header-participants {
+        /* Шапка: строго без внешней рамки, сдвиг под фиксированные стрелки слева (как в office.html) */
+        header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding: 5px 0;
+            background-color: var(--panel-bg);
+            border: none;
+            padding: 10px 20px 10px 95px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
-        .header-participants::-webkit-scrollbar { display: none; }
 
-        .participant-item {
-            position: relative;
+        /* По центру: Паспорт юзера */
+        header .header-center-user {
             display: flex;
             align-items: center;
+            gap: 10px;
             cursor: pointer;
-            flex-shrink: 0;
-            transition: transform 0.2s;
-        }
-        .participant-item:hover { transform: scale(1.05); }
-
-        .participant-item.active .member-avatar {
-            box-shadow: 0 0 12px var(--gold-active) !important;
-            border: 1px solid var(--gold-active) !important;
-        }
-
-        .member-avatar {
-            width: 38px; 
-            height: 38px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            background: transparent; 
-            display: block;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .member-flag {
-            position: absolute;
-            bottom: -2px;
-            right: -4px;
-            font-size: 14px;
-            line-height: 1;
-        }
-
-        .add-member-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 1px dashed var(--gold);
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: all 0.2s;
-        }
-        .add-member-btn:hover {
-            background: var(--gold-active-bg);
-            border-color: var(--gold-active);
-            color: var(--gold-active);
-            border-style: solid;
-        }
-
-        .ui-header-right { 
-            font-size: 20px; 
-            letter-spacing: 3px; 
-            font-weight: bold; 
-            user-select: none;
-            flex-shrink: 0;
-        }
-
-        /* 2. ОБЛАСТЬ СХЕМЫ КЛУБА */
-        .office-screen {
-            flex: 1;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            background: radial-gradient(circle at center, #08080c 0%, #000 100%);
-        }
-
-        .container-width {
-            width: 100%;
-            max-width: 900px;
             margin: 0 auto;
         }
 
-        .algo-pre {
-            font-family: 'Share Tech Mono', monospace;
+        .avatar-with-flag {
+            position: relative;
+            width: 36px;
+            height: 36px;
+        }
+
+        #header-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            object-fit: cover;
+        }
+
+        #current-flag {
+            position: absolute;
+            bottom: -2px;
+            right: -4px;
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid var(--bg-dark);
+            object-fit: cover;
+        }
+
+        .user-nickname {
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
             font-size: 13px;
-            line-height: 1.4;
-            letter-spacing: 0px;
-            color: var(--gold);
-            white-space: pre;
-            overflow-x: auto;
-            padding-bottom: 15px;
-        }
-        .algo-pre::-webkit-scrollbar {
-            height: 6px;
-        }
-        .algo-pre::-webkit-scrollbar-thumb {
-            background: var(--gold-border);
-            border-radius: 3px;
         }
 
-        /* Активные золотые элементы: переключение на +10% яркости золота */
-        .bubble-click {
-            cursor: pointer;
-            padding: 1px 5px;
-            border-radius: 4px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            display: inline-block;
-        }
-        .bubble-click:hover {
-            background: var(--gold-active-bg);
-            border-color: var(--gold-active-border);
-            color: var(--gold-active);
-        }
-        .bubble-click.orange {
-            color: #ff9900;
-        }
-        .bubble-click.orange:hover {
-            background: rgba(255, 170, 34, 0.2);
-            border-color: rgba(255, 170, 34, 0.7);
-            color: #ffb84d;
+        /* Справа: Логотип GY-GY */
+        .header-logo {
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            flex-shrink: 0;
         }
 
-        .reset-btn-container {
-            margin-top: auto;
-            padding: 15px 0;
-            text-align: center;
-        }
-
-        /* Кнопка сброса: черный фон, при активности +10% яркости золотой рамки и текста */
-        .clear-data-btn {
-            background: #000000;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 10px 20px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .clear-data-btn:hover {
-            background: var(--gold-active-bg);
-            border-color: var(--gold-active);
-            color: var(--gold-active);
-            box-shadow: 0 0 10px rgba(255, 232, 117, 0.2);
-        }
-
-        /* 3. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-
-        .modal-card {
-            width: 90%;
-            max-width: 400px;
-            background: #0a0a0d;
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            padding: 20px;
+        /* ОСНОВНОЙ КОНТЕЙНЕР КЛУБА */
+        .club-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: 80vh;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            overflow: hidden;
         }
 
-        .modal-title {
-            font-size: 16px;
-            letter-spacing: 2px;
-            border-bottom: 1px solid var(--gold-border);
-            padding-bottom: 8px;
+        /* Навигационные переключатели схем */
+        .fullscreen-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex-shrink: 0;
         }
 
-        .staff-list {
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 300px;
-        }
-
-        .staff-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px;
-            background: rgba(212, 175, 55, 0.05);
-            border: 1px solid transparent;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-        .staff-item:hover { 
-            border-color: var(--gold-active-border); 
-            background: var(--gold-active-bg);
-        }
-
-        .staff-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .staff-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .delete-staff-btn {
-            background: transparent;
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            width: 26px;
-            height: 26px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .delete-staff-btn:hover {
-            background: var(--danger);
-            color: #fff;
-        }
-
-        .modal-close-btn {
-            background: var(--gold);
-            color: #000;
-            border: none;
-            padding: 10px;
-            font-family: 'Share Tech Mono', monospace;
+        .nav-btn {
+            background: var(--panel-bg);
+            color: var(--accent-gold);
+            border: 2px solid rgba(var(--accent-gold-rgb), 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-        .modal-close-btn:hover {
-            background: var(--gold-active);
-            color: #000;
-            box-shadow: 0 0 10px rgba(255, 232, 117, 0.4);
+
+        .nav-btn.active {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(var(--accent-gold-rgb), 0.25);
+            filter: brightness(1.1);
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-gold);
+            filter: brightness(1.1);
+        }
+
+        /* Рабочая область карты клуба */
+        .club-content-area {
+            background: var(--panel-bg);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            border-radius: 8px;
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10000;
+        }
+
+        .passport-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-gold);
+            padding: 25px;
+            border-radius: 12px;
+            width: 300px;
+            text-align: center;
+            position: relative;
+            color: var(--text-color);
+        }
+
+        .passport-card img.avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: var(--accent-gold);
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        #pass-qr-box {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="club-map-page">
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ С АВАТАРАМИ СОТРУДНИКОВ -->
-        <div class="header-bar">
-            <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ -->
-            <div class="notranslate ui-nav-arrows">
-                <span class="back-arrow" onclick="location.href='office.html'" title="В Офис">&lt;</span>
-                <span class="back-arrow" onclick="location.href='index.html'" title="Ко входу">&lt;&lt;</span>
+    <!-- Навигационные стрелки: < в Офис, << к дверям входа -->
+    <div class="notranslate ui-nav-arrows">
+        <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
+        <a href="index.html" class="arrow-item" title="К дверям входа">&lt;&lt;</a>
+    </div>
+
+    <!-- Шапка (полная копия панели из office.html) -->
+    <header>
+        <div class="header-center-user" onclick="openPassport()">
+            <div class="avatar-with-flag">
+                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
             </div>
+            <span id="header-nickname" class="user-nickname">@User</span>
+        </div>
+        <div class="header-logo notranslate">GY-GY</div>
+    </header>
 
-            <!-- ЛЕНТА АВАТАРОВ -->
-            <div id="header-participants" class="header-participants">
-                <div class="participant-item active" id="my-header-avatar-item">
-                    <img id="header-avatar" class="member-avatar" src="" alt="Me">
-                    <span id="header-lang-flag" class="member-flag">🇷🇺</span>
-                </div>
-            </div>
-
-            <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
-
-            <div class="ui-header-right notranslate">GY-GY</div>
+    <!-- Основной контейнер клуба -->
+    <div class="club-container">
+        <div class="fullscreen-nav">
+            <a href="office.html" class="nav-btn">1. Схема офиса</a>
+            <button class="nav-btn active">2. Схема клуба</button>
         </div>
 
-        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.6) ================= -->
-        <div id="screen-club-map" class="office-screen container-width">
-            <pre class="algo-pre">
-=================== [ <span data-translate="map_header">КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.6 CORE</span> ] ===================
-
-[<span data-translate="map_start">НАЧАЛО</span>: index.html] ──► (<span data-translate="map_start_desc">Выбор языка / Регистрация</span>)
-        │
-        ▼
- [<span data-translate="map_hall">ГЛАВНЫЙ ХОЛ</span>: #block-hall] ───► Выберите направление:
-        │
-        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► <span data-translate="map_neuro">РАБОТА НЕЙРО-МОДУЛЕЙ</span>:
-        │                                                 ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послание инопланетянам</span></span>
-        │                                                 ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Лунная база</span></span>
-        │                                                 └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привет, Вселенная!</span></span>
-        │
-        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► <span data-translate="map_studio">ТВОРЧЕСКИЙ ФУНКЦИОНАЛ</span>:
-        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ателье</span></span>
-        │                                                 ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Мастерская сувениров</span></span>
-        │                                                 └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитности</span></span>
-        │
-        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► <span data-translate="map_office">Вход в Кабинет</span>
-        │
-        └─► [Ветка БАР]     ──► Открыть bar.html   ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга жалоб</span></span>
-                                                    │
-                                                    ▼
-                                    [<span data-translate="map_transition">ПЕРЕХОД</span>: tables.html] ──► Инициализация matrix 3х2:
-                                                    │
-                                    ┌───────────────┴───────────────┐
-                                    ▼                               ▼
-   [<span data-translate="map_left">ЛЕВЫЙ ФЛАНГ</span>]                                                   [<span data-translate="map_right">ПРАВЫЙ ФЛАНГ</span>]
-   ├─► <span data-translate="map_strat">Выбор Стр.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Риск-стратегия</span></span>             ├─► <span data-translate="map_strat">Выбор Стр.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поэтический подиум</span></span>
-   ├─► <span data-translate="map_strat">Выбор Стр.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуэль на цитатах</span></span>           ├─► <span data-translate="map_strat">Выбор Стр.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Переводчик М/Ж</span></span>
-   └─► <span data-translate="map_strat">Выбор Стр.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуэль комплиментов</span></span>        └─► <span data-translate="map_strat">Выбор Стр.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
-            │                                                               │
-            └───────────────────────────┬───────────────────────────────────┘
-                                        ▼
-                            [<span data-translate="map_center">ЦЕНТР ЗАЛА</span>] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ОТКРЫТЫЙ МИКРОФОН</span></span>
-            </pre>
-            <div class="reset-btn-container">
-                <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Сбросить счетчики локаций</button>
-            </div>
+        <div class="club-content-area">
+            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 10px;">КАРТА АРХИТЕКТУРЫ КЛУБА</h2>
+            <p style="color: #aaa; font-size: 14px;">Интерактивная карта модулей и зон клуба</p>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ -->
-    <div id="staff-modal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-title">СОТРУДНИКИ</div>
-            <div id="staff-list" class="staff-list"></div>
-            <button class="modal-close-btn" onclick="closeStaffModal()">ГОТОВО</button>
+    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
+    <div id="modal-passport" class="modal">
+        <div class="passport-card">
+            <span class="close-btn" onclick="closePassport()">&times;</span>
+            <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
+            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--accent-gold); font-family: 'Cinzel', serif;">@User</h3>
+            <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
+            <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
+            <div id="pass-qr-box"></div>
         </div>
     </div>
 
     <script>
-        let counters = {
-            alien: 0, moon: 0, hello: 0, atelier: 0, souvenirs: 0, 
-            vintage: 0, complaints: 0, strat1: 0, strat2: 0, 
-            strat3: 0, strat4: 0, strat5: 0, strat6: 0, open_mic: 0
-        };
+        function openPassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) { 
+                modal.style.display = 'flex'; 
+                requestAnimationFrame(() => { modal.style.opacity = '1'; });
+            }
+        }
 
-        let allStaff = [
-            { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
-            { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
-            { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flag: "🇨🇳", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
-            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flag: "🇪🇸", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" }
-        ];
+        function closePassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        }
 
-        let selectedStaffIds = new Set();
-        let activeTargetMember = null;
+        function renderUserPassport(targetID) {
+            const passIdVal = document.getElementById('pass-id-val');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (passIdVal) passIdVal.innerText = targetID;
+            if (passQrBox && typeof QRCode !== 'undefined') { 
+                passQrBox.innerHTML = ""; 
+                new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); 
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", function() {
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
-            const avatarEl = document.getElementById('header-avatar');
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+            const headerAvatarEl = document.getElementById('header-avatar');
+            const passAvatarEl = document.getElementById('pass-avatar-img');
+            
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23FFD700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23FFD700'/></svg>";
+            const currentAvatar = savedAvatar || defaultAvatar;
+
+            if (headerAvatarEl) { headerAvatarEl.src = currentAvatar; headerAvatarEl.style.display = 'block'; }
+            if (passAvatarEl) { passAvatarEl.src = currentAvatar; }
+
+            const savedNickname = localStorage.getItem('gygy_nickname') || localStorage.getItem('gy_user_name');
+            if (savedNickname) {
+                const nickText = '@' + savedNickname.replace(/^@/, '');
+                document.getElementById('pass-nickname').innerText = nickText;
+                document.getElementById('header-nickname').innerText = nickText;
             }
 
-            const langFlags = { 'ru': '🇷🇺', 'en': '🇬🇧', 'zh': '🇨🇳', 'es': '🇪🇸', 'de': '🇩🇪' };
-            const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
-            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🇷🇺';
+            const savedEmail = localStorage.getItem('gygy_email');
+            if (savedEmail) document.getElementById('pass-email').innerText = savedEmail;
 
-            const savedCounters = localStorage.getItem('gygy_club_counters');
-            if (savedCounters) {
-                try {
-                    counters = JSON.parse(savedCounters);
-                    updateCountersUI();
-                } catch(e) {}
+            let currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('gygy_id', currentID);
+            renderUserPassport(currentID);
+
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+            const flagElement = document.getElementById('current-flag');
+            if (flagElement) {
+                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
             }
-
-            renderStaffList();
         });
-
-        function addClick(key) {
-            if (counters[key] !== undefined) {
-                counters[key]++;
-                updateCountersUI();
-                localStorage.setItem('gygy_club_counters', JSON.stringify(counters));
-            }
-        }
-
-        function updateCountersUI() {
-            for (let key in counters) {
-                const el = document.getElementById(key === 'open_mic' ? 'open_mic' : 'c-' + key);
-                if (el) {
-                    el.textContent = counters[key];
-                }
-            }
-        }
-
-        function clearActivityData() {
-            if (confirm('Сбросить все счетчики активности локаций?')) {
-                for (let key in counters) {
-                    counters[key] = 0;
-                }
-                updateCountersUI();
-                localStorage.removeItem('gygy_club_counters');
-            }
-        }
-
-        function openStaffModal() { document.getElementById('staff-modal').style.display = 'flex'; }
-        function closeStaffModal() { document.getElementById('staff-modal').style.display = 'none'; }
-
-        function renderStaffList() {
-            const container = document.getElementById('staff-list');
-            container.innerHTML = '';
-
-            if (allStaff.length === 0) {
-                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 20px;">Список сотрудников пуст</div>';
-                return;
-            }
-
-            allStaff.forEach(staff => {
-                const item = document.createElement('div');
-                item.className = 'staff-item';
-                const isChecked = selectedStaffIds.has(staff.id) ? 'checked' : '';
-                
-                item.innerHTML = `
-                    <div class="staff-info">
-                        <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
-                        <div>
-                            <div>${staff.name} ${staff.flag}</div>
-                            <div style="font-size:10px;opacity:0.6">${staff.role}</div>
-                        </div>
-                    </div>
-                    <div class="staff-actions">
-                        <input type="checkbox" ${isChecked} onchange="toggleStaff(${staff.id})">
-                        <button class="delete-staff-btn" onclick="deleteStaff(event, ${staff.id})" title="Удалить сотрудника">✕</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function toggleStaff(id) {
-            if (selectedStaffIds.has(id)) {
-                selectedStaffIds.delete(id);
-            } else {
-                selectedStaffIds.add(id);
-            }
-            updateHeaderParticipants();
-        }
-
-        function deleteStaff(event, id) {
-            event.stopPropagation();
-            allStaff = allStaff.filter(s => s.id !== id);
-            selectedStaffIds.delete(id);
-            if (activeTargetMember === id) {
-                activeTargetMember = null;
-            }
-            renderStaffList();
-            updateHeaderParticipants();
-        }
-
-        function updateHeaderParticipants() {
-            const container = document.getElementById('header-participants');
-            const myItem = document.getElementById('my-header-avatar-item');
-            container.innerHTML = '';
-            container.appendChild(myItem);
-
-            selectedStaffIds.forEach(id => {
-                const staff = allStaff.find(s => s.id === id);
-                if (!staff) return;
-
-                const item = document.createElement('div');
-                item.className = `participant-item ${activeTargetMember === staff.id ? 'active' : ''}`;
-                item.onclick = () => selectActiveMember(staff.id);
-                item.innerHTML = `
-                    <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
-                    <span class="member-flag">${staff.flag}</span>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function selectActiveMember(id) {
-            activeTargetMember = activeTargetMember === id ? null : id;
-            updateHeaderParticipants();
-        }
     </script>
 </body>
 </html>
