@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.10 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.11 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -12,11 +12,8 @@
             --gold: #d4af37; 
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
-            
-            /* Стандарт активности: +10% яркости исключительно для золотого цвета текста и рамки */
             --gold-active: #ffe875; 
             --gold-active-border: rgba(255, 232, 117, 0.7);
-
             --danger: #ff4d4d;
         }
 
@@ -45,7 +42,7 @@
             position: relative;
         }
 
-        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОТРУДНИКОВ (калибровка визуала 1-2px) */
+        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОТРУДНИКОВ */
         .header-bar {
             height: 65px;
             padding: 0 15px;
@@ -89,7 +86,7 @@
         .header-participants {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             overflow-x: auto;
             scrollbar-width: none;
             padding: 5px 0;
@@ -106,47 +103,47 @@
         }
         .participant-item:hover { transform: scale(1.05); }
 
-        /* Чистое золотое выделение границы аватара без посторонних теней и ореолов */
         .participant-item.active .member-avatar {
             border: 1px solid var(--gold-active) !important;
         }
 
+        /* 100% УБЕДИТЕЛЬНАЯ ФИКСАЦИЯ КОНТЕЙНЕРА ФЛАГА НА УРОВНЕ CSS */
         .member-avatar-container {
-            position: relative;
-            width: 38px;
-            height: 38px;
-            display: inline-block;
-            flex-shrink: 0;
+            position: relative !important;
+            width: 38px !important;
+            height: 38px !important;
+            min-width: 38px !important;
+            min-height: 38px !important;
+            display: inline-block !important;
+            flex-shrink: 0 !important;
         }
 
         .member-avatar {
-            width: 38px; 
-            height: 38px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            background: #111; 
-            display: block;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: none !important;
+            width: 38px !important; 
+            height: 38px !important; 
+            border-radius: 50% !important; 
+            object-fit: cover !important; 
+            background: #111 !important; 
+            display: block !important;
+            border: 1px solid rgba(212, 175, 55, 0.2) !important;
         }
 
-        /* Исправление отображения флага поверх аватара */
+        /* ГАРАНТИРОВАННЫЙ ВИЗУАЛ ФЛАГА ПОВЕРХ АВАТАРА */
         .member-flag {
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            font-size: 14px;
-            line-height: 1;
-            z-index: 10;
-            background: #000;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--gold-border);
-            box-shadow: none !important;
+            position: absolute !important;
+            bottom: -3px !important;
+            right: -3px !important;
+            font-size: 12px !important;
+            line-height: 1 !important;
+            z-index: 999 !important;
+            background: #000 !important;
+            border-radius: 50% !important;
+            width: 18px !important;
+            height: 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 1px solid var(--gold) !important;
         }
 
         .add-member-btn {
@@ -204,15 +201,9 @@
             overflow-x: auto;
             padding-bottom: 15px;
         }
-        .algo-pre::-webkit-scrollbar {
-            height: 6px;
-        }
-        .algo-pre::-webkit-scrollbar-thumb {
-            background: var(--gold-border);
-            border-radius: 3px;
-        }
+        .algo-pre::-webkit-scrollbar { height: 6px; }
+        .algo-pre::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 3px; }
 
-        /* АКТИВАЦИЯ КНОПОК: меняется ТОЛЬКО рамка и буквы на золотой цвет (+10% яркости), фон полностью прозрачен */
         .bubble-click {
             cursor: pointer;
             padding: 1px 5px;
@@ -224,16 +215,11 @@
             background: transparent !important;
         }
         .bubble-click:hover {
-            background: transparent !important;
             border-color: var(--gold-active-border);
             color: var(--gold-active);
         }
-        .bubble-click.orange {
-            color: var(--gold);
-            background: transparent !important;
-        }
+        .bubble-click.orange { color: var(--gold); }
         .bubble-click.orange:hover {
-            background: transparent !important;
             border-color: var(--gold-active-border);
             color: var(--gold-active);
         }
@@ -261,7 +247,7 @@
             box-shadow: 0 0 10px rgba(255, 232, 117, 0.2);
         }
 
-        /* 3. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ И ПАСПОРТА */
+        /* 3. МОДАЛЬНЫЕ ОКНА */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -311,9 +297,7 @@
             border-radius: 6px;
             transition: all 0.2s;
         }
-        .staff-item:hover { 
-            border-color: var(--gold-active-border); 
-        }
+        .staff-item:hover { border-color: var(--gold-active-border); }
 
         .staff-info {
             display: flex;
@@ -341,10 +325,7 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        .delete-staff-btn:hover {
-            background: var(--danger);
-            color: #fff;
-        }
+        .delete-staff-btn:hover { background: var(--danger); color: #fff; }
 
         .modal-close-btn {
             background: var(--gold);
@@ -357,13 +338,8 @@
             border-radius: 6px;
             transition: all 0.2s;
         }
-        .modal-close-btn:hover {
-            background: var(--gold-active);
-            color: #000;
-            box-shadow: 0 0 10px rgba(255, 232, 117, 0.4);
-        }
+        .modal-close-btn:hover { background: var(--gold-active); }
 
-        /* Стили паспорта */
         .passport-card {
             background: #0a0a0d;
             border: 2px solid var(--gold);
@@ -401,7 +377,6 @@
     <div class="club-map-page">
         <!-- ВЕРХНЯЯ ПАНЕЛЬ С АВАТАРАМИ СОТРУДНИКОВ -->
         <div class="header-bar">
-            <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ -->
             <div class="notranslate ui-nav-arrows">
                 <a class="back-arrow" href="office.html" title="В офис">&lt;</a>
                 <a class="back-arrow" href="index.html" title="Ко входу">&lt;&lt;</a>
@@ -422,10 +397,10 @@
             <div class="ui-header-right notranslate" onclick="openPassport()">GY-GY</div>
         </div>
 
-        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.10) ================= -->
+        <!-- СХЕМА КЛУБА -->
         <div id="screen-club-map" class="office-screen container-width">
             <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.10 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.11 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
@@ -615,9 +590,9 @@
                 
                 item.innerHTML = `
                     <div class="staff-info">
-                        <div class="member-avatar-container" style="width:32px;height:32px;">
-                            <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
-                            <span class="member-flag" style="font-size:10px;">${staff.flag}</span>
+                        <div class="member-avatar-container">
+                            <img src="${staff.avatar}" class="member-avatar">
+                            <span class="member-flag">${staff.flag}</span>
                         </div>
                         <div>
                             <div>${staff.name}</div>
