@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.7 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.9 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -106,7 +106,7 @@
         }
         .participant-item:hover { transform: scale(1.05); }
 
-        /* Убран ореол, добавлено чистое золотое выделение границы */
+        /* Чистое золотое выделение границы аватара без посторонних теней и ореолов */
         .participant-item.active .member-avatar {
             border: 1px solid var(--gold-active) !important;
         }
@@ -126,16 +126,21 @@
             background: transparent; 
             display: block;
             border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: none !important;
         }
 
-        /* Присоединенный флаг прямо к аватару без отступов */
+        /* Полное удаление ореолов, чистое присоединение флага вровень с краем аватара */
         .member-flag {
             position: absolute;
-            bottom: 0;
-            right: 0;
+            bottom: -1px;
+            right: -1px;
             font-size: 13px;
             line-height: 1;
-            transform: translate(2px, 2px);
+            z-index: 5;
+            background: #000;
+            border-radius: 50%;
+            padding: 0px;
+            box-shadow: none !important;
         }
 
         .add-member-btn {
@@ -201,7 +206,7 @@
             border-radius: 3px;
         }
 
-        /* АКТИВАЦИЯ КНОПОК: меняется ТОЛЬКО рамка и буквы на золотой цвет (+10% яркости), фон остается полностью прозрачным */
+        /* АКТИВАЦИЯ КНОПОК: меняется ТОЛЬКО рамка и буквы на золотой цвет (+10% яркости), фон полностью прозрачен */
         .bubble-click {
             cursor: pointer;
             padding: 1px 5px;
@@ -411,10 +416,10 @@
             <div class="ui-header-right notranslate" onclick="openPassport()">GY-GY</div>
         </div>
 
-        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.7) ================= -->
+        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.9) ================= -->
         <div id="screen-club-map" class="office-screen container-width">
             <pre class="algo-pre">
-=================== [ КАРИТА АРХИТЕКТУРЫ КЛУБА v4.6.7 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.9 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
