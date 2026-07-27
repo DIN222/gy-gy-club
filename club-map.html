@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.9 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.10 - CLUB MAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -116,6 +116,7 @@
             width: 38px;
             height: 38px;
             display: inline-block;
+            flex-shrink: 0;
         }
 
         .member-avatar {
@@ -123,23 +124,28 @@
             height: 38px; 
             border-radius: 50%; 
             object-fit: cover; 
-            background: transparent; 
+            background: #111; 
             display: block;
             border: 1px solid rgba(212, 175, 55, 0.2);
             box-shadow: none !important;
         }
 
-        /* Полное удаление ореолов, чистое присоединение флага вровень с краем аватара */
+        /* Исправление отображения флага поверх аватара */
         .member-flag {
             position: absolute;
-            bottom: -1px;
-            right: -1px;
-            font-size: 13px;
+            bottom: -2px;
+            right: -2px;
+            font-size: 14px;
             line-height: 1;
-            z-index: 5;
+            z-index: 10;
             background: #000;
             border-radius: 50%;
-            padding: 0px;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--gold-border);
             box-shadow: none !important;
         }
 
@@ -416,10 +422,10 @@
             <div class="ui-header-right notranslate" onclick="openPassport()">GY-GY</div>
         </div>
 
-        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.9) ================= -->
+        <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.10) ================= -->
         <div id="screen-club-map" class="office-screen container-width">
             <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.9 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.10 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
@@ -513,7 +519,10 @@
 
             const langFlags = { 'ru': '🇷🇺', 'en': '🇬🇧', 'zh': '🇨🇳', 'es': '🇪🇸', 'de': '🇩🇪' };
             const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
-            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🇷🇺';
+            const flagEl = document.getElementById('header-lang-flag');
+            if (flagEl) {
+                flagEl.textContent = langFlags[savedLang.toLowerCase()] || '🇷🇺';
+            }
 
             const savedNickname = localStorage.getItem('gygy_nickname') || localStorage.getItem('gy_user_name');
             if (savedNickname) {
