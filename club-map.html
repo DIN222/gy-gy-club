@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.17 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.19 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -83,7 +83,7 @@
             transform: scale(1.1);
         }
 
-        /* По центру: Абсолютный центр шапки */
+        /* ЦЕНТР: Овальный контейнер для аватара и флага с невидимой рамкой */
         .header-center-user {
             justify-self: center;
             display: flex;
@@ -93,7 +93,7 @@
             background: rgba(var(--accent-gold-rgb), 0.05);
             padding: 4px 12px 4px 6px;
             border-radius: 20px;
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+            border: 1px solid transparent;
             transition: border-color 0.2s;
         }
         .header-center-user:hover {
@@ -476,7 +476,7 @@
     <!-- СХЕМА КЛУБА -->
     <div class="office-screen container-width">
         <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.17 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.19 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
@@ -590,7 +590,7 @@
             localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            // Расширенный поиск флага по всем вероятным ключам из других страниц
+            // Проверка всех возможных ключей флага из localStorage
             const savedFlag = localStorage.getItem('user_flag') || 
                               localStorage.getItem('gy_user_flag') || 
                               localStorage.getItem('gygy_flag') || 
