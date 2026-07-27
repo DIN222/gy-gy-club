@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.19 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.20 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -15,7 +15,7 @@
             --accent-gold: #FFD700;
             --gold: #FFD700;
             --accent-gold-rgb: 255, 215, 0;
-            --text-color: #e0e0e0;
+            --text-color: #ffffff; /* Белые буквы для активных зон и общего текста */
             --danger: #ff4d4d;
         }
 
@@ -264,19 +264,25 @@
         .algo-pre::-webkit-scrollbar { height: 6px; width: 6px; }
         .algo-pre::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 3px; }
 
+        /* ИНТЕРАКТИВНЫЕ АКТИВНЫЕ ЗОНЫ (Золото на черном + увеличение на 15%) */
         .bubble-click {
             cursor: pointer;
-            padding: 1px 5px;
+            padding: 2px 6px;
             border-radius: 4px;
             border: 1px solid transparent;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             display: inline-block;
-            color: var(--accent-gold);
+            color: var(--text-color); /* Белые буквы по умолчанию */
             background: transparent !important;
+            transform-origin: left center;
         }
         .bubble-click:hover {
-            border-color: rgba(var(--accent-gold-rgb), 0.7);
-            color: #fff;
+            background: #000000 !important; /* Черный фон при наведении */
+            color: var(--accent-gold) !important; /* Золотой текст */
+            border-color: var(--accent-gold); /* Тонкая золотая рамка */
+            transform: scale(1.15); /* Увеличение на 15% */
+            box-shadow: 0 0 10px rgba(var(--accent-gold-rgb), 0.4);
+            z-index: 10;
         }
 
         .reset-btn-container {
@@ -476,7 +482,7 @@
     <!-- СХЕМА КЛУБА -->
     <div class="office-screen container-width">
         <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.19 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.20 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
