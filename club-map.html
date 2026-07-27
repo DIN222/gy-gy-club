@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.17 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -38,11 +38,11 @@
             padding: 15px;
         }
 
-        /* Шапка: содержит навигационные стрелки (<, <<), аватар по центру и логотип GY-GY */
+        /* Шапка: точное центрирование аватара через Grid */
         header {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
             align-items: center;
-            justify-content: space-between;
             background-color: var(--panel-bg);
             border: none;
             padding: 10px 20px;
@@ -52,15 +52,13 @@
             gap: 15px;
         }
 
-        /* Левая часть шапки: навигационные стрелки и лента сотрудников */
+        /* Левая часть: навигационные стрелки (< и <<) */
         .header-left-group {
             display: flex;
             align-items: center;
-            gap: 15px;
-            flex-shrink: 0;
+            justify-self: start;
         }
 
-        /* Навигационные стрелки (< и <<) */
         .ui-nav-arrows {
             display: flex; 
             gap: 12px; 
@@ -85,13 +83,13 @@
             transform: scale(1.1);
         }
 
-        /* По центру: Паспорт юзера */
+        /* По центру: Абсолютный центр шапки */
         .header-center-user {
+            justify-self: center;
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            flex-shrink: 0;
             background: rgba(var(--accent-gold-rgb), 0.05);
             padding: 4px 12px 4px 6px;
             border-radius: 20px;
@@ -136,13 +134,12 @@
             white-space: nowrap;
         }
 
-        /* Правая часть шапки: Лента сотрудников, кнопка плюса и логотип GY-GY */
+        /* Правая часть: Лента сотрудников, кнопка плюса и логотип GY-GY */
         .header-right-group {
+            justify-self: end;
             display: flex;
             align-items: center;
             gap: 12px;
-            flex: 1;
-            justify-content: flex-end;
             overflow: hidden;
         }
 
@@ -222,7 +219,7 @@
             border-style: solid;
         }
 
-        /* Справа: Логотип GY-GY */
+        /* Логотип GY-GY */
         .header-logo {
             color: var(--accent-gold);
             font-family: 'Cinzel', serif;
@@ -231,7 +228,7 @@
             letter-spacing: 1px;
             flex-shrink: 0;
             cursor: pointer;
-            padding-left: 5px;
+            padding-left: 8px;
             border-left: 1px solid rgba(var(--accent-gold-rgb), 0.2);
         }
 
@@ -447,7 +444,7 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Шапка: единая панель со стрелками слева, аватаром юзера строго по центру и логотипом справа -->
+    <!-- Шапка: Использование Grid для гарантированного центрирования аватара -->
     <header>
         <!-- Левая часть: навигационные стрелки -->
         <div class="header-left-group">
@@ -457,7 +454,7 @@
             </div>
         </div>
 
-        <!-- По центру: Паспорт юзера -->
+        <!-- По центру: Паспорт юзера (строго по центру шапки) -->
         <div class="header-center-user" onclick="openPassport()">
             <div class="avatar-with-flag">
                 <img id="header-avatar" src="" alt="Avatar" style="display:none;">
@@ -479,7 +476,7 @@
     <!-- СХЕМА КЛУБА -->
     <div class="office-screen container-width">
         <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.16 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.17 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
@@ -593,7 +590,13 @@
             localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || localStorage.getItem('gygy_lang') || 'gb';
+            // Расширенный поиск флага по всем вероятным ключам из других страниц
+            const savedFlag = localStorage.getItem('user_flag') || 
+                              localStorage.getItem('gy_user_flag') || 
+                              localStorage.getItem('gygy_flag') || 
+                              localStorage.getItem('gygy_lang') || 
+                              localStorage.getItem('lang') || 'gb';
+                              
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
                 flagElement.src = getFlagUrl(savedFlag);
