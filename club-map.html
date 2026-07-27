@@ -13,9 +13,8 @@
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
             
-            /* Стандарт активности: +10% яркости исключительно для золотого спектра */
+            /* Стандарт активности: +10% яркости исключительно для золотого цвета текста и рамки */
             --gold-active: #ffe875; 
-            --gold-active-bg: rgba(255, 232, 117, 0.22);
             --gold-active-border: rgba(255, 232, 117, 0.7);
 
             --danger: #ff4d4d;
@@ -107,9 +106,16 @@
         }
         .participant-item:hover { transform: scale(1.05); }
 
+        /* Убран ореол, добавлено чистое золотое выделение границы */
         .participant-item.active .member-avatar {
-            box-shadow: 0 0 12px var(--gold-active) !important;
             border: 1px solid var(--gold-active) !important;
+        }
+
+        .member-avatar-container {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            display: inline-block;
         }
 
         .member-avatar {
@@ -122,12 +128,14 @@
             border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
+        /* Присоединенный флаг прямо к аватару без отступов */
         .member-flag {
             position: absolute;
-            bottom: -2px;
-            right: -4px;
-            font-size: 14px;
+            bottom: 0;
+            right: 0;
+            font-size: 13px;
             line-height: 1;
+            transform: translate(2px, 2px);
         }
 
         .add-member-btn {
@@ -145,7 +153,6 @@
             transition: all 0.2s;
         }
         .add-member-btn:hover {
-            background: var(--gold-active-bg);
             border-color: var(--gold-active);
             color: var(--gold-active);
             border-style: solid;
@@ -194,7 +201,7 @@
             border-radius: 3px;
         }
 
-        /* АКТИВАЦИЯ КНОПОК: строгий золотой стандарт (+10% яркости золота без привнесения посторонних цветов) */
+        /* АКТИВАЦИЯ КНОПОК: меняется ТОЛЬКО рамка и буквы на золотой цвет (+10% яркости), фон остается полностью прозрачным */
         .bubble-click {
             cursor: pointer;
             padding: 1px 5px;
@@ -203,17 +210,19 @@
             transition: all 0.2s;
             display: inline-block;
             color: var(--gold);
+            background: transparent !important;
         }
         .bubble-click:hover {
-            background: var(--gold-active-bg);
+            background: transparent !important;
             border-color: var(--gold-active-border);
             color: var(--gold-active);
         }
         .bubble-click.orange {
             color: var(--gold);
+            background: transparent !important;
         }
         .bubble-click.orange:hover {
-            background: var(--gold-active-bg);
+            background: transparent !important;
             border-color: var(--gold-active-border);
             color: var(--gold-active);
         }
@@ -236,7 +245,6 @@
             transition: all 0.2s;
         }
         .clear-data-btn:hover {
-            background: var(--gold-active-bg);
             border-color: var(--gold-active);
             color: var(--gold-active);
             box-shadow: 0 0 10px rgba(255, 232, 117, 0.2);
@@ -294,7 +302,6 @@
         }
         .staff-item:hover { 
             border-color: var(--gold-active-border); 
-            background: var(--gold-active-bg);
         }
 
         .staff-info {
@@ -392,8 +399,10 @@
             <!-- ЛЕНТА АВАТАРОВ -->
             <div id="header-participants" class="header-participants">
                 <div class="participant-item active" id="my-header-avatar-item" onclick="openPassport()">
-                    <img id="header-avatar" class="member-avatar" src="" alt="Я">
-                    <span id="header-lang-flag" class="member-flag">🇷🇺</span>
+                    <div class="member-avatar-container">
+                        <img id="header-avatar" class="member-avatar" src="" alt="Я">
+                        <span id="header-lang-flag" class="member-flag">🇷🇺</span>
+                    </div>
                 </div>
             </div>
 
@@ -420,7 +429,7 @@
         ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
         │                          ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
         │                          ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
-        │                          └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Старожитности</span>
+        │                          └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Винтаж, антиквариат</span>
         │
         ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в кабинет:
         │                          ├─► <span class="bubble-click" onclick="location.href='meeting.html'">🏢(Блок №3: Комната переговоров)</span>
@@ -436,7 +445,7 @@
    [ЛЕВЫЙ ФЛАНГ]                                    [ПРАВЫЙ ФЛАНГ]
    ├─► Выбор Стр.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Стр.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
    ├─► Выбор Стр.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>           ├─► Выбор Стр.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
-   └─► Выбор Стр.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>        └─► Выбор Стр.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тінь Барона</span>
+   └─► Выбор Стр.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>        └─► Выбор Стр.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тень Барона</span>
             │                                               │
             └───────────────────────────┬───────────────────┘
                                         ▼
@@ -522,7 +531,6 @@
                 } catch(e) {}
             }
 
-            // Загрузка сохраненных подключенных сотрудников из LS
             const savedStaff = localStorage.getItem('gygy_selected_staff');
             if (savedStaff) {
                 try {
@@ -593,9 +601,12 @@
                 
                 item.innerHTML = `
                     <div class="staff-info">
-                        <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
+                        <div class="member-avatar-container" style="width:32px;height:32px;">
+                            <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
+                            <span class="member-flag" style="font-size:10px;">${staff.flag}</span>
+                        </div>
                         <div>
-                            <div>${staff.name} ${staff.flag}</div>
+                            <div>${staff.name}</div>
                             <div style="font-size:10px;opacity:0.6">${staff.role}</div>
                         </div>
                     </div>
@@ -644,8 +655,10 @@
                 item.className = `participant-item ${activeTargetMember === staff.id ? 'active' : ''}`;
                 item.onclick = () => selectActiveMember(staff.id);
                 item.innerHTML = `
-                    <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
-                    <span class="member-flag">${staff.flag}</span>
+                    <div class="member-avatar-container">
+                        <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
+                        <span class="member-flag">${staff.flag}</span>
+                    </div>
                 `;
                 container.appendChild(item);
             });
