@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.20 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.21 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -15,7 +15,7 @@
             --accent-gold: #FFD700;
             --gold: #FFD700;
             --accent-gold-rgb: 255, 215, 0;
-            --text-color: #ffffff; /* Белые буквы для активных зон и общего текста */
+            --text-color: #ffffff;
             --danger: #ff4d4d;
         }
 
@@ -52,7 +52,6 @@
             gap: 15px;
         }
 
-        /* Левая часть: навигационные стрелки (< и <<) */
         .header-left-group {
             display: flex;
             align-items: center;
@@ -83,7 +82,6 @@
             transform: scale(1.1);
         }
 
-        /* ЦЕНТР: Овальный контейнер для аватара и флага с невидимой рамкой */
         .header-center-user {
             justify-self: center;
             display: flex;
@@ -134,7 +132,6 @@
             white-space: nowrap;
         }
 
-        /* Правая часть: Лента сотрудников, кнопка плюса и логотип GY-GY */
         .header-right-group {
             justify-self: end;
             display: flex;
@@ -143,7 +140,6 @@
             overflow: hidden;
         }
 
-        /* ЛЕНТА СОТРУДНИКОВ В ШАПКЕ */
         .header-participants {
             display: flex;
             align-items: center;
@@ -219,7 +215,6 @@
             border-style: solid;
         }
 
-        /* Логотип GY-GY */
         .header-logo {
             color: var(--accent-gold);
             font-family: 'Cinzel', serif;
@@ -232,7 +227,6 @@
             border-left: 1px solid rgba(var(--accent-gold-rgb), 0.2);
         }
 
-        /* 2. ОБЛАСТЬ СХЕМЫ КЛУБА */
         .office-screen {
             flex: 1;
             display: flex;
@@ -264,7 +258,7 @@
         .algo-pre::-webkit-scrollbar { height: 6px; width: 6px; }
         .algo-pre::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 3px; }
 
-        /* ИНТЕРАКТИВНЫЕ АКТИВНЫЕ ЗОНЫ (Золото на черном + увеличение на 15%) */
+        /* ИНТЕРАКТИВНЫЕ АКТИВНЫЕ ЗОНЫ (Золото по умолчанию, увеличение +15% при наведении) */
         .bubble-click {
             cursor: pointer;
             padding: 2px 6px;
@@ -272,15 +266,15 @@
             border: 1px solid transparent;
             transition: all 0.25s ease;
             display: inline-block;
-            color: var(--text-color); /* Белые буквы по умолчанию */
+            color: var(--accent-gold) !important;
             background: transparent !important;
             transform-origin: left center;
         }
         .bubble-click:hover {
-            background: #000000 !important; /* Черный фон при наведении */
-            color: var(--accent-gold) !important; /* Золотой текст */
-            border-color: var(--accent-gold); /* Тонкая золотая рамка */
-            transform: scale(1.15); /* Увеличение на 15% */
+            background: #000000 !important;
+            color: #ffffff !important;
+            border-color: var(--accent-gold);
+            transform: scale(1.15);
             box-shadow: 0 0 10px rgba(var(--accent-gold-rgb), 0.4);
             z-index: 10;
         }
@@ -310,7 +304,6 @@
             box-shadow: 0 0 10px rgba(var(--accent-gold-rgb), 0.2);
         }
 
-        /* 3. МОДАЛЬНЫЕ ОКНА */
         .modal {
             display: none;
             position: fixed;
@@ -450,9 +443,7 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Шапка: Использование Grid для гарантированного центрирования аватара -->
     <header>
-        <!-- Левая часть: навигационные стрелки -->
         <div class="header-left-group">
             <div class="notranslate ui-nav-arrows">
                 <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
@@ -460,7 +451,6 @@
             </div>
         </div>
 
-        <!-- По центру: Паспорт юзера (строго по центру шапки) -->
         <div class="header-center-user" onclick="openPassport()">
             <div class="avatar-with-flag">
                 <img id="header-avatar" src="" alt="Avatar" style="display:none;">
@@ -469,17 +459,13 @@
             <span id="header-nickname" class="user-nickname">@User</span>
         </div>
 
-        <!-- Правая часть: Лента сотрудников, кнопка управления и логотип GY-GY -->
         <div class="header-right-group">
-            <div id="header-participants" class="header-participants">
-                <!-- Динамически рендерится через updateHeaderParticipants() -->
-            </div>
+            <div id="header-participants" class="header-participants"></div>
             <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
             <div class="header-logo notranslate" onclick="openPassport()">GY-GY</div>
         </div>
     </header>
 
-    <!-- СХЕМА КЛУБА -->
     <div class="office-screen container-width">
         <pre class="algo-pre">
 =================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.20 CORE ] ===================
@@ -524,7 +510,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ -->
     <div id="staff-modal" class="modal">
         <div class="modal-card">
             <span class="close-btn" onclick="closeStaffModal()">&times;</span>
@@ -534,7 +519,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="modal">
         <div class="passport-card">
             <span class="close-btn" onclick="closePassport()">&times;</span>
@@ -596,7 +580,6 @@
             localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            // Проверка всех возможных ключей флага из localStorage
             const savedFlag = localStorage.getItem('user_flag') || 
                               localStorage.getItem('gy_user_flag') || 
                               localStorage.getItem('gygy_flag') || 
