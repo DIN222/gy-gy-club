@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.8 - CLUB MAP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.6.7 - CLUB MAP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
@@ -13,13 +13,12 @@
             --gold-bg: rgba(212, 175, 55, 0.1);
             --gold-border: rgba(212, 175, 55, 0.3);
             
+            /* Стандарт активности: +10% яркости исключительно для золотого спектра */
             --gold-active: #ffe875; 
             --gold-active-bg: rgba(255, 232, 117, 0.22);
             --gold-active-border: rgba(255, 232, 117, 0.7);
 
             --danger: #ff4d4d;
-            --panel-bg: #0d0e12;
-            --bg-dark: #000000;
         }
 
         * { 
@@ -45,104 +44,120 @@
             flex-direction: column;
             background: #000;
             position: relative;
-            padding: 15px;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ (< и <<) В УГЛУ ПО СТАНДАРТУ ОФИСА */
+        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОТРУДНИКОВ (калибровка визуала 1-2px) */
+        .header-bar {
+            height: 65px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gold-border);
+            background: #050505;
+            z-index: 100;
+            gap: 10px;
+        }
+
         .ui-nav-arrows {
-            position: fixed; 
-            top: 25px; 
-            left: 25px; 
-            z-index: 9999999; 
             display: flex; 
             gap: 15px; 
-            font-size: 26px; 
+            font-size: 24px; 
             font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; 
             cursor: pointer; 
             color: var(--gold); 
             line-height: 1; 
-            letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            pointer-events: auto !important; 
             user-select: none;
+            flex-shrink: 0;
         }
         
-        .arrow-item { 
+        .back-arrow { 
             transition: opacity 0.2s, transform 0.2s, color 0.2s; 
-            text-decoration: none;
-            color: var(--gold);
+            cursor: pointer;
+            color: var(--gold); 
             display: inline-block;
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            text-decoration: none;
         }
         
-        .arrow-item:hover { 
+        .back-arrow:hover { 
             color: var(--gold-active);
             transform: scale(1.1);
         }
 
-        /* Шапка: точная копия офисной панели со сдвигом под стрелки */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--gold-border);
-            padding: 10px 20px 10px 95px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-            z-index: 100;
-        }
-
-        /* По центру: Паспорт юзера */
-        header .header-center-user {
+        .header-participants {
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            margin: 0 auto;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 5px 0;
         }
+        .header-participants::-webkit-scrollbar { display: none; }
 
-        .avatar-with-flag {
+        .participant-item {
             position: relative;
-            width: 36px;
-            height: 36px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .participant-item:hover { transform: scale(1.05); }
+
+        .participant-item.active .member-avatar {
+            box-shadow: 0 0 12px var(--gold-active) !important;
+            border: 1px solid var(--gold-active) !important;
         }
 
-        #header-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            object-fit: cover;
+        .member-avatar {
+            width: 38px; 
+            height: 38px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            background: transparent; 
+            display: block;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        #current-flag {
+        .member-flag {
             position: absolute;
             bottom: -2px;
             right: -4px;
-            width: 16px;
-            height: 12px;
-            border-radius: 2px;
-            border: 1px solid var(--bg-dark);
-            object-fit: cover;
+            font-size: 14px;
+            line-height: 1;
         }
 
-        .user-nickname {
+        .add-member-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px dashed var(--gold);
             color: var(--gold);
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        /* Справа: Логотип GY-GY */
-        .header-logo {
-            color: var(--gold);
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
             flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .add-member-btn:hover {
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active);
+            color: var(--gold-active);
+            border-style: solid;
+        }
+
+        .ui-header-right { 
+            font-size: 20px; 
+            letter-spacing: 3px; 
+            font-weight: bold; 
+            user-select: none;
+            flex-shrink: 0;
+            cursor: pointer;
         }
 
         /* 2. ОБЛАСТЬ СХЕМЫ КЛУБА */
@@ -153,8 +168,6 @@
             flex-direction: column;
             overflow-y: auto;
             background: radial-gradient(circle at center, #08080c 0%, #000 100%);
-            border: 1px solid var(--gold-border);
-            border-radius: 8px;
         }
 
         .container-width {
@@ -181,7 +194,7 @@
             border-radius: 3px;
         }
 
-        /* Активные золотые элементы: переключение на +10% яркости золота */
+        /* АКТИВАЦИЯ КНОПОК: строгий золотой стандарт (+10% яркости золота без привнесения посторонних цветов) */
         .bubble-click {
             cursor: pointer;
             padding: 1px 5px;
@@ -189,6 +202,7 @@
             border: 1px solid transparent;
             transition: all 0.2s;
             display: inline-block;
+            color: var(--gold);
         }
         .bubble-click:hover {
             background: var(--gold-active-bg);
@@ -196,12 +210,12 @@
             color: var(--gold-active);
         }
         .bubble-click.orange {
-            color: #ff9900;
+            color: var(--gold);
         }
         .bubble-click.orange:hover {
-            background: rgba(255, 170, 34, 0.2);
-            border-color: rgba(255, 170, 34, 0.7);
-            color: #ffb84d;
+            background: var(--gold-active-bg);
+            border-color: var(--gold-active-border);
+            color: var(--gold-active);
         }
 
         .reset-btn-container {
@@ -210,7 +224,6 @@
             text-align: center;
         }
 
-        /* Кнопка сброса */
         .clear-data-btn {
             background: #000000;
             border: 1px solid var(--gold);
@@ -229,33 +242,119 @@
             box-shadow: 0 0 10px rgba(255, 232, 117, 0.2);
         }
 
-        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
-        .modal {
-            display: none;
+        /* 3. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ И ПАСПОРТА */
+        .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: rgba(0,0,0,0.85);
-            justify-content: center;
+            display: none;
             align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            justify-content: center;
             z-index: 10000;
         }
 
+        .modal-card {
+            width: 90%;
+            max-width: 400px;
+            background: #0a0a0d;
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 80vh;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--gold-border);
+            padding-bottom: 8px;
+            color: var(--gold);
+        }
+
+        .staff-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+        }
+
+        .staff-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .staff-item:hover { 
+            border-color: var(--gold-active-border); 
+            background: var(--gold-active-bg);
+        }
+
+        .staff-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .staff-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delete-staff-btn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .delete-staff-btn:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .modal-close-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .modal-close-btn:hover {
+            background: var(--gold-active);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 232, 117, 0.4);
+        }
+
+        /* Стили паспорта */
         .passport-card {
-            background: var(--panel-bg);
+            background: #0a0a0d;
             border: 2px solid var(--gold);
             padding: 25px;
             border-radius: 12px;
             width: 300px;
             text-align: center;
             position: relative;
-            color: var(--text-color, #e0e0e0);
         }
-
         .passport-card img.avatar {
             width: 70px;
             height: 70px;
@@ -264,8 +363,7 @@
             object-fit: cover;
             margin-bottom: 10px;
         }
-
-        .close-btn {
+        .passport-close {
             position: absolute;
             top: 10px;
             right: 15px;
@@ -273,7 +371,6 @@
             cursor: pointer;
             font-size: 22px;
         }
-
         #pass-qr-box {
             display: flex;
             justify-content: center;
@@ -283,77 +380,89 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки: < в Офис, << к дверям входа -->
-    <div class="notranslate ui-nav-arrows">
-        <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
-        <a href="index.html" class="arrow-item" title="Ко входу">&lt;&lt;</a>
-    </div>
-
     <div class="club-map-page">
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ (АНАЛОГ ОФИСНОЙ) -->
-        <header>
-            <div class="header-center-user" onclick="openPassport()">
-                <div class="avatar-with-flag">
-                    <img id="header-avatar" src="" alt="Avatar" style="display:none;">
-                    <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
-                </div>
-                <span id="header-nickname" class="user-nickname">@User</span>
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ С АВАТАРАМИ СОТРУДНИКОВ -->
+        <div class="header-bar">
+            <!-- НАВИГАЦИОННЫЕ СТРЕЛКИ -->
+            <div class="notranslate ui-nav-arrows">
+                <a class="back-arrow" href="office.html" title="В офис">&lt;</a>
+                <a class="back-arrow" href="index.html" title="Ко входу">&lt;&lt;</a>
             </div>
-            <div class="header-logo notranslate">GY-GY</div>
-        </header>
+
+            <!-- ЛЕНТА АВАТАРОВ -->
+            <div id="header-participants" class="header-participants">
+                <div class="participant-item active" id="my-header-avatar-item" onclick="openPassport()">
+                    <img id="header-avatar" class="member-avatar" src="" alt="Я">
+                    <span id="header-lang-flag" class="member-flag">🇷🇺</span>
+                </div>
+            </div>
+
+            <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
+
+            <div class="ui-header-right notranslate" onclick="openPassport()">GY-GY</div>
+        </div>
 
         <!-- ================= СХЕМА КЛУБА (РУССКАЯ ВЕРСИЯ v4.6.7) ================= -->
         <div id="screen-club-map" class="office-screen container-width">
             <pre class="algo-pre">
-=================== [ <span data-translate="map_header">КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.7 CORE</span> ] ===================
+=================== [ КАРИТА АРХИТЕКТУРЫ КЛУБА v4.6.7 CORE ] ===================
 
-[<span data-translate="map_start">НАЧАЛО</span>: index.html] ──► (<span data-translate="map_start_desc">Выбор языка / Регистрация</span>)
+[НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
         ▼
- [<span data-translate="map_hall">ГЛАВНЫЙ ХОЛ</span>: #block-hall] ───► Выберите направление:
+ [ГЛАВНЫЙ ХОЛ: #block-hall] ───► Выберите направление:
         │
-        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► <span data-translate="map_neuro">РАБОТА НЕЙРО-МОДУЛЕЙ</span>:
-        │                          ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) <span data-translate="loc_alien">Послание инопланетянам</span></span>
-        │                          ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) <span data-translate="loc_moon">Лунная база</span></span>
-        │                          └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) <span data-translate="loc_hello">Привет, Вселенная!</span></span>
+        ├─► [Ветка AI ROOM] ──► Открыть verses.html ──► РАБОТА НЕЙРО-МОДУЛЕЙ:
+        │                          ├─► <span class="bubble-click" onclick="addClick('alien')">🟢(<span id="c-alien" class="counter-num">0</span>) Послание инопланетянам</span>
+        │                          ├─► <span class="bubble-click" onclick="addClick('moon')">🟢(<span id="c-moon" class="counter-num">0</span>) Лунная база</span>
+        │                          └─► <span class="bubble-click" onclick="addClick('hello')">🟢(<span id="c-hello" class="counter-num">0</span>) Привет, Вселенная!</span>
         │
-        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► <span data-translate="map_studio">ТВОРЧЕСКИЙ ФУНКЦИОНАЛ</span>:
-        │                          ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) <span data-translate="loc_atelier">Ателье</span></span>
-        │                          ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) <span data-translate="loc_souvenirs">Мастерская сувениров</span></span>
-        │                          └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) <span data-translate="loc_vintage">...старожитности</span></span>
+        ├─► [Ветка STUDIO]  ──► Открыть studio.html ──► ТВОРЧЕСКИЙ ФУНКЦИОНАЛ:
+        │                          ├─► <span class="bubble-click orange" onclick="addClick('atelier')">🟠(<span id="c-atelier" class="counter-num">0</span>) Ателье</span>
+        │                          ├─► <span class="bubble-click orange" onclick="addClick('souvenirs')">🟠(<span id="c-souvenirs" class="counter-num">0</span>) Мастерская сувениров</span>
+        │                          └─► <span class="bubble-click orange" onclick="addClick('vintage')">🟠(<span id="c-vintage" class="counter-num">0</span>) Старожитности</span>
         │
-        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► <span data-translate="map_office">Вход в Кабинет</span>:
-        │                          ├─► <span class="bubble-click" onclick="location.href='meeting.html'">🏢(<span data-translate="loc_meeting">Блок №3: Комната переговоров</span>)</span>
-        │                          └─► <span class="bubble-click" onclick="addClick('work_cab')">🟢(<span id="c-work_cab" class="counter-num">0</span>) <span data-translate="loc_workcab">Рабочие зоны</span></span>
+        ├─► [Ветка OFFICE]  ──► Открыть office.html ──► Вход в кабинет:
+        │                          ├─► <span class="bubble-click" onclick="location.href='meeting.html'">🏢(Блок №3: Комната переговоров)</span>
+        │                          └─► <span class="bubble-click" onclick="addClick('work_cab')">🟢(<span id="c-work_cab" class="counter-num">0</span>) Рабочие зоны</span>
         │
-        └─► [Ветка БАР]     ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) <span data-translate="loc_complaints">Книга жалоб</span></span>
+        └─► [Ветка БАР]     ──► Открыть bar.html    ──► <span class="bubble-click" onclick="addClick('complaints')">🟢(<span id="c-complaints" class="counter-num">0</span>) Книга жалоб</span>
                                                    │
                                                    ▼
-                                    [<span data-translate="map_transition">ПЕРЕХОД</span>: tables.html] ──► Инициализация matrix 3х2:
+                                    [ПЕРЕХОД: tables.html] ──► Инициализация matrix 3х2:
                                                    │
                                     ┌───────────────┴───────────────┐
                                     ▼                               ▼
-   [<span data-translate="map_left">ЛЕВЫЙ ФЛАНГ</span>]                                    [<span data-translate="map_right">ПРАВЫЙ ФЛАНГ</span>]
-   ├─► <span data-translate="map_strat">Выбор Стр.1</span> ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) <span data-translate="loc_st1">Риск-стратегия</span></span>             ├─► <span data-translate="map_strat">Выбор Стр.4</span> ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) <span data-translate="loc_st4">Поэтический подиум</span></span>
-   ├─► <span data-translate="map_strat">Выбор Стр.2</span> ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) <span data-translate="loc_st2">Дуэль на цитатах</span></span>           ├─► <span data-translate="map_strat">Выбор Стр.5</span> ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) <span data-translate="loc_st5">Переводчик М/Ж</span></span>
-   └─► <span data-translate="map_strat">Выбор Стр.3</span> ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) <span data-translate="loc_st3">Дуэль комплиментов</span></span>        └─► <span data-translate="map_strat">Выбор Стр.6</span> ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) <span data-translate="loc_st6">Тінь Барона</span></span>
+   [ЛЕВЫЙ ФЛАНГ]                                    [ПРАВЫЙ ФЛАНГ]
+   ├─► Выбор Стр.1 ──► <span class="bubble-click" onclick="addClick('strat1')">🟢(<span id="c-strat1" class="counter-num">0</span>) Риск-стратегия</span>             ├─► Выбор Стр.4 ──► <span class="bubble-click" onclick="addClick('strat4')">🟢(<span id="c-strat4" class="counter-num">0</span>) Поэтический подиум</span>
+   ├─► Выбор Стр.2 ──► <span class="bubble-click" onclick="addClick('strat2')">🟢(<span id="c-strat2" class="counter-num">0</span>) Дуэль на цитатах</span>           ├─► Выбор Стр.5 ──► <span class="bubble-click" onclick="addClick('strat5')">🟢(<span id="c-strat5" class="counter-num">0</span>) Переводчик М/Ж</span>
+   └─► Выбор Стр.3 ──► <span class="bubble-click" onclick="addClick('strat3')">🟢(<span id="c-strat3" class="counter-num">0</span>) Дуэль комплиментов</span>        └─► Выбор Стр.6 ──► <span class="bubble-click" onclick="addClick('strat6')">🟢(<span id="c-strat6" class="counter-num">0</span>) Тінь Барона</span>
             │                                               │
             └───────────────────────────┬───────────────────┘
                                         ▼
-                            [<span data-translate="map_center">ЦЕНТР ЗАЛА</span>] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) <span data-translate="loc_openmic">ОТКРЫТЫЙ МИКРОФОН</span></span>
+                            [ЦЕНТР ЗАЛА] ──► Вызов 🎙 <span class="bubble-click" onclick="addClick('open_mic')">🟢(<span id="open_mic" class="counter-num">0</span>) ОТКРЫТЫЙ МИКРОФОН</span>
             </pre>
             <div class="reset-btn-container">
-                <button class="clear-data-btn" onclick="clearActivityData()" data-translate="map_btn_reset">Сбросить счетчики локаций</button>
+                <button class="clear-data-btn" onclick="clearActivityData()">Сбросить счетчики локаций</button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ -->
+    <div id="staff-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-title">УПРАВЛЕНИЕ СОТРУДНИКАМИ</div>
+            <div id="staff-list" class="staff-list"></div>
+            <button class="modal-close-btn" onclick="closeStaffModal()">ГОТОВО</button>
+        </div>
+    </div>
+
     <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
-    <div id="modal-passport" class="modal">
+    <div id="modal-passport" class="modal-overlay">
         <div class="passport-card">
-            <span class="close-btn" onclick="closePassport()">&times;</span>
-            <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
-            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--gold); font-family: 'Cinzel', serif;">@User</h3>
+            <span class="passport-close" onclick="closePassport()">&times;</span>
+            <img id="pass-avatar-img" class="avatar" src="" alt="Аватар">
+            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--gold);">@Пользователь</h3>
             <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
             <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
             <div id="pass-qr-box"></div>
@@ -367,21 +476,66 @@
             strat3: 0, strat4: 0, strat5: 0, strat6: 0, open_mic: 0, work_cab: 0
         };
 
-        function openPassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { 
-                modal.style.display = 'flex'; 
-                requestAnimationFrame(() => { modal.style.opacity = '1'; });
-            }
-        }
+        let allStaff = [
+            { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
+            { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
+            { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flag: "🇨🇳", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
+            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flag: "🇪🇸", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" }
+        ];
 
-        function closePassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) {
-                modal.style.opacity = '0';
-                setTimeout(() => { modal.style.display = 'none'; }, 300);
+        let selectedStaffIds = new Set();
+        let activeTargetMember = null;
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
+            const avatarEl = document.getElementById('header-avatar');
+            const passAvatarEl = document.getElementById('pass-avatar-img');
+            
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+            const currentAvatar = savedAvatar || defaultAvatar;
+
+            if (avatarEl) avatarEl.src = currentAvatar;
+            if (passAvatarEl) passAvatarEl.src = currentAvatar;
+
+            const langFlags = { 'ru': '🇷🇺', 'en': '🇬🇧', 'zh': '🇨🇳', 'es': '🇪🇸', 'de': '🇩🇪' };
+            const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
+            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🇷🇺';
+
+            const savedNickname = localStorage.getItem('gygy_nickname') || localStorage.getItem('gy_user_name');
+            if (savedNickname) {
+                const nickText = '@' + savedNickname.replace(/^@/, '');
+                document.getElementById('pass-nickname').innerText = nickText;
             }
-        }
+
+            const savedEmail = localStorage.getItem('gygy_email');
+            if (savedEmail) document.getElementById('pass-email').innerText = savedEmail;
+
+            let currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('gygy_id', currentID);
+            renderUserPassport(currentID);
+
+            const savedCounters = localStorage.getItem('gygy_club_counters');
+            if (savedCounters) {
+                try {
+                    counters = JSON.parse(savedCounters);
+                    updateCountersUI();
+                } catch(e) {}
+            }
+
+            // Загрузка сохраненных подключенных сотрудников из LS
+            const savedStaff = localStorage.getItem('gygy_selected_staff');
+            if (savedStaff) {
+                try {
+                    JSON.parse(savedStaff).forEach(id => selectedStaffIds.add(id));
+                    updateHeaderParticipants();
+                } catch(e) {}
+            }
+
+            renderStaffList();
+        });
+
+        function openPassport() { document.getElementById('modal-passport').style.display = 'flex'; }
+        function closePassport() { document.getElementById('modal-passport').style.display = 'none'; }
 
         function renderUserPassport(targetID) {
             const passIdVal = document.getElementById('pass-id-val');
@@ -392,46 +546,6 @@
                 new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); 
             }
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
-            const headerAvatarEl = document.getElementById('header-avatar');
-            const passAvatarEl = document.getElementById('pass-avatar-img');
-            
-            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
-            const currentAvatar = savedAvatar || defaultAvatar;
-
-            if (headerAvatarEl) { headerAvatarEl.src = currentAvatar; headerAvatarEl.style.display = 'block'; }
-            if (passAvatarEl) { passAvatarEl.src = currentAvatar; }
-
-            const savedNickname = localStorage.getItem('gygy_nickname') || localStorage.getItem('gy_user_name');
-            if (savedNickname) {
-                const nickText = '@' + savedNickname.replace(/^@/, '');
-                document.getElementById('pass-nickname').innerText = nickText;
-                document.getElementById('header-nickname').innerText = nickText;
-            }
-
-            const savedEmail = localStorage.getItem('gygy_email');
-            if (savedEmail) document.getElementById('pass-email').innerText = savedEmail;
-
-            let currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
-            localStorage.setItem('gygy_id', currentID);
-            renderUserPassport(currentID);
-
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-            const flagElement = document.getElementById('current-flag');
-            if (flagElement) {
-                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
-            }
-
-            const savedCounters = localStorage.getItem('gygy_club_counters');
-            if (savedCounters) {
-                try {
-                    counters = JSON.parse(savedCounters);
-                    updateCountersUI();
-                } catch(e) {}
-            }
-        });
 
         function addClick(key) {
             if (counters[key] !== undefined) {
@@ -458,6 +572,88 @@
                 updateCountersUI();
                 localStorage.removeItem('gygy_club_counters');
             }
+        }
+
+        function openStaffModal() { document.getElementById('staff-modal').style.display = 'flex'; }
+        function closeStaffModal() { document.getElementById('staff-modal').style.display = 'none'; }
+
+        function renderStaffList() {
+            const container = document.getElementById('staff-list');
+            container.innerHTML = '';
+
+            if (allStaff.length === 0) {
+                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 20px;">Список сотрудников пуст</div>';
+                return;
+            }
+
+            allStaff.forEach(staff => {
+                const item = document.createElement('div');
+                item.className = 'staff-item';
+                const isChecked = selectedStaffIds.has(staff.id) ? 'checked' : '';
+                
+                item.innerHTML = `
+                    <div class="staff-info">
+                        <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
+                        <div>
+                            <div>${staff.name} ${staff.flag}</div>
+                            <div style="font-size:10px;opacity:0.6">${staff.role}</div>
+                        </div>
+                    </div>
+                    <div class="staff-actions">
+                        <input type="checkbox" ${isChecked} onchange="toggleStaff(${staff.id})">
+                        <button class="delete-staff-btn" onclick="deleteStaff(event, ${staff.id})" title="Удалить сотрудника">✕</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function toggleStaff(id) {
+            if (selectedStaffIds.has(id)) {
+                selectedStaffIds.delete(id);
+            } else {
+                selectedStaffIds.add(id);
+            }
+            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
+            updateHeaderParticipants();
+        }
+
+        function deleteStaff(event, id) {
+            event.stopPropagation();
+            allStaff = allStaff.filter(s => s.id !== id);
+            selectedStaffIds.delete(id);
+            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
+            if (activeTargetMember === id) {
+                activeTargetMember = null;
+            }
+            renderStaffList();
+            updateHeaderParticipants();
+        }
+
+        function updateHeaderParticipants() {
+            const container = document.getElementById('header-participants');
+            const myItem = document.getElementById('my-header-avatar-item');
+            container.innerHTML = '';
+            container.appendChild(myItem);
+
+            selectedStaffIds.forEach(id => {
+                const staff = allStaff.find(s => s.id === id);
+                if (!staff) return;
+
+                const item = document.createElement('div');
+                item.className = `participant-item ${activeTargetMember === staff.id ? 'active' : ''}`;
+                item.onclick = () => selectActiveMember(staff.id);
+                item.innerHTML = `
+                    <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
+                    <span class="member-flag">${staff.flag}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function selectActiveMember(id) {
+            activeTargetMember = activeTargetMember === id ? null : id;
+            updateHeaderParticipants();
         }
     </script>
 </body>
