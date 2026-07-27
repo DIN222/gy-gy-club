@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.15 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.16 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -38,23 +38,38 @@
             padding: 15px;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ (< и <<) В УГЛУ ПО СТАНДАРТУ MANIFEST */
+        /* Шапка: содержит навигационные стрелки (<, <<), аватар по центру и логотип GY-GY */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--panel-bg);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            gap: 15px;
+        }
+
+        /* Левая часть шапки: навигационные стрелки и лента сотрудников */
+        .header-left-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        /* Навигационные стрелки (< и <<) */
         .ui-nav-arrows {
-            position: fixed; 
-            top: 15px; 
-            left: 15px; 
-            z-index: 9999999; 
             display: flex; 
-            gap: 15px; 
-            font-size: 26px; 
+            gap: 12px; 
+            font-size: 24px; 
             font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; 
-            cursor: pointer; 
             color: var(--gold); 
             line-height: 1; 
             letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            pointer-events: auto !important; 
             user-select: none;
         }
         
@@ -70,26 +85,21 @@
             transform: scale(1.1);
         }
 
-        /* Шапка: строго без внешней рамки, сдвиг под фиксированные стрелки слева */
-        header {
-            display: flex;
-            align-items: center;
-            background-color: var(--panel-bg);
-            border: none;
-            padding: 10px 20px 10px 95px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-            gap: 15px;
-        }
-
         /* По центру: Паспорт юзера */
-        header .header-center-user {
+        .header-center-user {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
             flex-shrink: 0;
+            background: rgba(var(--accent-gold-rgb), 0.05);
+            padding: 4px 12px 4px 6px;
+            border-radius: 20px;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+            transition: border-color 0.2s;
+        }
+        .header-center-user:hover {
+            border-color: var(--accent-gold);
         }
 
         .avatar-with-flag {
@@ -126,14 +136,23 @@
             white-space: nowrap;
         }
 
+        /* Правая часть шапки: Лента сотрудников, кнопка плюса и логотип GY-GY */
+        .header-right-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+
         /* ЛЕНТА СОТРУДНИКОВ В ШАПКЕ */
         .header-participants {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             overflow-x: auto;
             scrollbar-width: none;
-            flex: 1;
             padding: 2px 0;
         }
         .header-participants::-webkit-scrollbar { display: none; }
@@ -155,14 +174,14 @@
 
         .member-avatar-container {
             position: relative;
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             flex-shrink: 0;
         }
 
         .member-avatar {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             object-fit: cover;
             background: #111;
@@ -174,8 +193,8 @@
             position: absolute;
             bottom: -2px;
             right: -4px;
-            width: 16px;
-            height: 12px;
+            width: 15px;
+            height: 11px;
             border-radius: 2px;
             border: 1px solid var(--bg-dark);
             object-fit: cover;
@@ -183,15 +202,15 @@
         }
 
         .add-member-btn {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: 1px dashed var(--accent-gold);
             color: var(--accent-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             flex-shrink: 0;
             transition: all 0.2s;
@@ -212,6 +231,8 @@
             letter-spacing: 1px;
             flex-shrink: 0;
             cursor: pointer;
+            padding-left: 5px;
+            border-left: 1px solid rgba(var(--accent-gold-rgb), 0.2);
         }
 
         /* 2. ОБЛАСТЬ СХЕМЫ КЛУБА */
@@ -426,14 +447,17 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки: < в Офис, << к дверям входа в клуб -->
-    <div class="notranslate ui-nav-arrows">
-        <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
-        <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
-    </div>
-
-    <!-- Шапка с единым паспортом юзера, лентой сотрудников и логотипом -->
+    <!-- Шапка: единая панель со стрелками слева, аватаром юзера строго по центру и логотипом справа -->
     <header>
+        <!-- Левая часть: навигационные стрелки -->
+        <div class="header-left-group">
+            <div class="notranslate ui-nav-arrows">
+                <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
+                <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
+            </div>
+        </div>
+
+        <!-- По центру: Паспорт юзера -->
         <div class="header-center-user" onclick="openPassport()">
             <div class="avatar-with-flag">
                 <img id="header-avatar" src="" alt="Avatar" style="display:none;">
@@ -442,20 +466,20 @@
             <span id="header-nickname" class="user-nickname">@User</span>
         </div>
 
-        <!-- ЛЕНТА АВАТАРОВ СОТРУДНИКОВ -->
-        <div id="header-participants" class="header-participants">
-            <!-- Динамически рендерится через updateHeaderParticipants() -->
+        <!-- Правая часть: Лента сотрудников, кнопка управления и логотип GY-GY -->
+        <div class="header-right-group">
+            <div id="header-participants" class="header-participants">
+                <!-- Динамически рендерится через updateHeaderParticipants() -->
+            </div>
+            <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
+            <div class="header-logo notranslate" onclick="openPassport()">GY-GY</div>
         </div>
-
-        <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
-
-        <div class="header-logo notranslate" onclick="openPassport()">GY-GY</div>
     </header>
 
     <!-- СХЕМА КЛУБА -->
     <div class="office-screen container-width">
         <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.15 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.16 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
@@ -724,7 +748,6 @@
             const container = document.getElementById('header-participants');
             if (!container) return;
             
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || localStorage.getItem('gygy_lang') || 'gb';
             let htmlContent = '';
 
             selectedStaffIds.forEach(id => {
