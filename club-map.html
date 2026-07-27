@@ -468,7 +468,7 @@
 
     <div class="office-screen container-width">
         <pre class="algo-pre">
-=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.21 CORE ] ===================
+=================== [ КАРТА АРХИТЕКТУРЫ КЛУБА v4.6.22 CORE ] ===================
 
 [НАЧАЛО: index.html] ──► (Выбор языка / Регистрация)
         │
@@ -580,9 +580,10 @@
             localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            const savedFlag = localStorage.getItem('user_flag') || 
+            // Унифицированный опрос всех возможных ключей флага/языка профиля
+            const savedFlag = localStorage.getItem('gygy_flag') || 
+                              localStorage.getItem('user_flag') || 
                               localStorage.getItem('gy_user_flag') || 
-                              localStorage.getItem('gygy_flag') || 
                               localStorage.getItem('gygy_lang') || 
                               localStorage.getItem('lang') || 'gb';
                               
