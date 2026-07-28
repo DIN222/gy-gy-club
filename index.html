@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.1 CORE</title>
+    <title>GY-GY Club v4.6.2 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -317,7 +317,7 @@
         </div>
     </div>
 
-<!-- Подключение внешних модулей в строгом соответствии с архитектурой v4.6.1 -->
+<!-- Подключение внешних модулей в строгом соответствии с архитектурой v4.6.2 -->
 <script src="userlang-data.js"></script>
 <script src="translations.js"></script>
 
@@ -349,19 +349,12 @@
             div.className = 'lang-item notranslate';
             div.setAttribute('translate', 'no');
             
-            // Динамический счетчик юзеров по странам из базы данных
-            let userCount = 0;
-            if (typeof clubUsers !== 'undefined') {
-                userCount = clubUsers.filter(u => u.flag === lang.c).length;
-            }
-            
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n} ${userCount > intVal(0) ? '('+userCount+')' : ''}</span>`;
+            // Чистый языковый блок без счетчиков на первой странице
+            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
             div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
             container.appendChild(div);
         });
     }
-    
-    function intVal(v) { return parseInt(v, 10); }
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
@@ -446,7 +439,6 @@
     }
 
     function checkAndFillRegistrationForm() {
-        // Проверка интеграции Telegram Web App API
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
             const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
             if (tgUser.first_name) {
