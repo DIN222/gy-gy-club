@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.2 CORE</title>
+    <title>GY-GY Club v4.6.3 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -16,11 +16,10 @@
 
         html, body { width: 100%; height: 100%; background: #000000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
-        /* HOVER EFFECT: brightness + smooth transition */
-        button, .lang-frame-locked, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .nickname-box {
+        button, .lang-frame-locked, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .nickname-square {
             transition: all 0.3s ease !important;
         }
-        button:hover, .lang-frame-locked:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .nickname-box:hover {
+        button:hover, .lang-frame-locked:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .nickname-square:hover {
             filter: brightness(1.1);
         }
 
@@ -92,18 +91,17 @@
         .btn-gy { min-width: 270px; padding: 14px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 8px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000000; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .box-final { width: 85px; height: 85px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* КВАДРАТЫ ВЫБОРА НИКНЕЙМА */
-        .nickname-container { display: flex; gap: 10px; margin-bottom: 15px; width: 280px; justify-content: center; }
-        .nickname-box {
-            flex: 1; height: 50px; border: 2px solid var(--gold); background: #000000; color: var(--gold);
+        /* ЕДИНЫЙ СТИЛЬ КВАДРАТОВ ВЫБОРА НИКНЕЙМА */
+        .nickname-container { display: flex; gap: 10px; margin-bottom: 25px; width: 360px; justify-content: center; }
+        .nickname-square {
+            width: 85px; height: 85px; border: 2px solid var(--gold); background: #ffffff; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
-            text-align: center; padding: 2px; position: relative;
+            cursor: pointer; position: relative; color: #000000; padding: 5px; text-align: center;
         }
-        .nickname-box.selected { background: var(--gold); color: #000000; border-color: #ffffff; }
-        .nickname-box input {
+        .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
+        .nickname-square input {
             position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent;
         }
 
@@ -265,29 +263,29 @@
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
-        <!-- Блок выбора типа никнейма (два квадрата) -->
+        <!-- Квадраты выбора никнейма в едином стиле с остальными блоками -->
         <div class="nickname-container">
-            <div id="box-own-nick" class="nickname-box selected" onclick="setNickType('own')">
-                <span data-translate="nick_own">YOUR NICK</span>
-                <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" style="opacity:0; position:absolute; width:100%; height:100%;">
+            <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own')">
+                <span style="font-size: 10px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
+                <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')">
             </div>
-            <div id="box-club-nick" class="nickname-box" onclick="setNickType('club')">
-                <span data-translate="nick_club">CLUB NICK</span>
-                <span id="club-nick-label" style="font-size: 10px; margin-top: 2px;">GY-MEMBER</span>
+            <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
+                <span style="font-size: 10px; font-weight: 900;" data-translate="nick_club">CLUB NICK</span>
+                <span id="club-nick-label" style="font-size: 9px; margin-top: 4px; font-weight: 700;">GY-MEMBER</span>
             </div>
         </div>
 
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:#ffffff; border-color:var(--gold); color:#000000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#ffffff;"></div>
+            <div class="box-final" style="color:#000000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
+            <div class="box-final" id="qr-box-reg"></div>
             
-            <div class="box-final" style="border-color:var(--gold); background:#ffffff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:#000000; font-size:10px; font-weight:900;" data-translate="txt_photo">OR PHOTO</span>
             </div>
             
-            <div class="box-final" style="border-color:var(--gold); background:#ffffff; cursor:pointer;" onclick="generateAvatar()">
+            <div class="box-final" style="cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000000; font-size:10px; font-weight:900; text-align:center;" data-translate="txt_avatar">OR AVATAR</span>
             </div>
@@ -343,7 +341,6 @@
         </div>
     </div>
 
-<!-- Подключение внешних модулей в строгом соответствии с архитектурой v4.6.2 -->
 <script src="userlang-data.js"></script>
 <script src="translations.js"></script>
 
