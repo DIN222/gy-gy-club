@@ -3,62 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.38 CORE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,700;0,900;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.6.1 CORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root { --gold: #d4af37; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
+        :root { --gold: #FFD700; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         body, button, input, div, img, span { pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; }
 
-        html, body { width: 100%; height: 100%; background: #000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin:0; }
+        html, body { width: 100%; height: 100%; background: #000000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ — Сдвинута влево на 5% от исходной позиции */
+        /* HOVER EFFECT: brightness + smooth transition */
+        button, .lang-frame-locked, .ui-user-badge, .arrow-item, .painting-zone, #main-door {
+            transition: all 0.3s ease !important;
+        }
+        button:hover, .lang-frame-locked:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover {
+            filter: brightness(1.1);
+        }
+
+        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
         .lang-frame-locked {
             position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
             width: 150px; height: 36px; border: 2px solid var(--gold); 
-            background: #000; cursor: pointer; display: flex; align-items: center; padding: 0 10px;
-            font-size: 13px;
+            background: #000000; cursor: pointer; display: flex; align-items: center; padding: 0 10px;
+            font-size: 13px; font-family: 'Montserrat', sans-serif;
         }
         .lang-dropdown-adaptive {
             display: none; position: absolute; top: 40px; left: -2px; 
-            width: 150px; background: #000; border: 1px solid var(--gold) !important; z-index: 10000;
+            width: 150px; background: #000000; border: 1px solid var(--gold) !important; z-index: 10000;
             max-height: 70vh; overflow-y: auto;
         }
-        .lang-item { display: flex; align-items: center; padding: 8px 10px; cursor: pointer; line-height: 1; }
-        .lang-item:hover { background: rgba(214, 175, 55, 0.1); }
+        .lang-item { display: flex; align-items: center; padding: 8px 10px; cursor: pointer; line-height: 1; font-family: 'Montserrat', sans-serif; }
+        .lang-item:hover { background: rgba(255, 215, 0, 0.1); }
         .flag-icon { width: 20px; margin-right: 10px; }
 
         /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            font-family: 'Cinzel', serif;
+            text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
         }
         
         /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
             width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+            border: 2px solid var(--gold); background: #111111;
+            box-shadow: 0 0 0 1px #000000, inset 0 0 5px rgba(0,0,0,0.8);
             z-index: 1000000; cursor: pointer; display: none;
         }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #ffffff; }
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px;
             width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
         }
 
         /* ПАСПОРТ */
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card .box-final { margin: 15px auto; border-color: #000000; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000000; cursor: pointer; line-height: 1; user-select: none; }
 
         /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ СТРАНИЦ */
         .block { 
@@ -68,10 +77,10 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            background: #000; 
+            background: #000000; 
             z-index: 10; 
             opacity: 0; 
-            transition: opacity 0.5s ease-in-out; 
+            transition: opacity 1.2s ease-in-out; 
         }
         .block.active { 
             display: flex !important; 
@@ -79,63 +88,57 @@
             z-index: 5000 !important; 
         }
 
-        .quote-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000; }
-        .btn-gy { min-width: 270px; padding: 14px; background: #000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 900; margin: 8px 0; font-family: 'Share Tech Mono'; transition: all 0.3s; }
-        
-        /* Желтая подсветка кнопок (hover) отменена */
+        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000000; }
+        .btn-gy { min-width: 270px; padding: 14px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 8px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000000; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
         #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
-        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)); }
+        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
         #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 20px; font-size: 26px; font-weight: 900 !important; 
+            display: flex; gap: 15px; font-size: 24px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            background: transparent !important; border: none !important;
+            text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
             pointer-events: auto !important; user-select: none;
         }
-        .arrow-item { transition: opacity 0.2s; }
-        .arrow-item:hover { opacity: 0.8; }
+        .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
+        .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
 
         /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-     .hall-interior .quote-text { 
-    position: absolute; 
-    top: 12vh; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 85%; 
-    margin: 0; 
-    text-align: center;
-    padding: 0;
-    background: transparent !important;
-    color: var(--gold) !important;       
-    font-size: 28px;
-    font-weight: 700;
-    
-    /* ОСТАВЛЯЕМ СТРОГО ОБВОДКУ 1px ЧЕРНЫМ ЦВЕТОМ */
-    -webkit-text-stroke: 1px #000000;
-    text-stroke: 1px #000000;
-    
-    /* ВСЕ ТЕНИ ПОЛНОСТЬЮ УДАЛЕНЫ */
-}
+        .hall-interior .quote-text { 
+            position: absolute; 
+            top: 12vh; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 85%; 
+            margin: 0; 
+            text-align: center;
+            padding: 0;
+            background: transparent !important;
+            color: var(--gold) !important;        
+            font-size: 28px;
+            font-weight: 700;
+            -webkit-text-stroke: 1px #000000;
+            text-stroke: 1px #000000;
+        }
         .hall-door-target {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
             background: transparent;
         }
 
-        /* Интерактивные зоны стрелок в Холле */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -164,7 +167,6 @@
         }
         .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
 
-        /* Выплывающие подменю для стрелок Холла */
         .manifest-btn-box { 
             position: absolute; 
             bottom: -50px; 
@@ -178,18 +180,16 @@
             transition: opacity 0.4s, bottom 0.4s; 
             z-index: 10; 
         }
-        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
+        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
-        /* Защита от сдвигов перевода Google */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; background-color: #000 !important; opacity: 0; transition: opacity 0.4s ease-in-out !important; }
+        body { top: 0 !important; background-color: #000000 !important; opacity: 0; transition: opacity 1.2s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
         
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         
-        /* СТИЛИ ПЕРВОЙ СТРАНИЦЫ ВХОДА И ДВЕРИ */
         #main-door {
             display: block;
             height: calc(50vh + 20px);
@@ -223,7 +223,7 @@
     <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
         <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
-            <span class="notranslate" translate="no">ENGLISH</span>
+            <span class="notranslate" translate="no" data-translate="lang_en">ENGLISH</span>
         </div>
         <div id="lang-list-container" class="lang-dropdown-adaptive notranslate" translate="no"></div>
     </div>
@@ -241,51 +241,51 @@
     </div>
 
     <div id="block-welcome" class="block">
-        <div class="quote-text">I'M CHARLIE</div>
-        <div class="quote-text">In every joke there is a share of whisky</div>
+        <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
+        <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
-        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px;">WELCOME</div>
-        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
+        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px; font-family: 'Cinzel', serif;" data-translate="welcome_title">WELCOME</div>
+        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed_hall">PROCEED TO HALL</button>
+        <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
     <div id="block-identity" class="block">
-        <div class="quote-text">There is never too much champagne</div>
+        <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:#fff; border-color:var(--gold); color:#000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#fff;"></div>
+            <div class="box-final" style="background:#ffffff; border-color:var(--gold); color:#000000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
+            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#ffffff;"></div>
             
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
+            <div class="box-final" style="border-color:var(--gold); background:#ffffff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000; font-size:10px; font-weight:900;">OR PHOTO</span>
+                <span id="txt-photo" style="color:#000000; font-size:10px; font-weight:900;" data-translate="txt_photo">OR PHOTO</span>
             </div>
             
-            <div class="box-final" style="border-color:var(--gold); background:#fff; cursor:pointer;" onclick="generateAvatar()">
+            <div class="box-final" style="border-color:var(--gold); background:#ffffff; cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000; font-size:10px; font-weight:900; text-align:center;">OR AVATAR</span>
+                <span id="txt-avatar" style="color:#000000; font-size:10px; font-weight:900; text-align:center;" data-translate="txt_avatar">OR AVATAR</span>
             </div>
         </div>
-        <button id="btn-save" class="btn-gy" onclick="saveUserProfile()">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED</button>
+        <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save">SAVE</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
     <div id="block-hall" class="block">
         <div class="hall-interior" style="position: relative;">
-            <div class="quote-text">In every joke there is a share of whisky</div>
+            <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
             
             <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
                 <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')">AI ROOM</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
                     </div>
                 </div>
 
                 <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')">OFFICE</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
                     </div>
                 </div>
             </div>
@@ -293,7 +293,7 @@
             <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()">STUDIO</button>
+                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
                 </div>
             </div>
         </div>
@@ -309,13 +309,17 @@
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
+
+<!-- Подключение внешних модулей в строгом соответствии с архитектурой v4.6.1 -->
+<script src="userlang-data.js"></script>
+<script src="translations.js"></script>
 
 <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -333,29 +337,31 @@
     let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
 
-    const allLangs = [
-        {n:'ENGLISH', c:'gb', code:'en'}, {n:'DEUTSCH', c:'de', code:'de'}, 
-        {n:'ESPAÑOL', c:'es', code:'es'}, {n:'FRANÇAIS', c:'fr', code:'fr'},
-        {n:'ITALIANO', c:'it', code:'it'}, {n:'POLSKI', c:'pl', code:'pl'}, 
-        {n:'PORTUGUÊС', c:'pt', code:'pt'}, {n:'РУССКИЙ', c:'ru', code:'ru'}, 
-        {n:'TÜRKЧЕ', c:'tr', code:'tr'}, {n:'УКРАЇНСЬКА', c:'ua', code:'uk'}, 
-        {n:'中文', c:'cn', code:'zh-CN'}, {n:'日本語', c:'jp', code:'ja'}
-    ];
-
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
         if (!container) return;
         container.innerHTML = ''; 
+        if (typeof allLangs === 'undefined') return;
+        
         allLangs.forEach(lang => {
             if(lang.code === currentActiveCode) return; 
             const div = document.createElement('div');
             div.className = 'lang-item notranslate';
             div.setAttribute('translate', 'no');
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
+            
+            // Динамический счетчик юзеров по странам из базы данных
+            let userCount = 0;
+            if (typeof clubUsers !== 'undefined') {
+                userCount = clubUsers.filter(u => u.flag === lang.c).length;
+            }
+            
+            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n} ${userCount > intVal(0) ? '('+userCount+')' : ''}</span>`;
             div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
             container.appendChild(div);
         });
     }
+    
+    function intVal(v) { return parseInt(v, 10); }
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
@@ -377,7 +383,19 @@
         if (langListContainer) langListContainer.style.display = 'none';
         renderLangList();
         
+        applyTranslationsToDOM(lang.code);
         forceTriggerGoogleTranslate(lang.code);
+    }
+
+    function applyTranslationsToDOM(langCode) {
+        if (typeof translations === 'undefined' || !translations[langCode]) return;
+        const dict = translations[langCode];
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (dict[key]) {
+                el.innerText = dict[key];
+            }
+        });
     }
 
     function forceTriggerGoogleTranslate(langCode) {
@@ -390,11 +408,9 @@
                 if (selectEl.value === langCode) return;
                 selectEl.value = langCode;
                 selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`[GY-GY] Google Translate успешно переключен на: ${langCode}`);
             }
             if (++attempts > 100) {
                 clearInterval(window.langTimer);
-                console.error("[GY-GY] Виджет Google Translate не загрузился вовремя.");
             }
         }, 100);
     }
@@ -430,6 +446,14 @@
     }
 
     function checkAndFillRegistrationForm() {
+        // Проверка интеграции Telegram Web App API
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+            if (tgUser.first_name) {
+                safeStorageSet('gygy_nickname', tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''));
+            }
+        }
+
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
         
@@ -442,9 +466,9 @@
         }
 
         let matchedLang = null;
-        if (savedFlag) {
+        if (savedFlag && typeof allLangs !== 'undefined') {
             matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
-        } else if (savedLangCode) {
+        } else if (savedLangCode && typeof allLangs !== 'undefined') {
             matchedLang = allLangs.find(l => l.code === savedLangCode);
         }
 
@@ -457,6 +481,7 @@
             const badgeFlagImg = document.getElementById('badge-flag-img');
             if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
             
+            applyTranslationsToDOM(matchedLang.code);
             forceTriggerGoogleTranslate(matchedLang.code);
         }
 
@@ -518,7 +543,6 @@
         const langSwitcher = document.getElementById('lang-switcher');
         const navArrows = document.getElementById('club-nav-arrows');
 
-        // Управление элементами верхней панели + Загасить блок языков на последующих экранах
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
             if (mainDoor) mainDoor.classList.remove('door-exploded');
@@ -529,7 +553,6 @@
             if (navArrows) navArrows.style.display = 'flex';
             if (badge && currentUserImage) badge.style.display = 'block';
             
-            // Загасить языковую панель на страницах Приветствие, Регистрация, Холл
             if (nextId === 'block-welcome' || nextId === 'block-identity' || nextId === 'block-hall') {
                 if (langSwitcher) langSwitcher.style.display = 'none';
             } else {
@@ -582,7 +605,7 @@
 
     function generateAvatar() {
         const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000000"/></svg>`;
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
         const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
         const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
@@ -625,12 +648,16 @@
         }
     }
 
-    window.addEventListener('load', () => {
-        renderLangList();
+    window.addEventListener('DOMContentLoaded', () => {
+        if (!currentID) {
+            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
+            safeStorageSet('gygy_id', currentID);
+        }
         checkAndFillRegistrationForm();
-        document.body.classList.add('page-loaded');
+        renderLangList();
+        setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
 </script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
