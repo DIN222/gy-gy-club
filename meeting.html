@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.23 - MEETING ROOM</title>
+    <title>GY-GY Club v4.6.24 - MEETING ROOM</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
@@ -451,7 +451,7 @@
                     <div class="participant-item active" id="my-header-avatar-item">
                         <div class="member-avatar-container">
                             <img id="header-avatar" class="member-avatar" src="" alt="Me">
-                            <img id="header-lang-flag" class="member-flag" src="https://flagcdn.com/w20/gb.png" alt="flag">
+                            <img id="header-lang-flag" class="member-flag" src="https://flagcdn.com/w20/ua.png" alt="flag">
                         </div>
                     </div>
                 </div>
@@ -508,9 +508,9 @@
 
         function getFlagUrl(code) {
             const countryCodes = {
-                'ru': 'ru', 'en': 'gb', 'gb': 'gb', 'zh': 'cn', 'cn': 'cn', 'es': 'es', 'de': 'de'
+                'ru': 'ru', 'en': 'gb', 'gb': 'gb', 'zh': 'cn', 'cn': 'cn', 'es': 'es', 'de': 'de', 'ua': 'ua', 'uk': 'ua'
             };
-            const c = countryCodes[(code || 'ru').toLowerCase()] || 'ru';
+            const c = countryCodes[(code || 'ua').toLowerCase()] || 'ua';
             return `https://flagcdn.com/w20/${c}.png`;
         }
 
@@ -523,11 +523,12 @@
                 avatarEl.src = savedAvatar || defaultAvatar;
             }
 
-            const savedLang = localStorage.getItem('gygy_flag') || 
+            // Приоритет отдан украинской локали ('ua') и актуальным ключам из Офиса
+            const savedLang = localStorage.getItem('gygy_lang') || 
+                            localStorage.getItem('gy_lang') || 
+                            localStorage.getItem('gygy_flag') || 
                             localStorage.getItem('user_flag') || 
-                            localStorage.getItem('gy_user_flag') || 
-                            localStorage.getItem('gygy_lang') || 
-                            localStorage.getItem('lang') || 'gb';
+                            localStorage.getItem('gy_user_flag') || 'ua';
 
             const flagEl = document.getElementById('header-lang-flag');
             if (flagEl) {
