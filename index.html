@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Global Club Portal v1.2.0</title>
+    <title>Global Club Portal v1.2.1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Подключаем библиотеку для QR-кодов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
@@ -36,7 +35,7 @@
 </head>
 <body>
 
-    <!-- Плавающий переключатель языков -->
+    <!-- Языковая панель -->
     <div id="lang-switcher" onclick="toggleLangList()">
         <div id="active-lang-display" style="display:flex; align-items:center; gap:8px; background:#1a1a1a; padding:8px 14px; border:1px solid var(--gold); border-radius:4px;">
             <img src="https://flagcdn.com/w40/gb.png" class="flag-icon">
@@ -45,14 +44,14 @@
         <div id="lang-list-container"></div>
     </div>
 
-    <!-- Блок 1: Вход (Entrance с Дверью) -->
+    <!-- Блок 1: Дверь входа -->
     <div id="block-entrance" class="block active">
         <div class="door-container" onclick="handleDoor()">
             <h1 id="main-door-text" style="color: var(--gold); margin: 0; font-size: 22px;">[ OPEN CLUB DOOR ]</h1>
         </div>
     </div>
 
-    <!-- Блок 2: Приветствие (Welcome) -->
+    <!-- Блок 2: Приветствие -->
     <div id="block-welcome" class="block">
         <p id="welcome-quote-charlie" style="font-style: italic; opacity: 0.8;"></p>
         <p id="welcome-quote-joke" style="color: var(--gold);"></p>
@@ -61,7 +60,7 @@
         <button id="btn-w-getid" onclick="portalTransition('block-identity')">GET YOUR ID</button>
     </div>
 
-    <!-- Блок 3: Идентификация (Identity / Регистрация) -->
+    <!-- Блок 3: Идентификация и профиль -->
     <div id="block-identity" class="block">
         <p id="identity-quote" style="margin-bottom: 20px;"></p>
         
@@ -99,7 +98,7 @@
         <div id="qr-box-reg" style="margin-top:15px;"></div>
     </div>
 
-    <!-- Блок 4: Зал (Hall) -->
+    <!-- Блок 4: Зал -->
     <div id="block-hall" class="block">
         <p id="hall-quote" style="margin-bottom: 30px;"></p>
         <button onclick="openPassport()">OPEN PASSPORT</button>
@@ -120,7 +119,7 @@
         </div>
     </div>
 
-    <!-- Модальное окно списка резидентов языка -->
+    <!-- Модальное окно списка резидентов -->
     <div id="modal-users-list" class="modal" onclick="closeUsersList()">
         <div style="background:#f0f0f0; color:#000; padding:20px; width:300px; border-radius:8px; text-align:left;" onclick="event.stopPropagation()">
             <h3 id="users-list-title" style="margin-top:0; border-bottom: 2px solid var(--gold); padding-bottom: 8px;">RESIDENTS</h3>
@@ -129,7 +128,6 @@
         </div>
     </div>
 
-    <!-- Подключаем внешние модули данных и переводов -->
     <script src="userlang-data.js"></script>
     <script src="translations.js"></script>
 
