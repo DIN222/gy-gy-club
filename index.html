@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.2 CORE</title>
+    <title>GY-GY Club v4.6.3 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -17,10 +17,10 @@
         html, body { width: 100%; height: 100%; background: #000000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
         
         /* HOVER EFFECT: brightness + smooth transition */
-        button, .lang-frame-locked, .ui-user-badge, .arrow-item, .painting-zone, #main-door {
+        button, .lang-frame-locked, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .nickname-box {
             transition: all 0.3s ease !important;
         }
-        button:hover, .lang-frame-locked:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover {
+        button:hover, .lang-frame-locked:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .nickname-box:hover {
             filter: brightness(1.1);
         }
 
@@ -93,6 +93,19 @@
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000000; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+
+        /* КВАДРАТЫ ВЫБОРА НИКНЕЙМА */
+        .nickname-container { display: flex; gap: 10px; margin-bottom: 15px; width: 280px; justify-content: center; }
+        .nickname-box {
+            flex: 1; height: 50px; border: 2px solid var(--gold); background: #000000; color: var(--gold);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+            text-align: center; padding: 2px; position: relative;
+        }
+        .nickname-box.selected { background: var(--gold); color: #000000; border-color: #ffffff; }
+        .nickname-box input {
+            position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent;
+        }
 
         body { top: 0 !important; }
         #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
@@ -251,6 +264,19 @@
 
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
+        
+        <!-- Блок выбора типа никнейма (два квадрата) -->
+        <div class="nickname-container">
+            <div id="box-own-nick" class="nickname-box selected" onclick="setNickType('own')">
+                <span data-translate="nick_own">YOUR NICK</span>
+                <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" style="opacity:0; position:absolute; width:100%; height:100%;">
+            </div>
+            <div id="box-club-nick" class="nickname-box" onclick="setNickType('club')">
+                <span data-translate="nick_club">CLUB NICK</span>
+                <span id="club-nick-label" style="font-size: 10px; margin-top: 2px;">GY-MEMBER</span>
+            </div>
+        </div>
+
         <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
             <div class="box-final" style="background:#ffffff; border-color:var(--gold); color:#000000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
             <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#ffffff;"></div>
@@ -336,6 +362,28 @@
     let currentUserImage = "";
     let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
+    let selectedNickType = 'own';
+    let userChosenNickname = '';
+
+    function setNickType(type) {
+        selectedNickType = type;
+        const boxOwn = document.getElementById('box-own-nick');
+        const boxClub = document.getElementById('box-club-nick');
+        if (type === 'own') {
+            boxOwn.classList.add('selected');
+            boxClub.classList.remove('selected');
+        } else {
+            boxClub.classList.add('selected');
+            boxOwn.classList.remove('selected');
+        }
+    }
+
+    function updateNicknameValue(val, type) {
+        if (type === 'own') {
+            userChosenNickname = val;
+            safeStorageSet('gygy_nickname', val);
+        }
+    }
 
     function renderLangList() {
         const container = document.getElementById('lang-list-container');
@@ -349,7 +397,6 @@
             div.className = 'lang-item notranslate';
             div.setAttribute('translate', 'no');
             
-            // Чистый языковый блок без счетчиков на первой странице
             div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n}</span>`;
             div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
             container.appendChild(div);
@@ -479,6 +526,9 @@
 
         if (currentID) { renderUserPassports(currentID); }
         
+        const clubNickLabel = document.getElementById('club-nick-label');
+        if (clubNickLabel && currentID) { clubNickLabel.innerText = currentID; }
+
         if (savedAvatar) {
             currentUserImage = savedAvatar;
             const badgeImg = document.getElementById('badge-avatar-img');
@@ -607,6 +657,15 @@
 
     function saveUserProfile() {
         if (!currentUserImage) return;
+        
+        if (selectedNickType === 'club') {
+            safeStorageSet('gygy_nickname', currentID);
+        } else {
+            if (userChosenNickname) {
+                safeStorageSet('gygy_nickname', userChosenNickname);
+            }
+        }
+
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
         safeStorageSet('gy_user_avatar', currentUserImage); 
