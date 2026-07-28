@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Global Club Portal v1.2.1</title>
+    <title>Global Club Portal v1.2.2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -65,13 +65,13 @@
         <p id="identity-quote" style="margin-bottom: 20px;"></p>
         
         <div style="display:flex; gap:15px; margin-bottom:15px; justify-content:center;">
-            <div onclick="document.getElementById('file-input').click()" style="border:1px dashed var(--gold); width:90px; height:90px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#141414; border-radius:4px; overflow:hidden;">
-                <span id="txt-photo" style="font-size: 11px; padding: 5px;">UPLOAD PHOTO</span>
-                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
+            <div onclick="document.getElementById('file-input').click()" style="border:1px dashed var(--gold); width:90px; height:90px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#141414; border-radius:4px; overflow:hidden; position:relative;">
+                <span id="txt-photo" style="font-size: 11px; padding: 5px; z-index:2;">UPLOAD PHOTO</span>
+                <img id="pp" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1;">
             </div>
-            <div onclick="generateAvatar()" style="border:1px dashed var(--gold); width:90px; height:90px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#141414; border-radius:4px; overflow:hidden;">
-                <span id="txt-avatar" style="font-size: 11px; padding: 5px;">GENERATE AVATAR</span>
-                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+            <div onclick="generateAvatar()" style="border:1px dashed var(--gold); width:90px; height:90px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:#141414; border-radius:4px; overflow:hidden; position:relative;">
+                <span id="txt-avatar" style="font-size: 11px; padding: 5px; z-index:2;">GENERATE AVATAR</span>
+                <img id="avatar-img" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1;">
             </div>
         </div>
         <input type="file" id="file-input" style="display:none" onchange="preview(this)">
@@ -110,7 +110,7 @@
     <div id="modal-passport" class="modal" onclick="closePassport()">
         <div style="background:#141414; border:2px solid var(--gold); padding:25px; width:280px; text-align:center; border-radius:8px;" onclick="event.stopPropagation()">
             <h3 style="color:var(--gold); margin-top:0;">CLUB PASSPORT</h3>
-            <img id="pass-avatar-img" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--gold); object-fit:cover; margin-bottom: 10px;">
+            <img id="pass-avatar-img" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--gold); object-fit:cover; margin-bottom: 10px;" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23222'/><circle cx='50' cy='40' r='20' fill='%23444'/></svg>">
             <p id="pass-nickname" style="font-weight:bold; font-size:16px; margin:5px 0;">@GUEST</p>
             <p id="pass-email" style="font-size: 13px; opacity: 0.8; margin: 5px 0;"></p>
             <div id="pass-qr-box" style="margin:15px auto; display:flex; justify-content:center;"></div>
@@ -132,7 +132,7 @@
     <script src="translations.js"></script>
 
     <script>
-        const APP_VERSION = "v1.2.0-MODULAR";
+        const APP_VERSION = "v1.2.1-MODULAR";
 
         let currentBlockId = 'block-entrance';
         let currentActiveCode = 'en';
@@ -316,6 +316,12 @@
                 currentUserImage = savedAvatar;
                 const badgeImg = document.getElementById('pass-avatar-img');
                 if (badgeImg) badgeImg.src = savedAvatar;
+                
+                const pp = document.getElementById('pp');
+                if (pp) { pp.src = savedAvatar; pp.style.display = 'block'; }
+                const txtPhoto = document.getElementById('txt-photo');
+                if (txtPhoto) txtPhoto.style.display = 'none';
+
                 document.getElementById('btn-w-hall').classList.remove('btn-sleep');
                 document.getElementById('btn-pass').classList.remove('btn-sleep');
             }
@@ -347,6 +353,8 @@
                     const pp = document.getElementById('pp');
                     if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
                     document.getElementById('txt-photo').style.display = 'none';
+                    document.getElementById('avatar-img').style.display = 'none';
+                    document.getElementById('txt-avatar').style.display = 'block';
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -356,9 +364,14 @@
             const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000"/></svg>`;
             currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            
             const avatarImg = document.getElementById('avatar-img');
             if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
             document.getElementById('txt-avatar').style.display = "none";
+            
+            const pp = document.getElementById('pp');
+            if (pp) pp.style.display = "none";
+            document.getElementById('txt-photo').style.display = "block";
         }
 
         function saveUserProfile() {
