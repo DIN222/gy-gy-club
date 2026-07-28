@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.5.41 - MEETING ROOM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.6.23 - MEETING ROOM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --gold: #d4af37; 
-            --gold-bg: rgba(212, 175, 55, 0.1);
-            --gold-border: rgba(212, 175, 55, 0.3);
+            --bg-dark: #000000;
+            --panel-bg: #0d0e12;
+            --accent-gold: #FFD700;
+            --gold: #FFD700;
+            --accent-gold-rgb: 255, 215, 0;
+            --gold-bg: rgba(255, 215, 0, 0.1);
+            --gold-border: rgba(255, 215, 0, 0.3);
             --tg-blue: #0088cc;
             --tg-blue-bg: rgba(0, 136, 204, 0.15);
+            --text-color: #ffffff;
             --danger: #ff4d4d;
         }
 
@@ -24,12 +29,14 @@
         }
         
         html, body { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; 
+            width: 100vw; 
+            height: 100vh; 
+            background: var(--bg-dark); 
+            color: var(--text-color); 
+            font-family: 'Montserrat', sans-serif; 
             overflow: hidden; 
+            display: flex;
+            flex-direction: column;
         }
 
         .chat-page {
@@ -37,43 +44,48 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            background: #000;
+            background: var(--bg-dark);
             position: relative;
         }
 
-        /* 1. ВЕРХНЯЯ ПАНЕЛЬ С ЛЕНТОЙ СОБЕСЕДНИКОВ */
+        /* Верхняя панель: идеальная сетка */
         .header-bar {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--gold-border);
+            padding: 10px 20px;
             height: 65px;
-            padding: 0 15px;
+            z-index: 100;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .header-left-group {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--gold-border);
-            background: #050505;
-            z-index: 100;
-            gap: 10px;
+            justify-self: start;
         }
 
         .ui-nav-arrows {
             display: flex; 
-            gap: 15px; 
+            gap: 12px; 
             font-size: 24px; 
             font-weight: 900 !important; 
-            cursor: pointer; 
+            font-family: 'Share Tech Mono', monospace; 
             color: var(--gold); 
             line-height: 1; 
+            letter-spacing: -2px; 
             user-select: none;
-            flex-shrink: 0;
         }
         
         .back-arrow { 
             transition: opacity 0.2s, transform 0.2s; 
-            text-decoration: none; 
-            color: var(--gold); 
+            text-decoration: none;
+            color: var(--gold);
             display: inline-block;
-            border: none !important;
-            outline: none !important;
-            background: transparent !important;
+            cursor: pointer;
         }
         
         .back-arrow:hover { 
@@ -81,14 +93,22 @@
             transform: scale(1.1);
         }
 
-        /* ЛЕНТА АВАТАРОВ СОТРУДНИКОВ В ШАПКЕ */
-        .header-participants {
+        .header-center-area {
+            justify-self: center;
             display: flex;
             align-items: center;
             gap: 12px;
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .header-participants {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             overflow-x: auto;
             scrollbar-width: none;
-            padding: 5px 0;
+            padding: 2px 0;
         }
         .header-participants::-webkit-scrollbar { display: none; }
 
@@ -103,56 +123,80 @@
         .participant-item:hover { transform: scale(1.05); }
 
         .participant-item.active .member-avatar {
-            box-shadow: 0 0 10px var(--gold) !important;
-            border: 1px solid var(--gold) !important;
+            border-color: #fff !important;
+            box-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.6);
+        }
+
+        .member-avatar-container {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
         }
 
         .member-avatar {
-            width: 38px; 
-            height: 38px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            background: transparent; 
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #111;
             display: block;
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            border: 2px solid rgba(var(--accent-gold-rgb), 0.5);
         }
 
         .member-flag {
             position: absolute;
             bottom: -2px;
             right: -4px;
-            font-size: 14px;
-            line-height: 1;
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid var(--bg-dark);
+            object-fit: cover;
+            z-index: 5;
         }
 
         .add-member-btn {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            border: 1px dashed var(--gold);
-            color: var(--gold);
+            border: 1px dashed var(--accent-gold);
+            color: var(--accent-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
             flex-shrink: 0;
             transition: all 0.2s;
+            background: rgba(var(--accent-gold-rgb), 0.05);
         }
         .add-member-btn:hover {
-            background: var(--gold-bg);
+            border-color: #fff;
+            color: #fff;
             border-style: solid;
         }
 
-        .ui-header-right { 
-            font-size: 20px; 
-            letter-spacing: 3px; 
-            font-weight: bold; 
-            user-select: none;
-            flex-shrink: 0;
+        .header-right-group {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* 2. ЛИНГВО-СМЫСЛОВАЯ ОБЛАСТЬ ЧАТА */
+        .ui-header-right { 
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            user-select: none;
+            cursor: pointer;
+            padding-left: 8px;
+            border-left: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+        }
+
+        /* Область чата */
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -170,6 +214,7 @@
             font-size: 14px;
             line-height: 1.4;
             word-wrap: break-word;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .msg-incoming {
@@ -181,7 +226,7 @@
 
         .msg-outgoing {
             align-self: flex-end;
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(255, 215, 0, 0.2);
             border: 1px solid var(--gold);
             color: #fff;
         }
@@ -191,6 +236,7 @@
             opacity: 0.7;
             margin-bottom: 4px;
             display: flex;
+            align-items: center;
             gap: 5px;
         }
 
@@ -209,10 +255,10 @@
             text-align: right;
         }
 
-        /* 3. НИЖНЯЯ ПАНЕЛЬ ВВОДА */
+        /* Нижняя панель ввода */
         .chat-input-bar {
             padding: 12px 15px;
-            background: #050505;
+            background: var(--panel-bg);
             border-top: 1px solid var(--gold-border);
         }
 
@@ -243,9 +289,9 @@
             padding: 0 14px;
             height: 42px;
             border-radius: 6px;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Montserrat', sans-serif;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -263,9 +309,9 @@
             padding: 0 12px;
             height: 42px;
             border-radius: 6px;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Montserrat', sans-serif;
             font-size: 13px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -285,7 +331,7 @@
             fill: currentColor;
         }
 
-        /* 4. МОДАЛЬНОЕ ОКНО СОТРУДНИКОВ */
+        /* Модальные окна */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -294,26 +340,32 @@
             align-items: center;
             justify-content: center;
             z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .modal-card {
             width: 90%;
             max-width: 400px;
-            background: #0a0a0d;
-            border: 1px solid var(--gold);
-            border-radius: 10px;
-            padding: 20px;
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-gold);
+            border-radius: 12px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: 80vh;
+            max-height: 85vh;
+            color: var(--text-color);
         }
 
         .modal-title {
-            font-size: 16px;
-            letter-spacing: 2px;
-            border-bottom: 1px solid var(--gold-border);
+            font-size: 15px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(var(--accent-gold-rgb), 0.3);
             padding-bottom: 8px;
+            color: var(--accent-gold);
         }
 
         .staff-list {
@@ -321,19 +373,23 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 300px;
+            max-height: 280px;
+            padding-right: 5px;
         }
+        .staff-list::-webkit-scrollbar { width: 4px; }
+        .staff-list::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 2px; }
 
         .staff-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 8px;
-            background: rgba(212, 175, 55, 0.05);
-            border: 1px solid transparent;
+            background: rgba(var(--accent-gold-rgb), 0.05);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
             border-radius: 6px;
+            transition: all 0.2s;
         }
-        .staff-item:hover { border-color: var(--gold-border); }
+        .staff-item:hover { border-color: var(--accent-gold); }
 
         .staff-info {
             display: flex;
@@ -361,44 +417,50 @@
             justify-content: center;
             transition: all 0.2s;
         }
-        .delete-staff-btn:hover {
-            background: var(--danger);
-            color: #fff;
-        }
+        .delete-staff-btn:hover { background: var(--danger); color: #fff; }
 
         .modal-close-btn {
-            background: var(--gold);
+            background: var(--accent-gold);
             color: #000;
             border: none;
             padding: 10px;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Cinzel', serif;
             font-weight: bold;
             cursor: pointer;
             border-radius: 6px;
+            transition: all 0.2s;
         }
+        .modal-close-btn:hover { filter: brightness(1.1); }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
     <div class="chat-page">
-        <!-- ВЕРХНЯЯ ПАНЕЛЬ С АВАТАРАМИ СОТРУДНИКОВ -->
-        <div class="notranslate ui-nav-arrows">
-    <span class="back-arrow" onclick="location.href='office.html'" title="В Офис">&lt;</span>
-    <span class="back-arrow" onclick="location.href='index.html'" title="Ко входу">&lt;&lt;</span>
-</div>
-
-            <!-- ЛЕНТА АВАТАРОВ -->
-            <div id="header-participants" class="header-participants">
-                <!-- Мой аватар -->
-                <div class="participant-item active" id="my-header-avatar-item">
-                    <img id="header-avatar" class="member-avatar" src="" alt="Me">
-                    <span id="header-lang-flag" class="member-flag"></span>
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+        <div class="header-bar">
+            <div class="header-left-group">
+                <div class="notranslate ui-nav-arrows">
+                    <span class="back-arrow" onclick="location.href='office.html'" title="В Офис">&lt;</span>
+                    <span class="back-arrow" onclick="location.href='index.html'" title="Ко входу">&lt;&lt;</span>
                 </div>
             </div>
 
-            <div class="add-member-btn" onclick="openStaffModal()" title="Добавить собеседника">+</div>
+            <div class="header-center-area">
+                <!-- ЛЕНТА АВАТАРОВ (включая пользователя и сотрудников) -->
+                <div id="header-participants" class="header-participants">
+                    <div class="participant-item active" id="my-header-avatar-item">
+                        <div class="member-avatar-container">
+                            <img id="header-avatar" class="member-avatar" src="" alt="Me">
+                            <img id="header-lang-flag" class="member-flag" src="https://flagcdn.com/w20/gb.png" alt="flag">
+                        </div>
+                    </div>
+                </div>
+                <div class="add-member-btn" onclick="openStaffModal()" title="Добавить собеседника">+</div>
+            </div>
 
-            <div class="ui-header-right notranslate">GY-GY</div>
+            <div class="header-right-group">
+                <div class="ui-header-right notranslate">GY-GY</div>
+            </div>
         </div>
 
         <!-- ОКНО СООБЩЕНИЙ -->
@@ -435,34 +497,65 @@
 
     <script>
         let allStaff = [
-            { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flag: "🇷🇺", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
-            { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flag: "🇬🇧", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
-            { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flag: "🇨🇳", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
-            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flag: "🇪🇸", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" }
+            { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flagCode: "ru", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
+            { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flagCode: "gb", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
+            { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flagCode: "cn", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
+            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flagCode: "es", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" }
         ];
 
         let selectedStaffIds = new Set();
         let activeTargetMember = null;
 
+        function getFlagUrl(code) {
+            const countryCodes = {
+                'ru': 'ru', 'en': 'gb', 'gb': 'gb', 'zh': 'cn', 'cn': 'cn', 'es': 'es', 'de': 'de'
+            };
+            const c = countryCodes[(code || 'ru').toLowerCase()] || 'ru';
+            return `https://flagcdn.com/w20/${c}.png`;
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const avatarEl = document.getElementById('header-avatar');
             
-            if (savedAvatar && avatarEl) {
-                avatarEl.src = savedAvatar;
-            } else if (avatarEl) {
-                avatarEl.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23fff'/><circle cx='16' cy='12' r='5' fill='%23d4af37'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23d4af37'/></svg>";
+            const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%23000'/><circle cx='16' cy='12' r='5' fill='%23FFD700'/><path d='M6 28 c0-6 5-10 10-10 s10 4 10 10' fill='%23FFD700'/></svg>";
+            if (avatarEl) {
+                avatarEl.src = savedAvatar || defaultAvatar;
             }
 
-            const langFlags = { 'ru': '🇷🇺', 'en': '🇬🇧', 'zh': '🇨🇳', 'es': '🇪🇸', 'de': '🇩🇪' };
-            const savedLang = localStorage.getItem('gygy_lang') || localStorage.getItem('gy_lang') || 'ru';
-            document.getElementById('header-lang-flag').textContent = langFlags[savedLang.toLowerCase()] || '🌐';
+            const savedLang = localStorage.getItem('gygy_flag') || 
+                            localStorage.getItem('user_flag') || 
+                            localStorage.getItem('gy_user_flag') || 
+                            localStorage.getItem('gygy_lang') || 
+                            localStorage.getItem('lang') || 'gb';
+
+            const flagEl = document.getElementById('header-lang-flag');
+            if (flagEl) {
+                flagEl.src = getFlagUrl(savedLang);
+            }
+
+            const savedStaff = localStorage.getItem('gygy_selected_staff');
+            if (savedStaff) {
+                try {
+                    JSON.parse(savedStaff).forEach(id => selectedStaffIds.add(id));
+                } catch(e) {}
+            }
 
             renderStaffList();
+            updateHeaderParticipants();
         });
 
-        function openStaffModal() { document.getElementById('staff-modal').style.display = 'flex'; }
-        function closeStaffModal() { document.getElementById('staff-modal').style.display = 'none'; }
+        function openStaffModal() {
+            const modal = document.getElementById('staff-modal');
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => { modal.style.opacity = '1'; });
+        }
+
+        function closeStaffModal() {
+            const modal = document.getElementById('staff-modal');
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
 
         function renderStaffList() {
             const container = document.getElementById('staff-list');
@@ -480,9 +573,12 @@
                 
                 item.innerHTML = `
                     <div class="staff-info">
-                        <img src="${staff.avatar}" class="member-avatar" style="width:32px;height:32px;">
+                        <div class="member-avatar-container">
+                            <img src="${staff.avatar}" class="member-avatar">
+                            <img src="${getFlagUrl(staff.flagCode)}" class="member-flag">
+                        </div>
                         <div>
-                            <div>${staff.name} ${staff.flag}</div>
+                            <div style="font-weight: 600;">${staff.name}</div>
                             <div style="font-size:10px;opacity:0.6">${staff.role}</div>
                         </div>
                     </div>
@@ -501,19 +597,16 @@
             } else {
                 selectedStaffIds.add(id);
             }
+            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
             updateHeaderParticipants();
         }
 
         function deleteStaff(event, id) {
             event.stopPropagation();
-            
-            // Удаляем из общего массива
             allStaff = allStaff.filter(s => s.id !== id);
-            
-            // Удаляем из выбранных в шапке
             selectedStaffIds.delete(id);
+            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
             
-            // Если этот сотрудник был активным собеседником, сбрасываем выбор
             if (activeTargetMember === id) {
                 activeTargetMember = null;
             }
@@ -535,9 +628,12 @@
                 const item = document.createElement('div');
                 item.className = `participant-item ${activeTargetMember === staff.id ? 'active' : ''}`;
                 item.onclick = () => selectActiveMember(staff.id);
+                item.title = staff.name;
                 item.innerHTML = `
-                    <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
-                    <span class="member-flag">${staff.flag}</span>
+                    <div class="member-avatar-container">
+                        <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
+                        <img src="${getFlagUrl(staff.flagCode)}" class="member-flag" alt="flag">
+                    </div>
                 `;
                 container.appendChild(item);
             });
@@ -576,7 +672,13 @@
                         let replyBadge = isTelegram ? '<div class="msg-tg-badge">◄ Telegram Bot</div>' : '';
                         replyDiv.innerHTML = `
                             ${replyBadge}
-                            <div class="msg-author">${staff.flag} ${staff.name}</div>
+                            <div class="msg-author">
+                                <div class="member-avatar-container" style="width:20px;height:20px;">
+                                    <img src="${staff.avatar}" class="member-avatar" style="width:20px;height:20px;border-width:1px;">
+                                    <img src="${getFlagUrl(staff.flagCode)}" class="member-flag" style="width:10px;height:8px;bottom:-1px;right:-2px;">
+                                </div>
+                                ${staff.name}
+                            </div>
                             Принято.
                             <div class="msg-time">${timeStr}</div>
                         `;
