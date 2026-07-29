@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GY-GY Atelier | Ателье «Уличная одежда» v1.1.5 </title>
+  <title>GY-GY Atelier | Ателье «Уличная одежда» v1.1.7 </title>
   
   <!-- ШРИФТЫ: Montserrat (для интерфейса) + UnifrakturMaguntia (Креативный стритвир акцент) -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=UnifrakturMaguntia&family=Russo+One&display=swap" rel="stylesheet">
@@ -378,7 +378,50 @@
       box-shadow: 0 0 6px #5cb85c;
     }
 
-    /* ОБЩИЙ ЧАТ КЛУБА (CLUB GENERAL CHAT) */
+    /* СМЕТА (ПЕРЕД ЧАТОМ) */
+    .summary-card {
+      background: #080808;
+      border: 1px solid var(--gold-dark);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-row.total {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--gold-primary);
+      border-top: 1px solid var(--gold-dark);
+      padding-top: 6px;
+      margin-bottom: 0;
+      text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+    }
+
+    .badge {
+      font-size: 8px;
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--gold-light);
+      padding: 2px 4px;
+      border-radius: 3px;
+      margin-left: 3px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 11px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    /* ОБЩИЙ ЧАТ КЛУБА (МЕЖДУ СМЕТОЙ И ПОДТВЕРЖДЕНИЕМ) */
     .club-chat-box {
       background: #080808;
       border: 1px solid var(--gold-dark);
@@ -387,6 +430,7 @@
       flex-direction: column;
       height: 190px;
       overflow: hidden;
+      margin-top: 2px;
     }
     .club-chat-header {
       background: rgba(212, 175, 55, 0.08);
@@ -476,48 +520,6 @@
       background: rgba(212, 175, 55, 0.1);
     }
 
-    .summary-card {
-      background: #080808;
-      border: 1px solid var(--gold-dark);
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .summary-row.total {
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--gold-primary);
-      border-top: 1px solid var(--gold-dark);
-      padding-top: 6px;
-      margin-bottom: 0;
-      text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
-    }
-
-    .badge {
-      font-size: 8px;
-      background: rgba(212, 175, 55, 0.2);
-      color: var(--gold-light);
-      padding: 2px 4px;
-      border-radius: 3px;
-      margin-left: 3px;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 11px;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-
     #canvas-container {
       flex: 1;
       height: 100%;
@@ -556,7 +558,7 @@
         </div>
         <div class="brand-box">
           <div class="brand-logo">GY-GY</div>
-          <span class="version-tag">v1.1.5-CHAT</span>
+          <span class="version-tag">v1.1.7-CHAT-BEFORE-ORDER</span>
         </div>
       </div>
 
@@ -645,7 +647,41 @@
         </div>
       </div>
 
-      <!-- ОБЩИЙ ЧАТ КЛУБА (CLUB GENERAL CHAT MODULE) -->
+      <!-- TELEGRAM МОСТ -->
+      <div class="group">
+        <div class="section-title">Telegram Канал / Мост</div>
+        <div class="telegram-bridge-box">
+          <div class="tg-row">
+            <input type="text" class="tg-input" id="tg-token" placeholder="Bot Token (скрыт)" value="">
+            <input type="text" class="tg-input" id="tg-chat-id" placeholder="@gygy_club_chat" value="">
+          </div>
+          <div class="tg-status">
+            <div class="tg-dot" id="tg-indicator"></div>
+            <span id="tg-status-text">Мост отключен (Локальный контур)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- СМЕТА (1. СМОТРИМ СТОИМОСТЬ) -->
+      <div class="group">
+        <div class="section-title">Расчет сметы</div>
+        <div class="summary-card">
+          <div class="summary-row">
+            <span>Основа и Ткань:</span>
+            <span id="price-fabric">1 200 ₽</span>
+          </div>
+          <div class="summary-row">
+            <span>Модификация и Нанесение:</span>
+            <span id="price-extra">+0 ₽</span>
+          </div>
+          <div class="summary-row total">
+            <span>Итого:</span>
+            <span id="price-total">1 200 ₽</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ОБЩИЙ ЧАТ КЛУБА (2. ОБСУЖДАЕМ С РЕБЯТАМИ) -->
       <div class="group">
         <div class="section-title">Общий чат клуба</div>
         <div class="club-chat-box">
@@ -664,44 +700,17 @@
             </div>
           </div>
           <div class="chat-input-row">
-            <input type="text" class="chat-input" id="chat-msg-input" placeholder="Написать в клубный чат...">
+            <input type="text" class="chat-input" id="chat-msg-input" placeholder="Спросить совет у ребят...">
             <button class="chat-send-btn" id="chat-send-btn" title="Отправить в чат">➤</button>
           </div>
         </div>
       </div>
 
-      <!-- TELEGRAM МОСТ -->
+      <!-- ФИНАЛЬНАЯ КНОПКА ПОДТВЕРЖДЕНИЯ (3. ПОДТВЕРЖДАЕМ ПОСЛЕ ОБСУЖДЕНИЯ) -->
       <div class="group">
-        <div class="section-title">Telegram Канал / Мост</div>
-        <div class="telegram-bridge-box">
-          <div class="tg-row">
-            <input type="text" class="tg-input" id="tg-token" placeholder="Bot Token (скрыт)" value="">
-            <input type="text" class="tg-input" id="tg-chat-id" placeholder="@gygy_club_chat" value="">
-          </div>
-          <div class="tg-status">
-            <div class="tg-dot" id="tg-indicator"></div>
-            <span id="tg-status-text">Мост отключен (Локальный контур)</span>
-          </div>
-        </div>
+        <button class="btn-submit" id="btn-submit-order">Подтвердить и Оформить Заказ</button>
       </div>
 
-      <!-- Смета -->
-      <div class="summary-card">
-        <div class="summary-row">
-          <span>Основа и Ткань:</span>
-          <span id="price-fabric">1 200 ₽</span>
-        </div>
-        <div class="summary-row">
-          <span>Модификация и Нанесение:</span>
-          <span id="price-extra">+0 ₽</span>
-        </div>
-        <div class="summary-row total">
-          <span>Итого:</span>
-          <span id="price-total">1 200 ₽</span>
-        </div>
-      </div>
-
-      <button class="btn-submit" id="btn-submit-order">Оформить Заказ</button>
     </div>
 
     <!-- 3D КАНВАС -->
@@ -964,7 +973,6 @@
       if (e.key === 'Enter') sendChatMessage(chatMsgInput.value);
     });
 
-    // Автоматическая симуляция диалога в клубе
     setTimeout(() => {
       const msgDiv = document.createElement('div');
       msgDiv.className = 'chat-msg';
@@ -997,14 +1005,13 @@
     // ORDER SUBMISSION
     document.getElementById('btn-submit-order').addEventListener('click', () => {
       let total = state.basePrice + state.extraPrice + state.techPrice;
-      const orderSummary = `🚀 Новый заказ из Ателье GY-GY:\n` +
+      const orderSummary = `🚀 Новый подтвержденный заказ из Ателье GY-GY:\n` +
                            `• Изделие: ${state.apparelType.toUpperCase()}\n` +
                            `• Пол/Силуэт: ${state.gender} / ${state.fit}\n` +
                            `• Размер: ${state.size}, Цвет: ${state.color}\n` +
                            `• Итоговая сумма: ${total} ₽`;
 
-      // Автоматически дублируем конфиг в общий чат клуба
-      sendChatMessage(`Создал кастом: ${state.apparelType.toUpperCase()} (${state.size}, ${state.color}), итог: ${total}₽ 🔥`);
+      sendChatMessage(`Заказ подтвержден! Собрал конфиг: ${state.apparelType.toUpperCase()} (${state.size}, ${state.color}) на ${total}₽ 🔥 Оформляем!`);
 
       const token = tgTokenInput.value.trim();
       const chatId = tgChatInput.value.trim();
@@ -1017,14 +1024,14 @@
           body: JSON.stringify({ chat_id: chatId, text: orderSummary })
         })
         .then(res => {
-          if(res.ok) alert('Заказ отправлен в Telegram-канал клуба и добавлен в чат!');
-          else alert('Заказ отправлен в локальный чат клуба.');
+          if(res.ok) alert('Заказ успешно подтвержден и отправлен в Telegram-канал клуба!');
+          else alert('Заказ подтвержден и опубликован в локальном чате клуба.');
         })
         .catch(() => {
-          alert('Заказ сформирован и опубликован в чате клуба.');
+          alert('Заказ подтвержден и зафиксирован в чате клуба.');
         });
       } else {
-        alert('Заказ успешно сформирован и отправлен в чат клуба! (Мост Telegram не настроен)');
+        alert('Заказ успешно подтвержден и добавлен в чат клуба! (Мост Telegram не настроен)');
       }
     });
 
