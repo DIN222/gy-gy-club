@@ -131,13 +131,14 @@
 
     <!-- Блок 4: Холл -->
     <div id="block-hall" class="block">
+        <div class="quote-text" data-translate="welcome_quote" style="position: absolute; top: 12vh; left: 50%; transform: translateX(-50%); width: 85%; margin: 0; text-align: center; z-index: 5;">In every joke there is a share of whisky</div>
+        
         <div class="hall-interior">
-            <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
-            
             <div class="painting-zone painting-left" onclick="toggleManifest('manifest-left')">
                 <span class="cue-arrow-hall">→</span>
                 <div id="manifest-left" class="manifest-btn-box" data-opened="false">
                     <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
+                    <button class="btn-gy btn-manifest notranslate" style="margin-top: 5px;" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
                 </div>
             </div>
                 
@@ -147,14 +148,15 @@
                     <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
                 </div>
             </div>
-
-            <div class="painting-zone painting-left-lower" onclick="toggleManifest('manifest-office')">
-                <span class="cue-arrow-hall">→</span>
-                <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
-                </div>
+        </div>
+            
+        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5; display: flex; align-items: flex-end; justify-content: center;">
+            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
+            <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
+                <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
             </div>
         </div>
+    </div>
             
         <!-- Элемент дверей холла -->
         <div class="hall-doors-container" onclick="portalTransition('block-bar')">
