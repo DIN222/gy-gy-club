@@ -8,7 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Тотальное переопределение для холла с уникальным ID картинки двери, чтобы внешние стили её не трогали */
+        /* Кардинальное решение: убираем абсолютное позиционирование с картинки двери, 
+           задаем жесткие размеры через максимальные селекторы и флекс-контейнер холла */
         #block-hall {
             display: flex !important;
             flex-direction: column !important;
@@ -18,18 +19,19 @@
             box-sizing: border-box !important;
             overflow: hidden !important;
             background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000 !important;
+            padding-bottom: 2vh !important;
         }
 
         #block-hall .hall-doors-container {
-            position: absolute !important;
-            bottom: 0 !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: auto !important;
+            position: relative !important;
+            bottom: auto !important;
+            left: auto !important;
+            transform: none !important;
+            width: 140px !important;
             height: auto !important;
             max-width: none !important;
             max-height: none !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
             padding: 0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -42,8 +44,8 @@
 
         #block-hall img#hall-doors-fixed {
             width: 140px !important;
-            height: 40vh !important;
-            max-height: 320px !important;
+            height: auto !important;
+            max-height: 40vh !important;
             object-fit: contain !important;
             display: block !important;
             margin: 0 auto !important;
