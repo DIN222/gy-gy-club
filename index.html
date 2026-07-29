@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club v4.7.4 CORE</title>
+    <title>GY-GY Club v4.7.5 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Жесткие глобальные переопределения конкретно для блока холла */
+        /* Тотальное переопределение для холла с уникальным ID картинки двери, чтобы внешние стили её не трогали */
         #block-hall {
             display: flex !important;
             flex-direction: column !important;
@@ -20,16 +20,15 @@
             background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000 !important;
         }
 
-        /* Полная изоляция контейнера двери, чтобы убрать влияние внешних стилей */
         #block-hall .hall-doors-container {
-            width: auto !important;
-            height: auto !important;
-            max-width: none !important;
-            max-height: none !important;
             position: absolute !important;
             bottom: 0 !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
+            width: auto !important;
+            height: auto !important;
+            max-width: none !important;
+            max-height: none !important;
             margin: 0 !important;
             padding: 0 !important;
             display: flex !important;
@@ -41,11 +40,10 @@
             z-index: 5 !important;
         }
 
-        /* Четкие и контролируемые размеры самой картинки двери */
-        #block-hall #hall-doors {
-            width: 160px !important;
-            height: 45vh !important;
-            max-height: 380px !important;
+        #block-hall img#hall-doors-fixed {
+            width: 140px !important;
+            height: 40vh !important;
+            max-height: 320px !important;
             object-fit: contain !important;
             display: block !important;
             margin: 0 auto !important;
@@ -161,7 +159,7 @@
         </div>
             
         <div class="hall-doors-container" onclick="portalTransition('block-bar')">
-            <img src="door_2.jpg" id="hall-doors" alt="Hall Doors">
+            <img src="door_2.jpg" id="hall-doors-fixed" alt="Hall Doors">
             <div class="bar-entrance-marker" style="margin-top: 8px; pointer-events:none; position:relative; z-index:11;">
                 <span class="cue-arrow-hall" style="font-size: 32px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet); font-weight: 900;">↑</span>
             </div>
@@ -179,17 +177,6 @@
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
-
-    <!-- Защитный скрипт-наблюдатель -->
-    <script>
-        setInterval(() => {
-            const door = document.getElementById('hall-doors');
-            if (door) {
-                if (door.style.width !== '160px') door.style.width = '160px';
-                if (door.style.height !== '45vh') door.style.height = '45vh';
-            }
-        }, 50);
-    </script>
 
     <!-- Подключаемые скрипты -->
     <script src="userlang-data.js"></script>
