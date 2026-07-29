@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.3 CORE</title>
+    <title>GY-GY Club v4.6.4 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -215,6 +215,7 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
         
+    <!-- Языковый блок вынесен в отдельный файл language.js -->
     <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
     
     <div class="ui-header-right notranslate">GY-GY</div>
@@ -239,7 +240,6 @@
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
-        <!-- Квадраты выбора никнейма в едином стиле с остальными блоками -->
         <div class="nickname-container">
             <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own')">
                 <span style="font-size: 10px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
@@ -317,23 +317,14 @@
         </div>
     </div>
 
+<!-- Подключаем скрипты (языковый блок вынесен в language.js) -->
 <script src="userlang-data.js"></script>
 <script src="translations.js"></script>
+<script src="language.js"></script>
 
 <script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
-
     let currentID = "";
-    let currentActiveCode = 'en';
     let currentUserImage = "";
-    let currentFlagCode = 'gb';
     let currentBlockId = 'block-entrance';
     let selectedNickType = 'own';
     let userChosenNickname = '';
@@ -360,34 +351,6 @@
 
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
-
-    function applyTranslationsToDOM(langCode) {
-        if (typeof translations === 'undefined' || !translations[langCode]) return;
-        const dict = translations[langCode];
-        document.querySelectorAll('[data-translate]').forEach(el => {
-            const key = el.getAttribute('data-translate');
-            if (dict[key]) {
-                el.innerText = dict[key];
-            }
-        });
-    }
-
-    function forceTriggerGoogleTranslate(langCode) {
-        if (window.langTimer) clearInterval(window.langTimer);
-        let attempts = 0;
-        window.langTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                clearInterval(window.langTimer);
-                if (selectEl.value === langCode) return;
-                selectEl.value = langCode;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (++attempts > 100) {
-                clearInterval(window.langTimer);
-            }
-        }, 100);
-    }
 
     function toggleManifest(boxId) {
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
@@ -424,32 +387,6 @@
 
         const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        
-        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
-        
-        if (savedLangCode) {
-            savedLangCode = savedLangCode.toLowerCase();
-            if (savedLangCode === 'ua') savedLangCode = 'uk';
-        }
-
-        let matchedLang = null;
-        if (savedFlag && typeof allLangs !== 'undefined') {
-            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
-        } else if (savedLangCode && typeof allLangs !== 'undefined') {
-            matchedLang = allLangs.find(l => l.code === savedLangCode);
-        }
-
-        if (matchedLang) {
-            currentFlagCode = matchedLang.c;
-            currentActiveCode = matchedLang.code;
-            
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-            
-            applyTranslationsToDOM(matchedLang.code);
-            forceTriggerGoogleTranslate(matchedLang.code);
-        }
 
         if (currentID) { renderUserPassports(currentID); }
         
@@ -627,6 +564,5 @@
         setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
 </script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
