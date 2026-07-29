@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GY-GY Club v4.6.9 CORE</title>
+    <title>GY-GY Club v4.7.0 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Бронированные стили, которые JS не сможет перебить без явного сброса */
         #block-hall {
             display: flex !important;
             flex-direction: column !important;
@@ -15,6 +16,7 @@
             align-items: center !important;
             position: relative !important;
             box-sizing: border-box !important;
+            overflow: hidden !important;
         }
         .hall-interior {
             position: absolute !important;
@@ -28,26 +30,21 @@
         .hall-interior > * {
             pointer-events: auto !important;
         }
-        .hall-doors-container-fix {
-            position: relative !important;
+        #hall-doors, .hall-doors-container, [id*="hall-doors"] {
             width: 200px !important;
-            max-width: 35vw !important;
+            max-width: 40vw !important;
             height: 55vh !important;
-            max-height: 420px !important;
-            margin-bottom: 20px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            z-index: 5 !important;
-            cursor: pointer !important;
-        }
-        .hall-doors-container-fix img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            border-radius: 6px !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+            max-height: 400px !important;
+            position: relative !important;
+            bottom: 20px !important;
+            object-fit: contain !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center bottom !important;
+            margin: 0 auto !important;
             display: block !important;
+            z-index: 10 !important;
+            cursor: pointer !important;
         }
     </style>
 </head>
@@ -76,7 +73,7 @@
         
     <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
     
-    <div class="ui-header-right notranslate">GY-GY v4.6.9</div>
+    <div class="ui-header-right notranslate">GY-GY v4.7.0</div>
 
     <!-- Аудио элементы -->
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
@@ -132,7 +129,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
-    <!-- Блок 4: Холл с жестким контролем двери -->
+    <!-- Блок 4: Холл -->
     <div id="block-hall" class="block">
         <div class="hall-interior">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -159,9 +156,10 @@
             </div>
         </div>
             
-        <div class="hall-doors-container-fix" onclick="portalTransition('block-bar')">
+        <!-- Элемент дверей холла -->
+        <div class="hall-doors-container" onclick="portalTransition('block-bar')">
             <img src="door_2.jpg" id="hall-doors" alt="Hall Doors">
-            <div class="bar-entrance-marker" style="margin-top: 8px; pointer-events:none;">
+            <div class="bar-entrance-marker" style="margin-top: 8px; pointer-events:none; position:relative; z-index:11;">
                 <span class="cue-arrow-hall" style="font-size: 32px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet); font-weight: 900;">↑</span>
             </div>
         </div>
@@ -178,6 +176,17 @@
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
+
+    <!-- Защитный скрипт-наблюдатель (гарантированно сжимает дверь, если JS пытается её раздуть) -->
+    <script>
+        setInterval(() => {
+            const door = document.getElementById('hall-doors');
+            if (door) {
+                if (door.style.width && door.style.width !== '200px') door.style.width = '200px';
+                if (door.style.height && door.style.height !== '55vh') door.style.height = '55vh';
+            }
+        }, 100);
+    </script>
 
     <!-- Подключаемые скрипты -->
     <script src="userlang-data.js"></script>
