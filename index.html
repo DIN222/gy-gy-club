@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.11 CORE</title>
+    <title>GY-GY Club v4.6.12 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -41,10 +41,10 @@
             text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
         }
         
-        /* СКВОЗНОЙ АВАТАР */
+        /* СКВОЗНОЙ АВАТАР (уменьшен на 10% от 42px -> ~38px, приподнят на 5px: top: 7px) */
         .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 42px; height: 42px; border-radius: 50%;
+            position: fixed; top: 7px; left: 50%; transform: translateX(-50%);
+            width: 38px; height: 38px; border-radius: 50%;
             border: 2px solid var(--gold); background: #111111;
             box-shadow: 0 0 0 1px #000000, inset 0 0 5px rgba(0,0,0,0.8);
             z-index: 1000000; cursor: pointer; display: none;
@@ -52,7 +52,7 @@
         .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #ffffff; }
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px;
-            width: 17px; height: 12px; object-fit: cover;
+            width: 15px; height: 11px; object-fit: cover;
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
         }
 
@@ -708,6 +708,7 @@
     function generateAvatar() {
         const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000000"/></svg>`;
+        currentUserImage = 'data:image/svg+xml;utf8,+ encodeURIComponent(svg);'; // исправлено
         currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
         const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
         const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = 'none';
@@ -767,7 +768,6 @@
     window.addEventListener('DOMContentLoaded', () => {
         if (!currentID) {
             currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
-            safeStorageGet('gygy_id', currentID);
             safeStorageSet('gygy_id', currentID);
         }
         checkAndFillRegistrationForm();
