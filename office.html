@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.6.11 CORE</title>
+    <title>GYGY Office v4.6.12 CORE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -201,6 +201,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
             text-decoration: none;
+            position: relative;
         }
 
         .office-room:hover {
@@ -217,7 +218,7 @@
             font-weight: 600;
         }
 
-        /* Блок №3 — Комната переговоров (Core Module) с интерактивной ссылкой */
+        /* Блок №3 — Комната переговоров с вызовом */
         .office-room.meeting-room {
             border-color: var(--accent-gold);
             color: var(--accent-gold);
@@ -227,7 +228,13 @@
             filter: brightness(1.05);
         }
 
-        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
+        /* Кнопка найма/перевода в штатные сотрудники в Блоке №2 или №6 */
+        .office-room.hr-room {
+            border-color: rgba(var(--accent-gold-rgb), 0.7);
+            color: var(--accent-gold);
+        }
+
+        /* МОДАЛЬНЫЕ ОКНА */
         .modal {
             display: none;
             position: fixed;
@@ -243,15 +250,17 @@
             z-index: 10000;
         }
 
-        .passport-card {
+        .passport-card, .staff-card {
             background: var(--panel-bg);
             border: 2px solid var(--accent-gold);
             padding: 25px;
             border-radius: 12px;
-            width: 300px;
+            width: 320px;
             text-align: center;
             position: relative;
             color: var(--text-color);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .passport-card img.avatar {
@@ -277,13 +286,50 @@
             justify-content: center;
             margin-top: 15px;
         }
+
+        .staff-list {
+            margin-top: 15px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .staff-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 12px;
+        }
+
+        .staff-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-btn {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .action-btn:hover {
+            filter: brightness(1.1);
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки: 
-         < ведет к зоне Рецепции (index.html#reception)
-         << ведет к главному Залу/Лаунжу (index.html#main-hall) -->
+    <!-- Навигационные стрелки -->
     <div class="notranslate ui-nav-arrows">
         <a href="index.html#reception" class="arrow-item" title="В зону рецепции">&lt;</a>
         <a href="index.html#main-hall" class="arrow-item" title="В главный зал">&lt;&lt;</a>
@@ -301,7 +347,7 @@
         <div class="header-logo notranslate">GY-GY</div>
     </header>
 
-    <!-- Основной контент строго по размерам экрана -->
+    <!-- Основной контент -->
     <div class="office-container">
         <div class="fullscreen-nav">
             <button class="nav-btn active">1. Схема офиса</button>
@@ -309,11 +355,11 @@
         </div>
 
         <div class="office-grid">
-            <!-- Блок №1 ведет в Холл (на рецепцию index.html#reception) -->
             <a href="index.html#reception" class="office-room hall-room">Блок №1<br>Выход в Холл</a>
-            <div class="office-room">Блок №2<br><small>Управление процессами</small></div>
-            <!-- Блок №3 изменен на интерактивную ссылку-переход в meeting.html -->
-            <a href="meeting.html" class="office-room meeting-room">Блок №3<br>Комната переговоров</a>
+            <!-- Блок №2 задействован под управление кадрами / перевод из общего списка -->
+            <div class="office-room hr-room" onclick="openStaffManager()">Блок №2<br><small>Кадры и Штат</small></div>
+            <!-- Блок №3 — Комната переговоров с возможностью вызова собеседника -->
+            <div class="office-room meeting-room" onclick="openMeetingRoom()">Блок №3<br>Комната переговоров</div>
             <div class="office-room">Блок №4<br><small>Проектный Отдел</small></div>
             <div class="office-room">Блок №5<br><small>Технический Сектор</small></div>
             <div class="office-room">Блок №6<br><small>Безопасность и ID</small></div>
@@ -323,7 +369,7 @@
     <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="modal">
         <div class="passport-card">
-            <span class="close-btn" onclick="closePassport()">&times;</span>
+            <span class="close-btn" onclick="closeModal('modal-passport')">&times;</span>
             <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
             <h3 id="pass-nickname" style="margin: 5px 0; color: var(--accent-gold); font-family: 'Cinzel', serif;">@User</h3>
             <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
@@ -332,21 +378,148 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО: КАДРЫ И ШТАТ (Перевод зарегистрированных в сотрудники) -->
+    <div id="modal-staff-manager" class="modal">
+        <div class="staff-card">
+            <span class="close-btn" onclick="closeModal('modal-staff-manager')">&times;</span>
+            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 10px;">Управление штатом</h3>
+            <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Перевод зарегистрированных гостей из общей базы в штат сотрудников офиса:</p>
+            <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px; color: var(--accent-gold);">Зарегистрированные в клубе:</div>
+            <div id="registered-users-list" class="staff-list"></div>
+            <div style="font-size: 12px; font-weight: bold; margin-top: 15px; margin-bottom: 5px; color: var(--accent-gold);">Штатные сотрудники офиса:</div>
+            <div id="office-staff-list" class="staff-list"></div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО: КОМНАТА ПЕРЕГОВОРОВ (Вызов собеседника из штата) -->
+    <div id="modal-meeting" class="modal">
+        <div class="staff-card">
+            <span class="close-btn" onclick="closeModal('modal-meeting')">&times;</span>
+            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 10px;">Комната переговоров</h3>
+            <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Вызов штатного сотрудника на совещание:</p>
+            <div id="meeting-invite-list" class="staff-list"></div>
+            <div id="meeting-status" style="margin-top: 15px; font-size: 12px; color: var(--accent-gold); text-align: center;"></div>
+        </div>
+    </div>
+
     <script>
         function openPassport() {
             const modal = document.getElementById('modal-passport');
-            if (modal) { 
-                modal.style.display = 'flex'; 
-                requestAnimationFrame(() => { modal.style.opacity = '1'; });
-            }
+            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
         }
 
-        function closePassport() {
-            const modal = document.getElementById('modal-passport');
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
             if (modal) {
                 modal.style.opacity = '0';
                 setTimeout(() => { modal.style.display = 'none'; }, 300);
             }
+        }
+
+        function openStaffManager() {
+            renderStaffLists();
+            const modal = document.getElementById('modal-staff-manager');
+            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
+        }
+
+        function openMeetingRoom() {
+            renderMeetingList();
+            const modal = document.getElementById('modal-meeting');
+            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
+        }
+
+        // Инициализация базы данных пользователей в localStorage для демонстрации
+        function initMockData() {
+            if (!localStorage.getItem('gygy_registered_users')) {
+                localStorage.setItem('gygy_registered_users', JSON.stringify([
+                    {id: 'GY-102938', name: '@Alex_Dev'},
+                    {id: 'GY-445566', name: '@Elena_Sec'},
+                    {id: 'GY-778899', name: '@Max_Manager'}
+                ]));
+            }
+            if (!localStorage.getItem('gygy_office_staff')) {
+                localStorage.setItem('gygy_office_staff', JSON.stringify([
+                    {id: 'GY-001122', name: '@Director'}
+                ]));
+            }
+        }
+
+        function renderStaffLists() {
+            initMockData();
+            const regContainer = document.getElementById('registered-users-list');
+            const staffContainer = document.getElementById('office-staff-list');
+            
+            const regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
+            const officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
+
+            regContainer.innerHTML = regUsers.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:5px;">Нет гостей в общей базе</div>';
+            regUsers.forEach((user, index) => {
+                regContainer.innerHTML += `
+                    <div class="staff-item">
+                        <span>${user.name} (${user.id})</span>
+                        <button class="action-btn" onclick="moveToOffice(${index})">В штат &rarr;</button>
+                    </div>
+                `;
+            });
+
+            staffContainer.innerHTML = officeStaff.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:5px;">Штат пуст</div>';
+            officeStaff.forEach((user, index) => {
+                staffContainer.innerHTML += `
+                    <div class="staff-item">
+                        <span>${user.name} (${user.id})</span>
+                        <button class="action-btn" style="background:#333; color:#aaa;" onclick="removeFromOffice(${index})">&larr; Уволить</button>
+                    </div>
+                `;
+            });
+        }
+
+        function moveToOffice(index) {
+            let regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
+            let officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
+            
+            const moved = regUsers.splice(index, 1)[0];
+            officeStaff.push(moved);
+
+            localStorage.setItem('gygy_registered_users', JSON.stringify(regUsers));
+            localStorage.setItem('gygy_office_staff', JSON.stringify(officeStaff));
+            renderStaffLists();
+        }
+
+        function removeFromOffice(index) {
+            let regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
+            let officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
+            
+            const moved = officeStaff.splice(index, 1)[0];
+            regUsers.push(moved);
+
+            localStorage.setItem('gygy_registered_users', JSON.stringify(regUsers));
+            localStorage.setItem('gygy_office_staff', JSON.stringify(officeStaff));
+            renderStaffLists();
+        }
+
+        function renderMeetingList() {
+            initMockData();
+            const container = document.getElementById('meeting-invite-list');
+            const officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
+            document.getElementById('meeting-status').innerText = '';
+
+            container.innerHTML = officeStaff.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:5px;">В штате нет сотрудников для вызова</div>';
+            officeStaff.forEach((user) => {
+                container.innerHTML += `
+                    <div class="staff-item">
+                        <span>${user.name}</span>
+                        <button class="action-btn" onclick="callColleague('${user.name}')">Вызвать</button>
+                    </div>
+                `;
+            });
+        }
+
+        function callColleague(name) {
+            const statusEl = document.getElementById('meeting-status');
+            statusEl.innerText = `Сотрудник ${name} вызван в Комнату переговоров! Ожидание ответа...`;
+            setTimeout(() => {
+                statusEl.innerText = `${name} присоединился к совещанию. Сессия активна.`;
+            }, 1500);
         }
 
         function renderUserPassport(targetID) {
@@ -360,6 +533,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
+            initMockData();
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const headerAvatarEl = document.getElementById('header-avatar');
             const passAvatarEl = document.getElementById('pass-avatar-img');
