@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.8 CORE</title>
+    <title>GY-GY Club v4.6.9 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -46,7 +46,7 @@
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
         }
 
-        /* ЕДИНЫЙ КОМПАКТНЫЙ ЯЗЫКОВЫЙ БЛОК */
+        /* КОМПАКТНЫЙ ЯЗЫКОВЫЙ БЛОК */
         .club-lang-dropdown-wrapper {
             position: absolute; top: 18px; left: 20px; z-index: 1000001;
             width: 155px; font-family: 'Share Tech Mono', monospace;
@@ -119,18 +119,18 @@
             z-index: 5000 !important; 
         }
 
-        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000000; }
-        .btn-gy { min-width: 270px; padding: 14px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 8px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; }
+        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 24px; text-align: center; max-width: 85%; margin-bottom: 15px; text-shadow: 2px 2px 4px #000000; }
+        .btn-gy { min-width: 260px; padding: 12px 20px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 6px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; font-size: 13px; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 85px; height: 85px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         /* ЕДИНЫЙ СТИЛЬ КВАДРАТОВ ВЫБОРА НИКНЕЙМА */
-        .nickname-container { display: flex; gap: 10px; margin-bottom: 25px; width: 360px; justify-content: center; }
+        .nickname-container { display: flex; gap: 10px; margin-bottom: 15px; width: 340px; justify-content: center; }
         .nickname-square {
-            width: 85px; height: 85px; border: 2px solid var(--gold); background: #ffffff; 
+            width: 80px; height: 80px; border: 2px solid var(--gold); background: #ffffff; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; color: #000000; padding: 5px; text-align: center;
+            cursor: pointer; position: relative; color: #000000; padding: 4px; text-align: center;
         }
         .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
         .nickname-square input {
@@ -138,10 +138,13 @@
         }
 
         body { top: 0 !important; }
-        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
-        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
-        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
-        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
+        
+        /* СТРОГИЕ И КОМПАКТНЫЕ ОТСТУПЫ ДЛЯ СТРАНИЦЫ WELCOME, ЧТОБЫ ВСЁ ВЛЕЗАЛО НА ЭКРАН */
+        #block-welcome { justify-content: flex-start !important; padding-top: 10vh !important; }
+        #block-welcome .quote-text { margin-bottom: 1vh !important; font-size: 22px; }
+        #block-welcome img { max-height: 28vh !important; width: auto; object-fit: contain; margin-bottom: 1.5vh !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
+        #block-welcome .welcome-title-elem { font-size: 28px !important; font-weight: 700; letter-spacing: 10px; font-style: italic; margin-bottom: 1vh !important; font-family: 'Cinzel', serif; }
+        #block-welcome .btn-gy { margin: 3px 0 !important; padding: 10px !important; }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
         .ui-nav-arrows {
@@ -272,7 +275,7 @@
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
-        <!-- Компактный языковый блок: рамка с выбранным языком и список -->
+        <!-- Компактный языковый блок -->
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
@@ -344,15 +347,16 @@
 
         <div id="google_translate_element" style="display:none;"></div>
 
-        <!-- Обновленная картинка двери -->
+        <!-- Дверь -->
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
+    <!-- Вторая страница (Welcome) с компактными размерами под размер экрана -->
     <div id="block-welcome" class="block">
         <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
         <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
-        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px; font-family: 'Cinzel', serif;" data-translate="welcome_title">WELCOME</div>
+        <div class="welcome-title-elem" data-translate="welcome_title">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed_hall">PROCEED TO HALL</button>
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
@@ -696,7 +700,7 @@
     function generateAvatar() {
         const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000000"/></svg>`;
-        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        currentUserImage = 'data:image/svg+xml;utf8,+ encodeURIComponent(svg);
         const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
         const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
         const pp = document.getElementById('pp'); if (pp) pp.style.display = "none";
