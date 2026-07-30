@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.6.9 CORE</title>
+    <title>GY-GY Club v4.6.25 - OFFICE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <style>
-        :root {
+        :root { 
             --bg-dark: #000000;
-            --panel-bg: #0d0e12;
+            --panel-bg: #000000;
             --accent-gold: #FFD700;
             --gold: #FFD700;
             --accent-gold-rgb: 255, 215, 0;
-            --text-color: #e0e0e0;
+            --text-color: #ffffff;
+            --danger: #ff4d4d;
         }
 
         * { 
@@ -23,8 +25,8 @@
             margin: 0;
             padding: 0;
         }
-
-        body {
+        
+        html, body { 
             background-color: var(--bg-dark);
             color: var(--text-color);
             font-family: 'Montserrat', sans-serif;
@@ -33,83 +35,91 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding: 15px;
+            padding: 8px 12px;
+            gap: 8px;
         }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ (< и <<) В УГЛУ ПО СТАНДАРТУ MANIFEST */
+        /* Компактная шапка */
+        header {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            background-color: var(--panel-bg);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+
+        .header-left-group {
+            display: flex;
+            align-items: center;
+            justify-self: start;
+        }
+
         .ui-nav-arrows {
-            position: fixed; 
-            top: 15px; 
-            left: 15px; 
-            z-index: 9999999; 
             display: flex; 
-            gap: 15px; 
-            font-size: 26px; 
+            gap: 8px; 
+            font-size: 20px; 
             font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; 
-            cursor: pointer; 
             color: var(--gold); 
             line-height: 1; 
             letter-spacing: -2px; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            pointer-events: auto !important; 
             user-select: none;
         }
         
         .arrow-item { 
-            transition: opacity 0.2s, transform 0.2s; 
+            transition: opacity 0.2s, transform 0.2s, filter 0.2s; 
             text-decoration: none;
             color: var(--gold);
             display: inline-block;
         }
         
         .arrow-item:hover { 
-            opacity: 0.8; 
+            filter: brightness(1.15); 
             transform: scale(1.1);
         }
 
-        /* Шапка: строго без внешней рамки, сдвиг под фиксированные стрелки слева */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--panel-bg);
-            border: none;
-            padding: 10px 20px 10px 95px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            flex-shrink: 0;
-        }
-
-        /* По центру: Паспорт юзера */
-        header .header-center-user {
+        .header-center-user {
+            justify-self: center;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
-            margin: 0 auto;
+            background: transparent;
+            padding: 2px 10px 2px 4px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .header-center-user:hover {
+            border-color: var(--accent-gold);
         }
 
         .avatar-with-flag {
             position: relative;
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
         }
 
         #header-avatar {
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: 2px solid var(--accent-gold);
             object-fit: cover;
+            background: #000;
         }
 
         #current-flag {
             position: absolute;
             bottom: -2px;
             right: -4px;
-            width: 16px;
-            height: 12px;
+            width: 14px;
+            height: 10px;
             border-radius: 2px;
             border: 1px solid var(--bg-dark);
             object-fit: cover;
@@ -119,107 +129,208 @@
             color: var(--accent-gold);
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
+            white-space: nowrap;
         }
 
-        /* Справа: Логотип GY-GY */
-        .header-logo {
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            flex-shrink: 0;
-        }
-
-        /* ОСНОВНОЙ КОНТЕЙНЕР ОФИСА */
-        .office-container {
-            flex: 1;
+        .header-right-group {
+            justify-self: end;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
+            align-items: center;
+            gap: 10px;
             overflow: hidden;
         }
 
-        /* Две большие навигационные кнопки */
-        .fullscreen-nav {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .header-participants {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 2px 0;
+        }
+        .header-participants::-webkit-scrollbar { display: none; }
+
+        .participant-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .participant-item:hover { transform: scale(1.05); }
+
+        .participant-item.active .member-avatar {
+            border-color: #fff !important;
+            filter: brightness(1.15);
+        }
+
+        .member-avatar-container {
+            position: relative;
+            width: 28px;
+            height: 28px;
             flex-shrink: 0;
         }
 
-        .nav-btn {
-            background: var(--panel-bg);
+        .member-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #000;
+            display: block;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .member-flag {
+            position: absolute;
+            bottom: -2px;
+            right: -3px;
+            width: 12px;
+            height: 9px;
+            border-radius: 2px;
+            border: 1px solid var(--bg-dark);
+            object-fit: cover;
+            z-index: 5;
+        }
+
+        .add-member-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px dashed var(--accent-gold);
             color: var(--accent-gold);
-            border: 2px solid rgba(var(--accent-gold-rgb), 0.5);
-            padding: 15px;
-            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            background: transparent;
+        }
+        .add-member-btn:hover {
+            border-style: solid;
+            filter: brightness(1.15);
+        }
+
+        .header-logo {
+            color: var(--accent-gold);
             font-family: 'Cinzel', serif;
             font-size: 15px;
             font-weight: bold;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+            padding-left: 6px;
+            border-left: 1px solid rgba(var(--accent-gold-rgb), 0.2);
             cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
+            transition: filter 0.2s;
+        }
+        .header-logo:hover {
+            filter: brightness(1.15);
         }
 
-        .nav-btn.active {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 15px rgba(var(--accent-gold-rgb), 0.25);
-            filter: brightness(1.1);
-        }
-
-        .nav-btn:hover {
-            border-color: var(--accent-gold);
-            filter: brightness(1.1);
-        }
-
-        /* Схема офиса: 6 блоков Back-End управления */
-        .office-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+        .office-screen {
             flex: 1;
-        }
-
-        .office-room {
-            background: var(--panel-bg);
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
-            border-radius: 8px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            overflow: hidden;
+            background: var(--panel-bg);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            border-radius: 6px;
             padding: 10px;
-            text-align: center;
-            font-size: 13px;
-            color: #aaa;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
+            min-height: 0;
         }
 
-        .office-room:hover {
-            border-color: var(--accent-gold);
-            filter: brightness(1.1);
+        .container-width {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .office-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+        .office-content::-webkit-scrollbar { width: 4px; }
+        .office-content::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 2px; }
+
+        .office-section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            color: var(--accent-gold);
+            border-bottom: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .office-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .office-card {
+            background: #000000;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-decoration: none;
             color: var(--text-color);
         }
-
-        /* Блок №3 — Комната переговоров (Core Module) с интерактивной ссылкой */
-        .office-room.meeting-room {
+        .office-card:hover {
             border-color: var(--accent-gold);
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            background: #121008;
-            filter: brightness(1.05);
+            filter: brightness(1.15);
         }
 
-        /* МОДАЛЬНОЕ ОКНО ПАСПОРТА */
+        .office-card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .office-card-desc {
+            font-size: 11px;
+            opacity: 0.7;
+            line-height: 1.3;
+        }
+
+        .reset-btn-container {
+            padding-top: 6px;
+            text-align: center;
+            border-top: 1px solid rgba(var(--accent-gold-rgb), 0.15);
+            flex-shrink: 0;
+        }
+
+        .clear-data-btn {
+            background: var(--bg-dark);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.5);
+            color: var(--accent-gold);
+            padding: 6px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .clear-data-btn:hover {
+            border-color: var(--accent-gold);
+            filter: brightness(1.15);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -235,52 +346,164 @@
             z-index: 10000;
         }
 
+        .modal-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-gold);
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 85vh;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 14px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            padding-bottom: 6px;
+            color: var(--accent-gold);
+        }
+
+        .staff-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 320px;
+            padding-right: 4px;
+        }
+        .staff-list::-webkit-scrollbar { width: 3px; }
+        .staff-list::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 2px; }
+
+        .flag-group-title {
+            font-size: 11px;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed rgba(var(--accent-gold-rgb), 0.2);
+            padding-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .staff-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px;
+            background: #000000;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            border-radius: 5px;
+            transition: all 0.2s;
+            margin-bottom: 6px;
+        }
+        .staff-item:hover { border-color: var(--accent-gold); }
+
+        .staff-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-to-session-btn {
+            background: #000000;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .copy-to-session-btn:hover {
+            filter: brightness(1.15);
+            border-color: #fff;
+            color: #fff;
+        }
+        .copy-to-session-btn.added {
+            background: #000000;
+            border-color: rgba(var(--accent-gold-rgb), 0.2);
+            color: #666;
+            cursor: default;
+        }
+
+        .modal-close-btn {
+            background: #000000;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s;
+            font-size: 12px;
+            text-align: center;
+        }
+        .modal-close-btn:hover { 
+            filter: brightness(1.15);
+            border-color: #fff;
+            color: #fff;
+        }
+
         .passport-card {
             background: var(--panel-bg);
             border: 2px solid var(--accent-gold);
-            padding: 25px;
-            border-radius: 12px;
-            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            width: 280px;
             text-align: center;
             position: relative;
             color: var(--text-color);
         }
-
         .passport-card img.avatar {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             border: 2px solid var(--accent-gold);
             object-fit: cover;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            background: #000;
         }
-
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 15px;
+            top: 8px;
+            right: 12px;
             color: var(--accent-gold);
             cursor: pointer;
-            font-size: 22px;
+            font-size: 20px;
+            transition: filter 0.2s;
         }
-
+        .close-btn:hover {
+            filter: brightness(1.15);
+        }
         #pass-qr-box {
             display: flex;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки: < в Холл, << к дверям входа в клуб -->
-    <div class="notranslate ui-nav-arrows">
-        <a href="hall.html" class="arrow-item" title="В Холл">&lt;</a>
-        <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
-    </div>
-
-    <!-- Шапка без рамки -->
     <header>
+        <div class="header-left-group">
+            <div class="notranslate ui-nav-arrows">
+                <a href="map.html" class="arrow-item" title="К карте клуба">&lt;</a>
+                <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
+            </div>
+        </div>
+
         <div class="header-center-user" onclick="openPassport()">
             <div class="avatar-with-flag">
                 <img id="header-avatar" src="" alt="Avatar" style="display:none;">
@@ -288,64 +511,89 @@
             </div>
             <span id="header-nickname" class="user-nickname">@User</span>
         </div>
-        <div class="header-logo notranslate">GY-GY</div>
+
+        <div class="header-right-group">
+            <div id="header-participants" class="header-participants"></div>
+            <div class="add-member-btn" onclick="openStaffModal()" title="Добавить участника из реестра">+</div>
+            <div class="header-logo notranslate" onclick="openPassport()">GY-GY</div>
+        </div>
     </header>
 
-    <!-- Основной контент строго по размерам экрана -->
-    <div class="office-container">
-        <div class="fullscreen-nav">
-            <button class="nav-btn active">1. Схема офиса</button>
-            <a href="club-map.html" class="nav-btn">2. Схема клуба</a>
+    <div class="office-screen container-width">
+        <div class="office-content">
+            <div>
+                <div class="office-section-title">ЦЕНТРАЛЬНЫЕ СЛУЖБЫ ОФИСА</div>
+                <div class="office-grid">
+                    <a href="meeting.html" class="office-card">
+                        <div class="office-card-title">🏢 Комната переговоров</div>
+                        <div class="office-card-desc">Интерактивный блок №3 для проведения совместных совещаний и дискуссий.</div>
+                    </a>
+                    <div class="office-card" onclick="alert('Рабочие зоны активированы.')">
+                        <div class="office-card-title">🟢 Рабочие зоны</div>
+                        <div class="office-card-desc">Персональные терминалы сотрудников и распределение задач.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="office-section-title">ДОПОЛНИТЕЛЬНЫЕ РЕСУРСЫ</div>
+                <div class="office-grid">
+                    <a href="studio.html" class="office-card">
+                        <div class="office-card-title">🟠 Студия и Ателье</div>
+                        <div class="office-card-desc">Творческие мастерские, сувениры и лавка древностей.</div>
+                    </a>
+                    <a href="bar.html" class="office-card">
+                        <div class="office-card-title">🟢 Клубный Бар</div>
+                        <div class="office-card-desc">Книга жалоб, странных мыслей и открытый микрофон зала.</div>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="office-grid">
-            <div class="office-room">Блок №1<br><small>Регламенты и ресурсы</small></div>
-            <div class="office-room">Блок №2<br><small>Управление процессами</small></div>
-            <!-- Блок №3 изменен на интерактивную ссылку-переход в meeting.html -->
-            <a href="meeting.html" class="office-room meeting-room">Блок №3<br>Комната переговоров</a>
-            <div class="office-room">Блок №4<br><small>Проектный Отдел</small></div>
-            <div class="office-room">Блок №5<br><small>Технический Сектор</small></div>
-            <div class="office-room">Блок №6<br><small>Безопасность и ID</small></div>
+        <div class="reset-btn-container">
+            <button class="clear-data-btn" onclick="clearActivityData()">Сбросить кеш офиса</button>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
+    <!-- Модальное окно реестра зарегистрированных участников по флагам -->
+    <div id="staff-modal" class="modal">
+        <div class="modal-card">
+            <span class="close-btn" onclick="closeStaffModal()">&times;</span>
+            <div class="modal-title">РЕЕСТР УЧАСТНИКОВ ПО ФЛАГАМ</div>
+            <div id="staff-list" class="staff-list"></div>
+            <button class="modal-close-btn" onclick="closeStaffModal()">ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
     <div id="modal-passport" class="modal">
         <div class="passport-card">
             <span class="close-btn" onclick="closePassport()">&times;</span>
             <img id="pass-avatar-img" class="avatar" src="" alt="Avatar">
-            <h3 id="pass-nickname" style="margin: 5px 0; color: var(--accent-gold); font-family: 'Cinzel', serif;">@User</h3>
-            <p id="pass-email" style="font-size: 13px; color: #aaa; margin-bottom: 15px;">user@example.com</p>
-            <p style="font-size: 14px; margin: 5px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
+            <h3 id="pass-nickname" style="margin: 3px 0; color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 14px;">@User</h3>
+            <p id="pass-email" style="font-size: 12px; color: #aaa; margin-bottom: 10px;">user@example.com</p>
+            <p style="font-size: 13px; margin: 3px 0;"><strong>ID:</strong> <span id="pass-id-val">GY-000000</span></p>
             <div id="pass-qr-box"></div>
         </div>
     </div>
 
     <script>
-        function openPassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) { 
-                modal.style.display = 'flex'; 
-                requestAnimationFrame(() => { modal.style.opacity = '1'; });
-            }
-        }
+        let allRegisteredUsers = [
+            { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flagCode: "ru", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
+            { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flagCode: "gb", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
+            { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flagCode: "cn", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
+            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flagCode: "es", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" },
+            { id: 5, name: "Hans Weber", role: "Architect", lang: "de", flagCode: "de", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Hans" }
+        ];
 
-        function closePassport() {
-            const modal = document.getElementById('modal-passport');
-            if (modal) {
-                modal.style.opacity = '0';
-                setTimeout(() => { modal.style.display = 'none'; }, 300);
-            }
-        }
+        let selectedStaffIds = new Set();
+        let activeTargetMember = null;
 
-        function renderUserPassport(targetID) {
-            const passIdVal = document.getElementById('pass-id-val');
-            const passQrBox = document.getElementById('pass-qr-box');
-            if (passIdVal) passIdVal.innerText = targetID;
-            if (passQrBox && typeof QRCode !== 'undefined') { 
-                passQrBox.innerHTML = ""; 
-                new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); 
-            }
+        function getFlagUrl(code) {
+            const countryCodes = {
+                'ru': 'ru', 'en': 'gb', 'gb': 'gb', 'zh': 'cn', 'cn': 'cn', 'es': 'es', 'de': 'de'
+            };
+            const c = countryCodes[(code || 'ru').toLowerCase()] || 'ru';
+            return `https://flagcdn.com/w20/${c}.png`;
         }
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -373,12 +621,174 @@
             localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+            const savedFlag = localStorage.getItem('gygy_flag') || 
+                              localStorage.getItem('user_flag') || 
+                              localStorage.getItem('gy_user_flag') || 
+                              localStorage.getItem('gygy_lang') || 
+                              localStorage.getItem('lang') || 'gb';
+                              
             const flagElement = document.getElementById('current-flag');
             if (flagElement) {
-                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+                flagElement.src = getFlagUrl(savedFlag);
             }
+
+            const localStoredUsers = localStorage.getItem('gygy_all_registered_users');
+            if (localStoredUsers) {
+                try {
+                    allRegisteredUsers = JSON.parse(localStoredUsers);
+                } catch(e) {}
+            }
+
+            const savedStaff = localStorage.getItem('gygy_selected_staff');
+            if (savedStaff) {
+                try {
+                    JSON.parse(savedStaff).forEach(id => selectedStaffIds.add(id));
+                } catch(e) {}
+            }
+            
+            updateHeaderParticipants();
+            renderStaffList();
         });
+
+        function openPassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) { 
+                modal.style.display = 'flex'; 
+                requestAnimationFrame(() => { modal.style.opacity = '1'; });
+            }
+        }
+
+        function closePassport() {
+            const modal = document.getElementById('modal-passport');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        }
+
+        function openStaffModal() {
+            const modal = document.getElementById('staff-modal');
+            if (modal) { 
+                modal.style.display = 'flex'; 
+                requestAnimationFrame(() => { modal.style.opacity = '1'; });
+            }
+        }
+
+        function closeStaffModal() {
+            const modal = document.getElementById('staff-modal');
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
+            }
+        }
+
+        function renderUserPassport(targetID) {
+            const passIdVal = document.getElementById('pass-id-val');
+            const passQrBox = document.getElementById('pass-qr-box');
+            if (passIdVal) passIdVal.innerText = targetID;
+            if (passQrBox && typeof QRCode !== 'undefined') { 
+                passQrBox.innerHTML = ""; 
+                new QRCode(passQrBox, { text: targetID, width: 80, height: 80 }); 
+            }
+        }
+
+        function clearActivityData() {
+            if (confirm('Очистить кеш данных офиса?')) {
+                localStorage.removeItem('gygy_selected_staff');
+                selectedStaffIds.clear();
+                updateHeaderParticipants();
+                renderStaffList();
+            }
+        }
+
+        function renderStaffList() {
+            const container = document.getElementById('staff-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (allRegisteredUsers.length === 0) {
+                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 15px; font-size:12px;">Нет зарегистрированных пользователей</div>';
+                return;
+            }
+
+            const groups = {};
+            allRegisteredUsers.forEach(user => {
+                const flag = (user.flagCode || user.lang || 'ru').toLowerCase();
+                if (!groups[flag]) groups[flag] = [];
+                groups[flag].push(user);
+            });
+
+            for (let flag in groups) {
+                const groupDiv = document.createElement('div');
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'flag-group-title';
+                titleDiv.innerHTML = `<img src="${getFlagUrl(flag)}" style="width:16px; height:12px; border-radius:2px; object-fit:cover;"> Сектор: ${flag.toUpperCase()}`;
+                groupDiv.appendChild(titleDiv);
+
+                groups[flag].forEach(user => {
+                    const item = document.createElement('div');
+                    item.className = 'staff-item';
+                    const isAlreadyAdded = selectedStaffIds.has(user.id);
+
+                    item.innerHTML = `
+                        <div class="staff-info">
+                            <div class="member-avatar-container">
+                                <img src="${user.avatar}" class="member-avatar">
+                                <img src="${getFlagUrl(user.flagCode)}" class="member-flag">
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 12px;">${user.name}</div>
+                                <div style="font-size: 10px; opacity: 0.6">${user.role}</div>
+                            </div>
+                        </div>
+                        <div>
+                            ${isAlreadyAdded 
+                                ? '<button class="copy-to-session-btn added" disabled>Добавлен</button>' 
+                                : `<button class="copy-to-session-btn" onclick="copyUserToSession(${user.id})">Копировать</button>`}
+                        </div>
+                    `;
+                    groupDiv.appendChild(item);
+                });
+
+                container.appendChild(groupDiv);
+            }
+        }
+
+        function copyUserToSession(id) {
+            selectedStaffIds.add(id);
+            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
+            renderStaffList();
+            updateHeaderParticipants();
+        }
+
+        function updateHeaderParticipants() {
+            const container = document.getElementById('header-participants');
+            if (!container) return;
+            
+            let htmlContent = '';
+
+            selectedStaffIds.forEach(id => {
+                const staff = allRegisteredUsers.find(s => s.id === id);
+                if (!staff) return;
+
+                htmlContent += `
+                    <div class="participant-item ${activeTargetMember === staff.id ? 'active' : ''}" onclick="selectActiveMember(${staff.id})" title="${staff.name}">
+                        <div class="member-avatar-container">
+                            <img src="${staff.avatar}" class="member-avatar" alt="${staff.name}">
+                            <img src="${getFlagUrl(staff.flagCode)}" class="member-flag" alt="flag">
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+        }
+
+        function selectActiveMember(id) {
+            activeTargetMember = activeTargetMember === id ? null : id;
+            updateHeaderParticipants();
+        }
     </script>
 </body>
 </html>
