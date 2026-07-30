@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.26 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.27 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -11,7 +11,7 @@
     <style>
         :root { 
             --bg-dark: #000000;
-            --panel-bg: #0d0e12;
+            --panel-bg: #000000;
             --accent-gold: #FFD700;
             --gold: #FFD700;
             --accent-gold-rgb: 255, 215, 0;
@@ -45,7 +45,7 @@
             grid-template-columns: auto 1fr auto;
             align-items: center;
             background-color: var(--panel-bg);
-            border: none;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
             padding: 6px 12px;
             border-radius: 6px;
             flex-shrink: 0;
@@ -71,14 +71,14 @@
         }
         
         .arrow-item { 
-            transition: opacity 0.2s, transform 0.2s; 
+            transition: opacity 0.2s, transform 0.2s, filter 0.2s; 
             text-decoration: none;
             color: var(--gold);
             display: inline-block;
         }
         
         .arrow-item:hover { 
-            opacity: 0.8; 
+            filter: brightness(1.15); 
             transform: scale(1.1);
         }
 
@@ -88,7 +88,7 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            background: rgba(var(--accent-gold-rgb), 0.05);
+            background: transparent;
             padding: 2px 10px 2px 4px;
             border-radius: 16px;
             border: 1px solid transparent;
@@ -111,6 +111,7 @@
             border-radius: 50%;
             border: 2px solid var(--accent-gold);
             object-fit: cover;
+            background: #000;
         }
 
         #current-flag {
@@ -162,7 +163,7 @@
 
         .participant-item.active .member-avatar {
             border-color: #fff !important;
-            box-shadow: 0 0 6px rgba(var(--accent-gold-rgb), 0.6);
+            filter: brightness(1.15);
         }
 
         .member-avatar-container {
@@ -177,9 +178,9 @@
             height: 28px;
             border-radius: 50%;
             object-fit: cover;
-            background: #111;
+            background: #000;
             display: block;
-            border: 2px solid rgba(var(--accent-gold-rgb), 0.5);
+            border: 2px solid var(--accent-gold);
         }
 
         .member-flag {
@@ -207,12 +208,11 @@
             cursor: pointer;
             flex-shrink: 0;
             transition: all 0.2s;
-            background: rgba(var(--accent-gold-rgb), 0.05);
+            background: transparent;
         }
         .add-member-btn:hover {
-            border-color: #fff;
-            color: #fff;
             border-style: solid;
+            filter: brightness(1.15);
         }
 
         .header-logo {
@@ -225,6 +225,10 @@
             padding-left: 6px;
             border-left: 1px solid rgba(var(--accent-gold-rgb), 0.2);
             cursor: pointer;
+            transition: filter 0.2s;
+        }
+        .header-logo:hover {
+            filter: brightness(1.15);
         }
 
         .office-screen {
@@ -259,7 +263,7 @@
         .algo-pre::-webkit-scrollbar { height: 5px; width: 5px; }
         .algo-pre::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 3px; }
 
-        /* ИНТЕРАКТИВНЫЕ АКТИВНЫЕ ЗОНЫ */
+        /* ИНТЕРАКТИВНЫЕ АКТИВНЫЕ ЗОНЫ (Без заливок, только золото на черном +15% яркости) */
         .bubble-click {
             cursor: pointer;
             padding: 1px 4px;
@@ -275,8 +279,8 @@
             background: #000000 !important;
             color: var(--accent-gold) !important;
             border-color: var(--accent-gold);
-            transform: scale(1.1);
-            box-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.4);
+            filter: brightness(1.15);
+            transform: scale(1.05);
             z-index: 10;
         }
 
@@ -301,8 +305,7 @@
         }
         .clear-data-btn:hover {
             border-color: var(--accent-gold);
-            color: #fff;
-            box-shadow: 0 0 8px rgba(var(--accent-gold-rgb), 0.2);
+            filter: brightness(1.15);
         }
 
         .modal {
@@ -373,8 +376,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 6px 8px;
-            background: rgba(var(--accent-gold-rgb), 0.05);
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+            background: #000000;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
             border-radius: 5px;
             transition: all 0.2s;
             margin-bottom: 6px;
@@ -388,7 +391,7 @@
         }
 
         .copy-to-session-btn {
-            background: var(--bg-dark);
+            background: #000000;
             border: 1px solid var(--accent-gold);
             color: var(--accent-gold);
             padding: 4px 8px;
@@ -400,20 +403,21 @@
             font-family: 'Montserrat', sans-serif;
         }
         .copy-to-session-btn:hover {
-            background: var(--accent-gold);
-            color: #000;
+            filter: brightness(1.15);
+            border-color: #fff;
+            color: #fff;
         }
         .copy-to-session-btn.added {
-            background: rgba(var(--accent-gold-rgb), 0.2);
-            border-color: rgba(var(--accent-gold-rgb), 0.5);
-            color: #aaa;
+            background: #000000;
+            border-color: rgba(var(--accent-gold-rgb), 0.2);
+            color: #666;
             cursor: default;
         }
 
         .modal-close-btn {
-            background: var(--accent-gold);
-            color: #000;
-            border: none;
+            background: #000000;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
             padding: 8px;
             font-family: 'Cinzel', serif;
             font-weight: bold;
@@ -423,7 +427,11 @@
             font-size: 12px;
             text-align: center;
         }
-        .modal-close-btn:hover { filter: brightness(1.1); }
+        .modal-close-btn:hover { 
+            filter: brightness(1.15);
+            border-color: #fff;
+            color: #fff;
+        }
 
         .passport-card {
             background: var(--panel-bg);
@@ -442,6 +450,7 @@
             border: 2px solid var(--accent-gold);
             object-fit: cover;
             margin-bottom: 8px;
+            background: #000;
         }
         .close-btn {
             position: absolute;
@@ -450,6 +459,10 @@
             color: var(--accent-gold);
             cursor: pointer;
             font-size: 20px;
+            transition: filter 0.2s;
+        }
+        .close-btn:hover {
+            filter: brightness(1.15);
         }
         #pass-qr-box {
             display: flex;
@@ -705,7 +718,6 @@
             }
         }
 
-        // Рендеринг списка зарегистрированных пользователей с группировкой по флагам
         function renderStaffList() {
             const container = document.getElementById('staff-list');
             if (!container) return;
@@ -716,7 +728,6 @@
                 return;
             }
 
-            // Группируем по флагам
             const groups = {};
             allRegisteredUsers.forEach(user => {
                 const flag = (user.flagCode || user.lang || 'ru').toLowerCase();
@@ -761,7 +772,6 @@
             }
         }
 
-        // Копирование участника из общего реестра в текущую сессию (локацию)
         function copyUserToSession(id) {
             selectedStaffIds.add(id);
             localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
