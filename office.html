@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.6.8 CORE</title>
+    <title>GYGY Office v4.6.10 CORE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -209,6 +209,14 @@
             color: var(--text-color);
         }
 
+        /* Блок №1 — Выход в Холл (index.html) */
+        .office-room.hall-room {
+            border-color: rgba(var(--accent-gold-rgb), 0.5);
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+        }
+
         /* Блок №3 — Комната переговоров (Core Module) с интерактивной ссылкой */
         .office-room.meeting-room {
             border-color: var(--accent-gold);
@@ -273,9 +281,9 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки: < в Холл, << к дверям входа в клуб -->
+    <!-- Навигационные стрелки: < в Холл (index.html), << к дверям входа -->
     <div class="notranslate ui-nav-arrows">
-        <a href="hall.html" class="arrow-item" title="В Холл">&lt;</a>
+        <a href="index.html" class="arrow-item" title="В Холл">&lt;</a>
         <a href="index.html" class="arrow-item" title="К дверям входа в клуб">&lt;&lt;</a>
     </div>
 
@@ -299,7 +307,8 @@
         </div>
 
         <div class="office-grid">
-            <div class="office-room">Блок №1<br><small>Регламенты и ресурсы</small></div>
+            <!-- Блок №1 ведет в Холл (index.html) -->
+            <a href="index.html" class="office-room hall-room">Блок №1<br>Выход в Холл</a>
             <div class="office-room">Блок №2<br><small>Управление процессами</small></div>
             <!-- Блок №3 изменен на интерактивную ссылку-переход в meeting.html -->
             <a href="meeting.html" class="office-room meeting-room">Блок №3<br>Комната переговоров</a>
