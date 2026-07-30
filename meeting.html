@@ -2,616 +2,394 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GY-GY Club v27 - OFFICE & MEETING ROOM ARCHITECTURE</title>
-    <!-- Подключаем Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club v4.6.25 - Переговорная</title>
+    <!-- Подключение шрифтов -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        :root { 
+            --bg-dark: #000000;
+            --panel-bg: #000000; /* Черный фон панелей */
+            --accent-gold: #FFD700;
+            --gold: #FFD700;
+            --accent-gold-rgb: 255, 215, 0;
+            --text-color: #ffffff;
+            --message-other-bg: #1a1a1a; /* Чужие сообщения чуть светлее */
+            --message-my-bg: #0d0e12;    /* Свои сообщения чуть темнее */
+            --input-border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
         }
-        ::-webkit-scrollbar-track {
-            background: #020617;
+
+        * { 
+            -webkit-tap-highlight-color: transparent !important; 
+            box-sizing: border-box; 
+            margin: 0;
+            padding: 0;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 3px;
+        
+        html, body { 
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 8px 12px; /* Отступы от краев экрана */
+            gap: 8px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
+
+        /* КОМПАКТНАЯ ШАПКА (Взята из предыдущих файлов для сохранения стиля) */
+        header {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            background-color: var(--panel-bg);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            gap: 10px;
         }
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+
+        .header-left-group { display: flex; align-items: center; }
+
+        .ui-nav-arrows {
+            display: flex; 
+            gap: 8px; 
+            font-size: 20px; 
+            font-weight: 900 !important; 
+            font-family: 'Share Tech Mono', monospace; 
+            color: var(--gold); 
+            line-height: 1; 
+            letter-spacing: -2px; 
+            user-select: none;
         }
-        .animate-pulse-slow {
-            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        
+        .arrow-item { 
+            transition: opacity 0.2s, transform 0.2s, filter 0.2s; 
+            text-decoration: none;
+            color: var(--gold);
+            display: inline-block;
         }
+        
+        .arrow-item:hover { filter: brightness(1.15); transform: scale(1.1); }
+
+        .header-center-title {
+            justify-self: center;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .header-right-group {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: filter 0.2s;
+        }
+        .header-logo:hover { filter: brightness(1.15); }
+
+        /* ОСНОВНАЯ ОБЛАСТЬ ЧАТА */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--panel-bg);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+            border-radius: 6px;
+            overflow: hidden; /* Чтобы скроллбар был внутри */
+        }
+
+        /* Блок с сообщениями */
+        #messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Скроллбар чата */
+        #messages-area::-webkit-scrollbar { width: 4px; }
+        #messages-area::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 2px; }
+
+        /* Элемент сообщения */
+        .message-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            max-width: 85%;
+        }
+
+        .message-item.other { align-self: flex-start; }
+        .message-item.my { align-self: flex-end; flex-direction: row-reverse; }
+
+        /* Аватар в чате */
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-gold);
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        /* Пузырь сообщения */
+        .message-content {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message-item.other .message-content {
+            background-color: var(--message-other-bg);
+            border-top-left-radius: 0;
+        }
+
+        .message-item.my .message-content {
+            background-color: var(--message-my-bg);
+            border-top-right-radius: 0;
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+        }
+
+        .message-header {
+            font-size: 10px;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .message-item.my .message-header { justify-content: flex-end; }
+
+        .message-time {
+            font-size: 9px;
+            color: #888;
+            font-weight: normal;
+        }
+
+        /* ОБЛАСТЬ ВВОДА */
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background-color: var(--panel-bg);
+            border-top: var(--input-border);
+            flex-shrink: 0;
+        }
+
+        #message-input {
+            flex: 1;
+            background: #000;
+            border: var(--input-border);
+            color: var(--text-color);
+            padding: 8px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            border-radius: 4px;
+            outline: none;
+            resize: none; /* Если textarea */
+            height: 36px; /* Фиксированная высота */
+            line-height: 18px;
+        }
+
+        #message-input:focus { border-color: var(--accent-gold); }
+
+        #send-btn {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 0 15px;
+            height: 36px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        #send-btn:hover { 
+            background: var(--accent-gold);
+            color: #000;
+            filter: brightness(1.15);
+        }
+
+        /* Техническое сообщение (например, о входе) */
+        .system-message {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+            padding: 5px 0;
+        }
+
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+<body oncontextmenu="return false;">
 
-    <!-- Верхняя панель управления встречей и интеграции Глобального Реестра -->
-    <header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-6 py-3.5 flex items-center justify-between shadow-xl sticky top-0 z-40">
-        <div class="flex items-center space-x-4">
-            <a href="index.html" class="text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 p-2.5 rounded-xl transition border border-slate-700/50 group" title="Вернуться в реестр клуба">
-                <i class="fa-solid fa-arrow-left text-sm group-hover:-translate-x-0.5 transition-transform"></i>
-            </a>
-            <div>
-                <div class="flex items-center gap-2">
-                    <h1 id="header-title" class="text-base font-bold tracking-tight text-white flex items-center gap-2">
-                        <i class="fa-solid fa-building text-indigo-500"></i> Офисное пространство GY-GY Club
-                    </h1>
-                    <span class="text-[10px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded-full font-mono font-semibold">v27</span>
-                </div>
-                <p class="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
-                    <span>Режим: <strong id="header-context-label" class="text-indigo-400">Офис (Служебный контур)</strong></span>
-                    <span>•</span>
-                    <span>Комната: <strong class="text-slate-300 font-mono">GY-GY-ROOM-777</strong></span>
-                    <span>•</span>
-                    <span id="session-timer" class="font-mono text-indigo-400 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800/50">00:00:00</span>
-                </p>
+    <!-- Шапка (Клубный стиль) -->
+    <header>
+        <div class="header-left-group">
+            <div class="notranslate ui-nav-arrows">
+                <a href="office.html" class="arrow-item" title="В Офис">&lt;</a>
             </div>
         </div>
 
-        <div class="flex items-center space-x-3">
-            <!-- Кнопка вызова Глобального Реестра для управления участниками -->
-            <button onclick="openGlobalRegistryModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-lg shadow-indigo-600/20 border border-indigo-500/30">
-                <i class="fa-solid fa-globe text-sm"></i> Глобальный реестр участников
-            </button>
-            <div class="h-6 w-px bg-slate-800 hidden sm:block"></div>
-            <div class="hidden md:flex items-center gap-2 bg-slate-950/60 border border-slate-800/80 px-3 py-1.5 rounded-xl text-xs text-slate-400">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>SSL Secured</span>
-            </div>
+        <div class="header-center-title notranslate">
+            ПЕРЕГОВОРНАЯ №3
+        </div>
+
+        <div class="header-right-group">
+            <div class="header-logo notranslate" onclick="location.href='index.html'">GY-GY</div>
         </div>
     </header>
 
-    <!-- Основная рабочая зона -->
-    <main class="flex-1 max-w-[1700px] w-full mx-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6">
-        
-        <!-- Левая колонка: Сетка видеопотоков / активных участников -->
-        <div class="flex-1 flex flex-col">
-            
-            <div class="mb-4 flex items-center justify-between bg-slate-900/40 p-3.5 rounded-2xl border border-slate-800/60">
-                <div class="flex items-center gap-3">
-                    <h2 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                        <i class="fa-solid fa-users text-indigo-400"></i> Активные участники локации 
-                    </h2>
-                    <span id="active-count-badge" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs px-2.5 py-0.5 rounded-full font-semibold">0</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="quickAddTestParticipant()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl transition border border-slate-700/50 flex items-center gap-1.5" title="Добавить тестового участника">
-                        <i class="fa-solid fa-user-plus text-indigo-400"></i> Быстрый тест
-                    </button>
-                    <button onclick="toggleGridView()" class="text-slate-400 hover:text-white bg-slate-800/60 p-2 rounded-xl text-xs transition border border-slate-700/50" title="Переключить сетку отображения">
-                        <i class="fa-solid fa-table-cells text-sm"></i>
-                    </button>
+    <!-- Область чата (Стиль традиционного чата) -->
+    <div class="chat-container">
+        <div id="messages-area">
+            <!-- Пример системного сообщения -->
+            <div class="system-message">--- Александр В. вошел в переговорную ---</div>
+
+            <!-- Пример входящего сообщения (Собеседник) -->
+            <div class="message-item other">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Elena" class="chat-avatar" alt="Avatar">
+                <div>
+                    <div class="message-header">Elena R. <span class="message-time">14:32</span></div>
+                    <div class="message-content">Коллеги, добрый день. Мы готовы обсудить стратегию по Ателье?</div>
                 </div>
             </div>
 
-            <!-- Сетка карточек участников встречи -->
-            <div id="active-participants-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 auto-rows-fr">
-                <!-- Сюда динамически рендерятся участники -->
+            <!-- Пример исходящего сообщения (Я) -->
+            <div class="message-item my">
+                <img id="my-avatar-i" src="" class="chat-avatar" alt="Avatar" style="display:none;">
+                <div>
+                    <div class="message-header"><span class="message-time">14:33</span> Я</div>
+                    <div class="message-content">Привет. Да, готовы. Александр, запускай демонстрацию.</div>
+                </div>
             </div>
 
-            <!-- Нижняя панель управления медиазвонком -->
-            <div class="mt-6 bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-center gap-3 shadow-xl">
-                <button onclick="toggleAudio()" id="audio-btn" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2 border border-slate-700/60">
-                    <i class="fa-solid fa-microphone text-emerald-400"></i> <span id="audio-text">Микрофон вкл.</span>
-                </button>
-                <button onclick="toggleVideo()" id="video-btn" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2 border border-slate-700/60">
-                    <i class="fa-solid fa-video text-emerald-400"></i> <span id="video-text">Камера вкл.</span>
-                </button>
-                <button onclick="toggleScreenShare()" id="screen-btn" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2 border border-slate-700/60">
-                    <i class="fa-solid fa-display text-indigo-400"></i> <span id="screen-text">Трансляция</span>
-                </button>
-                <div class="h-6 w-px bg-slate-800 mx-1 hidden sm:block"></div>
-                <button onclick="endMeetingSession()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 border border-rose-500/30 px-5 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-2">
-                    <i class="fa-solid fa-phone-slash"></i> Покинуть локацию
-                </button>
+             <!-- Еще одно входящее -->
+            <div class="message-item other">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Alex" class="chat-avatar" alt="Avatar">
+                <div>
+                    <div class="message-header">Александр В. <span class="message-time">14:34</span></div>
+                    <div class="message-content">Запускаю. Смотрите файл "Risks_v4.pdf".</div>
+                </div>
             </div>
+
         </div>
 
-        <!-- Правая колонка: Самостоятельный чат (Офисный или Клубный) с односторонним мостом -->
-        <aside class="w-full lg:w-80 bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col h-[520px] lg:h-auto shadow-xl">
-            
-            <!-- Шапка чата с динамическим наименованием -->
-            <div id="chat-header-banner" class="mb-3 p-3 rounded-xl border bg-amber-950/30 border-amber-900/40 text-xs">
-                <div class="flex items-center justify-between mb-1">
-                    <strong id="chat-title-label" class="text-amber-300 flex items-center gap-1.5">
-                        <i class="fa-solid fa-briefcase"></i> Офисный служебный чат
-                    </strong>
-                    <span id="chat-status-badge" class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20 font-mono">office_net</span>
-                </div>
-                <p id="chat-desc-label" class="text-[11px] text-slate-400">
-                    Обсуждение рабочих регламентов, бюджетов и задач.
-                </p>
-            </div>
-
-            <!-- ОДНОСТОРОННИЙ МОСТ: Из Офиса в Клуб (отображается только в офисном чате) -->
-            <div id="office-bridge-container" class="mb-3">
-                <button onclick="transitionToClubLocation()" class="w-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 p-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between shadow-sm group">
-                    <span class="flex items-center gap-2">
-                        <i class="fa-solid fa-door-open text-indigo-400 group-hover:translate-x-0.5 transition-transform"></i> 
-                        Перейти в Meeting Room (Клуб)
-                    </span>
-                    <i class="fa-solid fa-arrow-right text-[10px] text-indigo-400"></i>
-                </button>
-            </div>
-
-            <!-- Список сообщений текущего изолированного чата -->
-            <div id="chat-messages" class="flex-1 overflow-y-auto py-2 space-y-3 text-xs pr-1">
-                <!-- Динамически заменяется через JS -->
-            </div>
-
-            <!-- Поле ввода сообщения -->
-            <div class="pt-3 border-t border-slate-800 flex gap-2">
-                <input type="text" id="chat-input" onkeypress="handleChatKeyPress(event)" placeholder="Сообщение..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
-                <button onclick="sendChatMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs transition shadow-md">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-            </div>
-        </aside>
-
-    </main>
-
-    <!-- Модальное окно Глобального Реестра -->
-    <div id="global-registry-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
-            
-            <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
-                <div>
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-globe text-indigo-400"></i> Управление Глобальным Реестром клуба
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Единая база участников офиса и клубных пространств</p>
-                </div>
-                <button onclick="closeGlobalRegistryModal()" class="text-slate-400 hover:text-white p-2 rounded-lg transition bg-slate-800/40 hover:bg-slate-800">
-                    <i class="fa-solid fa-xmark text-base"></i>
-                </button>
-            </div>
-
-            <div class="p-4 border-b border-slate-800 bg-slate-900/40 flex flex-col md:flex-row gap-3 items-center justify-between">
-                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-1">
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-xs"></i>
-                        <input type="text" id="registry-search" oninput="filterGlobalRegistry()" placeholder="Поиск по имени, роли или отделу..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
-                    </div>
-                    <select id="registry-role-filter" onchange="filterGlobalRegistry()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-indigo-500 transition">
-                        <option value="">Все роли</option>
-                        <option value="Эксперт">Эксперты</option>
-                        <option value="Модератор">Модераторы</option>
-                        <option value="Участник">Участники</option>
-                    </select>
-                </div>
-                <button onclick="toggleAddPersonForm()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20">
-                    <i class="fa-solid fa-user-plus"></i> Создать профиль
-                </button>
-            </div>
-
-            <div id="new-person-form-container" class="hidden p-4 border-b border-slate-800 bg-slate-950/80">
-                <form id="new-person-form" onsubmit="handleCreatePerson(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Имя и Фамилия</label>
-                        <input type="text" id="new-name" required placeholder="Иван Иванов" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Роль в клубе</label>
-                        <select id="new-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
-                            <option value="Участник">Участник</option>
-                            <option value="Эксперт">Эксперт</option>
-                            <option value="Модератор">Модератор</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Отдел / Страна</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="new-country" placeholder="Офис / Россия" class="w-2/3 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
-                            <input type="text" id="new-flag" placeholder="🇷🇺" class="w-1/3 bg-slate-900 border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-center text-white focus:border-indigo-500 focus:outline-none">
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 rounded-xl text-xs font-semibold transition">Сохранить</button>
-                        <button type="button" onclick="toggleAddPersonForm()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl text-xs transition">Отмена</button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="global-registry-list" class="p-4 overflow-y-auto flex-1 divide-y divide-slate-800/60 space-y-2">
-                <!-- Рендерится динамически -->
-            </div>
-
-            <div class="p-4 border-t border-slate-800 bg-slate-900/50 flex justify-between items-center text-xs text-slate-400">
-                <span>Синхронизировано с базой данных клуба</span>
-                <button onclick="closeGlobalRegistryModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded-xl font-medium transition">
-                    Готово
-                </button>
-            </div>
+        <!-- Область ввода -->
+        <div class="input-area">
+            <textarea id="message-input" placeholder="Введите сообщение..." rows="1"></textarea>
+            <button id="send-btn" onclick="sendMessage()">ОТПРАВИТЬ</button>
         </div>
     </div>
 
-    <!-- Логика независимых чатов, моста и локаций v27 -->
     <script>
-        const STORAGE_KEY_GLOBAL = 'club_global_registry';
-        const STORAGE_KEY_MEETING = 'club_meeting_active';
-        const STORAGE_KEY_CHAT_OFFICE = 'club_chat_office_v27';
-        const STORAGE_KEY_CHAT_CLUB = 'club_chat_club_v27';
+        document.addEventListener("DOMContentLoaded", function() {
+            // Автоматическая подстановка моего аватара в шапке и в чате
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img');
+            if (savedAvatar) {
+                const myAvatarHeader = document.getElementById('my-avatar-i'); // В чате
+                if (myAvatarHeader) {
+                    myAvatarHeader.src = savedAvatar;
+                    myAvatarHeader.style.display = 'block';
+                }
+            }
 
-        let sessionSeconds = 0;
-        let isAudioMuted = false;
-        let isVideoOff = false;
-        let isScreenSharing = false;
-        
-        // Определяем текущую локацию на основе параметров URL (?loc=club или по умолчанию офис)
-        const urlParams = new URLSearchParams(window.location.search);
-        let currentLocation = urlParams.get('loc') === 'club' ? 'club' : 'office';
+            // Авто-высота для textarea
+            const textarea = document.getElementById('message-input');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+                if(this.scrollHeight > 100) { // Ограничение высоты
+                    this.style.overflowY = "scroll";
+                } else {
+                    this.style.overflowY = "hidden";
+                }
+            });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initLocationView();
-            renderActiveParticipants();
-            startSessionTimer();
-            renderChatMessages();
+            // Отправка по Enter (но не с новой строки)
+            textarea.addEventListener('keypress', function (e) {
+                if (e.which === 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            scrollToBottom();
         });
 
-        // Инициализация интерфейса в зависимости от локации
-        function initLocationView() {
-            const headerTitle = document.getElementById('header-title');
-            const headerContext = document.getElementById('header-context-label');
-            const chatTitleLabel = document.getElementById('chat-title-label');
-            const chatStatusBadge = document.getElementById('chat-status-badge');
-            const chatDescLabel = document.getElementById('chat-desc-label');
-            const bridgeContainer = document.getElementById('office-bridge-container');
-            const chatInput = document.getElementById('chat-input');
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text) return;
 
-            if (currentLocation === 'club') {
-                // Клубная локация (Meeting Room)
-                headerTitle.innerHTML = `<i class="fa-solid fa-comments text-indigo-500"></i> Meeting Room (Клубное пространство)`;
-                headerContext.innerText = "Клубный эфир (Универсальный чат)";
-                chatTitleLabel.innerHTML = `<i class="fa-solid fa-comments"></i> Универсальный Клубный чат`;
-                chatStatusBadge.className = "text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20 font-mono";
-                chatStatusBadge.innerText = "club_net_sync";
-                chatDescLabel.innerText = "Свободное обсуждение, неформальные дискуссии и подключение смежных комнат.";
-                chatInput.placeholder = "Сообщение в клубный чат...";
-                
-                // ВАЖНО: Прячем мост назад в офис, так как обратного пути по требованиям нет
-                if (bridgeContainer) bridgeContainer.style.display = 'none';
-            } else {
-                // Офисная локация
-                headerTitle.innerHTML = `<i class="fa-solid fa-building text-indigo-500"></i> Офисное пространство GY-GY Club`;
-                headerContext.innerText = "Офис (Служебный контур)";
-                chatTitleLabel.innerHTML = `<i class="fa-solid fa-briefcase"></i> Офисный служебный чат`;
-                chatStatusBadge.className = "text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20 font-mono";
-                chatStatusBadge.innerText = "office_net";
-                chatDescLabel.innerText = "Обсуждение рабочих регламентов, бюджетов и внутренних задач.";
-                chatInput.placeholder = "Служебное сообщение в офис...";
-                
-                // Показываем односторонний переход в клуб
-                if (bridgeContainer) bridgeContainer.style.display = 'block';
-            }
-        }
+            const messagesArea = document.getElementById('messages-area');
+            
+            // Создаем элемент сообщения
+            const msgItem = document.createElement('div');
+            msgItem.className = 'message-item my';
 
-        // Функция одностороннего перехода из Офиса в Клубную локацию
-        function transitionToClubLocation() {
-            if (confirm('Перейти из служебного офиса в Meeting Room (Клубную локацию)? Обратный служебный доступ из клуба заблокирован.')) {
-                window.location.href = window.location.pathname + '?loc=club';
-            }
-        }
+            // Получаем мой аватар
+            const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || '';
+            
+            // Форматируем время
+            const now = new Date();
+            const timeStr = now.toTimeString().substring(0, 5);
 
-        // Таймер сессии
-        function startSessionTimer() {
-            setInterval(() => {
-                sessionSeconds++;
-                const hours = String(Math.floor(sessionSeconds / 3600)).padStart(2, '0');
-                const minutes = String(Math.floor((sessionSeconds % 3600) / 60)).padStart(2, '0');
-                const seconds = String(sessionSeconds % 60).padStart(2, '0');
-                const timerEl = document.getElementById('session-timer');
-                if (timerEl) {
-                    timerEl.innerText = `${hours}:${minutes}:${seconds}`;
-                }
-            }, 1000);
-        }
-
-        // Работа с раздельными базами данных чатов
-        function getChatMessages() {
-            const key = currentLocation === 'club' ? STORAGE_KEY_CHAT_CLUB : STORAGE_KEY_CHAT_OFFICE;
-            const data = localStorage.getItem(key);
-            if (!data) {
-                const initial = currentLocation === 'club' 
-                    ? [{ sender: 'Система', text: 'Универсальный клубный чат активирован. Связь с другими локациями установлена.' }]
-                    : [{ sender: 'Система', text: 'Офисный контур инициализирован. Доступны рабочие темы и переход в Meeting Room.' }];
-                localStorage.setItem(key, JSON.stringify(initial));
-                return initial;
-            }
-            return JSON.parse(data);
-        }
-
-        function saveChatMessages(messages) {
-            const key = currentLocation === 'club' ? STORAGE_KEY_CHAT_CLUB : STORAGE_KEY_CHAT_OFFICE;
-            localStorage.setItem(key, JSON.stringify(messages));
-        }
-
-        function renderChatMessages() {
-            const container = document.getElementById('chat-messages');
-            if (!container) return;
-            const messages = getChatMessages();
-
-            container.innerHTML = messages.map(msg => `
-                <div class="bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/40">
-                    <span class="${msg.sender === 'Система' ? 'text-indigo-400' : 'text-emerald-400'} font-semibold">${msg.sender}:</span> ${msg.text}
+            msgItem.innerHTML = `
+                ${savedAvatar ? `<img src="${savedAvatar}" class="chat-avatar" alt="I">` : '<div class="chat-avatar" style="background:#333"></div>'}
+                <div>
+                    <div class="message-header"><span class="message-time">${timeStr}</span> Я</div>
+                    <div class="message-content">${escapeHtml(text)}</div>
                 </div>
-            `).join('');
+            `;
+
+            messagesArea.appendChild(msgItem);
+            input.value = '';
+            input.style.height = '36px'; // Сброс высоты поля
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('messages-area');
             container.scrollTop = container.scrollHeight;
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            if (!input || !input.value.trim()) return;
-
-            const messages = getChatMessages();
-            messages.push({ sender: 'Вы', text: input.value.trim() });
-            saveChatMessages(messages);
-
-            input.value = '';
-            renderChatMessages();
-        }
-
-        function handleChatKeyPress(e) {
-            if (e.key === 'Enter') {
-                sendChatMessage();
-            }
-        }
-
-        // Управление медиазвонком
-        function toggleAudio() {
-            isAudioMuted = !isAudioMuted;
-            const btn = document.getElementById('audio-btn');
-            const txt = document.getElementById('audio-text');
-            if (isAudioMuted) {
-                btn.className = 'bg-rose-600/20 text-rose-400 border border-rose-500/30 px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2';
-                txt.innerText = 'Микрофон выкл.';
-            } else {
-                btn.className = 'bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2 border border-slate-700/60';
-                txt.innerText = 'Микрофон вкл.';
-            }
-        }
-
-        function toggleVideo() {
-            isVideoOff = !isVideoOff;
-            const btn = document.getElementById('video-btn');
-            const txt = document.getElementById('video-text');
-            if (isVideoOff) {
-                btn.className = 'bg-rose-600/20 text-rose-400 border border-rose-500/30 px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2';
-                txt.innerText = 'Камера выкл.';
-            } else {
-                btn.className = 'bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2 border border-slate-700/60';
-                txt.innerText = 'Камера вкл.';
-            }
-        }
-
-        function toggleScreenShare() {
-            isScreenSharing = !isScreenSharing;
-            const btn = document.getElementById('screen-btn');
-            const txt = document.getElementById('screen-text');
-            if (isScreenSharing) {
-                btn.className = 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2';
-                txt.innerText = 'Трансляция идет';
-            } else {
-                btn.className = 'bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition flex items-center gap-2 border border-slate-700/60';
-                txt.innerText = 'Трансляция';
-            }
-        }
-
-        function endMeetingSession() {
-            if (confirm('Покинуть текущую локацию?')) {
-                window.location.href = 'index.html';
-            }
-        }
-
-        function toggleGridView() {
-            alert('Режим сетки активен.');
-        }
-
-        // Модальное окно Глобального Реестра
-        function openGlobalRegistryModal() {
-            document.getElementById('global-registry-modal').classList.remove('hidden');
-            renderGlobalRegistryList();
-        }
-
-        function closeGlobalRegistryModal() {
-            document.getElementById('global-registry-modal').classList.add('hidden');
-            document.getElementById('registry-search').value = '';
-            document.getElementById('registry-role-filter').value = '';
-            document.getElementById('new-person-form-container').classList.add('hidden');
-            renderActiveParticipants();
-        }
-
-        function toggleAddPersonForm() {
-            document.getElementById('new-person-form-container').classList.toggle('hidden');
-        }
-
-        function getGlobalRegistry() {
-            const data = localStorage.getItem(STORAGE_KEY_GLOBAL);
-            if (!data) {
-                const defaultRegistry = [
-                    { id: '1', name: 'Александр Смирнов', role: 'Эксперт', country: 'Офис / Руководство', flag: '🏢', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-                    { id: '2', name: 'Elena Vance', role: 'Модератор', country: 'Офис / IT', flag: '💻', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150' },
-                    { id: '3', name: 'Kenji Sato', role: 'Участник', country: 'Клуб / Япония', flag: '🇯🇵', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-                    { id: '4', name: 'Marie Dubois', role: 'Эксперт', country: 'Клуб / Франция', flag: '🇫🇷', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' }
-                ];
-                localStorage.setItem(STORAGE_KEY_GLOBAL, JSON.stringify(defaultRegistry));
-                return defaultRegistry;
-            }
-            return JSON.parse(data);
-        }
-
-        function saveGlobalRegistry(registry) {
-            localStorage.setItem(STORAGE_KEY_GLOBAL, JSON.stringify(registry));
-        }
-
-        function getActiveMeetingParticipants() {
-            const data = localStorage.getItem(STORAGE_KEY_MEETING);
-            return data ? JSON.parse(data) : [];
-        }
-
-        function saveActiveMeetingParticipants(participants) {
-            localStorage.setItem(STORAGE_KEY_MEETING, JSON.stringify(participants));
-        }
-
-        function handleCreatePerson(e) {
-            e.preventDefault();
-            const name = document.getElementById('new-name').value.trim();
-            const role = document.getElementById('new-role').value;
-            const country = document.getElementById('new-country').value.trim() || 'Офис';
-            const flag = document.getElementById('new-flag').value.trim() || '🏢';
-
-            if (!name) return;
-
-            const globalList = getGlobalRegistry();
-            globalList.push({
-                id: Date.now().toString(),
-                name,
-                role,
-                country,
-                flag,
-                avatar: `https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random() * 999999)}?w=150`
-            });
-            saveGlobalRegistry(globalList);
-
-            document.getElementById('new-person-form').reset();
-            toggleAddPersonForm();
-            renderGlobalRegistryList();
-        }
-
-        function deleteFromGlobalRegistry(id) {
-            if (!confirm('Удалить участника?')) return;
-            saveGlobalRegistry(getGlobalRegistry().filter(p => p.id !== id));
-            removeFromMeeting(id, true);
-            renderGlobalRegistryList();
-        }
-
-        function renderGlobalRegistryList() {
-            const globalList = getGlobalRegistry();
-            const activeIds = getActiveMeetingParticipants().map(p => p.id);
-            const container = document.getElementById('global-registry-list');
-            const searchQuery = document.getElementById('registry-search').value.toLowerCase();
-            const roleFilter = document.getElementById('registry-role-filter').value;
-
-            const filtered = globalList.filter(p => {
-                const matchesSearch = p.name.toLowerCase().includes(searchQuery) || p.role.toLowerCase().includes(searchQuery) || p.country.toLowerCase().includes(searchQuery);
-                const matchesRole = roleFilter === '' || p.role === roleFilter;
-                return matchesSearch && matchesRole;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-500 py-8 text-xs">Никого не найдено</p>`;
-                return;
-            }
-
-            container.innerHTML = filtered.map(person => {
-                const isInMeeting = activeIds.includes(person.id);
-                return `
-                    <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-                        <div class="flex items-center space-x-3">
-                            <img src="${person.avatar}" alt="${person.name}" class="w-10 h-10 rounded-full object-cover border border-slate-700 shadow-sm">
-                            <div>
-                                <h4 class="text-xs font-semibold text-white flex items-center gap-1.5">
-                                    ${person.name} <span>${person.flag}</span>
-                                </h4>
-                                <p class="text-[11px] text-slate-400 mt-0.5">${person.role} • <span class="text-slate-500">${person.country}</span></p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${isInMeeting ? `
-                                <button onclick="removeFromMeeting('${person.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1.5 rounded-xl text-[11px] font-medium transition">
-                                    Убрать
-                                </button>
-                            ` : `
-                                <button onclick="addToMeeting('${person.id}')" class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 px-3 py-1.5 rounded-xl text-[11px] font-medium transition">
-                                    Добавить
-                                </button>
-                            `}
-                            <button onclick="deleteFromGlobalRegistry('${person.id}')" class="text-slate-500 hover:text-rose-400 p-2 rounded-lg transition">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterGlobalRegistry() {
-            renderGlobalRegistryList();
-        }
-
-        function addToMeeting(id) {
-            const globalList = getGlobalRegistry();
-            const activeList = getActiveMeetingParticipants();
-            const person = globalList.find(p => p.id === id);
-            if (person && !activeList.some(p => p.id === id)) {
-                activeList.push(person);
-                saveActiveMeetingParticipants(activeList);
-                renderGlobalRegistryList();
-            }
-        }
-
-        function removeFromMeeting(id, silent = false) {
-            let activeList = getActiveMeetingParticipants().filter(p => p.id !== id);
-            saveActiveMeetingParticipants(activeList);
-            renderGlobalRegistryList();
-            renderActiveParticipants();
-        }
-
-        function quickAddTestParticipant() {
-            const globalList = getGlobalRegistry();
-            if (globalList.length === 0) return;
-            const randomPerson = globalList[Math.floor(Math.random() * globalList.length)];
-            addToMeeting(randomPerson.id);
-            renderActiveParticipants();
-        }
-
-        function renderActiveParticipants() {
-            const activeList = getActiveMeetingParticipants();
-            const container = document.getElementById('active-participants-grid');
-            const badge = document.getElementById('active-count-badge');
-            if (badge) badge.innerText = activeList.length;
-
-            if (activeList.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full py-20 text-center border border-dashed border-slate-800 rounded-2xl bg-slate-900/20">
-                        <i class="fa-solid fa-users-slash text-3xl text-slate-600 mb-3"></i>
-                        <p class="text-slate-400 text-xs font-medium">В текущей локации пока нет участников</p>
-                        <p class="text-slate-500 text-[11px] mt-1">Откройте «Глобальный реестр участников» или «Быстрый тест».</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = activeList.map(person => `
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col items-center text-center relative group shadow-lg hover:border-slate-700 transition">
-                    <button onclick="removeFromMeeting('${person.id}')" class="absolute top-3 right-3 text-slate-500 hover:text-rose-400 bg-slate-950/60 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition">
-                        <i class="fa-solid fa-xmark text-xs"></i>
-                    </button>
-
-                    <div class="relative mb-3">
-                        <img src="${person.avatar}" alt="${person.name}" class="w-20 h-20 rounded-full object-cover border-2 border-indigo-500/40 shadow-md">
-                        <span class="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
-                    </div>
-                    
-                    <h3 class="font-semibold text-white text-sm flex items-center gap-1.5">
-                        ${person.name} <span>${person.flag}</span>
-                    </h3>
-                    <p class="text-[11px] text-indigo-400 font-medium mt-0.5">${person.role}</p>
-                    <p class="text-[10px] text-slate-500 mt-0.5">${person.country}</p>
-
-                    <div class="mt-4 w-full flex items-center justify-between text-[11px] pt-3 border-t border-slate-800/80 text-slate-400">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-microphone text-emerald-400"></i> Аудио</span>
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-video text-emerald-400"></i> Видео HD</span>
-                    </div>
-                </div>
-            `).join('');
+        // Простая защита от XSS
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
     </script>
 </body>
