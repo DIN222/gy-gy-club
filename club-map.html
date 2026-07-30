@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.25 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.26 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -326,7 +326,7 @@
             padding: 20px;
             border-radius: 10px;
             width: 90%;
-            max-width: 380px;
+            max-width: 420px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -349,12 +349,24 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 250px;
+            gap: 10px;
+            max-height: 320px;
             padding-right: 4px;
         }
         .staff-list::-webkit-scrollbar { width: 3px; }
         .staff-list::-webkit-scrollbar-thumb { background: rgba(var(--accent-gold-rgb), 0.3); border-radius: 2px; }
+
+        .flag-group-title {
+            font-size: 11px;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed rgba(var(--accent-gold-rgb), 0.2);
+            padding-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
         .staff-item {
             display: flex;
@@ -365,6 +377,7 @@
             border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
             border-radius: 5px;
             transition: all 0.2s;
+            margin-bottom: 6px;
         }
         .staff-item:hover { border-color: var(--accent-gold); }
 
@@ -374,48 +387,28 @@
             gap: 8px;
         }
 
-        .staff-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .delete-staff-btn {
-            background: transparent;
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            width: 24px;
-            height: 24px;
+        .copy-to-session-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.2s;
-        }
-        .delete-staff-btn:hover { background: var(--danger); color: #fff; }
-
-        /* Стили для формы добавления нового сотрудника */
-        .add-staff-form {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 4px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(var(--accent-gold-rgb), 0.2);
-        }
-        .form-input {
-            background: var(--bg-dark);
-            border: 1px solid rgba(var(--accent-gold-rgb), 0.4);
-            color: var(--text-color);
-            padding: 6px 10px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 12px;
-            border-radius: 4px;
-            outline: none;
         }
-        .form-input:focus { border-color: var(--accent-gold); }
+        .copy-to-session-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+        .copy-to-session-btn.added {
+            background: rgba(var(--accent-gold-rgb), 0.2);
+            border-color: rgba(var(--accent-gold-rgb), 0.5);
+            color: #aaa;
+            cursor: default;
+        }
 
         .modal-close-btn {
             background: var(--accent-gold);
@@ -428,6 +421,7 @@
             border-radius: 5px;
             transition: all 0.2s;
             font-size: 12px;
+            text-align: center;
         }
         .modal-close-btn:hover { filter: brightness(1.1); }
 
@@ -484,7 +478,7 @@
 
         <div class="header-right-group">
             <div id="header-participants" class="header-participants"></div>
-            <div class="add-member-btn" onclick="openStaffModal()" title="Управление сотрудниками">+</div>
+            <div class="add-member-btn" onclick="openStaffModal()" title="Добавить участника из реестра">+</div>
             <div class="header-logo notranslate" onclick="openPassport()">GY-GY</div>
         </div>
     </header>
@@ -533,28 +527,13 @@
         </div>
     </div>
 
-    <!-- Модальное окно управления сотрудниками с рабочей формой -->
+    <!-- Модальное окно реестра зарегистрированных участников по флагам -->
     <div id="staff-modal" class="modal">
         <div class="modal-card">
             <span class="close-btn" onclick="closeStaffModal()">&times;</span>
-            <div class="modal-title">УПРАВЛЕНИЕ СОТРУДНИКАМИ</div>
+            <div class="modal-title">РЕЕСТР УЧАСТНИКОВ ПО ФЛАГАМ</div>
             <div id="staff-list" class="staff-list"></div>
-            
-            <div class="add-staff-form">
-                <div style="font-size: 11px; color: var(--accent-gold); font-weight: 600;">Добавить участника</div>
-                <input type="text" id="new-staff-name" class="form-input" placeholder="Имя / Никнейм">
-                <input type="text" id="new-staff-role" class="form-input" placeholder="Роль (например: Dev)">
-                <select id="new-staff-lang" class="form-input">
-                    <option value="ru">Русский (RU)</option>
-                    <option value="gb">English (EN)</option>
-                    <option value="cn">中文 (CN)</option>
-                    <option value="es">Español (ES)</option>
-                    <option value="de">Deutsch (DE)</option>
-                </select>
-                <button class="modal-close-btn" style="background: var(--bg-dark); border: 1px solid var(--accent-gold); color: var(--accent-gold);" onclick="addNewStaff()">ДОБРАТЬ В КОМАНДУ</button>
-            </div>
-
-            <button class="modal-close-btn" onclick="closeStaffModal()">ГОТОВО</button>
+            <button class="modal-close-btn" onclick="closeStaffModal()">ЗАКРЫТЬ</button>
         </div>
     </div>
 
@@ -576,11 +555,12 @@
             strat3: 0, strat4: 0, strat5: 0, strat6: 0, open_mic: 0, work_cab: 0
         };
 
-        let allStaff = [
+        let allRegisteredUsers = [
             { id: 1, name: "Александр В.", role: "CEO", lang: "ru", flagCode: "ru", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Alex" },
             { id: 2, name: "Elena Rostova", role: "Manager", lang: "en", flagCode: "gb", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Elena" },
             { id: 3, name: "Li Wei", role: "Dev", lang: "zh", flagCode: "cn", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Li" },
-            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flagCode: "es", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" }
+            { id: 4, name: "Carlos M.", role: "Analyst", lang: "es", flagCode: "es", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Carlos" },
+            { id: 5, name: "Hans Weber", role: "Architect", lang: "de", flagCode: "de", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Hans" }
         ];
 
         let selectedStaffIds = new Set();
@@ -638,11 +618,10 @@
                 } catch(e) {}
             }
 
-            // Загрузка сохраненного списка сотрудников из localStorage при наличии
-            const localStoredStaff = localStorage.getItem('gygy_all_staff_list');
-            if (localStoredStaff) {
+            const localStoredUsers = localStorage.getItem('gygy_all_registered_users');
+            if (localStoredUsers) {
                 try {
-                    allStaff = JSON.parse(localStoredStaff);
+                    allRegisteredUsers = JSON.parse(localStoredUsers);
                 } catch(e) {}
             }
 
@@ -726,103 +705,66 @@
             }
         }
 
-        // Функция реального добавления нового сотрудника
-        function addNewStaff() {
-            const nameInput = document.getElementById('new-staff-name');
-            const roleInput = document.getElementById('new-staff-role');
-            const langSelect = document.getElementById('new-staff-lang');
-
-            const name = nameInput.value.trim();
-            const role = roleInput.value.trim() || 'Worker';
-            const lang = langSelect.value;
-
-            if (!name) {
-                alert('Пожалуйста, укажите имя или никнейм сотрудника.');
-                nameInput.focus();
-                return;
-            }
-
-            const newId = Date.now();
-            const newAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`;
-
-            const newStaffMember = {
-                id: newId,
-                name: name,
-                role: role,
-                lang: lang,
-                flagCode: lang,
-                avatar: newAvatar
-            };
-
-            allStaff.push(newStaffMember);
-            selectedStaffIds.add(newId); // Автоматически выводим добавленного участника на панель
-
-            // Сохраняем в localStorage
-            localStorage.setItem('gygy_all_staff_list', JSON.stringify(allStaff));
-            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
-
-            // Очищаем форму ввода
-            nameInput.value = '';
-            roleInput.value = '';
-
-            renderStaffList();
-            updateHeaderParticipants();
-        }
-
+        // Рендеринг списка зарегистрированных пользователей с группировкой по флагам
         function renderStaffList() {
             const container = document.getElementById('staff-list');
             if (!container) return;
             container.innerHTML = '';
 
-            if (allStaff.length === 0) {
-                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 15px; font-size:12px;">Список сотрудников пуст</div>';
+            if (allRegisteredUsers.length === 0) {
+                container.innerHTML = '<div style="text-align:center; opacity:0.5; padding: 15px; font-size:12px;">Нет зарегистрированных пользователей</div>';
                 return;
             }
 
-            allStaff.forEach(staff => {
-                const item = document.createElement('div');
-                item.className = 'staff-item';
-                const isChecked = selectedStaffIds.has(staff.id) ? 'checked' : '';
+            // Группируем по флагам
+            const groups = {};
+            allRegisteredUsers.forEach(user => {
+                const flag = (user.flagCode || user.lang || 'ru').toLowerCase();
+                if (!groups[flag]) groups[flag] = [];
+                groups[flag].push(user);
+            });
+
+            for (let flag in groups) {
+                const groupDiv = document.createElement('div');
                 
-                item.innerHTML = `
-                    <div class="staff-info">
-                        <div class="member-avatar-container">
-                            <img src="${staff.avatar}" class="member-avatar">
-                            <img src="${getFlagUrl(staff.flagCode)}" class="member-flag">
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'flag-group-title';
+                titleDiv.innerHTML = `<img src="${getFlagUrl(flag)}" style="width:16px; height:12px; border-radius:2px; object-fit:cover;"> Сектор: ${flag.toUpperCase()}`;
+                groupDiv.appendChild(titleDiv);
+
+                groups[flag].forEach(user => {
+                    const item = document.createElement('div');
+                    item.className = 'staff-item';
+                    const isAlreadyAdded = selectedStaffIds.has(user.id);
+
+                    item.innerHTML = `
+                        <div class="staff-info">
+                            <div class="member-avatar-container">
+                                <img src="${user.avatar}" class="member-avatar">
+                                <img src="${getFlagUrl(user.flagCode)}" class="member-flag">
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 12px;">${user.name}</div>
+                                <div style="font-size: 10px; opacity: 0.6">${user.role}</div>
+                            </div>
                         </div>
                         <div>
-                            <div style="font-weight: 600; font-size: 12px;">${staff.name}</div>
-                            <div style="font-size: 10px; opacity: 0.6">${staff.role}</div>
+                            ${isAlreadyAdded 
+                                ? '<button class="copy-to-session-btn added" disabled>Добавлен</button>' 
+                                : `<button class="copy-to-session-btn" onclick="copyUserToSession(${user.id})">Копировать</button>`}
                         </div>
-                    </div>
-                    <div class="staff-actions">
-                        <input type="checkbox" ${isChecked} onchange="toggleStaff(${staff.id})">
-                        <button class="delete-staff-btn" onclick="deleteStaff(event, ${staff.id})" title="Удалить сотрудника">✕</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
+                    `;
+                    groupDiv.appendChild(item);
+                });
+
+                container.appendChild(groupDiv);
+            }
         }
 
-        function toggleStaff(id) {
-            if (selectedStaffIds.has(id)) {
-                selectedStaffIds.delete(id);
-            } else {
-                selectedStaffIds.add(id);
-            }
+        // Копирование участника из общего реестра в текущую сессию (локацию)
+        function copyUserToSession(id) {
+            selectedStaffIds.add(id);
             localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
-            updateHeaderParticipants();
-        }
-
-        function deleteStaff(event, id) {
-            event.stopPropagation();
-            allStaff = allStaff.filter(s => s.id !== id);
-            selectedStaffIds.delete(id);
-            localStorage.setItem('gygy_all_staff_list', JSON.stringify(allStaff));
-            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
-            if (activeTargetMember === id) {
-                activeTargetMember = null;
-            }
             renderStaffList();
             updateHeaderParticipants();
         }
@@ -834,7 +776,7 @@
             let htmlContent = '';
 
             selectedStaffIds.forEach(id => {
-                const staff = allStaff.find(s => s.id === id);
+                const staff = allRegisteredUsers.find(s => s.id === id);
                 if (!staff) return;
 
                 htmlContent += `
