@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.6.13 CORE</title>
+    <title>GYGY Office v4.7.0 CORE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -81,13 +81,19 @@
             flex-shrink: 0;
         }
 
-        /* По центру: Паспорт юзера */
-        header .header-center-user {
+        /* По центру: Паспорт юзера + Кнопка плюса для выбора аватаров */
+        header .header-center-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 auto;
+        }
+
+        .header-center-user {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            margin: 0 auto;
         }
 
         .avatar-with-flag {
@@ -120,6 +126,28 @@
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 13px;
+        }
+
+        /* Кнопка плюс (+) в шапке для закрепления аватара */
+        .header-plus-btn {
+            background: rgba(var(--accent-gold-rgb), 0.15);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-plus-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
         }
 
         /* Справа: Логотип GY-GY */
@@ -200,7 +228,6 @@
             color: #aaa;
             transition: all 0.3s ease;
             cursor: pointer;
-            text-decoration: none;
             position: relative;
         }
 
@@ -210,32 +237,13 @@
             color: var(--text-color);
         }
 
-        /* Блок №1 — Выход в зону Рецепции Холла */
-        .office-room.hall-room {
-            border-color: rgba(var(--accent-gold-rgb), 0.5);
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-weight: 600;
-        }
-
-        /* Блок №2 — Кадры (Явно выделен кликабельно) */
-        .office-room.hr-room {
-            border-color: var(--accent-gold);
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-            background: #121008;
-            filter: brightness(1.05);
-        }
-
-        /* Блок №3 — Комната переговоров с вызовом */
+        /* Блок №3 — Комната переговоров выделена золотым стилем */
         .office-room.meeting-room {
             border-color: var(--accent-gold);
             color: var(--accent-gold);
             font-family: 'Cinzel', serif;
             font-weight: bold;
             background: #121008;
-            filter: brightness(1.05);
         }
 
         /* МОДАЛЬНЫЕ ОКНА */
@@ -259,7 +267,7 @@
             border: 2px solid var(--accent-gold);
             padding: 25px;
             border-radius: 12px;
-            width: 340px;
+            width: 320px;
             text-align: center;
             position: relative;
             color: var(--text-color);
@@ -294,7 +302,7 @@
         .staff-list {
             margin-top: 10px;
             text-align: left;
-            max-height: 160px;
+            max-height: 180px;
             overflow-y: auto;
             border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
             border-radius: 6px;
@@ -325,7 +333,6 @@
             cursor: pointer;
             font-size: 11px;
             font-family: 'Montserrat', sans-serif;
-            flex-shrink: 0;
         }
 
         .action-btn:hover {
@@ -335,25 +342,29 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки -->
+    <!-- Навигационные стрелки: < в Холл (рецепция), << в Главный зал -->
     <div class="notranslate ui-nav-arrows">
         <a href="index.html#reception" class="arrow-item" title="В зону рецепции">&lt;</a>
         <a href="index.html#main-hall" class="arrow-item" title="В главный зал">&lt;&lt;</a>
     </div>
 
-    <!-- Шапка без рамки -->
+    <!-- Шапка офиса -->
     <header>
-        <div class="header-center-user" onclick="openPassport()">
-            <div class="avatar-with-flag">
-                <img id="header-avatar" src="" alt="Avatar" style="display:none;">
-                <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+        <div class="header-center-area">
+            <div class="header-center-user" onclick="openPassport()">
+                <div class="avatar-with-flag">
+                    <img id="header-avatar" src="" alt="Avatar" style="display:none;">
+                    <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
+                </div>
+                <span id="header-nickname" class="user-nickname">@User</span>
             </div>
-            <span id="header-nickname" class="user-nickname">@User</span>
+            <!-- Кнопка (+) в шапке для выбора и закрепления аватаров из общей базы -->
+            <button class="header-plus-btn" onclick="openAvatarSelector()" title="Выбрать аватар из базы">+</button>
         </div>
         <div class="header-logo notranslate">GY-GY</div>
     </header>
 
-    <!-- Основной контент -->
+    <!-- Основной контент офиса (возвращены стандартные 6 блоков) -->
     <div class="office-container">
         <div class="fullscreen-nav">
             <button class="nav-btn active">1. Схема офиса</button>
@@ -361,14 +372,12 @@
         </div>
 
         <div class="office-grid">
-            <a href="index.html#reception" class="office-room hall-room">Блок №1<br>Выход в Холл</a>
-            <!-- Блок №2: Отдел кадров с полноценным интерфейсом перевода -->
-            <div class="office-room hr-room" onclick="openStaffManager()">Блок №2<br>Отдел Кадров</div>
-            <!-- Блок №3: Переговорная с вызовом из штата -->
-            <div class="office-room meeting-room" onclick="openMeetingRoom()">Блок №3<br>Комната переговоров</div>
-            <div class="office-room">Блок №4<br><small>Проектный Отдел</small></div>
-            <div class="office-room">Блок №5<br><small>Технический Сектор</small></div>
-            <div class="office-room">Блок №6<br><small>Безопасность и ID</small></div>
+            <div class="office-room" onclick="openLocationCall('Блок №1')">Блок №1<br><small>Управление</small></div>
+            <div class="office-room" onclick="openLocationCall('Блок №2')">Блок №2<br><small>Процессы</small></div>
+            <div class="office-room meeting-room" onclick="openLocationCall('Комната переговоров (Блок №3)')">Блок №3<br>Комната переговоров</div>
+            <div class="office-room" onclick="openLocationCall('Блок №4')">Блок №4<br><small>Проекты</small></div>
+            <div class="office-room" onclick="openLocationCall('Блок №5')">Блок №5<br><small>Тех. Сектор</small></div>
+            <div class="office-room" onclick="openLocationCall('Блок №6')">Блок №6<br><small>Безопасность</small></div>
         </div>
     </div>
 
@@ -384,29 +393,24 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: ОТДЕЛ КАДРОВ (Перевод из общих зарегистрированных в штат офиса) -->
-    <div id="modal-staff-manager" class="modal">
+    <!-- МОДАЛЬНОЕ ОКНО: ВЫБОР АВАТАРА ИЗ ОБЩЕЙ БАЗЫ ДЛЯ ЗАКРЕПЛЕНИЯ -->
+    <div id="modal-avatar-selector" class="modal">
         <div class="staff-card">
-            <span class="close-btn" onclick="closeModal('modal-staff-manager')">&times;</span>
-            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 5px;">Отдел Кадров</h3>
-            <p style="font-size: 11px; color: #aaa; margin-bottom: 12px;">Управление штатом сотрудников офиса и прием гостей из общего реестра клуба.</p>
-            
-            <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--accent-gold);">Зарегистрированные пользователи клуба:</div>
-            <div id="registered-users-list" class="staff-list"></div>
-            
-            <div style="font-size: 11px; font-weight: bold; margin-top: 12px; margin-bottom: 4px; color: var(--accent-gold);">Штатные сотрудники офиса:</div>
-            <div id="office-staff-list" class="staff-list"></div>
+            <span class="close-btn" onclick="closeModal('modal-avatar-selector')">&times;</span>
+            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 8px;">Выбор Аватара</h3>
+            <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Выберите пользователя из общей базы клуба для закрепления на панели:</p>
+            <div id="global-avatars-list" class="staff-list"></div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: КОМНАТА ПЕРЕГОВОРОВ -->
-    <div id="modal-meeting" class="modal">
+    <!-- МОДАЛЬНОЕ ОКНО: ВЫЗОВ СОТРУДНИКА ИЗ ЛОКАЦИИ ОФИСА -->
+    <div id="modal-location-call" class="modal">
         <div class="staff-card">
-            <span class="close-btn" onclick="closeModal('modal-meeting')">&times;</span>
-            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 10px;">Комната переговоров</h3>
-            <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Вызов штатного сотрудника на совещание:</p>
-            <div id="meeting-invite-list" class="staff-list"></div>
-            <div id="meeting-status" style="margin-top: 15px; font-size: 12px; color: var(--accent-gold); text-align: center;"></div>
+            <span class="close-btn" onclick="closeModal('modal-location-call')">&times;</span>
+            <h3 id="location-title" style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 5px;">Локация</h3>
+            <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Выберите штатного сотрудника для вызова в эту локацию:</p>
+            <div id="office-staff-list" class="staff-list"></div>
+            <div id="location-call-status" style="margin-top: 12px; font-size: 12px; color: var(--accent-gold); text-align: center;"></div>
         </div>
     </div>
 
@@ -424,126 +428,90 @@
             }
         }
 
-        function openStaffManager() {
-            renderStaffLists();
-            const modal = document.getElementById('modal-staff-manager');
-            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
-        }
-
-        function openMeetingRoom() {
-            renderMeetingList();
-            const modal = document.getElementById('modal-meeting');
-            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
-        }
-
-        // Синхронизация и инициализация данных в localStorage
-        function initMockData() {
-            // Если общая база пустая или отсутствует, создаем демо-список
-            if (!localStorage.getItem('gygy_registered_users')) {
-                localStorage.setItem('gygy_registered_users', JSON.stringify([
-                    {id: 'GY-102938', name: '@Alex_Dev'},
-                    {id: 'GY-445566', name: '@Elena_Sec'},
-                    {id: 'GY-778899', name: '@Max_Manager'}
+        // Базовые демо-данные (общая база аватаров и штат сотрудников)
+        function initStorageData() {
+            if (!localStorage.getItem('gygy_global_avatars')) {
+                localStorage.setItem('gygy_global_avatars', JSON.stringify([
+                    { name: '@Alex_Dev', img: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80' },
+                    { name: '@Elena_Sec', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80' },
+                    { name: '@Max_Manager', img: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&auto=format&fit=crop&q=80' }
                 ]));
             }
             if (!localStorage.getItem('gygy_office_staff')) {
                 localStorage.setItem('gygy_office_staff', JSON.stringify([
-                    {id: 'GY-001122', name: '@Director'}
+                    { id: 'GY-001122', name: '@Director' },
+                    { id: 'GY-102938', name: '@Alex_Dev' },
+                    { id: 'GY-445566', name: '@Elena_Sec' }
                 ]));
             }
         }
 
-        function renderStaffLists() {
-            initMockData();
-            const regContainer = document.getElementById('registered-users-list');
-            const staffContainer = document.getElementById('office-staff-list');
-            
-            const regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
-            const officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
+        // Открытие выбора аватара из общей базы
+        function openAvatarSelector() {
+            initStorageData();
+            const container = document.getElementById('global-avatars-list');
+            const avatars = JSON.parse(localStorage.getItem('gygy_global_avatars') || '[]');
 
-            // Отрисовка зарегистрированных
-            if (regUsers.length === 0) {
-                regContainer.innerHTML = '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">Нет пользователей в общей базе</div>';
-            } else {
-                regContainer.innerHTML = '';
-                regUsers.forEach((user, index) => {
-                    regContainer.innerHTML += `
-                        <div class="staff-item">
-                            <span>${user.name}</span>
-                            <button class="action-btn" onclick="moveToOffice(${index})">В штат &rarr;</button>
+            container.innerHTML = avatars.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">Нет доступных аватаров</div>';
+            avatars.forEach((item) => {
+                container.innerHTML += `
+                    <div class="staff-item">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <img src="${item.img}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;">
+                            <span>${item.name}</span>
                         </div>
-                    `;
-                });
-            }
+                        <button class="action-btn" onclick="pinAvatar('${item.name}', '${item.img}')">Закрепить</button>
+                    </div>
+                `;
+            });
 
-            // Отрисовка штатных
-            if (officeStaff.length === 0) {
-                staffContainer.innerHTML = '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">Штат офиса пуст</div>';
-            } else {
-                staffContainer.innerHTML = '';
-                officeStaff.forEach((user, index) => {
-                    staffContainer.innerHTML += `
-                        <div class="staff-item">
-                            <span>${user.name}</span>
-                            <button class="action-btn" style="background:#222; color:#aaa; border:1px solid #444;" onclick="removeFromOffice(${index})">&larr; Уволить</button>
-                        </div>
-                    `;
-                });
-            }
+            const modal = document.getElementById('modal-avatar-selector');
+            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
         }
 
-        function moveToOffice(index) {
-            let regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
-            let officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
-            
-            const movedUser = regUsers.splice(index, 1)[0];
-            officeStaff.push(movedUser);
+        function pinAvatar(name, imgUrl) {
+            localStorage.setItem('gygy_nickname', name);
+            localStorage.setItem('gygy_avatar', imgUrl);
 
-            localStorage.setItem('gygy_registered_users', JSON.stringify(regUsers));
-            localStorage.setItem('gygy_office_staff', JSON.stringify(officeStaff));
-            
-            renderStaffLists();
+            document.getElementById('header-nickname').innerText = '@' + name.replace(/^@/, '');
+            document.getElementById('header-avatar').src = imgUrl;
+            document.getElementById('header-avatar').style.display = 'block';
+            document.getElementById('pass-avatar-img').src = imgUrl;
+            document.getElementById('pass-nickname').innerText = '@' + name.replace(/^@/, '');
+
+            closeModal('modal-avatar-selector');
         }
 
-        function removeFromOffice(index) {
-            let regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
-            let officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
-            
-            const movedUser = officeStaff.splice(index, 1)[0];
-            regUsers.push(movedUser);
+        // Вызов сотрудника из любой локации офиса
+        let activeLocationName = '';
+        function openLocationCall(locationName) {
+            activeLocationName = locationName;
+            initStorageData();
+            document.getElementById('location-title').innerText = locationName;
+            document.getElementById('location-call-status').innerText = '';
 
-            localStorage.setItem('gygy_registered_users', JSON.stringify(regUsers));
-            localStorage.setItem('gygy_office_staff', JSON.stringify(officeStaff));
-            
-            renderStaffLists();
+            const container = document.getElementById('office-staff-list');
+            const staff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
+
+            container.innerHTML = staff.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">В штате нет сотрудников</div>';
+            staff.forEach((user) => {
+                container.innerHTML += `
+                    <div class="staff-item">
+                        <span>${user.name}</span>
+                        <button class="action-btn" onclick="callStaffToLocation('${user.name}')">Вызвать</button>
+                    </div>
+                `;
+            });
+
+            const modal = document.getElementById('modal-location-call');
+            if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
         }
 
-        function renderMeetingList() {
-            initMockData();
-            const container = document.getElementById('meeting-invite-list');
-            const officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
-            document.getElementById('meeting-status').innerText = '';
-
-            if (officeStaff.length === 0) {
-                container.innerHTML = '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">В штате нет сотрудников для вызова</div>';
-            } else {
-                container.innerHTML = '';
-                officeStaff.forEach((user) => {
-                    container.innerHTML += `
-                        <div class="staff-item">
-                            <span>${user.name}</span>
-                            <button class="action-btn" onclick="callColleague('${user.name}')">Вызвать</button>
-                        </div>
-                    `;
-                });
-            }
-        }
-
-        function callColleague(name) {
-            const statusEl = document.getElementById('meeting-status');
-            statusEl.innerText = `Сотрудник ${name} вызван в Комнату переговоров! Ожидание ответа...`;
+        function callStaffToLocation(staffName) {
+            const statusEl = document.getElementById('location-call-status');
+            statusEl.innerText = `Сотрудник ${staffName} вызван в ${activeLocationName}! Ожидание подключения...`;
             setTimeout(() => {
-                statusEl.innerText = `${name} присоединился к совещанию. Сессия активна.`;
+                statusEl.innerText = `${staffName} прибыл в ${activeLocationName}. Обсуждение начато.`;
             }, 1500);
         }
 
@@ -558,7 +526,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            initMockData();
+            initStorageData();
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const headerAvatarEl = document.getElementById('header-avatar');
             const passAvatarEl = document.getElementById('pass-avatar-img');
