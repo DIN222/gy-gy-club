@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.6.12 CORE</title>
+    <title>GYGY Office v4.6.13 CORE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -210,12 +210,22 @@
             color: var(--text-color);
         }
 
-        /* Блок №1 — Выход в зону Рецепции Холла (index.html#reception) */
+        /* Блок №1 — Выход в зону Рецепции Холла */
         .office-room.hall-room {
             border-color: rgba(var(--accent-gold-rgb), 0.5);
             color: var(--accent-gold);
             font-family: 'Cinzel', serif;
             font-weight: 600;
+        }
+
+        /* Блок №2 — Кадры (Явно выделен кликабельно) */
+        .office-room.hr-room {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            background: #121008;
+            filter: brightness(1.05);
         }
 
         /* Блок №3 — Комната переговоров с вызовом */
@@ -226,12 +236,6 @@
             font-weight: bold;
             background: #121008;
             filter: brightness(1.05);
-        }
-
-        /* Кнопка найма/перевода в штатные сотрудники в Блоке №2 или №6 */
-        .office-room.hr-room {
-            border-color: rgba(var(--accent-gold-rgb), 0.7);
-            color: var(--accent-gold);
         }
 
         /* МОДАЛЬНЫЕ ОКНА */
@@ -255,11 +259,11 @@
             border: 2px solid var(--accent-gold);
             padding: 25px;
             border-radius: 12px;
-            width: 320px;
+            width: 340px;
             text-align: center;
             position: relative;
             color: var(--text-color);
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
         }
 
@@ -288,13 +292,14 @@
         }
 
         .staff-list {
-            margin-top: 15px;
+            margin-top: 10px;
             text-align: left;
-            max-height: 200px;
+            max-height: 160px;
             overflow-y: auto;
             border: 1px solid rgba(var(--accent-gold-rgb), 0.2);
             border-radius: 6px;
             padding: 8px;
+            background: #000;
         }
 
         .staff-item {
@@ -320,6 +325,7 @@
             cursor: pointer;
             font-size: 11px;
             font-family: 'Montserrat', sans-serif;
+            flex-shrink: 0;
         }
 
         .action-btn:hover {
@@ -356,9 +362,9 @@
 
         <div class="office-grid">
             <a href="index.html#reception" class="office-room hall-room">Блок №1<br>Выход в Холл</a>
-            <!-- Блок №2 задействован под управление кадрами / перевод из общего списка -->
-            <div class="office-room hr-room" onclick="openStaffManager()">Блок №2<br><small>Кадры и Штат</small></div>
-            <!-- Блок №3 — Комната переговоров с возможностью вызова собеседника -->
+            <!-- Блок №2: Отдел кадров с полноценным интерфейсом перевода -->
+            <div class="office-room hr-room" onclick="openStaffManager()">Блок №2<br>Отдел Кадров</div>
+            <!-- Блок №3: Переговорная с вызовом из штата -->
             <div class="office-room meeting-room" onclick="openMeetingRoom()">Блок №3<br>Комната переговоров</div>
             <div class="office-room">Блок №4<br><small>Проектный Отдел</small></div>
             <div class="office-room">Блок №5<br><small>Технический Сектор</small></div>
@@ -378,20 +384,22 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: КАДРЫ И ШТАТ (Перевод зарегистрированных в сотрудники) -->
+    <!-- МОДАЛЬНОЕ ОКНО: ОТДЕЛ КАДРОВ (Перевод из общих зарегистрированных в штат офиса) -->
     <div id="modal-staff-manager" class="modal">
         <div class="staff-card">
             <span class="close-btn" onclick="closeModal('modal-staff-manager')">&times;</span>
-            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 10px;">Управление штатом</h3>
-            <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Перевод зарегистрированных гостей из общей базы в штат сотрудников офиса:</p>
-            <div style="font-size: 12px; font-weight: bold; margin-bottom: 5px; color: var(--accent-gold);">Зарегистрированные в клубе:</div>
+            <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 5px;">Отдел Кадров</h3>
+            <p style="font-size: 11px; color: #aaa; margin-bottom: 12px;">Управление штатом сотрудников офиса и прием гостей из общего реестра клуба.</p>
+            
+            <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px; color: var(--accent-gold);">Зарегистрированные пользователи клуба:</div>
             <div id="registered-users-list" class="staff-list"></div>
-            <div style="font-size: 12px; font-weight: bold; margin-top: 15px; margin-bottom: 5px; color: var(--accent-gold);">Штатные сотрудники офиса:</div>
+            
+            <div style="font-size: 11px; font-weight: bold; margin-top: 12px; margin-bottom: 4px; color: var(--accent-gold);">Штатные сотрудники офиса:</div>
             <div id="office-staff-list" class="staff-list"></div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: КОМНАТА ПЕРЕГОВОРОВ (Вызов собеседника из штата) -->
+    <!-- МОДАЛЬНОЕ ОКНО: КОМНАТА ПЕРЕГОВОРОВ -->
     <div id="modal-meeting" class="modal">
         <div class="staff-card">
             <span class="close-btn" onclick="closeModal('modal-meeting')">&times;</span>
@@ -428,8 +436,9 @@
             if (modal) { modal.style.display = 'flex'; requestAnimationFrame(() => { modal.style.opacity = '1'; }); }
         }
 
-        // Инициализация базы данных пользователей в localStorage для демонстрации
+        // Синхронизация и инициализация данных в localStorage
         function initMockData() {
+            // Если общая база пустая или отсутствует, создаем демо-список
             if (!localStorage.getItem('gygy_registered_users')) {
                 localStorage.setItem('gygy_registered_users', JSON.stringify([
                     {id: 'GY-102938', name: '@Alex_Dev'},
@@ -452,36 +461,47 @@
             const regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
             const officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
 
-            regContainer.innerHTML = regUsers.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:5px;">Нет гостей в общей базе</div>';
-            regUsers.forEach((user, index) => {
-                regContainer.innerHTML += `
-                    <div class="staff-item">
-                        <span>${user.name} (${user.id})</span>
-                        <button class="action-btn" onclick="moveToOffice(${index})">В штат &rarr;</button>
-                    </div>
-                `;
-            });
+            // Отрисовка зарегистрированных
+            if (regUsers.length === 0) {
+                regContainer.innerHTML = '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">Нет пользователей в общей базе</div>';
+            } else {
+                regContainer.innerHTML = '';
+                regUsers.forEach((user, index) => {
+                    regContainer.innerHTML += `
+                        <div class="staff-item">
+                            <span>${user.name}</span>
+                            <button class="action-btn" onclick="moveToOffice(${index})">В штат &rarr;</button>
+                        </div>
+                    `;
+                });
+            }
 
-            staffContainer.innerHTML = officeStaff.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:5px;">Штат пуст</div>';
-            officeStaff.forEach((user, index) => {
-                staffContainer.innerHTML += `
-                    <div class="staff-item">
-                        <span>${user.name} (${user.id})</span>
-                        <button class="action-btn" style="background:#333; color:#aaa;" onclick="removeFromOffice(${index})">&larr; Уволить</button>
-                    </div>
-                `;
-            });
+            // Отрисовка штатных
+            if (officeStaff.length === 0) {
+                staffContainer.innerHTML = '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">Штат офиса пуст</div>';
+            } else {
+                staffContainer.innerHTML = '';
+                officeStaff.forEach((user, index) => {
+                    staffContainer.innerHTML += `
+                        <div class="staff-item">
+                            <span>${user.name}</span>
+                            <button class="action-btn" style="background:#222; color:#aaa; border:1px solid #444;" onclick="removeFromOffice(${index})">&larr; Уволить</button>
+                        </div>
+                    `;
+                });
+            }
         }
 
         function moveToOffice(index) {
             let regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
             let officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
             
-            const moved = regUsers.splice(index, 1)[0];
-            officeStaff.push(moved);
+            const movedUser = regUsers.splice(index, 1)[0];
+            officeStaff.push(movedUser);
 
             localStorage.setItem('gygy_registered_users', JSON.stringify(regUsers));
             localStorage.setItem('gygy_office_staff', JSON.stringify(officeStaff));
+            
             renderStaffLists();
         }
 
@@ -489,11 +509,12 @@
             let regUsers = JSON.parse(localStorage.getItem('gygy_registered_users') || '[]');
             let officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
             
-            const moved = officeStaff.splice(index, 1)[0];
-            regUsers.push(moved);
+            const movedUser = officeStaff.splice(index, 1)[0];
+            regUsers.push(movedUser);
 
             localStorage.setItem('gygy_registered_users', JSON.stringify(regUsers));
             localStorage.setItem('gygy_office_staff', JSON.stringify(officeStaff));
+            
             renderStaffLists();
         }
 
@@ -503,15 +524,19 @@
             const officeStaff = JSON.parse(localStorage.getItem('gygy_office_staff') || '[]');
             document.getElementById('meeting-status').innerText = '';
 
-            container.innerHTML = officeStaff.length ? '' : '<div style="color:#666; font-size:11px; text-align:center; padding:5px;">В штате нет сотрудников для вызова</div>';
-            officeStaff.forEach((user) => {
-                container.innerHTML += `
-                    <div class="staff-item">
-                        <span>${user.name}</span>
-                        <button class="action-btn" onclick="callColleague('${user.name}')">Вызвать</button>
-                    </div>
-                `;
-            });
+            if (officeStaff.length === 0) {
+                container.innerHTML = '<div style="color:#666; font-size:11px; text-align:center; padding:8px;">В штате нет сотрудников для вызова</div>';
+            } else {
+                container.innerHTML = '';
+                officeStaff.forEach((user) => {
+                    container.innerHTML += `
+                        <div class="staff-item">
+                            <span>${user.name}</span>
+                            <button class="action-btn" onclick="callColleague('${user.name}')">Вызвать</button>
+                        </div>
+                    `;
+                });
+            }
         }
 
         function callColleague(name) {
