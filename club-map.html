@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.24 - CLUB MAP</title>
+    <title>GY-GY Club v4.6.25 - CLUB MAP</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -396,6 +396,27 @@
         }
         .delete-staff-btn:hover { background: var(--danger); color: #fff; }
 
+        /* Стили для формы добавления нового сотрудника */
+        .add-staff-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(var(--accent-gold-rgb), 0.2);
+        }
+        .form-input {
+            background: var(--bg-dark);
+            border: 1px solid rgba(var(--accent-gold-rgb), 0.4);
+            color: var(--text-color);
+            padding: 6px 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .form-input:focus { border-color: var(--accent-gold); }
+
         .modal-close-btn {
             background: var(--accent-gold);
             color: #000;
@@ -512,11 +533,27 @@
         </div>
     </div>
 
+    <!-- Модальное окно управления сотрудниками с рабочей формой -->
     <div id="staff-modal" class="modal">
         <div class="modal-card">
             <span class="close-btn" onclick="closeStaffModal()">&times;</span>
             <div class="modal-title">УПРАВЛЕНИЕ СОТРУДНИКАМИ</div>
             <div id="staff-list" class="staff-list"></div>
+            
+            <div class="add-staff-form">
+                <div style="font-size: 11px; color: var(--accent-gold); font-weight: 600;">Добавить участника</div>
+                <input type="text" id="new-staff-name" class="form-input" placeholder="Имя / Никнейм">
+                <input type="text" id="new-staff-role" class="form-input" placeholder="Роль (например: Dev)">
+                <select id="new-staff-lang" class="form-input">
+                    <option value="ru">Русский (RU)</option>
+                    <option value="gb">English (EN)</option>
+                    <option value="cn">中文 (CN)</option>
+                    <option value="es">Español (ES)</option>
+                    <option value="de">Deutsch (DE)</option>
+                </select>
+                <button class="modal-close-btn" style="background: var(--bg-dark); border: 1px solid var(--accent-gold); color: var(--accent-gold);" onclick="addNewStaff()">ДОБРАТЬ В КОМАНДУ</button>
+            </div>
+
             <button class="modal-close-btn" onclick="closeStaffModal()">ГОТОВО</button>
         </div>
     </div>
@@ -601,6 +638,14 @@
                 } catch(e) {}
             }
 
+            // Загрузка сохраненного списка сотрудников из localStorage при наличии
+            const localStoredStaff = localStorage.getItem('gygy_all_staff_list');
+            if (localStoredStaff) {
+                try {
+                    allStaff = JSON.parse(localStoredStaff);
+                } catch(e) {}
+            }
+
             const savedStaff = localStorage.getItem('gygy_selected_staff');
             if (savedStaff) {
                 try {
@@ -681,6 +726,49 @@
             }
         }
 
+        // Функция реального добавления нового сотрудника
+        function addNewStaff() {
+            const nameInput = document.getElementById('new-staff-name');
+            const roleInput = document.getElementById('new-staff-role');
+            const langSelect = document.getElementById('new-staff-lang');
+
+            const name = nameInput.value.trim();
+            const role = roleInput.value.trim() || 'Worker';
+            const lang = langSelect.value;
+
+            if (!name) {
+                alert('Пожалуйста, укажите имя или никнейм сотрудника.');
+                nameInput.focus();
+                return;
+            }
+
+            const newId = Date.now();
+            const newAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`;
+
+            const newStaffMember = {
+                id: newId,
+                name: name,
+                role: role,
+                lang: lang,
+                flagCode: lang,
+                avatar: newAvatar
+            };
+
+            allStaff.push(newStaffMember);
+            selectedStaffIds.add(newId); // Автоматически выводим добавленного участника на панель
+
+            // Сохраняем в localStorage
+            localStorage.setItem('gygy_all_staff_list', JSON.stringify(allStaff));
+            localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
+
+            // Очищаем форму ввода
+            nameInput.value = '';
+            roleInput.value = '';
+
+            renderStaffList();
+            updateHeaderParticipants();
+        }
+
         function renderStaffList() {
             const container = document.getElementById('staff-list');
             if (!container) return;
@@ -730,6 +818,7 @@
             event.stopPropagation();
             allStaff = allStaff.filter(s => s.id !== id);
             selectedStaffIds.delete(id);
+            localStorage.setItem('gygy_all_staff_list', JSON.stringify(allStaff));
             localStorage.setItem('gygy_selected_staff', JSON.stringify(Array.from(selectedStaffIds)));
             if (activeTargetMember === id) {
                 activeTargetMember = null;
