@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.7 CORE</title>
+    <title>GY-GY Club v4.6.6 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -217,6 +217,8 @@
             transform: translateX(-50%); 
             width: 140px; 
             display: flex; 
+            flex-direction: column;
+            gap: 6px;
             justify-content: center; 
             opacity: 0; 
             pointer-events: none; 
@@ -282,7 +284,7 @@
             </div>
             
             <div id="club-lang-list" class="club-lang-list">
-                <!-- Список из 11 языков (английский автоматически займет место выбранного при переключении) -->
+                <!-- Список из 11 языков -->
                 <div class="club-lang-item" onclick="selectClubLanguage('ru', 'Русский', 'https://flagcdn.com/w20/ru.png')">
                     <div class="item-avatar"><img src="horse_welcome.png"></div>
                     <img class="item-flag" src="https://flagcdn.com/w20/ru.png">
@@ -341,7 +343,6 @@
             </div>
         </div>
 
-        <!-- Скрытый контейнер Google Translate -->
         <div id="google_translate_element" style="display:none;"></div>
 
         <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor()">
@@ -404,7 +405,10 @@
                 <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
+                        <!-- Кнопка обычного офиса для всех -->
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
+                        <!-- Секретная кнопка для сотрудников (появляется только у стаффа) -->
+                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); enterStaffOffice()">STAFF ROOM</button>
                     </div>
                 </div>
             </div>
@@ -436,7 +440,6 @@
         </div>
     </div>
 
-<!-- Подключаем скрипты -->
 <script src="userlang-data.js"></script>
 <script src="translations.js"></script>
 <script src="language.js"></script>
@@ -448,7 +451,6 @@
     let selectedNickType = 'own';
     let userChosenNickname = '';
 
-    // Хранилище всех 12 языков (English всегда по умолчанию первый)
     let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
     const allLanguages = [
         { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
@@ -471,16 +473,11 @@
     }
 
     function selectClubLanguage(langCode, langName, flagUrl) {
-        // Запоминаем старый выбранный язык, чтобы вернуть его в список
-        const previousLang = { ...currentLangData };
-
-        // Устанавливаем новый выбранный язык в верхнюю рамку
         currentLangData = { code: langCode, name: langName, flag: flagUrl };
         
         document.getElementById('current-flag').src = flagUrl;
         document.getElementById('current-lang-name').innerText = langName;
 
-        // Перестраиваем выпадающий список из оставшихся 11 языков (включая бывший выбранный)
         const listContainer = document.getElementById('club-lang-list');
         listContainer.innerHTML = '';
 
@@ -498,10 +495,8 @@
             }
         });
 
-        // Скрываем список после выбора
         listContainer.classList.remove('open');
 
-        // Интеграция с Google Translate
         const combo = document.querySelector('.goog-te-combo');
         if (combo) {
             combo.value = langCode;
@@ -509,7 +504,6 @@
         }
     }
 
-    // Закрытие списка языков при клике за его пределами
     window.addEventListener('click', (e) => {
         const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
         const list = document.getElementById('club-lang-list');
@@ -599,10 +593,26 @@
             const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
             const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
         }
+
+        // Проверка ролей: если босс или стафф, показываем секретную кнопку для сотрудников в офисе
+        const currentNickname = safeStorageGet('gygy_nickname') || '';
+        if (currentNickname.toLowerCase() === 'модермех') {
+            safeStorageSet('gygy_is_boss', 'true');
+        }
+        
+        const isBoss = safeStorageGet('gygy_is_boss') === 'true';
+        const staffBtn = document.getElementById('btn-staff-room');
+        if (isBoss && staffBtn) {
+            staffBtn.style.display = 'block';
+        }
     }
 
     function enterStudio() { 
         window.location.href = 'studio.html'; 
+    }
+
+    function enterStaffOffice() {
+        window.location.href = 'staff_office.html';
     }
 
     function handleNavigationBack() {
@@ -621,10 +631,6 @@
         if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
         
         if (nextId === 'block-office') {
-            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-            if (currentNickname.toLowerCase() === 'модермех') { 
-                safeStorageSet('gygy_is_boss', 'true'); 
-            }
             window.location.href = 'office.html';
             return;
         }
@@ -715,6 +721,12 @@
         safeStorageSet('gy_user_img', currentUserImage);
         safeStorageSet('gy_user_avatar', currentUserImage); 
         safeStorageSet('gy_user_id', currentID);
+
+        // Проверяем статус босса при сохранении
+        const currentNickname = safeStorageGet('gygy_nickname') || '';
+        if (currentNickname.toLowerCase() === 'модермех') {
+            safeStorageSet('gygy_is_boss', 'true');
+        }
 
         const badgeImg = document.getElementById('badge-avatar-img');
         const passImg = document.getElementById('pass-avatar-img');
