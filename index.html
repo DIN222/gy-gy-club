@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.13 CORE</title>
+    <title>GY-GY Club v4.6.14 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -477,6 +477,25 @@
         { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
     ];
 
+    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
+    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+
+    // Вспомогательная функция сопоставления языкового кода с двухбуквенным кодом страны для CDN флагов
+    function flagCodeToCountry(code) {
+        const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
+        return map[code] || 'gb';
+    }
+
+    // Обновление отображения флага на текущей странице из localStorage
+    function updateGlobalFlagUI() {
+        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
+        const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+        const currentFlagEl = document.getElementById('current-flag');
+        if (currentFlagEl) {
+            currentFlagEl.src = flagUrl;
+        }
+    }
+
     function toggleLangDropdown() {
         const list = document.getElementById('club-lang-list');
         if (list) list.classList.toggle('open');
@@ -485,27 +504,36 @@
     function selectClubLanguage(langCode, langName, flagUrl) {
         currentLangData = { code: langCode, name: langName, flag: flagUrl };
         
-        document.getElementById('current-flag').src = flagUrl;
-        document.getElementById('current-lang-name').innerText = langName;
+        // Сохраняем во все ключи флага для мгновенной синхронизации на всех страницах
+        const countryCode = flagCodeToCountry(langCode);
+        safeStorageSet('gygy_flag', countryCode);
+        safeStorageSet('gy_user_flag', countryCode);
+        safeStorageSet('gygy_lang_code', langCode);
+        
+        const currentFlagEl = document.getElementById('current-flag');
+        if (currentFlagEl) currentFlagEl.src = flagUrl;
+        
+        const langNameEl = document.getElementById('current-lang-name');
+        if (langNameEl) langNameEl.innerText = langName;
 
         const listContainer = document.getElementById('club-lang-list');
-        listContainer.innerHTML = '';
-
-        allLanguages.forEach(lang => {
-            if (lang.code !== langCode) {
-                const item = document.createElement('div');
-                item.className = 'club-lang-item';
-                item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
-                item.innerHTML = `
-                    <div class="item-avatar"><img src="horse_welcome.png"></div>
-                    <img class="item-flag" src="${lang.flag}">
-                    <span class="item-text">${lang.name}</span>
-                `;
-                listContainer.appendChild(item);
-            }
-        });
-
-        listContainer.classList.remove('open');
+        if (listContainer) {
+            listContainer.innerHTML = '';
+            allLanguages.forEach(lang => {
+                if (lang.code !== langCode) {
+                    const item = document.createElement('div');
+                    item.className = 'club-lang-item';
+                    item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
+                    item.innerHTML = `
+                        <div class="item-avatar"><img src="horse_welcome.png"></div>
+                        <img class="item-flag" src="${lang.flag}">
+                        <span class="item-text">${lang.name}</span>
+                    `;
+                    listContainer.appendChild(item);
+                }
+            });
+            listContainer.classList.remove('open');
+        }
 
         const combo = document.querySelector('.goog-te-combo');
         if (combo) {
@@ -541,9 +569,6 @@
             safeStorageSet('gygy_nickname', val);
         }
     }
-
-    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
     function toggleManifest(boxId) {
         document.querySelectorAll('.manifest-btn-box').forEach(box => {
@@ -770,8 +795,17 @@
             safeStorageSet('gygy_id', currentID);
         }
         checkAndFillRegistrationForm();
+
+        // Инициализируем и проверяем актуальность флага при загрузке
+        updateGlobalFlagUI();
+
+        // Слушаем изменения localStorage (если флаг сменили на другой вкладке/странице)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag') {
+                updateGlobalFlagUI();
+            }
+        });
+
         setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
 </script>
-</body>
-</html>
