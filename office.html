@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GYGY Office v4.7.0 CORE</title>
+    <title>GYGY Office v4.7.1 CORE</title>
     <!-- Подключение шрифтов по манифесту -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -342,7 +342,7 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Навигационные стрелки: < в Холл (рецепция), << в Главный зал -->
+    <!-- Навигационные стрелки -->
     <div class="notranslate ui-nav-arrows">
         <a href="index.html#reception" class="arrow-item" title="В зону рецепции">&lt;</a>
         <a href="index.html#main-hall" class="arrow-item" title="В главный зал">&lt;&lt;</a>
@@ -358,13 +358,12 @@
                 </div>
                 <span id="header-nickname" class="user-nickname">@User</span>
             </div>
-            <!-- Кнопка (+) в шапке для выбора и закрепления аватаров из общей базы -->
             <button class="header-plus-btn" onclick="openAvatarSelector()" title="Выбрать аватар из базы">+</button>
         </div>
         <div class="header-logo notranslate">GY-GY</div>
     </header>
 
-    <!-- Основной контент офиса (возвращены стандартные 6 блоков) -->
+    <!-- Основной контент офиса -->
     <div class="office-container">
         <div class="fullscreen-nav">
             <button class="nav-btn active">1. Схема офиса</button>
@@ -393,7 +392,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: ВЫБОР АВАТАРА ИЗ ОБЩЕЙ БАЗЫ ДЛЯ ЗАКРЕПЛЕНИЯ -->
+    <!-- МОДАЛЬНОЕ ОКНО: ВЫБОР АВАТАРА -->
     <div id="modal-avatar-selector" class="modal">
         <div class="staff-card">
             <span class="close-btn" onclick="closeModal('modal-avatar-selector')">&times;</span>
@@ -403,7 +402,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО: ВЫЗОВ СОТРУДНИКА ИЗ ЛОКАЦИИ ОФИСА -->
+    <!-- МОДАЛЬНОЕ ОКНО: ВЫЗОВ СОТРУДНИКА -->
     <div id="modal-location-call" class="modal">
         <div class="staff-card">
             <span class="close-btn" onclick="closeModal('modal-location-call')">&times;</span>
@@ -428,7 +427,6 @@
             }
         }
 
-        // Базовые демо-данные (общая база аватаров и штат сотрудников)
         function initStorageData() {
             if (!localStorage.getItem('gygy_global_avatars')) {
                 localStorage.setItem('gygy_global_avatars', JSON.stringify([
@@ -446,7 +444,6 @@
             }
         }
 
-        // Открытие выбора аватара из общей базы
         function openAvatarSelector() {
             initStorageData();
             const container = document.getElementById('global-avatars-list');
@@ -482,7 +479,6 @@
             closeModal('modal-avatar-selector');
         }
 
-        // Вызов сотрудника из любой локации офиса
         let activeLocationName = '';
         function openLocationCall(locationName) {
             activeLocationName = locationName;
@@ -525,8 +521,19 @@
             }
         }
 
+        // Функция применения флага
+        function updateFlagDisplay() {
+            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
+            const flagElement = document.getElementById('current-flag');
+            if (flagElement) {
+                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             initStorageData();
+            
+            // Загрузка аватара и ника
             const savedAvatar = localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img') || localStorage.getItem('user_avatar');
             const headerAvatarEl = document.getElementById('header-avatar');
             const passAvatarEl = document.getElementById('pass-avatar-img');
@@ -551,11 +558,15 @@
             localStorage.setItem('gygy_id', currentID);
             renderUserPassport(currentID);
 
-            const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-            const flagElement = document.getElementById('current-flag');
-            if (flagElement) {
-                flagElement.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
-            }
+            // Инициализация флага при загрузке
+            updateFlagDisplay();
+
+            // Автоматическое обновление флага при изменении на других страницах
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'gygy_flag' || e.key === 'gy_user_flag') {
+                    updateFlagDisplay();
+                }
+            });
         });
     </script>
 </body>
