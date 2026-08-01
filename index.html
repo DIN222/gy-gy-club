@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.18 CORE</title>
+    <title>GY-GY Club v4.6.19 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -380,15 +380,38 @@
     }
 
     function updateGlobalFlagUI() {
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
-        const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
+        const foundLang = allLanguages.find(l => l.code === savedLangCode) || allLanguages[0];
         
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) currentFlagEl.src = flagUrl;
+        currentLangData = foundLang;
 
-        const savedLangName = safeStorageGet('gygy_lang_name');
+        const currentFlagEl = document.getElementById('current-flag');
+        if (currentFlagEl) currentFlagEl.src = foundLang.flag;
+
         const langNameEl = document.getElementById('current-lang-name');
-        if (savedLangName && langNameEl) langNameEl.innerText = savedLangName;
+        if (langNameEl) langNameEl.innerText = foundLang.name;
+
+        rebuildLangList(foundLang.code);
+    }
+
+    function rebuildLangList(activeCode) {
+        const listContainer = document.getElementById('club-lang-list');
+        if (!listContainer) return;
+        
+        listContainer.innerHTML = '';
+        allLanguages.forEach(lang => {
+            if (lang.code !== activeCode) {
+                const item = document.createElement('div');
+                item.className = 'club-lang-item';
+                item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
+                item.innerHTML = `
+                    <div class="item-avatar"><img src="horse_welcome.png"></div>
+                    <img class="item-flag" src="${lang.flag}">
+                    <span class="item-text">${lang.name}</span>
+                `;
+                listContainer.appendChild(item);
+            }
+        });
     }
 
     function toggleLangDropdown() {
@@ -411,22 +434,10 @@
         const langNameEl = document.getElementById('current-lang-name');
         if (langNameEl) langNameEl.innerText = langName;
 
+        rebuildLangList(langCode);
+
         const listContainer = document.getElementById('club-lang-list');
         if (listContainer) {
-            listContainer.innerHTML = '';
-            allLanguages.forEach(lang => {
-                if (lang.code !== langCode) {
-                    const item = document.createElement('div');
-                    item.className = 'club-lang-item';
-                    item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
-                    item.innerHTML = `
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="${lang.flag}">
-                        <span class="item-text">${lang.name}</span>
-                    `;
-                    listContainer.appendChild(item);
-                }
-            });
             listContainer.classList.remove('open');
         }
 
@@ -682,16 +693,11 @@
         syncGTranslateWidget();
 
         window.addEventListener('storage', (e) => {
-            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
+            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name' || e.key === 'gygy_lang_code') {
                 updateGlobalFlagUI();
-            }
-            if (e.key === 'gygy_lang_code') {
-                syncGTranslateWidget();
             }
         });
 
         setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
 </script>
-</body>
-</html>
