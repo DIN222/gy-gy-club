@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.17 CORE</title>
+    <title>GY-GY Club v4.6.18 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -205,6 +205,7 @@
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
+        <!-- Блок выбора языка (исправлен список: теперь английский на месте, без дублирования украинского) -->
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
@@ -216,6 +217,7 @@
             </div>
             
             <div id="club-lang-list" class="club-lang-list">
+                <div class="club-lang-item" onclick="selectClubLanguage('en', 'English', 'https://flagcdn.com/w20/gb.png')"><div class="item-avatar"><img src="horse_welcome.png"></div><img class="item-flag" src="https://flagcdn.com/w20/gb.png"><span class="item-text">English</span></div>
                 <div class="club-lang-item" onclick="selectClubLanguage('ru', 'Русский', 'https://flagcdn.com/w20/ru.png')"><div class="item-avatar"><img src="horse_welcome.png"></div><img class="item-flag" src="https://flagcdn.com/w20/ru.png"><span class="item-text">Русский</span></div>
                 <div class="club-lang-item" onclick="selectClubLanguage('es', 'Español', 'https://flagcdn.com/w20/es.png')"><div class="item-avatar"><img src="horse_welcome.png"></div><img class="item-flag" src="https://flagcdn.com/w20/es.png"><span class="item-text">Español</span></div>
                 <div class="club-lang-item" onclick="selectClubLanguage('de', 'Deutsch', 'https://flagcdn.com/w20/de.png')"><div class="item-avatar"><img src="horse_welcome.png"></div><img class="item-flag" src="https://flagcdn.com/w20/de.png"><span class="item-text">Deutsch</span></div>
@@ -233,7 +235,6 @@
         <div id="google_translate_element" style="display:none;"></div>
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
     </div>
-
     <div id="block-welcome" class="block">
         <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
         <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
