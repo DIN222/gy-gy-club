@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.15 CORE</title>
+    <title>GY-GY Club v4.6.16 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -486,13 +486,34 @@
         return map[code] || 'gb';
     }
 
-    // Обновление отображения флага на текущей странице из localStorage
+    // Принудительная синхронизация виджета GTranslate с сохраненным языком
+    function syncGTranslateWidget() {
+        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+            if (combo.value !== savedLangCode) {
+                combo.value = savedLangCode;
+                combo.dispatchEvent(new Event('change'));
+            }
+        } else {
+            setTimeout(syncGTranslateWidget, 100);
+        }
+    }
+
+    // Обновление отображения флага и текста названия языка из localStorage
     function updateGlobalFlagUI() {
         const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
         const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+        
         const currentFlagEl = document.getElementById('current-flag');
         if (currentFlagEl) {
             currentFlagEl.src = flagUrl;
+        }
+
+        const savedLangName = safeStorageGet('gygy_lang_name');
+        const langNameEl = document.getElementById('current-lang-name');
+        if (savedLangName && langNameEl) {
+            langNameEl.innerText = savedLangName;
         }
     }
 
@@ -504,11 +525,12 @@
     function selectClubLanguage(langCode, langName, flagUrl) {
         currentLangData = { code: langCode, name: langName, flag: flagUrl };
         
-        // Сохраняем во все ключи флага для мгновенной синхронизации на всех страницах
+        // Сохраняем во все ключи флага, код и название для мгновенной синхронизации
         const countryCode = flagCodeToCountry(langCode);
         safeStorageSet('gygy_flag', countryCode);
         safeStorageSet('gy_user_flag', countryCode);
         safeStorageSet('gygy_lang_code', langCode);
+        safeStorageSet('gygy_lang_name', langName);
         
         const currentFlagEl = document.getElementById('current-flag');
         if (currentFlagEl) currentFlagEl.src = flagUrl;
@@ -796,18 +818,24 @@
         }
         checkAndFillRegistrationForm();
 
-        // Инициализируем и проверяем актуальность флага при загрузке
+        // 1. Восстанавливаем сохраненный флаг и текст языка в UI
         updateGlobalFlagUI();
+        
+        // 2. Принудительно синхронизируем сам переводчик страницы
+        syncGTranslateWidget();
 
         // Слушаем изменения localStorage (если флаг сменили на другой вкладке/странице)
         window.addEventListener('storage', (e) => {
-            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag') {
+            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
                 updateGlobalFlagUI();
+            }
+            if (e.key === 'gygy_lang_code') {
+                syncGTranslateWidget();
             }
         });
 
         setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
 </script>
-    </body>
+</body>
 </html>
