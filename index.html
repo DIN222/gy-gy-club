@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.31 CORE</title>
+    <title>GY-GY Club v4.6.32 CORE + Sound Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -193,7 +193,6 @@
         #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000; }
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
-        /* Опустили надпись еще на 10% (было top: 20vh, стало top: 30vh) */
         .hall-interior .quote-text { 
             position: absolute; top: 30vh; left: 50%; transform: translateX(-50%); 
             width: 85%; margin: 0; text-align: center; padding: 0;
@@ -255,10 +254,6 @@
     </div>
     
     <div class="ui-header-right notranslate">GY-GY</div>
-
-    <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
-    <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
-    <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
         <div class="club-lang-dropdown-wrapper notranslate">
@@ -394,6 +389,103 @@
         let nickTypeMode = 'own';
         let navigationHistory = ['block-entrance'];
 
+        // Встроенный звуковой движок Web Audio API для гарантированной работы без внешних файлов
+        const SoundEngine = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) this.ctx = new AudioContext();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+            playDoorCreak() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.6);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                } catch(e) {}
+            },
+            playFanfare() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+                    notes.forEach((freq, idx) => {
+                        const now = this.ctx.currentTime + (idx * 0.12);
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now);
+                        gain.gain.setValueAtTime(0.2, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.35);
+                    });
+                } catch(e) {}
+            },
+            playApplause() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const bufferSize = this.ctx.sampleRate * 0.8;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = Math.random() * 2 - 1;
+                    }
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = buffer;
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1000;
+                    
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+                    
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    noise.start(now);
+                } catch(e) {}
+            },
+            playBarPour() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.4);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } catch(e) {}
+            }
+        };
+
         const translations = {
             en: {
                 welcome_charlie: "I'M CHARLIE",
@@ -460,6 +552,7 @@
         });
 
         function portalTransition(targetBlockId) {
+            SoundEngine.init();
             const activeBlock = document.querySelector('.block.active');
             if (activeBlock && activeBlock.id === targetBlockId) return;
             
@@ -505,9 +598,8 @@
         }
 
         function handleDoor() {
+            SoundEngine.playDoorCreak();
             const door = document.getElementById('main-door');
-            const snd = document.getElementById('snd-door');
-            if(snd) snd.play().catch(e => {});
             door.classList.add('door-exploded');
             setTimeout(() => {
                 portalTransition('block-welcome');
@@ -607,6 +699,10 @@
         }
 
         function saveUserProfile() {
+            // Воспроизводим фанфары и аплодисменты при успешном сохранении профиля
+            SoundEngine.playFanfare();
+            setTimeout(() => SoundEngine.playApplause(), 400);
+
             const profileData = {
                 id: currentUserId,
                 avatar: currentUserAvatar,
@@ -628,6 +724,7 @@
         }
 
         function openPassport() {
+            SoundEngine.playBarPour();
             const modal = document.getElementById('modal-passport');
             modal.style.display = 'flex';
             setTimeout(() => modal.style.opacity = '1', 10);
@@ -641,6 +738,7 @@
         }
 
         function toggleManifest(boxId) {
+            SoundEngine.playBarPour();
             const box = document.getElementById(boxId);
             const isOpened = box.getAttribute('data-opened') === 'true';
             document.querySelectorAll('.manifest-btn-box').forEach(b => {
