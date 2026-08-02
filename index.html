@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.32 CORE + Sound Engine</title>
+    <title>GY-GY Club v4.6.33 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -243,6 +243,12 @@
 </head>
 <body oncontextmenu="return false;">
 
+    <!-- Аудио элементы для звуков из репозитория -->
+    <audio id="sound-door" src="door_creak.mp3" preload="auto"></audio>
+    <audio id="sound-fanfare" src="fanfare.mp3" preload="auto"></audio>
+    <audio id="sound-applause" src="applause.mp3" preload="auto"></audio>
+    <audio id="sound-pour" src="pour.mp3" preload="auto"></audio>
+
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
@@ -305,13 +311,15 @@
             </div>
 
             <div class="reg-square" onclick="document.getElementById('file-input').click()">
-                <span id="txt-photo" style="font-size: 9px; font-weight: bold; z-index: 2;" data-translate="txt_photo">OR PHOTO</span>
+                <!-- Надпись опущена ниже с помощью margin-top: 18px -->
+                <span id="txt-photo" style="font-size: 9px; font-weight: bold; z-index: 2; margin-top: 18px;" data-translate="txt_photo">OR PHOTO</span>
                 <img id="pp" style="display:none; z-index: 1;">
                 <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="preview(this)">
             </div>
 
             <div class="reg-square" onclick="generateAvatar()">
-                <span id="txt-avatar" style="font-size: 9px; font-weight: bold; z-index: 2;" data-translate="txt_avatar">OR AVATAR</span>
+                <!-- Надпись опущена ниже с помощью margin-top: 18px -->
+                <span id="txt-avatar" style="font-size: 9px; font-weight: bold; z-index: 2; margin-top: 18px;" data-translate="txt_avatar">OR AVATAR</span>
                 <img id="avatar-img" style="display:none; z-index: 1;">
             </div>
 
@@ -324,8 +332,8 @@
             </div>
 
             <div id="box-club-nick" class="reg-square" onclick="generateClubNick()">
-                <span style="font-size: 9px; font-weight: bold; z-index: 2;" data-translate="nick_club">CLUB NICK</span>
-                <span id="club-nick-label" style="font-size: 9px; font-weight: bold; margin-top: 3px; color: #333; z-index: 2;">GY-MEMBER</span>
+                <span style="font-size: 9px; font-weight: bold; z-index: 2; margin-top: 10px;" data-translate="nick_club">CLUB NICK</span>
+                <span id="club-nick-label" style="font-size: 9px; font-weight: bold; margin-top: 2px; color: #333; z-index: 2;">GY-MEMBER</span>
             </div>
         </div>
 
@@ -389,102 +397,16 @@
         let nickTypeMode = 'own';
         let navigationHistory = ['block-entrance'];
 
-        // Встроенный звуковой движок Web Audio API для гарантированной работы без внешних файлов
-        const SoundEngine = {
-            ctx: null,
-            init() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContext) this.ctx = new AudioContext();
+        // Воспроизведение звуков из репозитория
+        function playSound(audioId) {
+            try {
+                const sound = document.getElementById(audioId);
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play().catch(() => {});
                 }
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            },
-            playDoorCreak() {
-                this.init();
-                if (!this.ctx) return;
-                try {
-                    const now = this.ctx.currentTime;
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(150, now);
-                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.6);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.6);
-                } catch(e) {}
-            },
-            playFanfare() {
-                this.init();
-                if (!this.ctx) return;
-                try {
-                    const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
-                    notes.forEach((freq, idx) => {
-                        const now = this.ctx.currentTime + (idx * 0.12);
-                        const osc = this.ctx.createOscillator();
-                        const gain = this.ctx.createGain();
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(freq, now);
-                        gain.gain.setValueAtTime(0.2, now);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                        osc.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        osc.start(now);
-                        osc.stop(now + 0.35);
-                    });
-                } catch(e) {}
-            },
-            playApplause() {
-                this.init();
-                if (!this.ctx) return;
-                try {
-                    const now = this.ctx.currentTime;
-                    const bufferSize = this.ctx.sampleRate * 0.8;
-                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                    const data = buffer.getChannelData(0);
-                    for (let i = 0; i < bufferSize; i++) {
-                        data[i] = Math.random() * 2 - 1;
-                    }
-                    const noise = this.ctx.createBufferSource();
-                    noise.buffer = buffer;
-                    const filter = this.ctx.createBiquadFilter();
-                    filter.type = 'bandpass';
-                    filter.frequency.value = 1000;
-                    
-                    const gain = this.ctx.createGain();
-                    gain.gain.setValueAtTime(0.3, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
-                    
-                    noise.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    noise.start(now);
-                } catch(e) {}
-            },
-            playBarPour() {
-                this.init();
-                if (!this.ctx) return;
-                try {
-                    const now = this.ctx.currentTime;
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.4);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now);
-                    osc.stop(now + 0.4);
-                } catch(e) {}
-            }
-        };
+            } catch(e) {}
+        }
 
         const translations = {
             en: {
@@ -552,7 +474,6 @@
         });
 
         function portalTransition(targetBlockId) {
-            SoundEngine.init();
             const activeBlock = document.querySelector('.block.active');
             if (activeBlock && activeBlock.id === targetBlockId) return;
             
@@ -598,7 +519,7 @@
         }
 
         function handleDoor() {
-            SoundEngine.playDoorCreak();
+            playSound('sound-door');
             const door = document.getElementById('main-door');
             door.classList.add('door-exploded');
             setTimeout(() => {
@@ -699,9 +620,8 @@
         }
 
         function saveUserProfile() {
-            // Воспроизводим фанфары и аплодисменты при успешном сохранении профиля
-            SoundEngine.playFanfare();
-            setTimeout(() => SoundEngine.playApplause(), 400);
+            playSound('sound-fanfare');
+            setTimeout(() => playSound('sound-applause'), 400);
 
             const profileData = {
                 id: currentUserId,
@@ -724,7 +644,7 @@
         }
 
         function openPassport() {
-            SoundEngine.playBarPour();
+            playSound('sound-pour');
             const modal = document.getElementById('modal-passport');
             modal.style.display = 'flex';
             setTimeout(() => modal.style.opacity = '1', 10);
@@ -738,7 +658,7 @@
         }
 
         function toggleManifest(boxId) {
-            SoundEngine.playBarPour();
+            playSound('sound-pour');
             const box = document.getElementById(boxId);
             const isOpened = box.getAttribute('data-opened') === 'true';
             document.querySelectorAll('.manifest-btn-box').forEach(b => {
