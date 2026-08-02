@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.27 CORE</title>
+    <title>GY-GY Club v4.6.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -299,9 +299,16 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <div id="block-identity" class="block">
-        <!-- Надпись с опусканием ниже на 10% (margin-bottom: 45px) -->
-        <div class="quote-text" data-translate="identity_quote" style="margin-bottom: 45px;">There is never too much champagne</div>
+    <div id="block-identity" class="block" style="justify-content: flex-start; padding-top: 10vh;">
+        <!-- Абсолютное позиционирование для аватара и надписи GY-GY по аналогии с Холлом -->
+        <div class="ui-user-badge notranslate" style="display: block; top: 18px;" onclick="openPassport()">
+            <img id="badge-avatar-img-reg" class="badge-img" src="">
+            <img id="badge-flag-img-reg" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
+        </div>
+        <div class="ui-header-right notranslate" style="top: 18px;">GY-GY</div>
+
+        <!-- Цитата и сетка регистрации -->
+        <div class="quote-text" data-translate="identity_quote" style="margin-top: 5vh; margin-bottom: 25px;">There is never too much champagne</div>
         
         <div class="registration-grid">
             <div class="reg-square" style="cursor: default; background: #fdfdfd;">
@@ -386,7 +393,6 @@
         </div>
     </div>
 
-    <!-- ПОЛНЫЕ СКРИПТЫ ПРИЛОЖЕНИЯ -->
     <script>
         let currentUserId = Math.floor(100000 + Math.random() * 900000);
         let currentUserAvatar = '';
@@ -450,10 +456,13 @@
                     
                     if (currentUserAvatar) {
                         document.getElementById('badge-avatar-img').src = currentUserAvatar;
+                        document.getElementById('badge-avatar-img-reg').src = currentUserAvatar;
                         document.getElementById('pass-avatar-img').src = currentUserAvatar;
                         document.getElementById('global-user-badge').style.display = 'block';
+                        document.getElementById('badge-avatar-img-reg').closest('.ui-user-badge').style.display = 'block';
                     }
                     document.getElementById('badge-flag-img').src = currentUserFlag;
+                    document.getElementById('badge-flag-img-reg').src = currentUserFlag;
                     document.getElementById('btn-w-hall').classList.remove('btn-sleep');
                     document.getElementById('btn-pass').classList.remove('btn-sleep');
                 } catch(e) {}
@@ -527,6 +536,7 @@
             document.getElementById('current-flag').src = flagUrl;
             currentUserFlag = flagUrl;
             document.getElementById('badge-flag-img').src = flagUrl;
+            document.getElementById('badge-flag-img-reg').src = flagUrl;
             document.getElementById('club-lang-list').classList.remove('open');
             applyTranslations(langCode);
         }
@@ -618,8 +628,10 @@
             
             if (currentUserAvatar) {
                 document.getElementById('badge-avatar-img').src = currentUserAvatar;
+                document.getElementById('badge-avatar-img-reg').src = currentUserAvatar;
                 document.getElementById('pass-avatar-img').src = currentUserAvatar;
                 document.getElementById('global-user-badge').style.display = 'block';
+                document.getElementById('badge-avatar-img-reg').closest('.ui-user-badge').style.display = 'block';
             }
             generateQR(currentUserId.toString(), 'pass-qr-box', 90);
             
