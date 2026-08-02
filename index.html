@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.22 CORE</title>
+    <title>GY-GY Club v4.6.23 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -134,9 +134,33 @@
             overflow: hidden;
         }
         .reg-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
+        
+        /* Стили инпута вашего ника — теперь растянут по размеру рамки квадрата */
         .reg-square input[type="text"] {
-            position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+            padding: 0 4px;
+            z-index: 3;
+            box-sizing: border-box;
+            opacity: 1 !important;
+            cursor: text !important;
         }
+        .reg-square input[type="text"]::placeholder {
+            color: #888888;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
         .reg-square img {
             width: 100%;
             height: 100%;
@@ -279,8 +303,8 @@
 
     <!-- БЛОК РЕГИСТРАЦИИ -->
     <div id="block-identity" class="block">
-        <!-- Слоган опущен ниже на 6% (суммарно margin-bottom: 36px) -->
-        <div class="quote-text" data-translate="identity_quote" style="margin-bottom: 36px;">There is never too much champagne</div>
+        <!-- Слоган опущен ещё на 10% (суммарно margin-bottom: 40px) -->
+        <div class="quote-text" data-translate="identity_quote" style="margin-bottom: 40px;">There is never too much champagne</div>
         
         <div class="registration-grid">
             <!-- РЯД 1 -->
@@ -309,14 +333,12 @@
                 <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
             </div>
 
-            <!-- 2. Ваш ник (Инпут для ввода своего ника) -->
+            <!-- 2. Ваш ник (Полноразмерный инпут под рамку квадрата с активацией по клику) -->
             <div id="box-own-nick" class="reg-square selected" onclick="setNickType('own')">
-                <span style="font-size: 9px; font-weight: bold; z-index: 2;" data-translate="nick_own">YOUR NICK</span>
-                <input type="text" id="input-own-nick" placeholder="Type..." oninput="updateNicknameValue(this.value, 'own')" maxlength="15" style="z-index: 3;">
-                <span id="own-nick-display" style="font-size: 9px; font-weight: bold; margin-top: 2px; z-index: 2; display: none;"></span>
+                <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="updateNicknameValue(this.value, 'own')" maxlength="15">
             </div>
 
-            <!-- 3. Ник клуба (Генератор неповторяющихся ников клуба по клику) -->
+            <!-- 3. Ник клуба (Генератор неповторяющихся ников клуба) -->
             <div id="box-club-nick" class="reg-square" onclick="generateClubNick()">
                 <span style="font-size: 9px; font-weight: bold; z-index: 2;" data-translate="nick_club">CLUB NICK</span>
                 <span id="club-nick-label" style="font-size: 9px; font-weight: bold; margin-top: 3px; color: #333; z-index: 2;">GY-MEMBER</span>
