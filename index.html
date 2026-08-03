@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.44 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.45 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -575,30 +575,48 @@
             });
         }
 
-        function saveUserProfile() {
-            playSound('sound-fanfare');
-            setTimeout(() => playSound('sound-applause'), 400);
+      function saveUserProfile() {
+    try {
+        playSound('sound-fanfare');
+        setTimeout(() => playSound('sound-applause'), 400);
+    } catch(e) {}
 
-            const profileData = {
-                id: currentUserId,
-                avatar: currentUserAvatar,
-                flag: currentUserFlag,
-                nick: currentNickname
-            };
-            localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
+    const profileData = {
+        id: currentUserId,
+        avatar: currentUserAvatar,
+        flag: currentUserFlag,
+        nick: currentNickname
+    };
+    
+    try {
+        localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
+        
+        if (currentUserAvatar) {
+            const badgeImg = document.getElementById('badge-avatar-img');
+            const passImg = document.getElementById('pass-avatar-img');
+            const globalBadge = document.getElementById('global-user-badge');
             
-            if (currentUserAvatar) {
-                document.getElementById('badge-avatar-img').src = currentUserAvatar;
-                document.getElementById('pass-avatar-img').src = currentUserAvatar;
-                document.getElementById('global-user-badge').style.display = 'block';
-            }
-            generateQR(currentUserId.toString(), 'pass-qr-box', 90);
-            
-            document.getElementById('btn-w-hall').classList.remove('btn-sleep');
-            document.getElementById('btn-pass').classList.remove('btn-sleep');
-            portalTransition('block-hall');
+            if (badgeImg) badgeImg.src = currentUserAvatar;
+            if (passImg) passImg.src = currentUserAvatar;
+            if (globalBadge) globalBadge.style.display = 'block';
         }
+        
+        const passQrBox = document.getElementById('pass-qr-box');
+        if (passQrBox) {
+            generateQR(currentUserId.toString(), 'pass-qr-box', 90);
+        }
+        
+        const btnWHall = document.getElementById('btn-w-hall');
+        const btnPass = document.getElementById('btn-pass');
+        if (btnWHall) btnWHall.classList.remove('btn-sleep');
+        if (btnPass) btnPass.classList.remove('btn-sleep');
+    } catch(e) {
+        console.error("Save error:", e);
+    }
 
+    // Гарантированный переход в блок холла в самом конце
+    portalTransition('block-hall');
+}
         function openPassport() {
             playSound('sound-pour');
             const modal = document.getElementById('modal-passport');
