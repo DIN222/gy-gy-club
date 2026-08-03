@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.38 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.39 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -303,10 +303,10 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-<div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 6vh !important; box-sizing: border-box;">
-    <div class="quote-text" data-translate="identity_quote" style="margin-top: 0px !important; margin-bottom: 6px !important; padding: 0 !important; text-align: center; width: 100%;">There is never too much champagne</div>
+<div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 5vh !important; box-sizing: border-box;">
+    <div class="quote-text" data-translate="identity_quote" style="margin-top: 0px !important; margin-bottom: 8px !important; padding: 0 !important; text-align: center; width: 100%;">There is never too much champagne</div>
     
-    <div class="registration-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px !important; margin-bottom: 15px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 320px;">
+    <div class="registration-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px !important; margin-bottom: 12px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 320px;">
         <div class="reg-square" style="cursor: default; background: #fdfdfd;">
             <span style="font-size: 9px; font-weight: bold;">DIGITAL ID</span>
             <span id="id-label" style="font-size: 9px; font-weight: bold; margin-top: 3px; color: #333;">#ID</span>
@@ -331,6 +331,7 @@
             <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="updateNicknameValue(this.value, 'own')" maxlength="15">
         </div>
 
+        <!-- Квадрат аватара клуба строго очищен от картинок -->
         <div id="box-club-nick" class="reg-square" onclick="generateClubNick()" style="position: relative; overflow: hidden;">
             <span style="font-size: 9px; font-weight: bold; z-index: 2; margin-top: 10px; position: relative;" data-translate="nick_club">CLUB NICK</span>
             <span id="club-nick-label" style="font-size: 9px; font-weight: bold; margin-top: 2px; color: #333; z-index: 2; position: relative;">GY-MEMBER</span>
@@ -343,54 +344,16 @@
     <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
 </div>
-    <div id="block-hall" class="block">
-        <div class="hall-interior" style="position: relative;">
-            <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
-            
-            <div class="painting-zone painting-left" style="position: relative; min-height: 160px;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
-                    <span class="cue-arrow-hall">→</span>
-                    <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
-                    </div>
-                </div>
 
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
-                    <span class="cue-arrow-hall">→</span>
-                    <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
-                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); enterStaffOffice()">STAFF ROOM</button>
-                    </div>
-                </div>
-            </div>
-                
-            <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
-                <span class="cue-arrow-hall">←</span>
-                <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
-                </div>
-            </div>
-        </div>
-            
-        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; z-index: 5;">
-            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
-            <div class="bar-entrance-marker" style="position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
-                <span class="cue-arrow-hall" style="font-size: 34px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
-        <div class="passport-card" onclick="event.stopPropagation()">
-            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
-            <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
-        </div>
-    </div>
-
+<!-- Скрипт разблокировки звуков браузера по первому клику -->
+<script>
+    document.addEventListener('click', function unlockAudioContext() {
+        document.querySelectorAll('audio').forEach(audio => {
+            audio.load();
+        });
+        document.removeEventListener('click', unlockAudioContext);
+    }, { once: true });
+</script>
     <script>
         let currentUserId = Math.floor(100000 + Math.random() * 900000);
         let currentUserAvatar = '';
