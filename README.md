@@ -1,663 +1,182 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.22 CORE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
-    <style>
-        :root { --gold: #FFD700; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
-        
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        body, button, input, div, img, span { pointer-events: auto !important; }
-        img { -webkit-user-drag: none !important; }
+MANIFEST & ARCHITECTURE OF CLUB v4.6.1 CORE
 
-        html, body { width: 100%; height: 100%; background: #000000; color: var(--gold); font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; }
-        
-        /* HOVER EFFECT: brightness + smooth transition */
-        button, .lang-frame-locked, .ui-user-badge, .arrow-item, .painting-zone, #main-door {
-            transition: all 0.3s ease !important;
-        }
-        button:hover, .lang-frame-locked:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover {
-            filter: brightness(1.1);
-        }
+⚠️ КРИТИЧЕСКИЕ ОГРАНИЧЕНИЯ (ОБЯЗАТЕЛЬНО) Цветовой стиль: Золото на черном (#FFD700 / #000000). Фон черный, буквы и рамки — золото.
+Принцип активации (Hover): При наведении курсора на элемент — увеличение насыщенности золотого цвета на 10% [ОБНОВЛЕНО: анимация через brightness: 1.1 + плавный переход transition: all 0.3s ease].
 
-        /* ЯЗЫКОВАЯ ПАНЕЛЬ */
-        .lang-frame-locked {
-            position: fixed; top: 15px; left: calc(110px - 5%); z-index: 9999999; 
-            width: 150px; height: 36px; border: 2px solid var(--gold); 
-            background: #000000; cursor: pointer; display: flex; align-items: center; padding: 0 10px;
-            font-size: 13px; font-family: 'Montserrat', sans-serif;
-        }
-        .lang-dropdown-adaptive {
-            display: none; position: absolute; top: 40px; left: -2px; 
-            width: 150px; background: #000000; border: 1px solid var(--gold) !important; z-index: 10000;
-            max-height: 70vh; overflow-y: auto;
-        }
-        .lang-item { display: flex; align-items: center; padding: 8px 10px; cursor: pointer; line-height: 1; font-family: 'Montserrat', sans-serif; }
-        .lang-item:hover { background: rgba(255, 215, 0, 0.1); }
-        .flag-icon { width: 20px; margin-right: 10px; }
+Шрифты:
 
-        /* ЛОГОТИП GY-GY */
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            font-family: 'Cinzel', serif;
-            text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
-        }
-        
-        /* СКВОЗНОЙ АВАТАР */
-        .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111111;
-            box-shadow: 0 0 0 1px #000000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer; display: none;
-        }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #ffffff; }
-        .ui-user-badge .badge-flag {
-            position: absolute; bottom: -2px; right: -4px;
-            width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
-        }
+Все надписи на кнопках: [ОБНОВЛЕНО: 'Montserrat' / 'Cinzel' (Bold)]
 
-        /* ПАСПОРТ */
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000000; cursor: pointer; line-height: 1; user-select: none; }
+Слоганы: [ОБНОВЛЕНО: 'Cormorant Garamond' / 'Playfair Display' (Italic)]
 
-        /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ СТРАНИЦ */
-        .block { 
-            position: fixed; 
-            inset: 0; 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            background: #000000; 
-            z-index: 10; 
-            opacity: 0; 
-            transition: opacity 1.2s ease-in-out; 
-        }
-        .block.active { 
-            display: flex !important; 
-            opacity: 1 !important; 
-            z-index: 5000 !important; 
-        }
+Языковой модуль:
 
-        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 28px; text-align: center; max-width: 85%; margin-bottom: 30px; text-shadow: 2px 2px 4px #000000; }
-        .btn-gy { min-width: 270px; padding: 14px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 8px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; }
-        
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000000; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+Язык по умолчанию: Английский (отображается в одиночной рамке выбора языка слева на первой странице).
 
-        body { top: 0 !important; }
-        #block-welcome { justify-content: flex-start !important; padding-top: 12vh !important; }
-        #block-welcome .quote-text { margin-bottom: 2vh !important; font-size: 24px; }
-        #block-welcome img { max-height: 35vh !important; width: auto; object-fit: contain; margin-bottom: 2vh !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
-        #block-welcome .btn-gy { margin: 4px 0 !important; padding: 12px !important; }
+Дополнительно: Выпадающий список на 11 языков с флагом страны и счетчиком юзеров из этой страны.
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
-        .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 15px; font-size: 24px; font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; 
-            background: transparent !important; border: none !important;
-            text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
-            pointer-events: auto !important; user-select: none;
-        }
-        .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
-        .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
+Механика: При наведении на рамку открывается выпадающий список 11 языков. При выборе другого языка он фиксируется в одиночной рамке, остальные закрываются.
 
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000; }
-        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-        
-        .hall-interior .quote-text { 
-            position: absolute; 
-            top: 12vh; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 85%; 
-            margin: 0; 
-            text-align: center;
-            padding: 0;
-            background: transparent !important;
-            color: var(--gold) !important;        
-            font-size: 28px;
-            font-weight: 700;
-            -webkit-text-stroke: 1px #000000;
-            text-stroke: 1px #000000;
-        }
-        .hall-door-target {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 24vw; height: 65vh; cursor: pointer; z-index: 5;
-            background: transparent;
-        }
+Строгое правило: Никогда не использовать другие языки, кроме выбранного в рамке, если нет прямой просьбы в чате [ОБНОВЛЕНО: перевод подтягивается автоматически через словарь data-translate].
 
-        .painting-zone {
-            position: absolute; 
-            top: 25vh; 
-            width: 6vw; 
-            height: 12vh; 
-            cursor: pointer; 
-            z-index: 6; 
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .painting-left { left: 23vw; }
-        .painting-right { right: 23vw; }
+Юмор: Юмор и шутки — это неизменные атрибуты клуба.
 
-        .cue-arrow-hall { 
-            color: var(--violet); 
-            font-size: 38px; 
-            font-weight: 900; 
-            font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
-            pointer-events: none; 
-            user-select: none;
-            z-index: 10;
-            transition: opacity 0.2s;
-        }
-        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
+Глобальный стандарт навигационных стрелок (Интеграция в шапку / header-bar):
 
-        .manifest-btn-box { 
-            position: absolute; 
-            bottom: -50px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 140px; 
-            display: flex; 
-            justify-content: center; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.4s, bottom 0.4s; 
-            z-index: 10; 
-        }
-        .btn-manifest { width: 100%; padding: 6px 0; font-size: 12px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        
-        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; background-color: #000000 !important; opacity: 0; transition: opacity 1.2s ease-in-out !important; }
-        body.page-loaded { opacity: 1 !important; }
-        
-        font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
-        .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
-        .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
-        
-        #main-door {
-            display: block;
-            height: calc(50vh + 20px);
-            width: auto;
-            max-width: 100%;
-            object-fit: contain;
-            margin: 0 auto; 
-            transform: scale(1);
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
-            cursor: pointer;
-        }
+Размещение: Располагаются слева внутри фиксированной верхней панели (header-bar), выровнены по горизонтали в контейнере ui-nav-arrows (display: flex; gap: 15px; font-size: 24px; font-weight: 900;).
 
-        .door-exploded {
-            transform: scale(3.5) !important;
-            opacity: 0 !important;
-        }
-    </style>
-</head>
-<body oncontextmenu="return false;">
+Типографика и стиль ссылок (.back-arrow): Шрифт Share Tech Mono, цвет --gold, без лишних фонов и границ (background: transparent !important; border: none !important;).
 
-    <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
-        <img id="badge-avatar-img" class="badge-img" src="">
-        <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
-    </div>
+Эффекты при наведении (hover): Плавное изменение прозрачности и масштабирование (transition: opacity 0.2s, transform 0.2s;, на hover — opacity: 0.8; transform: scale(1.1);).
 
-    <div class="notranslate ui-nav-arrows" id="club-nav-arrows" style="display: none;">
-        <div id="arrow-back" class="arrow-item" onclick="handleNavigationBack()">&lt;</div>
-        <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-    </div>
+Назначение кнопок:
 
-    <div id="lang-switcher" class="lang-frame-locked notranslate" translate="no" style="display: flex;">
-        <div id="active-lang-display" class="notranslate" translate="no" style="display:flex; align-items:center; width:100%;" onclick="toggleLangList()">
-            <img src="https://flagcdn.com/w40/gb.png" class="flag-icon notranslate" translate="no">
-            <span class="notranslate" translate="no" data-translate="lang_en">ENGLISH</span>
-        </div>
-        <div id="lang-list-container" class="lang-dropdown-adaptive notranslate" translate="no"></div>
-    </div>
-        
-    <div id="google_translate_element" style="position:fixed; bottom:0; left:0; opacity:0; z-index:-1;"></div>
-    
-    <div class="ui-header-right notranslate">GY-GY</div>
+Одиночная стрелка (<): Возврат на предыдущую локацию/страницу (office.html или через history.back()).
 
-    <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
-    <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
-    <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
+Двойная стрелка (<<): Быстрый переход к главному входу / Холлу (hall.html или index.html). Запрет: ЗАПРЕЩАЕТСЯ редактирование готовых блоков кода, кроме прямой просьбы, описанной в сообщении чата.
 
-    <div id="block-entrance" class="block active">
-        <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor()">
-    </div>
+🛠 АРХИТЕКТУРНЫЕ СТАНДАРТЫ Личность: Уникальный цифровой след (ID), скрытый в браузере через распознавание Cookie.
+Регистрация: Автоматическое назначение числового кода (Порядковый номер + случайное 4-значное число), QR-код, уникальный аватар (или фото), флаг и никнейм при первом входе.
 
-    <div id="block-welcome" class="block">
-        <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
-        <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
-        <img src="horse_welcome.png">
-        <div style="font-size: 34px; font-weight: 700; letter-spacing: 12px; font-style: italic; margin-bottom: 15px; font-family: 'Cinzel', serif;" data-translate="welcome_title">WELCOME</div>
-        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed_hall">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
-    </div>  
+Непрерывность: «Магический ключ» (скачиваемый аватар или QR-код) для доступа с разных устройств [ОБНОВЛЕНО: дублируется в localStorage для защиты от очистки кэша].
 
-    <div id="block-identity" class="block">
-        <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
-        <div style="display:flex; gap:10px; margin-bottom:25px; align-items:center;">
-            <div class="box-final" style="background:#ffffff; border-color:var(--gold); color:#000000; font-size:11px; font-weight:900;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg" style="border-color:var(--gold); background:#ffffff;"></div>
-            
-            <div class="box-final" style="border-color:var(--gold); background:#ffffff; cursor:pointer;" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000000; font-size:10px; font-weight:900;" data-translate="txt_photo">OR PHOTO</span>
-            </div>
-            
-            <div class="box-final" style="border-color:var(--gold); background:#ffffff; cursor:pointer;" onclick="generateAvatar()">
-                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000000; font-size:10px; font-weight:900; text-align:center;" data-translate="txt_avatar">OR AVATAR</span>
-            </div>
-        </div>
-        <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
-    </div>
+Переход: [ОБНОВЛЕНО: Эффект «плавного затухания / плавного проявления» (1.2 сек) при смене сцен — как визуальный, так и аудио-эффект (обязательная пара затухания и проявления)].
 
-    <div id="block-hall" class="block">
-        <div class="hall-interior" style="position: relative;">
-            <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
-            
-            <div class="painting-zone painting-left" style="position: relative; min-height: 180px;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
-                    <span class="cue-arrow-hall">→</span>
-                    <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
-                    </div>
-                </div>
+🗺 ЛОГИСТИКА НАВИГАЦИИ И СТРУКТУРА ЛОКАЦИЙ 🚪 Вход и Зона Приветствия Визуал Входа: Дверь по центру (40vh), слева — рамка с выбранным языком и 11 выпадающих языков (рамки по ширине совпадают), справа — логотип GY-GY.
+Интерактив входа: При клике на дверь она плавно растворяется, звучит замок двери и через 0.5 секунды начинают звучать звуки бара. Юзер переходит в Зону Приветствия.
 
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
-                    <span class="cue-arrow-hall">→</span>
-                    <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
-                    </div>
-                </div>
-            </div>
-                
-            <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
-                <span class="cue-arrow-hall">←</span>
-                <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
-                </div>
-            </div>
-        </div>
-            
-        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 65vh; z-index: 5;">
-            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
-            <div class="bar-entrance-marker" style="position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
-                <span class="cue-arrow-hall" style="font-size: 38px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
-            </div>
-        </div>
-    </div>
+Зона Приветствия (Шапка и Контент):
 
-    <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
-        <div class="passport-card" onclick="event.stopPropagation()">
-            <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
-            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold); margin: 10px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; margin: 10px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
-        </div>
-    </div>
+[ОБНОВЛЕНО: В самом верху: Слева — стрелки навигации, по центру — Аватар (для зарегистрированных пользователей), справа — Логотип GY-GY].
 
-<!-- Подключение внешних модулей в строгом соответствии с архитектурой v4.6.1 -->
-<script src="userlang-data.js"></script>
-<script src="translations.js"></script>
+[ОБНОВЛЕНО: Ниже шапки располагается Слоган].
 
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
+Ниже — Конь с подсветкой (35vh).
 
-    let currentID = "";
-    let currentActiveCode = 'en';
-    let currentUserImage = "";
-    let currentFlagCode = 'gb';
-    let currentBlockId = 'block-entrance';
+Ниже — две кнопки одинакового размера рядом:
 
-    function renderLangList() {
-        const container = document.getElementById('lang-list-container');
-        if (!container) return;
-        container.innerHTML = ''; 
-        if (typeof allLangs === 'undefined') return;
-        
-        allLangs.forEach(lang => {
-            if(lang.code === currentActiveCode) return; 
-            const div = document.createElement('div');
-            div.className = 'lang-item notranslate';
-            div.setAttribute('translate', 'no');
-            
-            // Динамический счетчик юзеров по странам из базы данных
-            let userCount = 0;
-            if (typeof clubUsers !== 'undefined') {
-                userCount = clubUsers.filter(u => u.flag === lang.c).length;
-            }
-            
-            div.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon notranslate" translate="no"><span class="notranslate" translate="no">${lang.n} ${userCount > intVal(0) ? '('+userCount+')' : ''}</span>`;
-            div.onclick = (e) => { e.stopPropagation(); applyLanguage(lang); };
-            container.appendChild(div);
-        });
-    }
-    
-    function intVal(v) { return parseInt(v, 10); }
+«Проходите в Холл» (неактивна при 1-м входе / активна при повторных входах).
 
-    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+«Проходите на регистрацию» (активна при 1-м входе / неактивна при повторных).
 
-    function applyLanguage(lang) {
-        currentActiveCode = lang.code;
-        currentFlagCode = lang.c; 
-        safeStorageSet('gygy_flag', lang.c);
-        safeStorageSet('gy_user_flag', lang.c);
-        safeStorageSet('gy_lang', lang.code);
-        safeStorageSet('gygy_lang', lang.code);
-        
-        const activeDisplay = document.getElementById('active-lang-display');
-        if (activeDisplay) { activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${lang.c}.png" class="flag-icon"> <span>${lang.n}</span>`; }
-        const badgeFlagImg = document.getElementById('badge-flag-img');
-        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${lang.c}.png`;
-        
-        const langListContainer = document.getElementById('lang-list-container');
-        if (langListContainer) langListContainer.style.display = 'none';
-        renderLangList();
-        
-        applyTranslationsToDOM(lang.code);
-        forceTriggerGoogleTranslate(lang.code);
-    }
+📝 Зона Регистрации Обеспечивает генерацию ID и состоит из 6 рамок:
 
-    function applyTranslationsToDOM(langCode) {
-        if (typeof translations === 'undefined' || !translations[langCode]) return;
-        const dict = translations[langCode];
-        document.querySelectorAll('[data-translate]').forEach(el => {
-            const key = el.getAttribute('data-translate');
-            if (dict[key]) {
-                el.innerText = dict[key];
-            }
-        });
-    }
+Номер (порядковый + 4-значный случайный);
 
-    function forceTriggerGoogleTranslate(langCode) {
-        if (window.langTimer) clearInterval(window.langTimer);
-        let attempts = 0;
-        window.langTimer = setInterval(() => {
-            const selectEl = document.querySelector('.goog-te-combo');
-            if (selectEl) {
-                clearInterval(window.langTimer);
-                if (selectEl.value === langCode) return;
-                selectEl.value = langCode;
-                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            if (++attempts > 100) {
-                clearInterval(window.langTimer);
-            }
-        }, 100);
-    }
+QR-код;
 
-    function toggleLangList() {
-        const list = document.getElementById('lang-list-container');
-        if (list) list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-    }
+Фото;
 
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if(box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-50px" : "-35px";
-            } else {
-                box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-50px";
-            }
-        });
-    }
+Аватар клуба;
 
-    function renderUserPassports(targetID) {
-        const idLabel = document.getElementById('id-label');
-        const passIdVal = document.getElementById('pass-id-val');
-        const qrBoxReg = document.getElementById('qr-box-reg');
-        const passQrBox = document.getElementById('pass-qr-box');
-        if (idLabel) idLabel.innerText = targetID;
-        if (passIdVal) passIdVal.innerText = targetID;
-        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 85, height: 85 }); }
-        if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 100, height: 100 }); }
-    }
+Ник Юзера;
 
-    function checkAndFillRegistrationForm() {
-        // Проверка интеграции Telegram Web App API
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-            const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-            if (tgUser.first_name) {
-                safeStorageSet('gygy_nickname', tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''));
-            }
-        }
+Ник клуба.
 
-        const savedAvatar = safeStorageGet('gy_user_img') || safeStorageGet('gygy_avatar');
-        currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
-        
-        let savedLangCode = safeStorageGet('gy_lang') || safeStorageGet('gygy_lang');
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag');
-        
-        if (savedLangCode) {
-            savedLangCode = savedLangCode.toLowerCase();
-            if (savedLangCode === 'ua') savedLangCode = 'uk';
-        }
+Коды генерируются автоматически. Юзер выбирает между фото или аватаром, а также указывает свой ник или ник клуба.
 
-        let matchedLang = null;
-        if (savedFlag && typeof allLangs !== 'undefined') {
-            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
-        } else if (savedLangCode && typeof allLangs !== 'undefined') {
-            matchedLang = allLangs.find(l => l.code === savedLangCode);
-        }
+[ОБНОВЛЕНО: Глобальный Реестр: В Зоне регистрации формируется общий список участников по странам (с аватарами и никами). Список доступен из всех зон Клуба (особенно из чатов и Переговорной Офиса) для быстрого поиска и идентификации]. «Система паспортизации, глобальный реестр и локальное взаимодействие»
 
-        if (matchedLang) {
-            currentFlagCode = matchedLang.c;
-            currentActiveCode = matchedLang.code;
-            
-            const activeDisplay = document.getElementById('active-lang-display');
-            if (activeDisplay) activeDisplay.innerHTML = `<img src="https://flagcdn.com/w40/${matchedLang.c}.png" class="flag-icon"> <span>${matchedLang.n}</span>`;
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
-            
-            applyTranslationsToDOM(matchedLang.code);
-            forceTriggerGoogleTranslate(matchedLang.code);
-        }
+Жизненный цикл пользователя, интеграция Telegram и создание Паспорта Этап входа (index.html) и авторизация: Пользователь выбирает базовые параметры (предпочитаемый язык и флаг страны) или использует быструю авторизацию через Telegram (SSO). Данные мгновенно фиксируются в системном хранилище (localStorage).
+Зона регистрации: На следующем этапе к выбранным параметрам привязываются уникальный системный код (GY-XXXXXX), верифицированный из Telegram или кастомный аватар, а также никнейм. Все элементы объединяются в единый Цифровой Паспорт участника.
 
-        if (currentID) { renderUserPassports(currentID); }
-        
-        if (savedAvatar) {
-            currentUserImage = savedAvatar;
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            if (badgeImg) badgeImg.src = savedAvatar;
-            if (passImg) passImg.src = savedAvatar;
+Агрегация по флагам: В языковом блоке на входе автоматически активируется динамический счетчик количества пользователей, зашедших под конкретным флагом. В этот же пул собираются мини-карточки (аватары и паспорта) участников, формируя наглядную базу по странам с возможностью расширения в будущем на другие классификационные признаки.
 
-            if (savedAvatar.startsWith('data:image/svg+xml')) {
-                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-            } else { 
-                const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
-            }
-            const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
-            const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
-        }
-    }
+Глобальный Реестр участников Единая база (Экосистема): Все зарегистрированные пользователи, сотрудники и верифицированные через Telegram аккаунты попадают в общий Глобальный Реестр (аналог единой абонентской базы мессенджера).
+Доступность: Реестр доступен из любой точки виртуального пространства клуба (особенно из чатов, Бара, «Книги жалоб и странных мыслей» и Переговорной Офиса), обеспечивая мгновенный поиск, идентификацию и связь между участниками независимо от их текущего местоположения.
 
-    function enterStudio() { 
-        window.location.href = 'studio.html'; 
-    }
+Динамическое управление участниками в локациях («+ Добавить / - Удалить») Контекстное присутствие: В локациях и комнатах клуба, где возникает потребность в совместной работе или общении, реализован интуитивный интерфейс управления составом (по аналогии с добавлением участников в групповой чат).
+Механика: С помощью кнопок «+ Добавить» открывается модальное окно Глобального Реестра, позволяющее выбрать нужного собеседника (с фильтрацией по странам, флагам или ролям) и подключить его к текущему пространству. Кнопка «- Удалить» (или интерактивный крестик на плашке участника) позволяет мгновенно исключить пользователя из контекста конкретной локации. [ОБНОВЛЕНО: Переход дальше: Плавное затухание с последующим плавным проявлением (1.2 сек) и вход в Холл].
 
-    function handleNavigationBack() {
-        if (currentBlockId === 'block-hall') {
-            portalTransition('block-identity');
-        } else if (currentBlockId === 'block-identity') {
-            portalTransition('block-welcome');
-        } else if (currentBlockId === 'block-welcome') {
-            portalTransition('block-entrance');
-        }
-    }
+🏛 Главный Холл (#block-hall) [ОБНОВЛЕНО: Зона разветвления функциональной структуры: Front-End (Клуб) делится на Развлекательную (Зеленая группа 🟢) и Деловую/Бизнес (Оранжевая группа 🟠) части. Back-End — это исключительно ОФИС (office.html)].
 
-    function portalTransition(nextId) {
-        if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
-        if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-        
-        if (nextId === 'block-office') {
-            const currentNickname = safeStorageGet('gygy_nickname') || safeStorageGet('gy_user_id') || '';
-            if (currentNickname.toLowerCase() === 'модермех') { 
-                safeStorageSet('gygy_is_boss', 'true'); 
-            }
-            window.location.href = 'office.html';
-            return;
-        }
+Фон Холла: Стационарное фото с дверью входа в Бар и расположенными вокруг двери 4 картинами, вокруг которых формируются активные зоны в виде фиолетовых стрелок.
 
-        const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
+Шапка: Навигационные стрелки (одиночная и двойная слева), Логотип справа + Паспорт Юзера (Аватар + Ник + Флаг) по центру строки.
 
-        currentBlockId = nextId;
+Над дверью Бара: Надпись «БАР» и Слоган.
 
-        const badge = document.getElementById('global-user-badge');
-        const langSwitcher = document.getElementById('lang-switcher');
-        const navArrows = document.getElementById('club-nav-arrows');
+🌿 ДЕТАЛИЗАЦИЯ 4-х ВЕТВЕЙ ИЗ ХОЛЛА:
 
-        if (nextId === 'block-entrance') {
-            const mainDoor = document.getElementById('main-door');
-            if (mainDoor) mainDoor.classList.remove('door-exploded');
-            if (langSwitcher) langSwitcher.style.display = 'flex';
-            if (navArrows) navArrows.style.display = 'none';
-            if (badge) badge.style.display = 'none';
-        } else {
-            if (navArrows) navArrows.style.display = 'flex';
-            if (badge && currentUserImage) badge.style.display = 'block';
-            
-            if (nextId === 'block-welcome' || nextId === 'block-identity' || nextId === 'block-hall') {
-                if (langSwitcher) langSwitcher.style.display = 'none';
-            } else {
-                if (langSwitcher) langSwitcher.style.display = 'flex';
-            }
-        }
+🟢 Front-End (Развлекательная часть, Левый Верх): КОМНАТА ИИ / AI-ROOM (verses.html) [ОБНОВЛЕНО: Работа нейро-модулей и развлекательные генеративные функции]:
+🟢 1.1. «Послание инопланетянам» (alien) — генерация и кодирование внеземных смысловых структур с фиксацией кликов.
 
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
-        });
+🟢 1.2. «Лунная база» (moon) — автономный нейро-модуль симуляции процессов.
 
-        targetBlock.style.display = 'flex';
-        
-        setTimeout(() => {
-            targetBlock.classList.add('active');
-        }, 20);
-    }
+🟢 1.3. «Привет, Вселенная!» (hello) — стартовая площадка тестирования нейросетевых ответов.
 
-    function handleDoor() {
-        const sndDoor = document.getElementById('snd-door');
-        const sndAmbient = document.getElementById('snd-ambient');
-        const mainDoor = document.getElementById('main-door');
+💼 Back-End (Только Центр Управления, Левый Низ): ОФИС (office.html) [ОБНОВЛЕНО: Back-End система — Центр Управления Полетами (Control Center), принимающий телеметрию со всех точек Клуба]:
+[ОБНОВЛЕНО: Зона №1 (Схема Офиса): Координация регламентов и ресурсов. Наглядная визуальная карта управления процессами и структурами Back-End (включает 6 внутренних блоков)]:
 
-        if (sndDoor) sndDoor.play();
-        if (mainDoor) mainDoor.classList.add('door-exploded');
+Блок №1: [Функционал в разработке / Заготовка]
 
-        setTimeout(() => {
-            if (sndAmbient) {
-                sndAmbient.volume = 0.5;
-                sndAmbient.play().catch(e => console.log("Ambient blocked"));
-            }
-            portalTransition('block-welcome');
-        }, 700);
-    }
+Блок №2: [Функционал в разработке / Заготовка]
 
-    function preview(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentUserImage = e.target.result;
-                const pp = document.getElementById('pp'); if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
-                const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = 'none';
-                const avatarImg = document.getElementById('avatar-img'); if (avatarImg) avatarImg.style.display = 'none';
-                const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = 'block';
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
+[ОБНОВЛЕНО: Блок №3 (Комната Переговоров / Core Module): Чат с ядром синхронного лингво-смыслового перевода контекста и кнопкой выхода в Телеграм].
 
-    function generateAvatar() {
-        const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000000"/></svg>`;
-        currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
-        const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-        const pp = document.getElementById('pp'); if (pp) pp.style.display = "none";
-        const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "block";
-    }
+Блок №4 (Проектный Отдел): Управление текущими задачами.
 
-    function saveUserProfile() {
-        if (!currentUserImage) return;
-        safeStorageSet('gygy_avatar', currentUserImage);
-        safeStorageSet('gy_user_img', currentUserImage);
-        safeStorageSet('gy_user_avatar', currentUserImage); 
-        safeStorageSet('gy_user_id', currentID);
+Блок №5 (Технический Сектор): Поддержка скриптов и баз данных.
 
-        const badgeImg = document.getElementById('badge-avatar-img');
-        const passImg = document.getElementById('pass-avatar-img');
-        if (badgeImg) badgeImg.src = currentUserImage;
-        if (passImg) passImg.src = currentUserImage;
+Блок №6 (Безопасность): Протоколы доступа, Cookie и идентификация.
 
-        const badge = document.getElementById('global-user-badge');
-        if (badge) badge.style.display = 'block';
+[ОБНОВЛЕНО: Зона №2 (Схема Клуба): Живая лента телеметрии (LIVE Log), принимающая импульсы (клики и события) от всех оранжевых 🟠 и зеленых 🟢 шариков Клуба в реальном времени].
 
-        const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
-        const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
-    }
+🟠 Front-End (Деловая / Бизнес часть, Правый Верх): СТУДИЯ / STUDIO (studio.html) [ОБНОВЛЕНО: Творческий и прикладной бизнес-функционал (Front-End)]:
+🟠 3.1. «Ателье» (atelier) — ключевая зона генерации, примерки и кастомизации визуала (аватары, стиль, атрибутика). Находится в глубокой разработке в параллели с Офисом!
 
-    function openPassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) { 
-            modal.style.display = 'flex'; 
-            setTimeout(() => { modal.style.opacity = '1'; }, 10); 
-        }
-    }
+🟠 3.2. «Мастерская сувениров» (souvenirs) — брендинг и создание цифровых знаков отличия.
 
-    function closePassport() {
-        const modal = document.getElementById('modal-passport');
-        if (modal) {
-            modal.style.opacity = '0';
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
-    }
+🟠 3.3. «...Старинности» (vintage) — архив редких коллекций и история Клуба.
 
-    window.addEventListener('DOMContentLoaded', () => {
-        if (!currentID) {
-            currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
-            safeStorageSet('gygy_id', currentID);
-        }
-        checkAndFillRegistrationForm();
-        renderLangList();
-        setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
-    });
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
+🟢 Front-End (Развлекательная часть, Правый Низ & Центр): ВХОД В БАР (bar.html → tables.html) [ОБНОВЛЕНО: Интерактивная зона общения с выходом в Матрицу Столов 3х2]:
+🟢 4.1. «Книга жалоб» (complaints) — локация обратной связи с передачей сигналов в Офис.
+
+Матрица Столов 3х2 (tables.html):
+
+Левый фланг:
+
+🟢 Стол 1: «Риск-стратегия» (strat1)
+
+🟢 Стол 2: «Дуэль на цитатах» (strat2)
+
+🟢 Стол 3: «Дуэль комплиментов» (strat3)
+
+Правый фланг:
+
+🟢 Стол 4: «Поэтический podium» (strat4)
+
+🟢 Стол 5: «Переводчик М/Ж» (strat5) — смысловой адаптер Мужского/Женского контекста
+
+🟢 Стол 6: «Тень Барона» (strat6)
+
+Центр Зала:
+
+🎙 🟢 «ВИТРИНА / ВЫЗОВ: ОТКРЫТЫЙ МИКРОФОН» (open_mic)
+
+«Обновляй и актуализируй номер версии исключительно внутри самого исходного кода (в заголовках, мета-тегах и интерфейсе), чтобы я всегда чётко видел текущую рабочую версию проекта». index.html — основной файл интерфейса, содержащий HTML-разметку, стили (CSS), а также логику навигации, анимации дверей и работу модальных окон.
+
+userlang-data.js — централизованная база языков (allLangs), списки резидентов, генераторы случайных никнеймов и функция автоматической регистрации текущего пользователя.
+
+translations.js — языковая матрица со всеми словарями и переводами интерфейса.
+
+📥 Порядок подключения в index.html HTML
+
+<script src="userlang-data.js"></script> <script src="translations.js"></script> <script> // Инициализация приложения и обработчики событий </script>
+🤖 Telegram Integration В проект добавлена поддержка Telegram Web App API. При открытии приложения внутри мессенджера автоматически считываются данные профиля пользователя (имя, username), что позволяет бесшовно заполнять никнейм и привязывать TelegramРАЗДЕЛ README: «Система паспортизации, глобальный реестр и локальное взаимодействие»
+1. Жизненный цикл пользователя и создание Паспорта
+Этап входа (index.html): Пользователь выбирает базовые параметры — предпочитаемый язык и флаг страны. Эти данные мгновенно фиксируются в системном хранилище (localStorage).
+
+Зона регистрации: На следующем этапе к выбранным параметрам привязываются уникальный системный код (GY-XXXXXX), кастомный или сгенерированный аватар и никнейм. Все эти элементы объединяются в единый Цифровой Паспорт участника.
+
+Агрегация по флагам: В языковом блоке на входе автоматически активируется динамический счетчик количества пользователей, зашедших под конкретным флагом. В этот же пул собираются мини-карточки (аватары и паспорта) участников, формируя наглядную базу по странам с возможностью расширения в будущем на другие классификационные признаки.
+
+2. Глобальный Реестр участников
+Единая база: Все зарегистрированные пользователи и сотрудники клуба попадают в общий Глобальный Реестр.
+
+Доступность: Реестр доступен из любой точки виртуального пространства клуба (особенно из чатов, Бара, «Книги жалоб и странных мыслей» и Переговорной Офиса), обеспечивая мгновенный поиск, идентификацию и связь между участниками независимо от их текущего местоположения.
+
+3. Динамическое управление участниками в локациях («+ Добавить / - Удалить»)
+Контекстное присутствие: В локациях и комнатах клуба, где возникает потребность в совместной работе или общении, реализован интуитивный интерфейс управления составом.
+
+Механика: С помощью кнопок «+ Добавить» открывается модальное окно Глобального Реестра, позволяющее выбрать нужного собеседника (с фильтрацией по странам, флагам или ролям) и подключить его к текущему пространству. Кнопка «- Удалить» (или интерактивный крестик на плашке участника) позволяет мгновенно исключить пользователя из контекста конкретной локации.
