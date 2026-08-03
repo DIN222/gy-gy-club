@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.45 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.46 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -575,7 +575,7 @@
             });
         }
 
-      function saveUserProfile() {
+   function saveUserProfile() {
     try {
         playSound('sound-fanfare');
         setTimeout(() => playSound('sound-applause'), 400);
@@ -591,11 +591,11 @@
     try {
         localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
         
+        const badgeImg = document.getElementById('badge-avatar-img');
+        const passImg = document.getElementById('pass-avatar-img');
+        const globalBadge = document.getElementById('global-user-badge');
+        
         if (currentUserAvatar) {
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const passImg = document.getElementById('pass-avatar-img');
-            const globalBadge = document.getElementById('global-user-badge');
-            
             if (badgeImg) badgeImg.src = currentUserAvatar;
             if (passImg) passImg.src = currentUserAvatar;
             if (globalBadge) globalBadge.style.display = 'block';
@@ -610,12 +610,28 @@
         const btnPass = document.getElementById('btn-pass');
         if (btnWHall) btnWHall.classList.remove('btn-sleep');
         if (btnPass) btnPass.classList.remove('btn-sleep');
-    } catch(e) {
-        console.error("Save error:", e);
-    }
+    } catch(e) {}
 
-    // Гарантированный переход в блок холла в самом конце
-    portalTransition('block-hall');
+    // ПРИНУДИТЕЛЬНЫЙ ПЕРЕХОД: жестко скрываем регистрацию и показываем холл
+    const regBlock = document.getElementById('block-identity');
+    const hallBlock = document.getElementById('block-hall');
+    
+    if (regBlock) {
+        regBlock.style.opacity = '0';
+        regBlock.classList.remove('active');
+        regBlock.style.display = 'none';
+    }
+    
+    if (hallBlock) {
+        hallBlock.style.display = 'flex';
+        hallBlock.classList.add('active');
+        setTimeout(() => {
+            hallBlock.style.opacity = '1';
+        }, 50);
+    } else {
+        // Запасной вариант, если ID холла называется иначе
+        portalTransition('block-hall');
+    }
 }
         function openPassport() {
             playSound('sound-pour');
