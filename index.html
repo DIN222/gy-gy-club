@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.41 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.42 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -353,8 +353,45 @@
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
 </div>
 
-<!-- Скрипт разблокировки звуков браузера по первому клику -->
+<!-- Обновленная безопасная функция сохранения -->
 <script>
+    function saveUserProfile() {
+        playSound('sound-fanfare');
+        setTimeout(() => playSound('sound-applause'), 400);
+
+        const profileData = {
+            id: currentUserId,
+            avatar: currentUserAvatar,
+            flag: currentUserFlag,
+            nick: currentNickname
+        };
+        localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
+        
+        if (currentUserAvatar) {
+            const badgeImg = document.getElementById('badge-avatar-img');
+            const passImg = document.getElementById('pass-avatar-img');
+            const globalBadge = document.getElementById('global-user-badge');
+            
+            if (badgeImg) badgeImg.src = currentUserAvatar;
+            if (passImg) passImg.src = currentUserAvatar;
+            if (globalBadge) globalBadge.style.display = 'block';
+        }
+        
+        // Безопасная проверка наличия элемента паспорта перед генерацией QR
+        const passQrBox = document.getElementById('pass-qr-box');
+        if (passQrBox) {
+            generateQR(currentUserId.toString(), 'pass-qr-box', 90);
+        }
+        
+        const btnWHall = document.getElementById('btn-w-hall');
+        const btnPass = document.getElementById('btn-pass');
+        if (btnWHall) btnWHall.classList.remove('btn-sleep');
+        if (btnPass) btnPass.classList.remove('btn-sleep');
+        
+        portalTransition('block-hall');
+    }
+
+    // Скрипт разблокировки звуков браузера по первому клику
     document.addEventListener('click', function unlockAudioContext() {
         document.querySelectorAll('audio').forEach(audio => {
             audio.load();
