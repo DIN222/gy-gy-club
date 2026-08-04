@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.15 CORE</title>
+    <title>GY-GY Club v4.6.17 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -165,16 +165,22 @@
         .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
         .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
 
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ (СТАРЫЙ НАДЕЖНЫЙ СПОСОБ РЕШЕНИЯ СО СТРЕЛКАМИ) */
-        #block-hall { background: #000000; }
+        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ (ИСХОДНЫЙ СТРОГИЙ СТИЛЬ С ВИДИМЫМ ФОНОМ) */
+        #block-hall { 
+            background: #000000 !important; 
+        }
         .hall-interior { 
-            position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; 
-            background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000;
+            position: absolute; 
+            inset: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 2; 
+            background: url('hall_bg_jpg.jpg') center / cover no-repeat #000000;
         }
         
         .hall-interior .quote-text { 
             position: absolute; 
-            top: 8vh; 
+            top: 10vh; 
             left: 50%; 
             transform: translateX(-50%); 
             width: 85%; 
@@ -183,56 +189,57 @@
             padding: 0;
             background: transparent !important;
             color: var(--gold) !important;         
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             -webkit-text-stroke: 1px #000000;
             text-stroke: 1px #000000;
         }
 
-        /* Зоны клика по картинам (старый проверенный абсолют) */
-        .hall-painting-left {
-            position: absolute;
-            top: 28vh;
-            left: 15vw;
-            width: 20vw;
-            height: 35vh;
-            cursor: pointer;
-            z-index: 10;
+        /* Кликабельные зоны картинок со стрелками */
+        .painting-zone {
+            position: absolute; 
+            top: 25vh; 
+            width: 6vw; 
+            height: 12vh; 
+            cursor: pointer; 
+            z-index: 6; 
             background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .hall-painting-right {
-            position: absolute;
-            top: 28vh;
-            right: 15vw;
-            width: 20vw;
-            height: 35vh;
-            cursor: pointer;
-            z-index: 10;
-            background: transparent;
-        }
+        .painting-left { left: 23vw; }
+        .painting-right { right: 23vw; }
 
         .cue-arrow-hall { 
             color: var(--violet); 
-            font-size: 32px; 
+            font-size: 34px; 
             font-weight: 900; 
             font-family: 'Share Tech Mono', monospace;
             text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); 
             pointer-events: none; 
             user-select: none;
-        }
-
-        .hall-door-target {
-            position: absolute; 
-            bottom: 0; 
-            left: 50%; 
-            transform: translateX(-50%);
-            width: 24vw; 
-            height: 55vh; 
-            cursor: pointer; 
             z-index: 10;
-            background: transparent;
+            transition: opacity 0.2s;
         }
+        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
+
+        .manifest-btn-box { 
+            position: absolute; 
+            bottom: -45px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 130px; 
+            display: flex; 
+            flex-direction: column;
+            gap: 5px;
+            justify-content: center; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.4s, bottom 0.4s; 
+            z-index: 10; 
+        }
+        .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; background-color: #000000 !important; opacity: 0; transition: opacity 1.2s ease-in-out !important; }
@@ -262,7 +269,7 @@
         }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body oncontextmenu="return false;" class="page-loaded">
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
@@ -400,24 +407,40 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
-    <!-- Холл со старым надежным способом позиционирования стрелок и картин -->
+    <!-- Холл со стрелками и картинами поверх надежного фона -->
     <div id="block-hall" class="block">
         <div class="hall-interior">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
             
-            <!-- Левая картина / зона -->
-            <div class="hall-painting-left" onclick="portalTransition('block-server')">
-                <div style="position: absolute; top: 10px; left: 10px;"><span class="cue-arrow-hall">→</span></div>
-            </div>
+            <div class="painting-zone painting-left">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" onclick="toggleManifest('manifest-left')">
+                    <span class="cue-arrow-hall">→</span>
+                    <div id="manifest-left" class="manifest-btn-box" data-opened="false">
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
+                    </div>
+                </div>
 
-            <!-- Правая картина / зона -->
-            <div class="hall-painting-right" onclick="enterStudio()">
-                <div style="position: absolute; top: 10px; right: 10px;"><span class="cue-arrow-hall">←</span></div>
+                <div style="position: absolute; top: 60px; left: 0; width: 100%; height: 100%;" onclick="toggleManifest('manifest-office')">
+                    <span class="cue-arrow-hall">→</span>
+                    <div id="manifest-office" class="manifest-btn-box" data-opened="false">
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
+                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); enterStaffOffice()">STAFF ROOM</button>
+                    </div>
+                </div>
             </div>
-
-            <!-- Центральная дверь -->
-            <div class="hall-door-target" onclick="portalTransition('block-bar')">
-                <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);"><span class="cue-arrow-hall">↑</span></div>
+                
+            <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
+                <span class="cue-arrow-hall">←</span>
+                <div id="manifest-right" class="manifest-btn-box" data-opened="false">
+                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
+                </div>
+            </div>
+        </div>
+            
+        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; z-index: 5;">
+            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
+            <div class="bar-entrance-marker" style="position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
+                <span class="cue-arrow-hall" style="font-size: 34px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
             </div>
         </div>
     </div>
@@ -427,7 +450,7 @@
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
-            <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
+            <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
@@ -542,6 +565,10 @@
             combo.dispatchEvent(new Event('change'));
         }
     }
+
+    window.addEventListener('load', () => {
+        document.body.classList.add('page-loaded');
+    });
 </script>
 </body>
 </html>
