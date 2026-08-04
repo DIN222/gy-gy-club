@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.53 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.54 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -309,62 +309,69 @@
     <!-- Сетка: 2 ряда по 3 квадрата -->
     <div class="registration-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px !important; margin-bottom: 10px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 340px;">
         
-        <!-- 1. Digital ID -->
-        <div class="reg-square" style="cursor: default; background: #fdfdfd;">
-            <span style="font-size: 8px; font-weight: bold;">DIGITAL ID</span>
-            <span id="id-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333;">#ID</span>
-        </div>
-
-       <!-- 2. Фото (при выборе стирает аватар и показывает фото) -->
-<div class="reg-square" onclick="document.getElementById('file-input').click();" style="position: relative; overflow: hidden;">
-    <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_photo">OR PHOTO</span>
-    <img id="pp" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
-    <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Включаем фото
-                const ppImg = document.getElementById('pp');
-                const txtPhoto = document.getElementById('txt-photo');
-                if(ppImg) { ppImg.src = e.target.result; ppImg.style.display = 'block'; }
-                if(txtPhoto) txtPhoto.style.display = 'none';
-                window.currentUserAvatar = e.target.result;
-
-                // СТРОГО СТИРАЕМ И ВЫКЛЮЧАЕМ АВАТАР
-                const avImg = document.getElementById('avatar-img');
-                const txtAvatar = document.getElementById('txt-avatar');
-                if(avImg) { avImg.src = ''; avImg.style.display = 'none'; }
-                if(txtAvatar) txtAvatar.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        }
-    ">
-</div>
-
-<!-- 3. Аватар (при выборе стирает фото и показывает сгенерированный аватар) -->
-<div class="reg-square" onclick="
-    const avUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Math.floor(Math.random() * 10000);
+     <!-- Кнопка SAVE: сохраняет данные, разблокирует PROCEED и переходит в Холл -->
+<button id="btn-save" class="btn-gy" onclick="
+    // 1. Собираем данные профиля
+    const profileData = {
+        id: window.currentUserId || 'GY-' + Math.floor(100000 + Math.random() * 900000),
+        avatar: window.currentUserAvatar || '',
+        flag: window.currentUserFlag || 'https://flagcdn.com/w20/gb.png',
+        nick: window.currentNickname || document.getElementById('input-own-nick').value || 'GY-MEMBER'
+    };
     
-    // Включаем аватар
-    const avImg = document.getElementById('avatar-img');
-    const txtAvatar = document.getElementById('txt-avatar');
-    if(avImg) { avImg.src = avUrl; avImg.style.display = 'block'; }
-    if(txtAvatar) txtAvatar.style.display = 'none';
-    window.currentUserAvatar = avUrl;
-
-    // СТРОГО СТИРАЕМ И ВЫКЛЮЧАЕМ ФОТО
-    const ppImg = document.getElementById('pp');
-    const txtPhoto = document.getElementById('txt-photo');
-    if(ppImg) { ppImg.src = ''; ppImg.style.display = 'none'; }
-    if(txtPhoto) txtPhoto.style.display = 'block';
+    try {
+        localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
+    } catch(e) {}
     
-    const fileInput = document.getElementById('file-input');
-    if(fileInput) fileInput.value = '';
-" style="position: relative; overflow: hidden;">
-    <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_avatar">OR AVATAR</span>
-    <img id="avatar-img" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
-</div>
+    // 2. Разблокируем кнопку перехода дальше
+    const btnPass = document.getElementById('btn-pass');
+    if (btnPass) btnPass.classList.remove('btn-sleep');
+
+    const btnWHall = document.getElementById('btn-w-hall');
+    if (btnWHall) btnWHall.classList.remove('btn-sleep');
+
+    // 3. Плавный и принудительный переход в Холл
+    const regBlock = document.getElementById('block-identity');
+    const hallBlock = document.getElementById('block-hall');
+    
+    if (regBlock) {
+        regBlock.style.opacity = '0';
+        setTimeout(() => {
+            regBlock.classList.remove('active');
+            regBlock.style.display = 'none';
+        }, 300);
+    }
+    
+    if (hallBlock) {
+        hallBlock.style.display = 'flex';
+        setTimeout(() => {
+            hallBlock.classList.add('active');
+            hallBlock.style.opacity = '1';
+        }, 50);
+    }
+" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
+
+<!-- Кнопка PROCEED: быстрый переход в Холл для повторного входа -->
+<button id="btn-pass" class="btn-gy btn-sleep" onclick="
+    const regBlock = document.getElementById('block-identity');
+    const hallBlock = document.getElementById('block-hall');
+    
+    if (regBlock) {
+        regBlock.style.opacity = '0';
+        setTimeout(() => {
+            regBlock.classList.remove('active');
+            regBlock.style.display = 'none';
+        }, 300);
+    }
+    
+    if (hallBlock) {
+        hallBlock.style.display = 'flex';
+        setTimeout(() => {
+            hallBlock.classList.add('active');
+            hallBlock.style.opacity = '1';
+        }, 50);
+    }
+" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
         <!-- 4. QR-код -->
         <div class="reg-square" style="cursor: default; background: #ffffff;">
             <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
