@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.52 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.53 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -315,45 +315,56 @@
             <span id="id-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333;">#ID</span>
         </div>
 
-        <!-- 2. Фото -->
-        <div class="reg-square" onclick="const fi = document.getElementById('file-input'); if(fi) fi.click();" style="position: relative; overflow: hidden;">
-            <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_photo">OR PHOTO</span>
-            <img id="pp" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
-            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const ppImg = document.getElementById('pp');
-                        const txtPhoto = document.getElementById('txt-photo');
-                        if(ppImg) { ppImg.src = e.target.result; ppImg.style.display = 'block'; }
-                        if(txtPhoto) txtPhoto.style.display = 'none';
-                        window.currentUserAvatar = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-                if (typeof preview === 'function') {
-                    try { preview(this); } catch(err) {}
-                }
-            ">
-        </div>
+       <!-- 2. Фото (при выборе стирает аватар и показывает фото) -->
+<div class="reg-square" onclick="document.getElementById('file-input').click();" style="position: relative; overflow: hidden;">
+    <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_photo">OR PHOTO</span>
+    <img id="pp" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
+    <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Включаем фото
+                const ppImg = document.getElementById('pp');
+                const txtPhoto = document.getElementById('txt-photo');
+                if(ppImg) { ppImg.src = e.target.result; ppImg.style.display = 'block'; }
+                if(txtPhoto) txtPhoto.style.display = 'none';
+                window.currentUserAvatar = e.target.result;
 
-        <!-- 3. Аватар -->
-        <div class="reg-square" onclick="
-            const avUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Math.floor(Math.random() * 10000);
-            const avImg = document.getElementById('avatar-img');
-            const txtAvatar = document.getElementById('txt-avatar');
-            if(avImg) { avImg.src = avUrl; avImg.style.display = 'block'; }
-            if(txtAvatar) txtAvatar.style.display = 'none';
-            window.currentUserAvatar = avUrl;
-            if (typeof generateAvatar === 'function') {
-                try { generateAvatar(); } catch(err) {}
+                // СТРОГО СТИРАЕМ И ВЫКЛЮЧАЕМ АВАТАР
+                const avImg = document.getElementById('avatar-img');
+                const txtAvatar = document.getElementById('txt-avatar');
+                if(avImg) { avImg.src = ''; avImg.style.display = 'none'; }
+                if(txtAvatar) txtAvatar.style.display = 'block';
             }
-        " style="position: relative; overflow: hidden;">
-            <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_avatar">OR AVATAR</span>
-            <img id="avatar-img" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
-        </div>
+            reader.readAsDataURL(file);
+        }
+    ">
+</div>
 
+<!-- 3. Аватар (при выборе стирает фото и показывает сгенерированный аватар) -->
+<div class="reg-square" onclick="
+    const avUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Math.floor(Math.random() * 10000);
+    
+    // Включаем аватар
+    const avImg = document.getElementById('avatar-img');
+    const txtAvatar = document.getElementById('txt-avatar');
+    if(avImg) { avImg.src = avUrl; avImg.style.display = 'block'; }
+    if(txtAvatar) txtAvatar.style.display = 'none';
+    window.currentUserAvatar = avUrl;
+
+    // СТРОГО СТИРАЕМ И ВЫКЛЮЧАЕМ ФОТО
+    const ppImg = document.getElementById('pp');
+    const txtPhoto = document.getElementById('txt-photo');
+    if(ppImg) { ppImg.src = ''; ppImg.style.display = 'none'; }
+    if(txtPhoto) txtPhoto.style.display = 'block';
+    
+    const fileInput = document.getElementById('file-input');
+    if(fileInput) fileInput.value = '';
+" style="position: relative; overflow: hidden;">
+    <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_avatar">OR AVATAR</span>
+    <img id="avatar-img" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
+</div>
         <!-- 4. QR-код -->
         <div class="reg-square" style="cursor: default; background: #ffffff;">
             <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
