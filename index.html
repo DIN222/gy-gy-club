@@ -303,7 +303,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-<<div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 9vh !important; box-sizing: border-box;">
+<div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 9vh !important; box-sizing: border-box;">
     <div class="quote-text" data-translate="identity_quote" style="margin-top: 0px !important; margin-bottom: 6px !important; padding: 0 !important; text-align: center; width: 100%;">There is never too much champagne</div>
     
     <!-- Сетка: 2 ряда по 3 квадрата -->
@@ -316,14 +316,14 @@
         </div>
 
         <!-- 2. Photo -->
-        <div class="reg-square" onclick="document.getElementById('file-input').click()">
+        <div class="reg-square" onclick="const fi = document.getElementById('file-input'); if(fi) fi.click();">
             <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px;" data-translate="txt_photo">OR PHOTO</span>
             <img id="pp" style="display:none; z-index: 1;">
-            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="preview(this)">
+            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="if(typeof preview === 'function') { preview(this); } else { const r = new FileReader(); r.onload = function(e) { document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display='block'; }; r.readAsDataURL(this.files[0]); }">
         </div>
 
         <!-- 3. Avatar -->
-        <div class="reg-square" onclick="generateAvatar()">
+        <div class="reg-square" onclick="if(typeof generateAvatar === 'function') { generateAvatar(); }">
             <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px;" data-translate="txt_avatar">OR AVATAR</span>
             <img id="avatar-img" style="display:none; z-index: 1;">
         </div>
@@ -334,12 +334,12 @@
         </div>
 
         <!-- 5. Own Nick -->
-        <div id="box-own-nick" class="reg-square selected" onclick="setNickType('own')">
-            <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="updateNicknameValue(this.value, 'own')" maxlength="15" style="font-size: 10px; width: 90%; text-align: center;">
+        <div id="box-own-nick" class="reg-square selected" onclick="if(typeof setNickType === 'function') setNickType('own');">
+            <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="if(typeof updateNicknameValue === 'function') updateNicknameValue(this.value, 'own');" maxlength="15" style="font-size: 10px; width: 90%; text-align: center;">
         </div>
 
         <!-- 6. Club Nick -->
-        <div id="box-club-nick" class="reg-square" onclick="generateClubNick()" style="position: relative; overflow: hidden;">
+        <div id="box-club-nick" class="reg-square" onclick="if(typeof generateClubNick === 'function') generateClubNick();" style="position: relative; overflow: hidden;">
             <span style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 8px; position: relative;" data-translate="nick_club">CLUB NICK</span>
             <span id="club-nick-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333; z-index: 2; position: relative;">GY-MEMBER</span>
             <style>
@@ -349,8 +349,8 @@
 
     </div>
 
-    <!-- Кнопка сохранения с гарантированным вызовом перехода в холл -->
-    <button id="btn-save" class="btn-gy" onclick="saveUserProfile(); portalTransition('block-hall');" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
+    <!-- Кнопка сохранения с вызовом вашей оригинальной функции portalTransition -->
+    <button id="btn-save" class="btn-gy" onclick="if(typeof saveUserProfile === 'function') saveUserProfile(); portalTransition('block-hall');" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
 </div>
     <script>
