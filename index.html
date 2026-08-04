@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.48 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.49 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -303,35 +303,42 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-<div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 9vh !important; box-sizing: border-box;">
+<<div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 9vh !important; box-sizing: border-box;">
     <div class="quote-text" data-translate="identity_quote" style="margin-top: 0px !important; margin-bottom: 6px !important; padding: 0 !important; text-align: center; width: 100%;">There is never too much champagne</div>
     
+    <!-- Сетка: 2 ряда по 3 квадрата -->
     <div class="registration-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px !important; margin-bottom: 10px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 340px;">
         
+        <!-- 1. Digital ID -->
         <div class="reg-square" style="cursor: default; background: #fdfdfd;">
             <span style="font-size: 8px; font-weight: bold;">DIGITAL ID</span>
             <span id="id-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333;">#ID</span>
         </div>
 
+        <!-- 2. Photo -->
         <div class="reg-square" onclick="document.getElementById('file-input').click()">
             <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px;" data-translate="txt_photo">OR PHOTO</span>
             <img id="pp" style="display:none; z-index: 1;">
             <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="preview(this)">
         </div>
 
+        <!-- 3. Avatar -->
         <div class="reg-square" onclick="generateAvatar()">
             <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px;" data-translate="txt_avatar">OR AVATAR</span>
             <img id="avatar-img" style="display:none; z-index: 1;">
         </div>
 
+        <!-- 4. QR Code -->
         <div class="reg-square" style="cursor: default; background: #ffffff;">
             <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
         </div>
 
+        <!-- 5. Own Nick -->
         <div id="box-own-nick" class="reg-square selected" onclick="setNickType('own')">
             <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="updateNicknameValue(this.value, 'own')" maxlength="15" style="font-size: 10px; width: 90%; text-align: center;">
         </div>
 
+        <!-- 6. Club Nick -->
         <div id="box-club-nick" class="reg-square" onclick="generateClubNick()" style="position: relative; overflow: hidden;">
             <span style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 8px; position: relative;" data-translate="nick_club">CLUB NICK</span>
             <span id="club-nick-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333; z-index: 2; position: relative;">GY-MEMBER</span>
@@ -342,7 +349,8 @@
 
     </div>
 
-    <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
+    <!-- Кнопка сохранения с гарантированным вызовом перехода в холл -->
+    <button id="btn-save" class="btn-gy" onclick="saveUserProfile(); portalTransition('block-hall');" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
 </div>
     <script>
