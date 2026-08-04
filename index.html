@@ -190,16 +190,12 @@
         .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
         .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
 
-        /* ИСПРАВЛЕННЫЙ ФОН ХОЛЛА С ПОДСТРАХОВКОЙ */
-        #block-hall { 
-            background: radial-gradient(circle, #2a0845 0%, #110022 100%), url('hall_bg_jpg.jpg') center/cover no-repeat !important; 
-            background-blend-mode: overlay;
-        }
+        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000; }
         
         .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
         
         .hall-interior .quote-text { 
-            position: absolute; top: 30vh; left: 50%; transform: translateX(-50%); 
+            position: absolute; top: 18vh; left: 50%; transform: translateX(-50%); 
             width: 85%; margin: 0; text-align: center; padding: 0;
             background: transparent !important; color: var(--gold) !important;        
             font-size: 24px; font-weight: 700; -webkit-text-stroke: 1px #000000; text-stroke: 1px #000000;
@@ -250,7 +246,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- Аудио элементы для звуков из репозитория -->
     <audio id="sound-door" src="door_creak.mp3" preload="auto"></audio>
     <audio id="sound-fanfare" src="fanfare.mp3" preload="auto"></audio>
     <audio id="sound-applause" src="applause.mp3" preload="auto"></audio>
@@ -311,16 +306,13 @@
     <div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 9vh !important; box-sizing: border-box;">
         <div class="quote-text" data-translate="identity_quote" style="margin-top: 0px !important; margin-bottom: 6px !important; padding: 0 !important; text-align: center; width: 100%;">There is never too much champagne</div>
         
-        <!-- Сетка: 2 ряда по 3 квадрата -->
         <div class="registration-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px !important; margin-bottom: 10px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 340px;">
             
-            <!-- 1. Digital ID -->
             <div class="reg-square" style="cursor: default; background: #fdfdfd;">
                 <span style="font-size: 8px; font-weight: bold;">DIGITAL ID</span>
                 <span id="id-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333;">#ID</span>
             </div>
 
-            <!-- 2. Фото (с position: relative для правильного клика) -->
             <div class="reg-square" onclick="document.getElementById('file-input').click();" style="position: relative; overflow: hidden;">
                 <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; position: relative;" data-translate="txt_photo">OR PHOTO</span>
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
@@ -335,7 +327,6 @@
                             if(txtPhoto) txtPhoto.style.display = 'none';
                             window.currentUserAvatar = e.target.result;
 
-                            // Стираем аватар
                             const avImg = document.getElementById('avatar-img');
                             const txtAvatar = document.getElementById('txt-avatar');
                             if(avImg) { avImg.src = ''; avImg.style.display = 'none'; }
@@ -346,7 +337,6 @@
                 ">
             </div>
 
-            <!-- 3. Аватар (с position: relative для правильного клика) -->
             <div class="reg-square" onclick="
                 const avUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Math.floor(Math.random() * 10000);
                 const avImg = document.getElementById('avatar-img');
@@ -355,7 +345,6 @@
                 if(txtAvatar) txtAvatar.style.display = 'none';
                 window.currentUserAvatar = avUrl;
 
-                // Стираем фото
                 const ppImg = document.getElementById('pp');
                 const txtPhoto = document.getElementById('txt-photo');
                 if(ppImg) { ppImg.src = ''; ppImg.style.display = 'none'; }
@@ -368,17 +357,14 @@
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:1;">
             </div>
 
-            <!-- 4. QR Code -->
             <div class="reg-square" style="cursor: default; background: #ffffff;">
                 <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
             </div>
 
-            <!-- 5. Own Nick -->
             <div id="box-own-nick" class="reg-square selected" onclick="if(typeof setNickType === 'function') setNickType('own');">
                 <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="window.currentNickname = this.value;" maxlength="15" style="font-size: 10px; width: 90%; text-align: center; background: transparent; border: none; outline: none; color: #000;">
             </div>
 
-            <!-- 6. Club Nick -->
             <div id="box-club-nick" class="reg-square" onclick="
                 const randClub = 'GY-' + Math.floor(1000 + Math.random() * 9000);
                 const clubLbl = document.getElementById('club-nick-label');
@@ -394,9 +380,7 @@
 
         </div>
 
-        <!-- Единственная логичная кнопка SAVE, которая сохраняет и сразу открывает Холл -->
         <button id="btn-save" class="btn-gy" onclick="
-            // 1. Сохраняем профиль
             const profileData = {
                 id: window.currentUserId || 'GY-' + Math.floor(100000 + Math.random() * 900000),
                 avatar: window.currentUserAvatar || '',
@@ -407,7 +391,6 @@
                 localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
             } catch(e) {}
             
-            // 2. Жестко и принудительно показываем Холл и скрываем регистрацию
             const regBlock = document.getElementById('block-identity');
             const hallBlock = document.getElementById('block-hall');
             
@@ -427,7 +410,6 @@
         " data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
     </div>
 
-    <!-- 4. ЭКРАН ХОЛЛА -->
     <div id="block-hall" class="block">
         <div class="hall-interior">
             <div class="quote-text">Welcome to the Club Hall</div>
@@ -441,7 +423,6 @@
             </div>
         </div>
     </div>
-
     <script>
         let currentUserId = Math.floor(100000 + Math.random() * 900000);
         let currentUserAvatar = '';
