@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.18 CORE</title>
+    <title>GY-GY Club v4.6.19 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -122,11 +122,13 @@
             z-index: 10; 
             opacity: 0; 
             transition: opacity 1.2s ease-in-out; 
+            pointer-events: none; /* по умолчанию не перехватывают касания пока не активны */
         }
         .block.active { 
             display: flex !important; 
             opacity: 1 !important; 
             z-index: 5000 !important; 
+            pointer-events: auto !important;
         }
 
         .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 20px; text-align: center; max-width: 85%; margin-bottom: 8px; text-shadow: 2px 2px 4px #000000; }
@@ -165,7 +167,7 @@
         .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
         .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
 
-        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ (ИСХОДНЫЙ СТРОГИЙ СТИЛЬ С ВИДИМЫМ ФОНОМ) */
+        /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
         #block-hall { 
             background: #000000 !important; 
         }
@@ -195,7 +197,6 @@
             text-stroke: 1px #000000;
         }
 
-        /* Кликабельные зоны картинок со стрелками */
         .painting-zone {
             position: absolute; 
             top: 25vh; 
@@ -249,22 +250,22 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         
-        /* СТРОГИЙ РАЗМЕР ДВЕРИ ДЛЯ ИСКЛЮЧЕНИЯ РАСТЯГИВАНИЯ */
-      #main-door {
-    display: block;
-    height: 48vh;
-    max-height: 400px;
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
-    margin: 0 auto; 
-    transform: scale(1);
-    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
-    cursor: pointer;
-    position: relative;
-    z-index: 100; /* Принудительно выводим дверь поверх остальных элементов */
-    pointer-events: auto !important;
-}
+        /* СТРОГИЙ РАЗМЕР ДВЕРИ И ПРИНУДИТЕЛЬНАЯ КЛИКАБЕЛЬНОСТЬ */
+        #main-door {
+            display: block;
+            height: 48vh;
+            max-height: 400px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            margin: 0 auto; 
+            transform: scale(1);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
+            cursor: pointer;
+            position: relative;
+            z-index: 100000;
+            pointer-events: auto !important;
+        }
 
         .door-exploded {
             transform: scale(3.5) !important;
@@ -363,8 +364,8 @@
 
         <div id="google_translate_element" style="display:none;"></div>
 
-        <!-- Дверь -->
-        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
+        <!-- Дверь с прямым дублированием обработчика клика прямо на элементе и через JS -->
+        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()" ontouchend="handleDoor(event)">
     </div>
 
     <!-- Вторая страница (Welcome) -->
@@ -410,7 +411,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
-    <!-- Холл со стрелками и картинами поверх надежного фона -->
+    <!-- Холл со стрелками и картинами -->
     <div id="block-hall" class="block">
         <div class="hall-interior">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -469,6 +470,7 @@
     let currentBlockId = 'block-entrance';
     let selectedNickType = 'own';
     let userChosenNickname = '';
+    let isDoorOpened = false;
 
     let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
     const allLanguages = [
@@ -494,32 +496,64 @@
         return map[code] || 'gb';
     }
 
-    function syncGTranslateWidget() {
-        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-            if (combo.value !== savedLangCode) {
-                combo.value = savedLangCode;
-                combo.dispatchEvent(new Event('change'));
-            }
-        } else {
-            setTimeout(syncGTranslateWidget, 100);
+    // НАДЕЖНАЯ ФУНКЦИЯ ОТКРЫТИЯ ДВЕРИ
+    function handleDoor(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
+        if (isDoorOpened) return;
+        isDoorOpened = true;
+
+        const door = document.getElementById('main-door');
+        const sndDoor = document.getElementById('snd-door');
+        const sndAmbient = document.getElementById('snd-ambient');
+
+        if (sndDoor) {
+            sndDoor.play().catch(err => console.log("Audio play blocked:", err));
+        }
+        if (sndAmbient) {
+            sndAmbient.volume = 0.4;
+            sndAmbient.play().catch(err => console.log("Ambient play blocked:", err));
+        }
+
+        if (door) {
+            door.classList.add('door-exploded');
+        }
+
+        setTimeout(() => {
+            portalTransition('block-welcome');
+        }, 600);
     }
 
-    function updateGlobalFlagUI() {
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
-        const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
-        
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) {
-            currentFlagEl.src = flagUrl;
-        }
+    // УНИВЕРСАЛЬНЫЙ ПЕРЕХОД МЕЖДУ ЭКРАНАМИ
+    function portalTransition(targetId) {
+        const currentBlock = document.getElementById(currentBlockId);
+        const targetBlock = document.getElementById(targetId);
 
-        const savedLangName = safeStorageGet('gygy_lang_name');
-        const langNameEl = document.getElementById('current-lang-name');
-        if (savedLangName && langNameEl) {
-            langNameEl.innerText = savedLangName;
+        if (currentBlock) {
+            currentBlock.classList.remove('active');
+        }
+        if (targetBlock) {
+            targetBlock.classList.add('active');
+        }
+        currentBlockId = targetId;
+
+        // Управление видимостью стрелок возврата и бейджа
+        const navArrows = document.getElementById('club-nav-arrows');
+        const userBadge = document.getElementById('global-user-badge');
+
+        if (targetId === 'block-entrance') {
+            if (navArrows) navArrows.style.display = 'none';
+            if (userBadge) userBadge.style.display = 'none';
+            isDoorOpened = false;
+            const door = document.getElementById('main-door');
+            if (door) {
+                door.classList.remove('door-exploded');
+            }
+        } else {
+            if (navArrows) navArrows.style.display = 'flex';
+            if (userBadge && currentID) userBadge.style.display = 'block';
         }
     }
 
@@ -571,6 +605,13 @@
 
     window.addEventListener('load', () => {
         document.body.classList.add('page-loaded');
+        
+        // Принудительная программная страховка клика на дверь для мобильных браузеров
+        const door = document.getElementById('main-door');
+        if (door) {
+            door.addEventListener('click', handleDoor);
+            door.addEventListener('touchend', handleDoor);
+        }
     });
 </script>
 </body>
