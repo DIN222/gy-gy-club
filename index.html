@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.55 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.56 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -306,142 +306,131 @@
 <div id="block-identity" class="block" style="justify-content: flex-start !important; align-items: center !important; padding-top: 9vh !important; box-sizing: border-box;">
     <div class="quote-text" data-translate="identity_quote" style="margin-top: 0px !important; margin-bottom: 6px !important; padding: 0 !important; text-align: center; width: 100%;">There is never too much champagne</div>
     
-    <!-- Сетка: 2 ряда по 3 квадрата -->
+    <!-- Сетка: 2 ряда по 3 квадрата (используем ваши стандартные классы) -->
     <div class="registration-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px !important; margin-bottom: 10px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 340px;">
         
-     <!-- Кнопка SAVE: сохраняет данные, разблокирует PROCEED и переходит в Холл -->
-<button id="btn-save" class="btn-gy" onclick="
-  <!-- Сетка: 2 ряда по 3 квадрата (строго фиксированная и адаптированная под экран) -->
-<div class="registration-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px !important; margin-bottom: 8px !important; margin-left: auto !important; margin-right: auto !important; width: 100%; max-width: 320px; box-sizing: border-box;">
-    
-    <!-- 1. Digital ID -->
-    <div class="reg-square" style="cursor: default; background: #fdfdfd; aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box;">
-        <span style="font-size: 8px; font-weight: bold;">DIGITAL ID</span>
-        <span id="id-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333;">#ID</span>
-    </div>
+        <!-- 1. Digital ID -->
+        <div class="reg-square" style="cursor: default; background: #fdfdfd;">
+            <span style="font-size: 8px; font-weight: bold;">DIGITAL ID</span>
+            <span id="id-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333;">#ID</span>
+        </div>
 
-    <!-- 2. Фото -->
-    <div class="reg-square" onclick="document.getElementById('file-input').click();" style="position: relative; aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box; cursor: pointer;">
-        <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; position: relative;" data-translate="txt_photo">OR PHOTO</span>
-        <img id="pp" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
-        <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const ppImg = document.getElementById('pp');
-                    const txtPhoto = document.getElementById('txt-photo');
-                    if(ppImg) { ppImg.src = e.target.result; ppImg.style.display = 'block'; }
-                    if(txtPhoto) txtPhoto.style.display = 'none';
-                    window.currentUserAvatar = e.target.result;
+        <!-- 2. Фото -->
+        <div class="reg-square" onclick="document.getElementById('file-input').click();">
+            <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2;" data-translate="txt_photo">OR PHOTO</span>
+            <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:5;">
+            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const ppImg = document.getElementById('pp');
+                        const txtPhoto = document.getElementById('txt-photo');
+                        if(ppImg) { ppImg.src = e.target.result; ppImg.style.display = 'block'; }
+                        if(txtPhoto) txtPhoto.style.display = 'none';
+                        window.currentUserAvatar = e.target.result;
 
-                    // Стираем аватар
-                    const avImg = document.getElementById('avatar-img');
-                    const txtAvatar = document.getElementById('txt-avatar');
-                    if(avImg) { avImg.src = ''; avImg.style.display = 'none'; }
-                    if(txtAvatar) txtAvatar.style.display = 'block';
+                        // Стираем аватар
+                        const avImg = document.getElementById('avatar-img');
+                        const txtAvatar = document.getElementById('txt-avatar');
+                        if(avImg) { avImg.src = ''; avImg.style.display = 'none'; }
+                        if(txtAvatar) txtAvatar.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
+            ">
+        </div>
+
+        <!-- 3. Аватар -->
+        <div class="reg-square" onclick="
+            const avUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Math.floor(Math.random() * 10000);
+            const avImg = document.getElementById('avatar-img');
+            const txtAvatar = document.getElementById('txt-avatar');
+            if(avImg) { avImg.src = avUrl; avImg.style.display = 'block'; }
+            if(txtAvatar) txtAvatar.style.display = 'none';
+            window.currentUserAvatar = avUrl;
+
+            // Стираем фото
+            const ppImg = document.getElementById('pp');
+            const txtPhoto = document.getElementById('txt-photo');
+            if(ppImg) { ppImg.src = ''; ppImg.style.display = 'none'; }
+            if(txtPhoto) txtPhoto.style.display = 'block';
+            
+            const fi = document.getElementById('file-input');
+            if(fi) fi.value = '';
         ">
+            <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2;" data-translate="txt_avatar">OR AVATAR</span>
+            <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:5;">
+        </div>
+
+        <!-- 4. QR Code -->
+        <div class="reg-square" style="cursor: default; background: #ffffff;">
+            <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
+        </div>
+
+        <!-- 5. Own Nick -->
+        <div id="box-own-nick" class="reg-square selected" onclick="if(typeof setNickType === 'function') setNickType('own');">
+            <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="window.currentNickname = this.value;" maxlength="15" style="font-size: 10px; width: 90%; text-align: center; background: transparent; border: none; outline: none; color: #000;">
+        </div>
+
+        <!-- 6. Club Nick -->
+        <div id="box-club-nick" class="reg-square" onclick="
+            const randClub = 'GY-' + Math.floor(1000 + Math.random() * 9000);
+            const clubLbl = document.getElementById('club-nick-label');
+            if(clubLbl) clubLbl.textContent = randClub;
+            window.currentNickname = randClub;
+        ">
+            <span style="font-size: 8px; font-weight: bold; z-index: 2;" data-translate="nick_club">CLUB NICK</span>
+            <span id="club-nick-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333; z-index: 2;">GY-MEMBER</span>
+            <style>
+                #box-club-nick img { display: none !important; }
+            </style>
+        </div>
+
     </div>
 
-    <!-- 3. Аватар -->
-    <div class="reg-square" onclick="
-        const avUrl = 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + Math.floor(Math.random() * 10000);
-        
-        const avImg = document.getElementById('avatar-img');
-        const txtAvatar = document.getElementById('txt-avatar');
-        if(avImg) { avImg.src = avUrl; avImg.style.display = 'block'; }
-        if(txtAvatar) txtAvatar.style.display = 'none';
-        window.currentUserAvatar = avUrl;
-
-        // Стираем фото
-        const ppImg = document.getElementById('pp');
-        const txtPhoto = document.getElementById('txt-photo');
-        if(ppImg) { ppImg.src = ''; ppImg.style.display = 'none'; }
-        if(txtPhoto) txtPhoto.style.display = 'block';
-        
-        const fileInput = document.getElementById('file-input');
-        if(fileInput) fileInput.value = '';
-    " style="position: relative; aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box; cursor: pointer;">
-        <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; position: relative;" data-translate="txt_avatar">OR AVATAR</span>
-        <img id="avatar-img" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 5;">
-    </div>
-
-    <!-- 4. QR Code -->
-    <div class="reg-square" style="cursor: default; background: #ffffff; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box;">
-        <div id="qr-box-reg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 2px;"></div>
-    </div>
-
-    <!-- 5. Own Nick -->
-    <div id="box-own-nick" class="reg-square selected" onclick="if(typeof setNickType === 'function') setNickType('own');" style="aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box;">
-        <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="window.currentNickname = this.value;" maxlength="15" style="font-size: 10px; width: 90%; text-align: center; background: transparent; border: none; outline: none; color: #000;">
-    </div>
-
-    <!-- 6. Club Nick -->
-    <div id="box-club-nick" class="reg-square" onclick="
-        const randClub = 'GY-' + Math.floor(1000 + Math.random() * 9000);
-        const clubLbl = document.getElementById('club-nick-label');
-        if(clubLbl) clubLbl.textContent = randClub;
-        window.currentNickname = randClub;
-    " style="position: relative; aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; box-sizing: border-box; cursor: pointer;">
-        <span style="font-size: 8px; font-weight: bold; z-index: 2; position: relative;" data-translate="nick_club">CLUB NICK</span>
-        <span id="club-nick-label" style="font-size: 8px; font-weight: bold; margin-top: 2px; color: #333; z-index: 2; position: relative;">GY-MEMBER</span>
-        <style>
-            #box-club-nick img { display: none !important; }
-        </style>
-    </div>
-
-</div>
-    <!-- Кнопка сохранения с надежным переходом -->
+    <!-- Кнопки управления с жестким переключением в Холл -->
     <button id="btn-save" class="btn-gy" onclick="
         const profileData = {
             id: window.currentUserId || 'GY-' + Math.floor(100000 + Math.random() * 900000),
             avatar: window.currentUserAvatar || '',
             flag: window.currentUserFlag || 'https://flagcdn.com/w20/gb.png',
-            nick: window.currentNickname || 'GY-MEMBER'
+            nick: window.currentNickname || document.getElementById('input-own-nick').value || 'GY-MEMBER'
         };
         try {
             localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
         } catch(e) {}
         
-        const btnWHall = document.getElementById('btn-w-hall');
         const btnPass = document.getElementById('btn-pass');
-        if (btnWHall) btnWHall.classList.remove('btn-sleep');
         if (btnPass) btnPass.classList.remove('btn-sleep');
 
-        if (typeof portalTransition === 'function') {
+        // Прямое переключение блоков без зависаний
+        const reg = document.getElementById('block-identity');
+        const hall = document.getElementById('block-hall');
+        if (reg) {
+            reg.classList.remove('active');
+            reg.style.display = 'none';
+        }
+        if (hall) {
+            hall.style.display = 'flex';
+            hall.classList.add('active');
+        } else if (typeof portalTransition === 'function') {
             portalTransition('block-hall');
-        } else {
-            const currentBlock = document.getElementById('block-identity');
-            const hallBlock = document.getElementById('block-hall');
-            if (currentBlock) {
-                currentBlock.classList.remove('active');
-                currentBlock.style.display = 'none';
-            }
-            if (hallBlock) {
-                hallBlock.style.display = 'flex';
-                hallBlock.classList.add('active');
-            }
         }
     " data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
     
-    <!-- Кнопка перехода -->
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="
-        if (typeof portalTransition === 'function') {
+        const reg = document.getElementById('block-identity');
+        const hall = document.getElementById('block-hall');
+        if (reg) {
+            reg.classList.remove('active');
+            reg.style.display = 'none';
+        }
+        if (hall) {
+            hall.style.display = 'flex';
+            hall.classList.add('active');
+        } else if (typeof portalTransition === 'function') {
             portalTransition('block-hall');
-        } else {
-            const currentBlock = document.getElementById('block-identity');
-            const hallBlock = document.getElementById('block-hall');
-            if (currentBlock) {
-                currentBlock.classList.remove('active');
-                currentBlock.style.display = 'none';
-            }
-            if (hallBlock) {
-                hallBlock.style.display = 'flex';
-                hallBlock.classList.add('active');
-            }
         }
     " data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
 </div>
