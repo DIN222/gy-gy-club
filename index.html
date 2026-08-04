@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.58 CORE + Audio Files</title>
+    <title>GY-GY Club v4.6.59 CORE + Audio Files</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -389,8 +389,9 @@
 
     </div>
 
-   <!-- Кнопка SAVE: сохраняет профиль и плавно переходит в Холл -->
+  <!-- Единственная логичная кнопка SAVE, которая сохраняет и сразу открывает Холл -->
 <button id="btn-save" class="btn-gy" onclick="
+    // 1. Сохраняем профиль
     const profileData = {
         id: window.currentUserId || 'GY-' + Math.floor(100000 + Math.random() * 900000),
         avatar: window.currentUserAvatar || '',
@@ -401,32 +402,24 @@
         localStorage.setItem('gy_user_profile', JSON.stringify(profileData));
     } catch(e) {}
     
-    // Разблокируем кнопку Proceed для будущих сессий
-    const btnPass = document.getElementById('btn-pass');
-    if (btnPass) btnPass.classList.remove('btn-sleep');
-
-    // Плавный переход через стандартную функцию или прямое переключение
-    if (typeof portalTransition === 'function') {
-        portalTransition('block-hall');
+    // 2. Жестко и принудительно показываем Холл и скрываем регистрацию
+    const regBlock = document.getElementById('block-identity');
+    const hallBlock = document.getElementById('block-hall');
+    
+    if (regBlock) {
+        regBlock.classList.remove('active');
+        regBlock.style.display = 'none';
+    }
+    
+    if (hallBlock) {
+        hallBlock.style.display = 'flex';
+        hallBlock.style.opacity = '1';
+        hallBlock.style.visibility = 'visible';
+        hallBlock.classList.add('active');
     } else {
-        const reg = document.getElementById('block-identity');
-        const hall = document.getElementById('block-hall');
-        if (reg) { reg.style.opacity = '0'; setTimeout(() => reg.style.display = 'none', 300); }
-        if (hall) { hall.style.display = 'flex'; hall.style.opacity = '1'; }
+        console.error('Ошибка: блок block-hall не найден в HTML!');
     }
 " data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
-
-<!-- Кнопка PROCEED: для повторного входа в Холл -->
-<button id="btn-pass" class="btn-gy btn-sleep" onclick="
-    if (typeof portalTransition === 'function') {
-        portalTransition('block-hall');
-    } else {
-        const reg = document.getElementById('block-identity');
-        const hall = document.getElementById('block-hall');
-        if (reg) { reg.style.display = 'none'; }
-        if (hall) { hall.style.display = 'flex'; }
-    }
-" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
     <script>
         let currentUserId = Math.floor(100000 + Math.random() * 900000);
         let currentUserAvatar = '';
