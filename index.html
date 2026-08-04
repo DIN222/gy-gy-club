@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.22 CORE</title>
+    <title>GY-GY Club v4.6.21 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -137,13 +137,13 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* СЕТКА РЕГИСТРАЦИИ: 3 РЯДА ПО 3 КВАДРАТА (9 БЛОКОВ, ВКЛЮЧАЯ КОД И QR) */
+        /* СЕТКА РЕГИСТРАЦИИ: 2 РЯДА ПО 3 КВАДРАТА (РОВНО 6 ЯЧЕЕК) */
         .registration-grid {
             display: grid;
             grid-template-columns: repeat(3, 75px);
-            grid-template-rows: repeat(3, 75px);
-            gap: 6px;
-            margin-bottom: 10px;
+            grid-template-rows: repeat(2, 75px);
+            gap: 8px;
+            margin-bottom: 12px;
             justify-content: center;
         }
 
@@ -332,62 +332,45 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- БЛОК РЕГИСТРАЦИИ (3 ряда по 3 квадрата = 9 квадратов, включая цифровой код и интерактивный QR-код) -->
+    <!-- БЛОК РЕГИСТРАЦИИ (2 ряда по 3 квадрата: Ник, Фото, Аватар + Цифровой Код, QR-код, Роль/Тема) -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
         <div class="registration-grid">
-            <!-- 1. Собственный ник -->
+            <!-- 1. Ник (Собственный / Клубный) -->
             <div id="box-own-nick" class="reg-square selected" onclick="setNickType('own')">
                 <span style="font-size: 8px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
                 <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')">
             </div>
 
-            <!-- 2. Клубный ник -->
-            <div id="box-club-nick" class="reg-square" onclick="setNickType('club')">
-                <span style="font-size: 8px; font-weight: 900;" data-translate="nick_club">CLUB NICK</span>
-                <span id="club-nick-label" style="font-size: 7px; margin-top: 4px; font-weight: 700;">GY-MEMBER</span>
-            </div>
-
-            <!-- 3. Клубный Статус / Роль -->
-            <div class="reg-square" style="cursor:pointer;" onclick="cycleClubRole()">
-                <span style="font-size: 8px; font-weight: 900;" data-translate="txt_role">ROLE</span>
-                <span id="role-label" style="font-size: 7px; margin-top: 4px; font-weight: 700;">GUEST</span>
-            </div>
-
-            <!-- 4. Загрузка пользовательского фото -->
+            <!-- 2. Загрузка фото -->
             <div class="reg-square" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                 <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:#000000; font-size:8px; font-weight:900;" data-translate="txt_photo">UPLOAD PHOTO</span>
             </div>
 
-            <!-- 5. Генерация уникального аватара -->
+            <!-- 3. Генерация AI Аватара -->
             <div class="reg-square" style="cursor:pointer;" onclick="generateAvatar()">
                 <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000000; font-size:8px; font-weight:900; text-align:center;" data-translate="txt_avatar">AI AVATAR</span>
             </div>
 
-            <!-- 6. Выбор цвета / Тематики профиля -->
-            <div class="reg-square" style="cursor:pointer;" onclick="cycleThemeColor()">
-                <span style="font-size: 8px; font-weight: 900;" data-translate="txt_theme">THEME</span>
-                <span id="theme-label" style="font-size: 7px; margin-top: 4px; font-weight: 700; color: #8A2BE2;">VIOLET</span>
-            </div>
-
-            <!-- 7. Цифровой код шифрования профиля -->
+            <!-- 4. Цифровой код шифрования (ID CODE) -->
             <div class="reg-square" style="cursor:pointer;" onclick="regenerateNumericCode()" title="Click to regenerate code">
                 <span style="font-size: 8px; font-weight: 900;" data-translate="txt_id_code">ID CODE</span>
                 <span id="digital-code-label" style="font-size: 9px; margin-top: 4px; font-weight: 900; letter-spacing: 1px;">GY-4618</span>
             </div>
 
-            <!-- 8. QR-код шифрования -->
+            <!-- 5. QR-код шифрования -->
             <div class="reg-square" style="padding: 2px;" onclick="openPassport()" title="Click to view QR and Passport">
                 <div id="qrcode-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
             </div>
 
-            <!-- 9. Сервисный/Пустой узел сетки -->
-            <div class="reg-square" style="background: #111111; border-color: var(--gold); cursor: default;">
-                <span style="font-size: 7px; font-weight: 900; color: var(--gold);" data-translate="txt_secure">SECURE CORE</span>
+            <!-- 6. Роль/Статус в клубе -->
+            <div class="reg-square" style="cursor:pointer;" onclick="cycleClubRole()">
+                <span style="font-size: 8px; font-weight: 900;" data-translate="txt_role">ROLE</span>
+                <span id="role-label" style="font-size: 7px; margin-top: 4px; font-weight: 700;">GUEST</span>
             </div>
         </div>
 
@@ -458,9 +441,6 @@
     const roles = ['GUEST', 'MEMBER', 'VIP', 'VIP+'];
     let currentRoleIdx = 0;
 
-    const themes = [{name: 'VIOLET', color: '#8A2BE2'}, {name: 'GOLD', color: '#FFD700'}, {name: 'NEON', color: '#00FFCC'}];
-    let currentThemeIdx = 0;
-
     let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
     const allLanguages = [
         { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
@@ -490,15 +470,6 @@
         const el = document.getElementById('role-label');
         if (el) el.innerText = roles[currentRoleIdx];
         updateQRCode();
-    }
-
-    function cycleThemeColor() {
-        currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-        const el = document.getElementById('theme-label');
-        if (el) {
-            el.innerText = themes[currentThemeIdx].name;
-            el.style.color = themes[currentThemeIdx].color;
-        }
     }
 
     function regenerateNumericCode() {
