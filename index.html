@@ -316,16 +316,43 @@
         </div>
 
         <!-- 2. Photo -->
-        <div class="reg-square" onclick="const fi = document.getElementById('file-input'); if(fi) fi.click();">
-            <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px;" data-translate="txt_photo">OR PHOTO</span>
-            <img id="pp" style="display:none; z-index: 1;">
-            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="if(typeof preview === 'function') { preview(this); } else { const r = new FileReader(); r.onload = function(e) { document.getElementById('pp').src = e.target.result; document.getElementById('pp').style.display='block'; }; r.readAsDataURL(this.files[0]); }">
+        <div class="reg-square" onclick="document.getElementById('file-input').click();" style="position: relative; overflow: hidden;">
+            <span id="txt-photo" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_photo">OR PHOTO</span>
+            <img id="pp" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 1;">
+            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const ppImg = document.getElementById('pp');
+                        const txtPhoto = document.getElementById('txt-photo');
+                        if(ppImg) { ppImg.src = e.target.result; ppImg.style.display = 'block'; }
+                        if(txtPhoto) txtPhoto.style.display = 'none';
+                        window.currentUserAvatar = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+                if (typeof preview === 'function') preview(this);
+            ">
         </div>
 
         <!-- 3. Avatar -->
-        <div class="reg-square" onclick="if(typeof generateAvatar === 'function') { generateAvatar(); }">
-            <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px;" data-translate="txt_avatar">OR AVATAR</span>
-            <img id="avatar-img" style="display:none; z-index: 1;">
+        <div class="reg-square" onclick="
+            if (typeof generateAvatar === 'function') {
+                generateAvatar();
+            } else {
+                // Запасной генератор случайного аватара, если основная функция не найдена
+                const randomId = Math.floor(Math.random() * 1000);
+                const avUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${randomId}`;
+                const avImg = document.getElementById('avatar-img');
+                const txtAvatar = document.getElementById('txt-avatar');
+                if(avImg) { avImg.src = avUrl; avImg.style.display = 'block'; }
+                if(txtAvatar) txtAvatar.style.display = 'none';
+                window.currentUserAvatar = avUrl;
+            }
+        " style="position: relative; overflow: hidden;">
+            <span id="txt-avatar" style="font-size: 8px; font-weight: bold; z-index: 2; margin-top: 15px; position: relative;" data-translate="txt_avatar">OR AVATAR</span>
+            <img id="avatar-img" style="display:none; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index: 1;">
         </div>
 
         <!-- 4. QR Code -->
@@ -335,7 +362,10 @@
 
         <!-- 5. Own Nick -->
         <div id="box-own-nick" class="reg-square selected" onclick="if(typeof setNickType === 'function') setNickType('own');">
-            <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="if(typeof updateNicknameValue === 'function') updateNicknameValue(this.value, 'own');" maxlength="15" style="font-size: 10px; width: 90%; text-align: center;">
+            <input type="text" id="input-own-nick" placeholder="YOUR NICK" oninput="
+                window.currentNickname = this.value;
+                if(typeof updateNicknameValue === 'function') updateNicknameValue(this.value, 'own');
+            " maxlength="15" style="font-size: 10px; width: 90%; text-align: center; background: transparent; border: none; outline: none; color: #000;">
         </div>
 
         <!-- 6. Club Nick -->
@@ -349,8 +379,23 @@
 
     </div>
 
-    <!-- Кнопка сохранения с вызовом вашей оригинальной функции portalTransition -->
-    <button id="btn-save" class="btn-gy" onclick="if(typeof saveUserProfile === 'function') saveUserProfile(); portalTransition('block-hall');" data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
+    <!-- Кнопки управления с гарантированным переходом в Холл -->
+    <button id="btn-save" class="btn-gy" onclick="
+        try {
+            if (typeof saveUserProfile === 'function') saveUserProfile();
+        } catch(e) {}
+        
+        // Принудительный и безусловный переход в Холл
+        if (typeof portalTransition === 'function') {
+            portalTransition('block-hall');
+        } else {
+            const reg = document.getElementById('block-identity');
+            const hall = document.getElementById('block-hall');
+            if(reg) reg.style.display = 'none';
+            if(hall) { hall.style.display = 'flex'; hall.classList.add('active'); }
+        }
+    " data-translate="btn_save" style="margin-top: 2px !important; margin-left: auto; margin-right: auto;">SAVE</button>
+    
     <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed" style="margin-top: 4px !important; margin-left: auto; margin-right: auto;">PROCEED</button>
 </div>
     <script>
