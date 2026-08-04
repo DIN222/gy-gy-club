@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.21 CORE</title>
+    <title>GY-GY Club v4.6.22 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -137,13 +137,13 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* СЕТКА РЕГИСТРАЦИИ: 2 РЯДА ПО 3 КВАДРАТА (ПОЛНОЕ СОДЕРЖАНИЕ БЕЗ ID И QR) */
+        /* СЕТКА РЕГИСТРАЦИИ: 3 РЯДА ПО 3 КВАДРАТА (9 БЛОКОВ, ВКЛЮЧАЯ КОД И QR) */
         .registration-grid {
             display: grid;
             grid-template-columns: repeat(3, 75px);
-            grid-template-rows: repeat(2, 75px);
-            gap: 8px;
-            margin-bottom: 12px;
+            grid-template-rows: repeat(3, 75px);
+            gap: 6px;
+            margin-bottom: 10px;
             justify-content: center;
         }
 
@@ -332,7 +332,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- БЛОК РЕГИСТРАЦИИ (2 ряда по 3 квадрата = 6 квадратов, полное содержательное заполнение) -->
+    <!-- БЛОК РЕГИСТРАЦИИ (3 ряда по 3 квадрата = 9 квадратов, включая цифровой код и интерактивный QR-код) -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
@@ -372,6 +372,22 @@
             <div class="reg-square" style="cursor:pointer;" onclick="cycleThemeColor()">
                 <span style="font-size: 8px; font-weight: 900;" data-translate="txt_theme">THEME</span>
                 <span id="theme-label" style="font-size: 7px; margin-top: 4px; font-weight: 700; color: #8A2BE2;">VIOLET</span>
+            </div>
+
+            <!-- 7. Цифровой код шифрования профиля -->
+            <div class="reg-square" style="cursor:pointer;" onclick="regenerateNumericCode()" title="Click to regenerate code">
+                <span style="font-size: 8px; font-weight: 900;" data-translate="txt_id_code">ID CODE</span>
+                <span id="digital-code-label" style="font-size: 9px; margin-top: 4px; font-weight: 900; letter-spacing: 1px;">GY-4618</span>
+            </div>
+
+            <!-- 8. QR-код шифрования -->
+            <div class="reg-square" style="padding: 2px;" onclick="openPassport()" title="Click to view QR and Passport">
+                <div id="qrcode-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+            </div>
+
+            <!-- 9. Сервисный/Пустой узел сетки -->
+            <div class="reg-square" style="background: #111111; border-color: var(--gold); cursor: default;">
+                <span style="font-size: 7px; font-weight: 900; color: var(--gold);" data-translate="txt_secure">SECURE CORE</span>
             </div>
         </div>
 
@@ -422,6 +438,7 @@
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY CLUB CARD</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">ACTIVE MEMBER</div>
             <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 12px auto;"><img id="pass-pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
+            <div id="pass-qrcode-container" style="display:flex; justify-content:center; margin:10px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:10px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
@@ -436,6 +453,7 @@
     let selectedNickType = 'own';
     let userChosenNickname = '';
     let isDoorOpened = false;
+    let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
 
     const roles = ['GUEST', 'MEMBER', 'VIP', 'VIP+'];
     let currentRoleIdx = 0;
@@ -471,6 +489,7 @@
         currentRoleIdx = (currentRoleIdx + 1) % roles.length;
         const el = document.getElementById('role-label');
         if (el) el.innerText = roles[currentRoleIdx];
+        updateQRCode();
     }
 
     function cycleThemeColor() {
@@ -479,6 +498,70 @@
         if (el) {
             el.innerText = themes[currentThemeIdx].name;
             el.style.color = themes[currentThemeIdx].color;
+        }
+    }
+
+    function regenerateNumericCode() {
+        userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
+        const codeEl = document.getElementById('digital-code-label');
+        if (codeEl) codeEl.innerText = userNumericCode;
+        updateQRCode();
+    }
+
+    function updateQRCode() {
+        const container = document.getElementById('qrcode-container');
+        const passContainer = document.getElementById('pass-qrcode-container');
+        
+        if (container) {
+            container.innerHTML = '';
+            try {
+                new QRCode(container, {
+                    text: `GY-GY CLUB ID: ${userNumericCode} | ROLE: ${roles[currentRoleIdx]}`,
+                    width: 62,
+                    height: 62,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch(e) {}
+        }
+        
+        if (passContainer) {
+            passContainer.innerHTML = '';
+            try {
+                new QRCode(passContainer, {
+                    text: `GY-GY CLUB ID: ${userNumericCode} | ROLE: ${roles[currentRoleIdx]}`,
+                    width: 75,
+                    height: 75,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch(e) {}
+        }
+    }
+
+    function openPassport() {
+        const modal = document.getElementById('modal-passport');
+        const passVal = document.getElementById('pass-id-val');
+        const passImg = document.getElementById('pass-pass-avatar-img');
+        
+        if (passVal) passVal.innerText = `${userNumericCode} — ${roles[currentRoleIdx]}`;
+        if (passImg && currentUserImage) passImg.src = currentUserImage;
+        
+        updateQRCode();
+        
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => modal.style.opacity = '1', 10);
+        }
+    }
+
+    function closePassport() {
+        const modal = document.getElementById('modal-passport');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => modal.style.display = 'none', 300);
         }
     }
 
@@ -594,6 +677,11 @@
             door.addEventListener('click', handleDoor);
             door.addEventListener('touchend', handleDoor);
         }
+
+        const codeEl = document.getElementById('digital-code-label');
+        if (codeEl) codeEl.innerText = userNumericCode;
+        
+        updateQRCode();
     });
 </script>
 </body>
