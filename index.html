@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.0.6 CORE</title>
+    <title>GY-GY Club v5.0.8 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -33,7 +33,7 @@
             filter: brightness(1.1);
         }
 
-        /* ЛОГОТИП GY-GY */
+        /* ЛОГОТИП GY-GY СПРАВА */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -56,7 +56,7 @@
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
         }
 
-        /* ЯЗЫКОВОЙ БЛОК — МАКСИМАЛЬНЫЙ ПРИОРИТЕТ КЛИКА */
+        /* ЯЗЫКОВОЙ БЛОК — АБСОЛЮТНЫЙ ПРИОРИТЕТ КЛИКА И ИЗОЛЯЦИЯ */
         .club-lang-dropdown-wrapper {
             position: fixed; top: 18px; left: 20px; z-index: 2147483647 !important;
             width: 165px; font-family: 'Share Tech Mono', monospace;
@@ -248,7 +248,7 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
     
-    <div class="ui-header-right notranslate">GY-GY v5.0.6</div>
+    <div class="ui-header-right notranslate">GY-GY v5.0.8</div>
 
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
@@ -257,7 +257,7 @@
     <div id="block-entrance" class="block active">
         <!-- ЯЗЫКОВОЙ БЛОК НА ПЕРВОЙ СТРАНИЦЕ -->
         <div class="club-lang-dropdown-wrapper notranslate" id="lang-wrapper">
-            <div class="club-lang-current" id="club-lang-current-btn" onclick="toggleLangDropdown(event)" ontouchend="toggleLangDropdown(event)">
+            <div class="club-lang-current" id="club-lang-current-btn" onclick="forceOpenLangList(event)" ontouchend="forceOpenLangList(event)">
                 <div class="club-lang-current-content">
                     <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
@@ -389,6 +389,35 @@
     let isDoorOpened = false;
     let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
 
+    // НОВОЕ: Прямая функция жесткого открытия без зависимостей от внешних скриптов
+    function forceOpenLangList(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const list = document.getElementById('club-lang-list');
+        if (list) {
+            // Переключаем класс напрямую, игнорируя любые сторонние блокировки
+            if (list.classList.contains('open')) {
+                list.classList.remove('open');
+                list.style.display = 'none';
+            } else {
+                list.classList.add('open');
+                list.style.display = 'block';
+            }
+        }
+    }
+
+    // Закрытие при клике вне блока
+    document.addEventListener('click', function(e) {
+        const wrapper = document.getElementById('lang-wrapper');
+        const list = document.getElementById('club-lang-list');
+        if (wrapper && list && !wrapper.contains(e.target)) {
+            list.classList.remove('open');
+            list.style.display = 'none';
+        }
+    }, true);
+
     function portalTransition(targetBlockId) {
         const currentBlock = document.getElementById(currentBlockId);
         const targetBlock = document.getElementById(targetBlockId);
@@ -419,25 +448,6 @@
             userBadge.style.display = 'block';
         }
     }
-
-    function toggleLangDropdown(e) {
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        const list = document.getElementById('club-lang-list');
-        if (list) {
-            list.classList.toggle('open');
-        }
-    }
-
-    document.addEventListener('click', function(e) {
-        const wrapper = document.getElementById('lang-wrapper');
-        const list = document.getElementById('club-lang-list');
-        if (wrapper && list && !wrapper.contains(e.target)) {
-            list.classList.remove('open');
-        }
-    }, true);
 
     window.addEventListener('DOMContentLoaded', function() {
         renderLanguageList();
@@ -610,6 +620,7 @@
                     if (flagEl) flagEl.src = lang.flag;
                 }
                 listContainer.classList.remove('open');
+                listContainer.style.display = 'none';
             };
 
             item.onclick = handleItemClick;
