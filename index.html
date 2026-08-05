@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.0.7 CORE</title>
+    <title>GY-GY Club v5.0.8 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -26,10 +26,10 @@
             padding: 0;
         }
         
-        button, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .reg-square {
+        button, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .reg-square, .lang-option {
             transition: all 0.3s ease !important;
         }
-        button:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .reg-square:hover {
+        button:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .reg-square:hover, .lang-option:hover {
             filter: brightness(1.1);
         }
 
@@ -111,10 +111,51 @@
             z-index: 2;
         }
 
-        /* ОТСТУПЫ ДЛЯ WELCOME */
-        #block-welcome { justify-content: center !important; padding-top: 0 !important; }
-        #block-welcome img { max-height: 22vh !important; width: auto; object-fit: contain; margin: 6px 0 !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
-        #block-welcome .welcome-title-elem { font-size: 24px !important; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 6px !important; font-family: 'Cinzel', serif; }
+        /* ЯЗЫКОВЙ БЛОК НА ПЕРВОЙ СТРАНИЦЕ */
+        .entrance-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 320px;
+            margin-bottom: 25px;
+            z-index: 501;
+        }
+        .lang-option {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--gold);
+            font-size: 11px;
+            font-family: 'Share Tech Mono', monospace;
+            text-transform: uppercase;
+        }
+        .lang-option img {
+            width: 18px;
+            height: 12px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+        }
+        .lang-option.active-lang {
+            background: var(--gold);
+            color: #000000;
+            font-weight: bold;
+        }
+        .lang-option.active-lang img {
+            border-color: #000000;
+        }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ */
         .ui-nav-arrows {
@@ -174,8 +215,8 @@
         
         /* ДВЕРЬ */
         #main-door {
-            display: block; height: 48vh; max-height: 400px; width: auto; max-width: 100%; object-fit: contain;
-            margin: 0 auto; transform: scale(1); transition: transform 0.2s ease, filter 0.3s ease, opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            display: block; height: 38vh; max-height: 320px; width: auto; max-width: 100%; object-fit: contain;
+            margin: 0 auto 15px auto; transform: scale(1); transition: transform 0.2s ease, filter 0.3s ease, opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             cursor: pointer; position: relative; z-index: 500; pointer-events: auto !important;
         }
         #main-door:active { transform: scale(0.97); }
@@ -201,10 +242,15 @@
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
-    <!-- ВХОД -->
+    <!-- ВХОД С ЯЗЫКОВЫМ БЛОКОМ -->
     <div id="block-entrance" class="block active">
         <div id="google_translate_element" style="display:none;"></div>
-        <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor(event)" ontouchend="handleDoor(event)">
+        <div class="entrance-content notranslate">
+            <div class="languages-grid" id="entrance-lang-grid">
+                <!-- Генерируется динамически скриптом -->
+            </div>
+            <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor(event)" ontouchend="handleDoor(event)">
+        </div>
     </div>
 
     <!-- WELCOME -->
@@ -331,6 +377,56 @@
     let isDoorOpened = false;
     let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
 
+    // Рендер языков на первой странице из файла userlang-data.js
+    function renderEntranceLanguages() {
+        const grid = document.getElementById('entrance-lang-grid');
+        if (!grid || typeof allLangs === 'undefined') return;
+        
+        grid.innerHTML = '';
+        allLangs.forEach(lang => {
+            const btn = document.createElement('div');
+            btn.className = `lang-option ${lang.code === currentActiveCode ? 'active-lang' : ''}`;
+            btn.innerHTML = `<img src="https://flagcdn.com/w20/${lang.c}.png"><span>${lang.name}</span>`;
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                changeAppLanguage(lang.code, lang.c);
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    function changeAppLanguage(langCode, flagCode) {
+        currentActiveCode = langCode;
+        currentFlagCode = flagCode;
+
+        if (typeof safeStorageSet === 'function') {
+            safeStorageSet('gy_lang', langCode);
+            safeStorageSet('gygy_flag', flagCode);
+        }
+
+        const badgeFlagImg = document.getElementById('badge-flag-img');
+        if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${flagCode}.png`;
+
+        if (typeof applyTranslationsToDOM === 'function') {
+            applyTranslationsToDOM(langCode);
+        }
+        if (typeof forceTriggerGoogleTranslate === 'function') {
+            forceTriggerGoogleTranslate(langCode);
+        }
+
+        renderEntranceLanguages();
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        renderEntranceLanguages();
+        updateQRCode();
+    });
+
+    window.addEventListener('load', function() {
+        renderEntranceLanguages();
+        updateQRCode();
+    });
+
     function portalTransition(targetBlockId) {
         const currentBlock = document.getElementById(currentBlockId);
         const targetBlock = document.getElementById(targetBlockId);
@@ -408,14 +504,6 @@
             box.setAttribute('data-opened', 'true');
         }
     }
-
-    window.addEventListener('DOMContentLoaded', function() {
-        updateQRCode();
-    });
-
-    window.addEventListener('load', function() {
-        updateQRCode();
-    });
 
     function playBarDoorSound() {
         try {
