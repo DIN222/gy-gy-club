@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.0.5 CORE</title>
+    <title>GY-GY Club v5.0.6 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -201,11 +201,13 @@
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
+    <!-- ВХОД -->
     <div id="block-entrance" class="block active">
         <div id="google_translate_element" style="display:none;"></div>
         <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor(event)" ontouchend="handleDoor(event)">
     </div>
 
+    <!-- WELCOME -->
     <div id="block-welcome" class="block">
         <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
         <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -215,7 +217,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- БЛОК РЕГИСТРАЦИИ -->
+    <!-- РЕГИСТРАЦИЯ -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
@@ -257,6 +259,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
+    <!-- ХОЛЛ -->
     <div id="block-hall" class="block">
         <div class="hall-interior">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -273,7 +276,6 @@
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
                         <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
-                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); enterStaffOffice()">STAFF ROOM</button>
                     </div>
                 </div>
             </div>
@@ -281,7 +283,7 @@
             <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
+                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-studio')" data-translate="btn_studio">STUDIO</button>
                 </div>
             </div>
         </div>
@@ -294,6 +296,21 @@
         </div>
     </div>
 
+    <!-- ДОПОЛНИТЕЛЬНЫЕ КОМНАТЫ (ЗАГЛУШКИ ДЛЯ ПЕРЕХОДОВ) -->
+    <div id="block-server" class="block">
+        <div class="quote-text">AI ROOM</div>
+    </div>
+    <div id="block-office" class="block">
+        <div class="quote-text">OFFICE</div>
+    </div>
+    <div id="block-studio" class="block">
+        <div class="quote-text">STUDIO</div>
+    </div>
+    <div id="block-bar" class="block">
+        <div class="quote-text">BAR</div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -310,9 +327,11 @@
 <script src="language.js"></script>
 
 <script type="text/javascript">
+    const APP_VERSION = "v5.0.5 CORE";
     let currentUserImage = "";
     let currentClubAvatarImage = "horse_welcome.png";
     let currentBlockId = 'block-entrance';
+    let historyStack = [];
     let selectedNickType = 'own';
     let userOwnNickname = '';
     let userClubNickname = 'GY-GUEST';
@@ -324,6 +343,10 @@
         const targetBlock = document.getElementById(targetBlockId);
         
         if (!targetBlock) return;
+
+        if (currentBlockId && currentBlockId !== targetBlockId) {
+            historyStack.push(currentBlockId);
+        }
 
         if (currentBlock) {
             currentBlock.classList.remove('active');
@@ -341,12 +364,56 @@
         
         if (targetBlockId === 'block-entrance') {
             if (navArrows) navArrows.style.display = 'none';
+            historyStack = [];
         } else {
             if (navArrows) navArrows.style.display = 'flex';
         }
 
         if (userBadge && currentUserImage && targetBlockId !== 'block-entrance') {
             userBadge.style.display = 'block';
+        }
+    }
+
+    function handleNavigationBack() {
+        if (historyStack.length > 0) {
+            const previousBlockId = historyStack.pop();
+            const currentBlock = document.getElementById(currentBlockId);
+            const targetBlock = document.getElementById(previousBlockId);
+            
+            if (currentBlock) currentBlock.classList.remove('active');
+            if (targetBlock) targetBlock.classList.add('active');
+            
+            currentBlockId = previousBlockId;
+
+            if (currentBlockId === 'block-entrance') {
+                const navArrows = document.getElementById('club-nav-arrows');
+                if (navArrows) navArrows.style.display = 'none';
+                historyStack = [];
+            }
+        } else {
+            portalTransition('block-hall');
+        }
+    }
+
+    function toggleManifest(manifestId) {
+        const box = document.getElementById(manifestId);
+        if (!box) return;
+        
+        const isOpened = box.getAttribute('data-opened') === 'true';
+        
+        // Закрываем все манифесты перед открытием нового
+        document.querySelectorAll('.manifest-btn-box').forEach(el => {
+            el.style.opacity = '0';
+            el.style.bottom = '-45px';
+            el.style.pointerEvents = 'none';
+            el.setAttribute('data-opened', 'false');
+        });
+
+        if (!isOpened) {
+            box.style.opacity = '1';
+            box.style.bottom = '-85px';
+            box.style.pointerEvents = 'auto';
+            box.setAttribute('data-opened', 'true');
         }
     }
 
