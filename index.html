@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.0.4 CORE</title>
+    <title>GY-GY Club v5.0.6 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -56,7 +56,7 @@
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
         }
 
-        /* ЯЗЫКОВОЙ БЛОК (БЕЗОПАСНЫЙ Z-INDEX И РАЗМЕРЫ) */
+        /* ЯЗЫКОВОЙ БЛОК — МАКСИМАЛЬНЫЙ ПРИОРИТЕТ КЛИКА */
         .club-lang-dropdown-wrapper {
             position: fixed; top: 18px; left: 20px; z-index: 2147483647 !important;
             width: 165px; font-family: 'Share Tech Mono', monospace;
@@ -248,7 +248,7 @@
         <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
     </div>
     
-    <div class="ui-header-right notranslate">GY-GY</div>
+    <div class="ui-header-right notranslate">GY-GY v5.0.6</div>
 
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
@@ -257,7 +257,7 @@
     <div id="block-entrance" class="block active">
         <!-- ЯЗЫКОВОЙ БЛОК НА ПЕРВОЙ СТРАНИЦЕ -->
         <div class="club-lang-dropdown-wrapper notranslate" id="lang-wrapper">
-            <div class="club-lang-current" id="club-lang-current-btn">
+            <div class="club-lang-current" id="club-lang-current-btn" onclick="toggleLangDropdown(event)" ontouchend="toggleLangDropdown(event)">
                 <div class="club-lang-current-content">
                     <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
@@ -319,7 +319,7 @@
             </div>
 
             <div class="reg-square" style="padding: 2px;" onclick="openPassport()" title="Click to view QR and Passport">
-                <div id="qrcode-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;"></div>
+                <div id="qrcode-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;"></div>
             </div>
         </div>
 
@@ -389,7 +389,6 @@
     let isDoorOpened = false;
     let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
 
-    // Безопасное переключение блоков с защитой от темноты
     function portalTransition(targetBlockId) {
         const currentBlock = document.getElementById(currentBlockId);
         const targetBlock = document.getElementById(targetBlockId);
@@ -403,12 +402,10 @@
         targetBlock.classList.add('active');
         currentBlockId = targetBlockId;
 
-        // Если перешли на блок регистрации, сразу генерируем QR-код
         if (targetBlockId === 'block-identity') {
-            setTimeout(updateQRCode, 50);
+            setTimeout(updateQRCode, 100);
         }
 
-        // Управление видимостью верхних элементов навигации
         const navArrows = document.getElementById('club-nav-arrows');
         const userBadge = document.getElementById('global-user-badge');
         
@@ -418,13 +415,11 @@
             if (navArrows) navArrows.style.display = 'flex';
         }
 
-        // Если сохранен юзер, показываем бейдж
         if (userBadge && currentUserImage && targetBlockId !== 'block-entrance') {
             userBadge.style.display = 'block';
         }
     }
 
-    // Жесткое принудительное открытие/закрытие списка языков
     function toggleLangDropdown(e) {
         if (e) {
             e.preventDefault();
@@ -432,16 +427,10 @@
         }
         const list = document.getElementById('club-lang-list');
         if (list) {
-            const isOpen = list.classList.contains('open');
-            if (isOpen) {
-                list.classList.remove('open');
-            } else {
-                list.classList.add('open');
-            }
+            list.classList.toggle('open');
         }
     }
 
-    // Закрытие списка языков при клике за его пределами
     document.addEventListener('click', function(e) {
         const wrapper = document.getElementById('lang-wrapper');
         const list = document.getElementById('club-lang-list');
@@ -450,27 +439,16 @@
         }
     }, true);
 
-    // Глобальная инициализация интерфейса и привязок
     window.addEventListener('DOMContentLoaded', function() {
-        const currentBtn = document.getElementById('club-lang-current-btn');
-        if (currentBtn) {
-            currentBtn.onclick = toggleLangDropdown;
-            currentBtn.ontouchend = toggleLangDropdown;
-        }
         renderLanguageList();
         updateQRCode();
     });
 
     window.addEventListener('load', function() {
-        const currentBtn = document.getElementById('club-lang-current-btn');
-        if (currentBtn && !currentBtn.onclick) {
-            currentBtn.onclick = toggleLangDropdown;
-        }
         renderLanguageList();
         updateQRCode();
     });
 
-    // Многослойный барный звук открытия двери через Web Audio API
     function playBarDoorSound() {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -594,11 +572,13 @@
     }
 
     function saveUserProfile() {
-        safeStorageSet('gy_user_nick', userOwnNickname);
-        safeStorageSet('gy_club_nick', userClubNickname);
-        safeStorageSet('gy_user_code', userNumericCode);
-        if (currentUserImage) {
-            safeStorageSet('gy_user_avatar', currentUserImage);
+        if (typeof safeStorageSet === 'function') {
+            safeStorageSet('gy_user_nick', userOwnNickname);
+            safeStorageSet('gy_club_nick', userClubNickname);
+            safeStorageSet('gy_user_code', userNumericCode);
+            if (currentUserImage) {
+                safeStorageSet('gy_user_avatar', currentUserImage);
+            }
         }
         unlockProceedButtons();
         portalTransition('block-hall');
