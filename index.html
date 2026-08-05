@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.0.0 CORE</title>
+    <title>GY-GY Club v5.0.1 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -37,7 +37,7 @@
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            font-family: 'Cinzel', serif;
+            font-family: 'Cinzel', serif; pointer-events: none;
             text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
         }
         
@@ -56,10 +56,11 @@
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
         }
 
-        /* КОМПАКТНЫЙ ЯЗЫКОВЫЙ БЛОК */
+        /* ЯЗЫКОВОЙ БЛОК (ВЫСОКИЙ Z-INDEX И ИЗОЛИРОВАННЫЙ КЛИК) */
         .club-lang-dropdown-wrapper {
-            position: absolute; top: 18px; left: 20px; z-index: 1000001;
+            position: fixed; top: 18px; left: 20px; z-index: 2000005;
             width: 155px; font-family: 'Share Tech Mono', monospace;
+            pointer-events: auto !important;
         }
         
         .club-lang-current {
@@ -67,9 +68,10 @@
             background: rgba(0,0,0,0.95); border: 2px solid var(--gold);
             padding: 5px 8px; border-radius: 10px; cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.9); width: 100%;
+            pointer-events: auto !important;
         }
         .club-lang-current-content {
-            display: flex; align-items: center; gap: 7px; min-width: 0;
+            display: flex; align-items: center; gap: 7px; min-width: 0; pointer-events: none;
         }
         .club-lang-current .item-avatar {
             width: 20px; height: 20px; border-radius: 50%; overflow: hidden;
@@ -79,24 +81,25 @@
         .club-lang-current .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .club-lang-current .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
         .club-lang-current .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .club-lang-current .arrow-down { color: var(--gold); font-size: 10px; font-weight: bold; flex-shrink: 0; }
+        .club-lang-current .arrow-down { color: var(--gold); font-size: 10px; font-weight: bold; flex-shrink: 0; pointer-events: none; }
 
         .club-lang-list {
             position: absolute; top: calc(100% + 5px); left: 0;
             background: rgba(0,0,0,0.95); border: 2px solid var(--gold);
             border-radius: 10px; width: 100%; max-height: 260px; overflow-y: auto;
-            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.9); z-index: 1000002;
+            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.9); z-index: 2000006;
+            pointer-events: auto !important;
         }
         .club-lang-list.open { display: block; }
         
         .club-lang-item {
             display: flex; align-items: center; justify-content: space-between; gap: 7px;
             padding: 6px 8px; cursor: pointer; border-bottom: 1px solid rgba(255,215,0,0.15);
-            transition: background 0.2s;
+            transition: background 0.2s; pointer-events: auto !important;
         }
         .club-lang-item:last-child { border-bottom: none; }
         .club-lang-item:hover { background: rgba(255,215,0,0.15); }
-        .club-lang-item-left { display: flex; align-items: center; gap: 7px; min-width: 0; }
+        .club-lang-item-left { display: flex; align-items: center; gap: 7px; min-width: 0; pointer-events: none; }
         .club-lang-item .item-avatar {
             width: 20px; height: 20px; border-radius: 50%; overflow: hidden;
             border: 1px solid var(--gold); background: #111; flex-shrink: 0;
@@ -104,10 +107,10 @@
         .club-lang-item .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .club-lang-item .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
         .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .club-lang-counter { font-size: 9px; color: var(--gold); opacity: 0.7; background: rgba(255,215,0,0.1); padding: 1px 4px; border-radius: 4px; flex-shrink: 0; }
+        .club-lang-counter { font-size: 9px; color: var(--gold); opacity: 0.7; background: rgba(255,215,0,0.1); padding: 1px 4px; border-radius: 4px; flex-shrink: 0; pointer-events: none; }
 
         /* ПАСПОРТ */
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
         .passport-card .box-final { margin: 15px auto; border-color: #000000; }
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000000; cursor: pointer; line-height: 1; user-select: none; }
@@ -123,13 +126,13 @@
             background: #000000; 
             z-index: 10; 
             opacity: 0; 
-            transition: opacity 1.2s ease-in-out; 
+            transition: opacity 0.8s ease-in-out; 
             pointer-events: none;
         }
         .block.active { 
             display: flex !important; 
             opacity: 1 !important; 
-            z-index: 5000 !important; 
+            z-index: 1000 !important; 
             pointer-events: auto !important;
         }
 
@@ -139,7 +142,7 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* СЕТКА РЕГИСТРАЦИИ: 2 РЯДА ПО 3 КВАДРАТА (РОВНО 6 ЯЧЕЕК) */
+        /* СЕТКА РЕГИСТРАЦИИ */
         .registration-grid {
             display: grid;
             grid-template-columns: repeat(3, 75px);
@@ -161,14 +164,14 @@
             z-index: 2;
         }
 
-        /* СТРОГИЕ И КОМПАКТНЫЕ ОТСТУПЫ ДЛЯ СТРАНИЦЫ WELCOME */
+        /* ОТСТУПЫ ДЛЯ WELCOME */
         #block-welcome { justify-content: center !important; padding-top: 0 !important; }
         #block-welcome img { max-height: 22vh !important; width: auto; object-fit: contain; margin: 6px 0 !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
         #block-welcome .welcome-title-elem { font-size: 24px !important; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 6px !important; font-family: 'Cinzel', serif; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ В УГЛУ */
+        /* НАВИГАЦИОННЫЕ СТРЕЛКИ */
         .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
+            position: fixed; top: 18px; left: 20px; z-index: 2000005; 
             display: flex; gap: 15px; font-size: 24px; font-weight: 900 !important; 
             font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
             line-height: 1; letter-spacing: -2px; 
@@ -176,7 +179,7 @@
             text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
             pointer-events: auto !important; user-select: none;
         }
-        .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
+        .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; cursor: pointer; }
         .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
 
         /* ХОЛЛ И ИНТЕРАКТИВНЫЕ КАРТИНЫ */
@@ -222,15 +225,13 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         
-        /* ДВЕРЬ (С пружинящим эффектом клика) */
+        /* ДВЕРЬ */
         #main-door {
             display: block; height: 48vh; max-height: 400px; width: auto; max-width: 100%; object-fit: contain;
             margin: 0 auto; transform: scale(1); transition: transform 0.2s ease, filter 0.3s ease, opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            cursor: pointer; position: relative; z-index: 100000; pointer-events: auto !important;
+            cursor: pointer; position: relative; z-index: 500; pointer-events: auto !important;
         }
-        #main-door:active {
-            transform: scale(0.97);
-        }
+        #main-door:active { transform: scale(0.97); }
 
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
     </style>
@@ -254,9 +255,9 @@
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
-        <!-- ЯЗЫКОВЫЙ БЛОК -->
+        <!-- ЯЗЫКОВОЙ БЛОК НА ПЕРВОЙ СТРАНИЦЕ -->
         <div class="club-lang-dropdown-wrapper notranslate">
-            <div class="club-lang-current" onclick="toggleLangDropdown()">
+            <div class="club-lang-current" onclick="toggleLangDropdown(event)">
                 <div class="club-lang-current-content">
                     <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
@@ -266,13 +267,13 @@
             </div>
             
             <div id="club-lang-list" class="club-lang-list">
-                <!-- Динамически заполняется счетчиками из userlang-data.js -->
+                <!-- Динамически заполняется языками -->
             </div>
         </div>
 
         <div id="google_translate_element" style="display:none;"></div>
 
-        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()" ontouchend="handleDoor(event)">
+        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor(event)" ontouchend="handleDoor(event)">
     </div>
 
     <div id="block-welcome" class="block">
@@ -388,6 +389,54 @@
     let isDoorOpened = false;
     let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
 
+    // Безопасное переключение блоков с защитой от темноты
+    function portalTransition(targetBlockId) {
+        const currentBlock = document.getElementById(currentBlockId);
+        const targetBlock = document.getElementById(targetBlockId);
+        
+        if (!targetBlock) return;
+
+        if (currentBlock) {
+            currentBlock.classList.remove('active');
+        }
+        
+        targetBlock.classList.add('active');
+        currentBlockId = targetBlockId;
+
+        // Управление видимостью верхних элементов навигации
+        const navArrows = document.getElementById('club-nav-arrows');
+        const userBadge = document.getElementById('global-user-badge');
+        
+        if (targetBlockId === 'block-entrance') {
+            if (navArrows) navArrows.style.display = 'none';
+        } else {
+            if (navArrows) navArrows.style.display = 'flex';
+        }
+
+        // Если сохранен юзер, показываем бейдж
+        if (userBadge && currentUserImage && targetBlockId !== 'block-entrance') {
+            userBadge.style.display = 'block';
+        }
+    }
+
+    // Обработка клика по языковому меню с изоляцией события
+    function toggleLangDropdown(e) {
+        if (e) e.stopPropagation();
+        const list = document.getElementById('club-lang-list');
+        if (list) {
+            list.classList.toggle('open');
+        }
+    }
+
+    // Закрытие списка языков при клике вне его области
+    document.addEventListener('click', function(e) {
+        const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
+        const list = document.getElementById('club-lang-list');
+        if (wrapper && list && !wrapper.contains(e.target)) {
+            list.classList.remove('open');
+        }
+    });
+
     // Многослойный барный звук открытия двери через Web Audio API
     function playBarDoorSound() {
         try {
@@ -395,31 +444,25 @@
             if (!AudioContext) return;
             const ctx = new AudioContext();
 
-            // Слой 1: Механический щелчок замка
             const osc = ctx.createOscillator();
             const gainNode = ctx.createGain();
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(120, ctx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
-            
             gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-
             osc.connect(gainNode);
             gainNode.connect(ctx.destination);
             osc.start();
             osc.stop(ctx.currentTime + 0.15);
 
-            // Слой 2: Глубокий басовый резонанс массивной двери (барный объем)
             const subOsc = ctx.createOscillator();
             const subGain = ctx.createGain();
             subOsc.type = 'sine';
             subOsc.frequency.setValueAtTime(60, ctx.currentTime);
             subOsc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.5);
-
             subGain.gain.setValueAtTime(0.4, ctx.currentTime);
             subGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-
             subOsc.connect(subGain);
             subGain.connect(ctx.destination);
             subOsc.start();
@@ -539,7 +582,11 @@
             
             const item = document.createElement('div');
             item.className = 'club-lang-item';
-            item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
+            item.onclick = (e) => {
+                e.stopPropagation();
+                selectClubLanguage(lang.code, lang.name, lang.flag);
+                listContainer.classList.remove('open');
+            };
             item.innerHTML = `
                 <div class="club-lang-item-left">
                     <div class="item-avatar"><img src="horse_welcome.png"></div>
@@ -630,7 +677,6 @@
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
 
-        // Запускаем многослойный аудио-дизайн двери
         playBarDoorSound();
 
         if (sndDoor) {
