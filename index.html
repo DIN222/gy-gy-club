@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.22 CORE</title>
+    <title>GY-GY Club v5.0.0 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -222,11 +222,14 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         
-        /* ДВЕРЬ */
+        /* ДВЕРЬ (С пружинящим эффектом клика) */
         #main-door {
             display: block; height: 48vh; max-height: 400px; width: auto; max-width: 100%; object-fit: contain;
-            margin: 0 auto; transform: scale(1); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
+            margin: 0 auto; transform: scale(1); transition: transform 0.2s ease, filter 0.3s ease, opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             cursor: pointer; position: relative; z-index: 100000; pointer-events: auto !important;
+        }
+        #main-door:active {
+            transform: scale(0.97);
         }
 
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
@@ -251,6 +254,7 @@
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
+        <!-- ЯЗЫКОВЫЙ БЛОК -->
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
@@ -280,45 +284,39 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- БЛОК РЕГИСТРАЦИИ (2 ряда по 3 квадрата: 1. Свой ник, 2. Клубный ник, 3. Фото, 4. Аватар клуба, 5. ID-код, 6. QR-код) -->
+    <!-- БЛОК РЕГИСТРАЦИИ -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
         <div class="registration-grid">
-            <!-- 1. Свой ник -->
             <div id="box-own-nick" class="reg-square selected" onclick="setNickType('own')">
                 <span style="font-size: 8px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
                 <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')">
                 <span id="display-own-nick" style="font-size: 8px; margin-top: 4px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 100%;"></span>
             </div>
 
-            <!-- 2. Клубный ник -->
             <div id="box-club-nick" class="reg-square" onclick="setNickType('club')">
                 <span style="font-size: 8px; font-weight: 900;" data-translate="nick_club">CLUB NICK</span>
                 <input type="text" id="input-club-nick" placeholder="Club nick" oninput="updateNicknameValue(this.value, 'club')">
                 <span id="display-club-nick" style="font-size: 8px; margin-top: 4px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 100%;">GY-GUEST</span>
             </div>
 
-            <!-- 3. Загрузка фото -->
             <div class="reg-square" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
                 <input type="file" id="file-input" accept="image/*" onchange="previewUserPhoto(this)" style="display:none;">
                 <img id="img-user-photo" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-photo" style="color:#000000; font-size:8px; font-weight:900;" data-translate="txt_photo">UPLOAD PHOTO</span>
             </div>
 
-            <!-- 4. Генерация AI Аватара клуба -->
             <div class="reg-square" style="cursor:pointer;" onclick="generateClubAvatar()">
                 <img id="img-club-avatar" style="display:none; width:100%; height:100%; object-fit:cover;">
                 <span id="txt-avatar" style="color:#000000; font-size:8px; font-weight:900; text-align:center;" data-translate="txt_avatar">AI AVATAR</span>
             </div>
 
-            <!-- 5. Цифровой код шифрования (ID CODE) -->
             <div class="reg-square" style="cursor:pointer;" onclick="regenerateNumericCode()" title="Click to regenerate code">
                 <span style="font-size: 8px; font-weight: 900;" data-translate="txt_id_code">ID CODE</span>
-                <span id="digital-code-label" style="font-size: 9px; margin-top: 4px; font-weight: 900; letter-spacing: 1px;">GY-4622</span>
+                <span id="digital-code-label" style="font-size: 9px; margin-top: 4px; font-weight: 900; letter-spacing: 1px;">GY-4623</span>
             </div>
 
-            <!-- 6. QR-код шифрования -->
             <div class="reg-square" style="padding: 2px;" onclick="openPassport()" title="Click to view QR and Passport">
                 <div id="qrcode-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
             </div>
@@ -389,6 +387,47 @@
     let userClubNickname = 'GY-GUEST';
     let isDoorOpened = false;
     let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
+
+    // Многослойный барный звук открытия двери через Web Audio API
+    function playBarDoorSound() {
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+            const ctx = new AudioContext();
+
+            // Слой 1: Механический щелчок замка
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(120, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.15);
+
+            // Слой 2: Глубокий басовый резонанс массивной двери (барный объем)
+            const subOsc = ctx.createOscillator();
+            const subGain = ctx.createGain();
+            subOsc.type = 'sine';
+            subOsc.frequency.setValueAtTime(60, ctx.currentTime);
+            subOsc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.5);
+
+            subGain.gain.setValueAtTime(0.4, ctx.currentTime);
+            subGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
+            subOsc.connect(subGain);
+            subGain.connect(ctx.destination);
+            subOsc.start();
+            subOsc.stop(ctx.currentTime + 0.5);
+        } catch (e) {
+            console.log("AudioContext restricted", e);
+        }
+    }
 
     function setNickType(type) {
         selectedNickType = type;
@@ -591,11 +630,13 @@
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
 
+        // Запускаем многослойный аудио-дизайн двери
+        playBarDoorSound();
+
         if (sndDoor) {
             sndDoor.play().catch(err => console.log("Audio play blocked:", err));
         }
         if (sndAmbient) {
-            sndAmbient.volume = 0.4;
             sndAmbient.play().catch(err => console.log("Ambient play blocked:", err));
         }
 
@@ -607,88 +648,6 @@
             portalTransition('block-welcome');
         }, 600);
     }
-
-    function portalTransition(targetId) {
-        const currentBlock = document.getElementById(currentBlockId);
-        const targetBlock = document.getElementById(targetId);
-
-        if (currentBlock) {
-            currentBlock.classList.remove('active');
-        }
-        if (targetBlock) {
-            targetBlock.classList.add('active');
-        }
-        currentBlockId = targetId;
-
-        const navArrows = document.getElementById('club-nav-arrows');
-        const userBadge = document.getElementById('global-user-badge');
-
-        if (targetId === 'block-entrance') {
-            if (navArrows) navArrows.style.display = 'none';
-            if (userBadge) userBadge.style.display = 'none';
-            isDoorOpened = false;
-            const door = document.getElementById('main-door');
-            if (door) {
-                door.classList.remove('door-exploded');
-            }
-        } else {
-            if (navArrows) navArrows.style.display = 'flex';
-            if (userBadge && currentUserImage) userBadge.style.display = 'block';
-        }
-    }
-
-    function toggleLangDropdown() {
-        const list = document.getElementById('club-lang-list');
-        if (list) {
-            list.classList.toggle('open');
-            if (list.classList.contains('open')) {
-                renderLanguageList();
-            }
-        }
-    }
-
-    function selectClubLanguage(langCode, langName, flagUrl) {
-        if (typeof currentLangData !== 'undefined') {
-            currentLangData = { code: langCode, name: langName, flag: flagUrl };
-        }
-        
-        const countryCode = (typeof flagCodeToCountry === 'function') ? flagCodeToCountry(langCode) : 'gb';
-        safeStorageSet('gygy_flag', countryCode);
-        safeStorageSet('gy_user_flag', countryCode);
-        safeStorageSet('gygy_lang_code', langCode);
-        safeStorageSet('gygy_lang_name', langName);
-        
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) currentFlagEl.src = flagUrl;
-        
-        const langNameEl = document.getElementById('current-lang-name');
-        if (langNameEl) langNameEl.innerText = langName;
-
-        const listContainer = document.getElementById('club-lang-list');
-        if (listContainer) listContainer.classList.remove('open');
-
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-            combo.value = langCode;
-            combo.dispatchEvent(new Event('change'));
-        }
-    }
-
-    window.addEventListener('load', () => {
-        document.body.classList.add('page-loaded');
-        
-        const door = document.getElementById('main-door');
-        if (door) {
-            door.addEventListener('click', handleDoor);
-            door.addEventListener('touchend', handleDoor);
-        }
-
-        const codeEl = document.getElementById('digital-code-label');
-        if (codeEl) codeEl.innerText = userNumericCode;
-        
-        renderLanguageList();
-        updateQRCode();
-    });
 </script>
 </body>
 </html>
