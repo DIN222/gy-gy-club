@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v5.0.8 CORE</title>
+    <title>GY-GY Club v5.0.9 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -26,10 +26,10 @@
             padding: 0;
         }
         
-        button, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .reg-square, .lang-option {
+        button, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .reg-square, .lang-main-box, .lang-dropdown-item {
             transition: all 0.3s ease !important;
         }
-        button:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .reg-square:hover, .lang-option:hover {
+        button:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .reg-square:hover, .lang-main-box:hover, .lang-dropdown-item:hover {
             filter: brightness(1.1);
         }
 
@@ -111,50 +111,95 @@
             z-index: 2;
         }
 
-        /* ЯЗЫКОВЙ БЛОК НА ПЕРВОЙ СТРАНИЦЕ */
-        .entrance-content {
+        /* ВХОД И ЯЗЫКОВОЙ СЕЛЕКТОР (ПО README) */
+        .entrance-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 40px;
             width: 100%;
-            height: 100%;
+            position: relative;
         }
-        .languages-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            max-width: 320px;
-            margin-bottom: 25px;
-            z-index: 501;
+        
+        .language-selector-wrapper {
+            position: relative;
+            width: 140px;
+            z-index: 2000;
         }
-        .lang-option {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--gold);
-            border-radius: 6px;
-            padding: 6px 10px;
+
+        .lang-main-box {
+            background: #000000;
+            border: 2px solid var(--gold);
+            padding: 8px 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            cursor: pointer;
+            color: var(--gold);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .lang-main-box img {
+            width: 20px;
+            height: 14px;
+            object-fit: cover;
+            border: 1px solid var(--gold);
+        }
+
+        .lang-dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #000000;
+            border: 2px solid var(--gold);
+            border-top: none;
+            display: none;
+            flex-direction: column;
+            max-height: 260px;
+            overflow-y: auto;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        }
+
+        .language-selector-wrapper:hover .lang-dropdown-list,
+        .language-selector-wrapper.active-dropdown .lang-dropdown-list {
+            display: flex;
+        }
+
+        .lang-dropdown-item {
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             cursor: pointer;
             color: var(--gold);
             font-size: 11px;
-            font-family: 'Share Tech Mono', monospace;
-            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
         }
-        .lang-option img {
+        .lang-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .lang-dropdown-item:hover {
+            background: var(--gold);
+            color: #000000;
+        }
+        .lang-dropdown-item img {
             width: 18px;
             height: 12px;
             object-fit: cover;
             border: 1px solid rgba(255, 215, 0, 0.4);
         }
-        .lang-option.active-lang {
-            background: var(--gold);
-            color: #000000;
-            font-weight: bold;
-        }
-        .lang-option.active-lang img {
+        .lang-dropdown-item:hover img {
             border-color: #000000;
+        }
+        .lang-count {
+            font-size: 9px;
+            opacity: 0.7;
+        }
+        .lang-dropdown-item:hover .lang-count {
+            opacity: 1;
         }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ */
@@ -216,7 +261,7 @@
         /* ДВЕРЬ */
         #main-door {
             display: block; height: 38vh; max-height: 320px; width: auto; max-width: 100%; object-fit: contain;
-            margin: 0 auto 15px auto; transform: scale(1); transition: transform 0.2s ease, filter 0.3s ease, opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            margin: 0 auto; transform: scale(1); transition: transform 0.2s ease, filter 0.3s ease, opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             cursor: pointer; position: relative; z-index: 500; pointer-events: auto !important;
         }
         #main-door:active { transform: scale(0.97); }
@@ -242,13 +287,23 @@
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
-    <!-- ВХОД С ЯЗЫКОВЫМ БЛОКОМ -->
+    <!-- ВХОД С ЯЗЫКОВЫМ СЕЛЕКТОРОМ СЛЕВА И ДВЕРЬЮ ПО ЦЕНТРУ -->
     <div id="block-entrance" class="block active">
         <div id="google_translate_element" style="display:none;"></div>
-        <div class="entrance-content notranslate">
-            <div class="languages-grid" id="entrance-lang-grid">
-                <!-- Генерируется динамически скриптом -->
+        <div class="entrance-container notranslate">
+            
+            <!-- Языковой блок со списком по README -->
+            <div class="language-selector-wrapper" id="lang-selector-wrapper">
+                <div class="lang-main-box" onclick="toggleLangDropdown(event)">
+                    <span id="current-lang-name">English</span>
+                    <img id="current-lang-flag" src="https://flagcdn.com/w20/gb.png">
+                </div>
+                <div class="lang-dropdown-list" id="lang-dropdown-list">
+                    <!-- Заполняется динамически скриптом -->
+                </div>
             </div>
+
+            <!-- Дверь по центру -->
             <img src="door_1.jpg" id="main-door" translate="no" onclick="handleDoor(event)" ontouchend="handleDoor(event)">
         </div>
     </div>
@@ -366,7 +421,7 @@
     <script src="language.js"></script>
 
 <script type="text/javascript">
-    const APP_VERSION = "v5.0.5 CORE";
+    const APP_VERSION = "v5.0.6 CORE";
     let currentUserImage = "";
     let currentClubAvatarImage = "horse_welcome.png";
     let currentBlockId = 'block-entrance';
@@ -377,23 +432,60 @@
     let isDoorOpened = false;
     let userNumericCode = "GY-" + Math.floor(1000 + Math.random() * 9000);
 
-    // Рендер языков на первой странице из файла userlang-data.js
+    // Генерация и обновление языкового селектора (Выпадающий список со счетчиками юзеров)
     function renderEntranceLanguages() {
-        const grid = document.getElementById('entrance-lang-grid');
-        if (!grid || typeof allLangs === 'undefined') return;
+        const dropdownList = document.getElementById('lang-dropdown-list');
+        const currentNameEl = document.getElementById('current-lang-name');
+        const currentFlagEl = document.getElementById('current-lang-flag');
         
-        grid.innerHTML = '';
+        if (!dropdownList || typeof allLangs === 'undefined') return;
+        
+        dropdownList.innerHTML = '';
+        
+        const activeLangObj = allLangs.find(l => l.code === currentActiveCode) || allLangs[0];
+        if (currentNameEl) currentNameEl.innerText = activeLangObj.name;
+        if (currentFlagEl) currentFlagEl.src = `https://flagcdn.com/w20/${activeLangObj.c}.png`;
+
         allLangs.forEach(lang => {
-            const btn = document.createElement('div');
-            btn.className = `lang-option ${lang.code === currentActiveCode ? 'active-lang' : ''}`;
-            btn.innerHTML = `<img src="https://flagcdn.com/w20/${lang.c}.png"><span>${lang.name}</span>`;
-            btn.onclick = (e) => {
+            if (lang.code === currentActiveCode) return; // Текущий уже в главной рамке
+            
+            const item = document.createElement('div');
+            item.className = 'lang-dropdown-item';
+            
+            // Имитация счетчика участников по странам из реестра
+            const userCount = Math.floor(12 + Math.sin(lang.code.charCodeAt(0)) * 45 + 50);
+
+            item.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <img src="https://flagcdn.com/w20/${lang.c}.png">
+                    <span>${lang.name}</span>
+                </div>
+                <span class="lang-count">[${userCount}]</span>
+            `;
+            
+            item.onclick = (e) => {
                 e.stopPropagation();
                 changeAppLanguage(lang.code, lang.c);
+                document.getElementById('lang-selector-wrapper').classList.remove('active-dropdown');
             };
-            grid.appendChild(btn);
+            
+            dropdownList.appendChild(item);
         });
     }
+
+    function toggleLangDropdown(e) {
+        e.stopPropagation();
+        const wrapper = document.getElementById('lang-selector-wrapper');
+        if (wrapper) {
+            wrapper.classList.toggle('active-dropdown');
+        }
+    }
+
+    // Закрытие выпадающего списка при клике вне его
+    document.addEventListener('click', () => {
+        const wrapper = document.getElementById('lang-selector-wrapper');
+        if (wrapper) wrapper.classList.remove('active-dropdown');
+    });
 
     function changeAppLanguage(langCode, flagCode) {
         currentActiveCode = langCode;
