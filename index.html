@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16 CORE</title>
+    <title>GY-GY Club v4.6.16.1 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -41,7 +41,7 @@
             text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
         }
         
-        /* СКВОЗНОЙ АВАТАР (уменьшен еще на 5% -> ~36px, приподнят еще на 3px -> top: 4px) */
+        /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed; top: 4px; left: 50%; transform: translateX(-50%);
             width: 36px; height: 36px; border-radius: 50%;
@@ -244,7 +244,6 @@
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
         .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
         
-        /* СТРОГИЙ РАЗМЕР ДВЕРИ ДЛЯ ИСКЛЮЧЕНИЯ РАСТЯГИВАНИЯ */
         #main-door {
             display: block;
             height: 48vh;
@@ -480,13 +479,11 @@
     function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
     function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
 
-    // Вспомогательная функция сопоставления языкового кода с двухбуквенным кодом страны для CDN флагов
     function flagCodeToCountry(code) {
         const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
         return map[code] || 'gb';
     }
 
-    // Принудительная синхронизация виджета GTranslate с сохраненным языком
     function syncGTranslateWidget() {
         const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
         const combo = document.querySelector('.goog-te-combo');
@@ -500,7 +497,6 @@
         }
     }
 
-    // Обновление отображения флага и текста названия языка из localStorage
     function updateGlobalFlagUI() {
         const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
         const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
@@ -525,7 +521,6 @@
     function selectClubLanguage(langCode, langName, flagUrl) {
         currentLangData = { code: langCode, name: langName, flag: flagUrl };
         
-        // Сохраняем во все ключи флага, код и название для мгновенной синхронизации
         const countryCode = flagCodeToCountry(langCode);
         safeStorageSet('gygy_flag', countryCode);
         safeStorageSet('gy_user_flag', countryCode);
@@ -818,13 +813,9 @@
         }
         checkAndFillRegistrationForm();
 
-        // 1. Восстанавливаем сохраненный флаг и текст языка в UI
         updateGlobalFlagUI();
-        
-        // 2. Принудительно синхронизируем сам переводчик страницы
         syncGTranslateWidget();
 
-        // Слушаем изменения localStorage (если флаг сменили на другой вкладке/странице)
         window.addEventListener('storage', (e) => {
             if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
                 updateGlobalFlagUI();
