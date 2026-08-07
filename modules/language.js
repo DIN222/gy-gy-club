@@ -113,3 +113,8 @@ export const LanguageModule = {
 window.selectClubLanguage = (code, name, flag) => {
     EventBus.emit('CHANGE_LANGUAGE', { code, name, flag });
 };
+// В самый конец файла modules/language.js добавьте это:
+window.toggleLangDropdown = function() {
+    const list = document.getElementById('club-lang-list');
+    if (list) list.classList.toggle('open');
+};
