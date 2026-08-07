@@ -1,39 +1,49 @@
 // modules/hall.js
-// Модуль управления Холлом (центральный узел GY-GY Club)
+// Суб-материнская плата Холла для GY-GY Club
 
 import { EventBus } from '../core/eventBus.js';
 
 export const HallModule = {
     init() {
-        // Подписываемся на события, связанные с доступом в Холл
-        EventBus.on('USER_ENTERED_HALL', () => {
-            this.prepareHallUI();
+        // Слушаем глобальный сигнал, что пользователь прибыл в Холл
+        EventBus.on('NAVIGATE_TO', (data) => {
+            if (data.blockId === 'block-hall') {
+                this.activateHall();
+            }
         });
-        
-        console.log("Модуль Холла инициализирован.");
+
+        // Слушаем сохранение профиля, чтобы сразу разблокировать двери Холла
+        EventBus.on('PROFILE_SAVED', () => {
+            this.unlockDirections();
+        });
+
+        console.log("Суб-материнская плата Холла запущена.");
     },
 
-    prepareHallUI() {
-        // Логика подготовки Холла: 
-        // например, проверка, открыты ли двери, есть ли права доступа и т.д.
-        console.log("Подготовка интерфейса Холла...");
+    activateHall() {
+        console.log("Холл активирован. Проверка прав и доступов...");
         
-        // Здесь можно реализовать проверку: если пользователь "модермех", 
-        // открываем дополнительные спец-кнопки в холле
+        // Проверяем статус босса (модермеха)
         const isBoss = localStorage.getItem('gygy_is_boss') === 'true';
         const staffBtn = document.getElementById('btn-staff-room');
-        
         if (isBoss && staffBtn) {
             staffBtn.style.display = 'block';
         }
+
+        // Проверяем, есть ли аватар, чтобы разбудить кнопки направлений
+        if (localStorage.getItem('gygy_avatar')) {
+            this.unlockDirections();
+        }
     },
 
-    // Метод для визуальной "разблокировки" кнопок в Холле
-    unlockHallDirections() {
+    unlockDirections() {
         const btnWHall = document.getElementById('btn-w-hall');
         const btnPass = document.getElementById('btn-pass');
         
         if (btnWHall) btnWHall.classList.remove('btn-sleep');
         if (btnPass) btnPass.classList.remove('btn-sleep');
+        
+        // Оповещаем дочерние элементы Холла, что путь открыт
+        EventBus.emit('HALL_DIRECTIONS_UNLOCKED');
     }
 };
