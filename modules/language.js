@@ -2,119 +2,102 @@
 import { EventBus } from '../core/eventBus.js';
 
 export const LanguageModule = {
-    allLanguages: [
-        { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
-        { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
-        { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
-        { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
-        { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
-        { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' },
-        { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
-        { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
-        { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
-        { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
-        { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png' },
-        { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
-    ],
+    currentActiveCode: 'en',
+    currentFlagCode: 'gb',
 
     init() {
-        this.updateGlobalFlagUI();
-        this.syncGTranslateWidget();
+        let savedLangCode = (typeof safeStorageGet === 'function' ? safeStorageGet('gy_lang') || safeStorageGet('gygy_lang') : localStorage.getItem('gy_lang') || localStorage.getItem('gygy_lang'));
+        const savedFlag = (typeof safeStorageGet === 'function' ? safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') : localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag'));
+        
+        if (savedLangCode) {
+            savedLangCode = savedLangCode.toLowerCase();
+            if (savedLangCode === 'ua') savedLangCode = 'uk';
+        }
 
-        // Слушаем запросы на смену языка через шину событий
-        EventBus.on('CHANGE_LANGUAGE', (data) => {
-            this.selectClubLanguage(data.code, data.name, data.flag);
+        let matchedLang = null;
+        if (savedFlag && typeof allLangs !== 'undefined') {
+            matchedLang = allLangs.find(l => l.c.toLowerCase() === savedFlag.toLowerCase());
+        } else if (savedLangCode && typeof allLangs !== 'undefined') {
+            matchedLang = allLangs.find(l => l.code === savedLangCode);
+        }
+
+        if (matchedLang) {
+            this.currentFlagCode = matchedLang.c;
+            this.currentActiveCode = matchedLang.code;
+            
+            const badgeFlagImg = document.getElementById('badge-flag-img');
+            if (badgeFlagImg) badgeFlagImg.src = `https://flagcdn.com/w20/${matchedLang.c}.png`;
+            
+            this.applyTranslationsToDOM(matchedLang.code);
+            this.forceTriggerGoogleTranslate(matchedLang.code);
+        }
+
+        console.log("Модуль языка успешно инициализирован.");
+    },
+
+    googleTranslateElementInit() {
+        if (typeof google !== 'undefined' && google.translate) {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    },
+
+    applyTranslationsToDOM(langCode) {
+        if (typeof translations === 'undefined' || !translations[langCode]) return;
+        const dict = translations[langCode];
+        document.querySelectorAll('[data-translate]').forEach(el => {
+            const key = el.getAttribute('data-translate');
+            if (dict[key]) {
+                el.innerText = dict[key];
+            }
         });
+    },
 
-        // Слушаем изменения localStorage из других вкладок
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
-                this.updateGlobalFlagUI();
+    forceTriggerGoogleTranslate(langCode) {
+        if (window.langTimer) clearInterval(window.langTimer);
+        let attempts = 0;
+        window.langTimer = setInterval(() => {
+            const selectEl = document.querySelector('.goog-te-combo');
+            if (selectEl) {
+                clearInterval(window.langTimer);
+                if (selectEl.value === langCode) return;
+                selectEl.value = langCode;
+                selectEl.dispatchEvent(new Event('change', { bubbles: true }));
             }
-            if (e.key === 'gygy_lang_code') {
-                this.syncGTranslateWidget();
+            if (++attempts > 100) {
+                clearInterval(window.langTimer);
             }
-        });
-
-        console.log("Модуль локализации запущен.");
+        }, 100);
     },
 
-    flagCodeToCountry(code) {
-        const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
-        return map[code] || 'gb';
-    },
-
-    syncGTranslateWidget() {
-        const savedLangCode = localStorage.getItem('gygy_lang_code') || 'en';
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-            if (combo.value !== savedLangCode) {
-                combo.value = savedLangCode;
-                combo.dispatchEvent(new Event('change'));
-            }
-        } else {
-            setTimeout(() => this.syncGTranslateWidget(), 100);
-        }
-    },
-
-    updateGlobalFlagUI() {
-        const savedFlag = localStorage.getItem('gygy_flag') || localStorage.getItem('gy_user_flag') || 'gb';
-        const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+    selectClubLanguage(code, name, flagUrl) {
+        this.currentActiveCode = code;
+        this.currentFlagCode = flagUrl;
         
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) currentFlagEl.src = flagUrl;
-
-        const savedLangName = localStorage.getItem('gygy_lang_name');
-        const langNameEl = document.getElementById('current-lang-name');
-        if (savedLangName && langNameEl) langNameEl.innerText = savedLangName;
-    },
-
-    selectClubLanguage(langCode, langName, flagUrl) {
-        const countryCode = this.flagCodeToCountry(langCode);
-        localStorage.setItem('gygy_flag', countryCode);
-        localStorage.setItem('gy_user_flag', countryCode);
-        localStorage.setItem('gygy_lang_code', langCode);
-        localStorage.setItem('gygy_lang_name', langName);
+        localStorage.setItem('gygy_lang', code);
+        localStorage.setItem('gygy_flag', flagUrl);
         
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) currentFlagEl.src = flagUrl;
+        this.applyTranslationsToDOM(code);
+        this.forceTriggerGoogleTranslate(code);
         
-        const langNameEl = document.getElementById('current-lang-name');
-        if (langNameEl) langNameEl.innerText = langName;
-
-        const listContainer = document.getElementById('club-lang-list');
-        if (listContainer) {
-            listContainer.innerHTML = '';
-            this.allLanguages.forEach(lang => {
-                if (lang.code !== langCode) {
-                    const item = document.createElement('div');
-                    item.className = 'club-lang-item';
-                    item.onclick = () => EventBus.emit('CHANGE_LANGUAGE', { code: lang.code, name: lang.name, flag: lang.flag });
-                    item.innerHTML = `
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="${lang.flag}">
-                        <span class="item-text">${lang.name}</span>
-                    `;
-                    listContainer.appendChild(item);
-                }
-            });
-            listContainer.classList.remove('open');
-        }
-
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-            combo.value = langCode;
-            combo.dispatchEvent(new Event('change'));
-        }
+        EventBus.emit('LANGUAGE_CHANGED', { code, name, flag: flagUrl });
     }
 };
 
-// Глобальная функция для кликов в HTML, если они завязаны на onclick
-window.selectClubLanguage = (code, name, flag) => {
-    EventBus.emit('CHANGE_LANGUAGE', { code, name, flag });
-};
-// В самый конец файла modules/language.js добавьте это:
+// Глобальные мостики для HTML-тегов onclick="..."
 window.toggleLangDropdown = function() {
     const list = document.getElementById('club-lang-list');
     if (list) list.classList.toggle('open');
+};
+
+window.selectClubLanguage = function(code, name, flagUrl) {
+    LanguageModule.selectClubLanguage(code, name, flagUrl);
+};
+
+window.googleTranslateElementInit = function() {
+    LanguageModule.googleTranslateElementInit();
 };
