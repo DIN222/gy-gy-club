@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.9 CORE</title>
+    <title>GY-GY Club v4.6.16.11 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -135,8 +135,19 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* ЕДИНЫЙ СТИЛЬ КВАДРАТОВ ВЫБОРА НИКНЕЙМА */
-        .nickname-container { display: flex; gap: 10px; margin-bottom: 12px; width: 320px; justify-content: center; }
+        /* НОВАЯ СЕТКА КВАДРАТОВ 2x3 В БЛОКЕ IDENTITY */
+        .identity-grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+            width: 250px;
+        }
+        .identity-grid-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
         .nickname-square {
             width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -368,35 +379,41 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
+    <!-- Страница Identity с переставленной сеткой 2 ряда по 3 квадрата -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
-        <div class="nickname-container">
-            <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own')">
-                <span style="font-size: 9px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
-                <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')">
+        <div class="identity-grid-container">
+            <!-- Верхний ряд: 3 квадрата -->
+            <div class="identity-grid-row">
+                <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own')">
+                    <span style="font-size: 8px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
+                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')">
+                </div>
+                <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
+                    <span style="font-size: 8px; font-weight: 900;" data-translate="nick_club">CLUB NICK</span>
+                    <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700;">GY-MEMBER</span>
+                </div>
+                <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
             </div>
-            <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
-                <span style="font-size: 9px; font-weight: 900;" data-translate="nick_club">CLUB NICK</span>
-                <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700;">GY-MEMBER</span>
+            
+            <!-- Нижний ряд: 3 квадрата -->
+            <div class="identity-grid-row">
+                <div class="box-final" id="qr-box-reg"></div>
+                
+                <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
+                    <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
+                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900;" data-translate="txt_photo">OR PHOTO</span>
+                </div>
+                
+                <div class="box-final" style="cursor:pointer;" onclick="generateAvatar()">
+                    <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
+                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center;" data-translate="txt_avatar">OR AVATAR</span>
+                </div>
             </div>
         </div>
 
-        <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
-            <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
-            <div class="box-final" id="qr-box-reg"></div>
-            
-            <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-                <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900;" data-translate="txt_photo">OR PHOTO</span>
-            </div>
-            
-            <div class="box-final" style="cursor:pointer;" onclick="generateAvatar()">
-                <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center;" data-translate="txt_avatar">OR AVATAR</span>
-            </div>
-        </div>
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
@@ -443,6 +460,7 @@
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
+            <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#000000; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
             <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
