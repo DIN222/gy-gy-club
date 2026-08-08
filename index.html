@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.14 CORE</title>
+    <title>GY-GY Club v4.6.16.15 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -472,7 +472,7 @@
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div> 
-    <script src="userlang-data.js"></script>
+  <script src="userlang-data.js"></script>
 <script src="translations.js"></script>
 <script src="language.js"></script>
 
@@ -637,10 +637,35 @@
         const passIdVal = document.getElementById('pass-id-val');
         const qrBoxReg = document.getElementById('qr-box-reg');
         const passQrBox = document.getElementById('pass-qr-box');
+        
         if (idLabel) idLabel.innerText = targetID;
         if (passIdVal) passIdVal.innerText = targetID;
-        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 75, height: 75 }); }
-        if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); }
+        
+        if (qrBoxReg && typeof QRCode !== 'undefined') { 
+            qrBoxReg.innerHTML = ""; 
+            new QRCode(qrBoxReg, { text: targetID, width: 75, height: 75 }); 
+        }
+        if (passQrBox && typeof QRCode !== 'undefined') { 
+            passQrBox.innerHTML = ""; 
+            new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); 
+        }
+
+        // Генерируем крутой текстовый клубный ник без цифр и префиксов
+        let clubNick = safeStorageGet('gygy_club_nick');
+        if (!clubNick) {
+            const coolNicks = [
+                "БигКоин", "Нападающий", "Шампань", "Магнат", "Счастливчик", 
+                "Инсайдер", "Фантом", "Победитель", "Капитан", "Маэстро", 
+                "Прайм", "Штурман", "Панчер", "Триумф", "Оракул"
+            ];
+            clubNick = coolNicks[Math.floor(Math.random() * coolNicks.length)];
+            safeStorageSet('gygy_club_nick', clubNick);
+        }
+
+        const clubNickLabel = document.getElementById('club-nick-label');
+        if (clubNickLabel) {
+            clubNickLabel.innerText = clubNick;
+        }
     }
 
     function checkAndFillRegistrationForm() {
@@ -655,9 +680,6 @@
         currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
 
         if (currentID) { renderUserPassports(currentID); }
-        
-        const clubNickLabel = document.getElementById('club-nick-label');
-        if (clubNickLabel && currentID) { clubNickLabel.innerText = currentID; }
 
         const savedNickname = safeStorageGet('gygy_nickname') || '';
         const ownNickInput = document.getElementById('input-own-nick');
@@ -798,13 +820,14 @@
     function saveUserProfile() {
         if (!currentUserImage) return;
         
+        let finalNick = '';
         if (selectedNickType === 'club') {
-            safeStorageSet('gygy_nickname', currentID);
+            finalNick = safeStorageGet('gygy_club_nick') || 'Магнат';
         } else {
-            if (userChosenNickname) {
-                safeStorageSet('gygy_nickname', userChosenNickname);
-            }
+            finalNick = userChosenNickname || safeStorageGet('gygy_nickname') || 'Anonymous';
         }
+        
+        safeStorageSet('gygy_nickname', finalNick);
 
         safeStorageSet('gygy_avatar', currentUserImage);
         safeStorageSet('gy_user_img', currentUserImage);
@@ -826,6 +849,46 @@
 
         const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
+
+        // Запуск триумфальной церемонии Совета директоров
+        triggerBoardOfDirectorsCeremony(finalNick);
+    }
+
+    // Динамический модуль: Церемония Совета директоров
+    const BoardOfDirectorsEvents = [
+        { en: "The Board of Directors approves your entry with a loud toast.", ru: "Совет директоров одобряет ваш вход громким тостом." },
+        { en: "Chambers echo with applause. Welcome to the inner circle.", ru: "Залы гудят от аплодисментов. Добро пожаловать в ближний круг." },
+        { en: "The Directors stamp your dossier. Excellent choice of identity.", ru: "Директора ставят штамп на ваше досье. Отличный выбор идентичности." },
+        { en: "Champagne glasses clink. Your seat at the table is reserved.", ru: "Бокалы с шампанским звенят. Ваше место за столом забронировано." }
+    ];
+
+    function triggerBoardOfDirectorsCeremony(nickname) {
+        const langCode = safeStorageGet('gygy_lang_code') || 'en';
+        const localizedEvents = BoardOfDirectorsEvents.map(item => ({
+            text: langCode === 'ru' ? item.ru : item.en
+        }));
+        
+        const randomEvent = localizedEvents[Math.floor(Math.random() * localizedEvents.length)].text;
+        showDynamicToast(`${randomEvent} — [ ${nickname} ]`);
+    }
+
+    function showDynamicToast(message) {
+        let toast = document.getElementById('dynamic-board-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'dynamic-board-toast';
+            toast.style.cssText = "position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-50px); background: #000; color: #00ffcc; border: 1px solid #00ffcc; padding: 12px 24px; font-family: 'Share Tech Mono', monospace; font-size: 11px; z-index: 10000; opacity: 0; transition: all 0.4s ease; text-align: center; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,255,204,0.3); pointer-events: none;";
+            document.body.appendChild(toast);
+        }
+        
+        toast.innerText = message;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-50px)';
+        }, 5000);
     }
 
     function openPassport() {
