@@ -135,7 +135,7 @@
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* НОВАЯ СЕТКА КВАДРАТОВ 2x3 В БЛОКЕ IDENTITY */
+        /* СЕТКА КВАДРАТОВ 2x3 В БЛОКЕ IDENTITY */
         .identity-grid-container {
             display: flex;
             flex-direction: column;
@@ -379,7 +379,7 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- Страница Identity с переставленной сеткой 2 ряда по 3 квадрата -->
+    <!-- Страница Identity с исправленными кликами по квадратам -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
@@ -387,12 +387,12 @@
             <!-- Верхний ряд: 3 квадрата -->
             <div class="identity-grid-row">
                 <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own')">
-                    <span style="font-size: 8px; font-weight: 900;" data-translate="nick_own">YOUR NICK</span>
-                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')">
+                    <span style="font-size: 8px; font-weight: 900; pointer-events: none;" data-translate="nick_own">YOUR NICK</span>
+                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" onclick="event.stopPropagation(); setNickType('own');">
                 </div>
                 <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
-                    <span style="font-size: 8px; font-weight: 900;" data-translate="nick_club">CLUB NICK</span>
-                    <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700;">GY-MEMBER</span>
+                    <span style="font-size: 8px; font-weight: 900; pointer-events: none;" data-translate="nick_club">CLUB NICK</span>
+                    <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none;">GY-MEMBER</span>
                 </div>
                 <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
             </div>
@@ -404,12 +404,12 @@
                 <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
                     <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                     <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900;" data-translate="txt_photo">OR PHOTO</span>
+                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900; pointer-events: none;" data-translate="txt_photo">OR PHOTO</span>
                 </div>
                 
                 <div class="box-final" style="cursor:pointer;" onclick="generateAvatar()">
                     <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center;" data-translate="txt_avatar">OR AVATAR</span>
+                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;" data-translate="txt_avatar">OR AVATAR</span>
                 </div>
             </div>
         </div>
@@ -466,7 +466,6 @@
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
-
 <script src="userlang-data.js"></script>
 <script src="translations.js"></script>
 <script src="language.js"></script>
