@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.12 CORE</title>
+    <title>GY-GY Club v4.6.16.13 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -381,6 +381,7 @@
 
     <!-- Страница Identity с исправленными кликами по квадратам -->
     <!-- Страница Identity с исправленными кликами по нику -->
+    <!-- Страница Identity с исправленными кликами по нику -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
@@ -388,13 +389,13 @@
             <!-- Верхний ряд: 3 квадрата -->
             <div class="identity-grid-row">
                 <!-- Квадрат своего ника -->
-                <div id="box-own-nick" class="nickname-square selected" onclick="focusOwnNickInput()">
+                <div id="box-own-nick" class="nickname-square selected" onclick="focusOwnNickInput()" style="pointer-events: auto !important; cursor: pointer;">
                     <span style="font-size: 8px; font-weight: 900; pointer-events: none;" data-translate="nick_own">YOUR NICK</span>
-                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" style="position: relative; width: 90%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 11px; font-weight: bold; color: #000; outline: none; margin-top: 4px;">
+                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" onclick="event.stopPropagation(); setNickType('own');" style="position: relative; z-index: 10; width: 90%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 11px; font-weight: bold; color: #000; outline: none; margin-top: 4px; pointer-events: auto !important;">
                 </div>
 
                 <!-- Квадрат клубного ника -->
-                <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
+                <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')" style="pointer-events: auto !important; cursor: pointer;">
                     <span style="font-size: 8px; font-weight: 900; pointer-events: none;" data-translate="nick_club">CLUB NICK</span>
                     <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none;">GY-MEMBER</span>
                 </div>
