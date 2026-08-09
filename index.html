@@ -155,7 +155,13 @@
         }
         .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
         .nickname-square input {
-            position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent;
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            background: transparent; border: none; text-align: center;
+            font-family: 'Share Tech Mono', monospace; font-size: 12px; font-weight: bold;
+            color: #000000; z-index: 20; opacity: 1; cursor: text;
+        }
+        .nickname-square input:focus {
+            outline: none; background: rgba(255, 215, 0, 0.1);
         }
 
         /* СТРОГИЕ И КОМПАКТНЫЕ ОТСТУПЫ ДЛЯ СТРАНИЦЫ WELCOME */
@@ -274,7 +280,152 @@
         }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body class="page-loaded" oncontextmenu="return false;">
+
+    <!-- Интерфейсные элементы управления -->
+    <div class="ui-header-right">GY-GY</div>
+    
+    <div class="ui-user-badge" id="user-badge" onclick="openPassport()">
+        <img src="" class="badge-img" id="badge-img-el" alt="Avatar">
+        <img src="" class="badge-flag" id="badge-flag-el" alt="Flag">
+    </div>
+
+    <!-- Языковой селектор -->
+    <div class="club-lang-dropdown-wrapper" id="lang-dropdown">
+        <div class="club-lang-current" onclick="toggleLangDropdown()">
+            <div class="club-lang-current-content">
+                <div class="item-avatar"><img id="current-lang-avatar" src="" alt=""></div>
+                <img id="current-lang-flag" class="item-flag" src="" alt="">
+                <span class="item-text" id="current-lang-name">English</span>
+            </div>
+            <span class="arrow-down">▼</span>
+        </div>
+        <div class="club-lang-list" id="lang-list-container">
+            <!-- Динамически заполняемый список языков -->
+        </div>
+    </div>
+
+    <!-- Навигационные стрелки -->
+    <div class="ui-nav-arrows" id="nav-arrows" style="display: none;">
+        <button class="arrow-item" onclick="goBackPortal()">&#10094;</button>
+        <button class="arrow-item" onclick="goForwardPortal()">&#10095;</button>
+    </div>
+
+    <!-- БЛОК 1: WELCOME -->
+    <div id="block-welcome" class="block active">
+        <div class="quote-text">"The door is open for those who dare to step through."</div>
+        <img src="door_closed.png" alt="Door" id="main-door" onclick="explodeDoor()">
+        <button class="btn-gy" style="margin-top: 20px;" onclick="portalTransition('block-hall')">Enter Club</button>
+    </div>
+
+    <!-- БЛОК 2: HALL -->
+    <div id="block-hall" class="block">
+        <div class="hall-interior">
+            <div class="quote-text">Welcome to the Inner Sanctum</div>
+            
+            <!-- Левая картина -->
+            <div class="painting-zone painting-left" onmouseenter="showManifest('left')" onmouseleave="hideManifest('left')" onclick="portalTransition('block-server')">
+                <div class="cue-arrow-hall">&#10094;</div>
+                <div class="manifest-btn-box" id="manifest-left">
+                    <button class="btn-gy btn-manifest">Manifest 1</button>
+                </div>
+            </div>
+
+            <!-- Центральная дверь -->
+            <div class="hall-door-target" onclick="portalTransition('block-bar')"></div>
+
+            <!-- Правая картина -->
+            <div class="painting-zone painting-right" onmouseenter="showManifest('right')" onmouseleave="hideManifest('right')" onclick="portalTransition('block-tables')">
+                <div class="cue-arrow-hall">&#10095;</div>
+                <div class="manifest-btn-box" id="manifest-right">
+                    <button class="btn-gy btn-manifest">Manifest 2</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Аудио элементы управления -->
+    <audio id="snd-ambient" loop>
+        <source src="ambient.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Базовая логика переходов и управления звуком
+        function portalTransition(nextId) {
+            const ambientBar = document.getElementById('snd-ambient');
+            if (ambientBar) {
+                ambientBar.pause();
+                ambientBar.currentTime = 0;
+            }
+
+            const currentActive = document.querySelector('.block.active');
+            const nextBlock = document.getElementById(nextId);
+
+            if (currentActive) {
+                currentActive.style.opacity = '0';
+                setTimeout(() => {
+                    currentActive.classList.remove('active');
+                    if (nextBlock) {
+                        nextBlock.classList.add('active');
+                        setTimeout(() => {
+                            nextBlock.style.opacity = '1';
+                        }, 50);
+                    }
+                }, 1200);
+            } else if (nextBlock) {
+                nextBlock.classList.add('active');
+                setTimeout(() => { nextBlock.style.opacity = '1'; }, 50);
+            }
+
+            const navArrows = document.getElementById('nav-arrows');
+            if (nextId === 'block-hall') {
+                navArrows.style.display = 'flex';
+            } else {
+                navArrows.style.display = 'none';
+            }
+        }
+
+        function explodeDoor() {
+            const door = document.getElementById('main-door');
+            door.classList.add('door-exploded');
+            setTimeout(() => {
+                portalTransition('block-hall');
+            }, 600);
+        }
+
+        function toggleLangDropdown() {
+            const list = document.getElementById('lang-list-container');
+            list.classList.toggle('open');
+        }
+
+        function showManifest(side) {
+            const box = document.getElementById('manifest-' + side);
+            if (box) {
+                box.style.opacity = '1';
+                box.style.bottom = '-55px';
+                box.style.pointerEvents = 'auto';
+            }
+        }
+
+        function hideManifest(side) {
+            const box = document.getElementById('manifest-' + side);
+            if (box) {
+                box.style.opacity = '0';
+                box.style.bottom = '-45px';
+                box.style.pointerEvents = 'none';
+            }
+        }
+
+        function goBackPortal() {
+            portalTransition('block-welcome');
+        }
+
+        function goForwardPortal() {}
+
+        function openPassport() {}
+    </script>
+</body>
+</html>
 
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
