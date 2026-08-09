@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.16 CORE</title>
+    <title>GY-GY Club v4.6.16.17 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -737,46 +737,50 @@
         }
     }
 
-    function portalTransition(nextId) {
-        if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
-        if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
-        if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-        
-        if (nextId === 'block-office') {
-            window.location.href = 'office.html';
-            return;
-        }
-
-        const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
-
-        currentBlockId = nextId;
-
-        const badge = document.getElementById('global-user-badge');
-        const navArrows = document.getElementById('club-nav-arrows');
-
-        document.querySelectorAll('.block').forEach(b => {
-            b.classList.remove('active');
-            b.style.display = 'none';
-        });
-
-        targetBlock.style.display = 'flex';
-        
-        setTimeout(() => {
-            targetBlock.classList.add('active');
-        }, 20);
-
-        if (nextId === 'block-entrance') {
-            const mainDoor = document.getElementById('main-door');
-            if (mainDoor) mainDoor.classList.remove('door-exploded');
-            if (navArrows) navArrows.style.display = 'none';
-            if (badge) badge.style.display = 'none';
-        } else {
-            if (navArrows) navArrows.style.display = 'flex';
-            if (badge && currentUserImage) badge.style.display = 'block';
-        }
+   function portalTransition(nextId) {
+    if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
+    if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
+    if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
+    
+    if (nextId === 'block-office') {
+        window.location.href = 'office.html';
+        return;
     }
 
+    const targetBlock = document.getElementById(nextId);
+    if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
+
+    currentBlockId = nextId;
+
+    // 🔥 Уведомляем событийную шину (Event Bus) о смене комнаты/локации
+    if (window.EventBus) {
+        window.EventBus.emit('ROOM_CHANGED', { room: nextId });
+    }
+
+    const badge = document.getElementById('global-user-badge');
+    const navArrows = document.getElementById('club-nav-arrows');
+
+    document.querySelectorAll('.block').forEach(b => {
+        b.classList.remove('active');
+        b.style.display = 'none';
+    });
+
+    targetBlock.style.display = 'flex';
+    
+    setTimeout(() => {
+        targetBlock.classList.add('active');
+    }, 20);
+
+    if (nextId === 'block-entrance') {
+        const mainDoor = document.getElementById('main-door');
+        if (mainDoor) mainDoor.classList.remove('door-exploded');
+        if (navArrows) navArrows.style.display = 'none';
+        if (badge) badge.style.display = 'none';
+    } else {
+        if (navArrows) navArrows.style.display = 'flex';
+        if (badge && currentUserImage) badge.style.display = 'block';
+    }
+}
     function handleDoor() {
         const sndDoor = document.getElementById('snd-door');
         const sndAmbient = document.getElementById('snd-ambient');
