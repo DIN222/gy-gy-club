@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.21 CORE</title>
+    <title>GY-GY Club v4.6.16.22 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -305,6 +305,11 @@
             </div>
             
             <div id="club-lang-list" class="club-lang-list">
+                <div class="club-lang-item" onclick="selectClubLanguage('en', 'English', 'https://flagcdn.com/w20/gb.png')">
+                    <div class="item-avatar"><img src="horse_welcome.png"></div>
+                    <img class="item-flag" src="https://flagcdn.com/w20/gb.png">
+                    <span class="item-text">English</span>
+                </div>
                 <div class="club-lang-item" onclick="selectClubLanguage('ru', 'Русский', 'https://flagcdn.com/w20/ru.png')">
                     <div class="item-avatar"><img src="horse_welcome.png"></div>
                     <img class="item-flag" src="https://flagcdn.com/w20/ru.png">
@@ -544,6 +549,11 @@
                 currentFlagEl.src = flagUrl;
             }
 
+            const badgeFlagEl = document.getElementById('badge-flag-img');
+            if (badgeFlagEl) {
+                badgeFlagEl.src = flagUrl;
+            }
+
             const savedLangName = safeStorageGet('gygy_lang_name');
             const langNameEl = document.getElementById('current-lang-name');
             if (savedLangName && langNameEl) {
@@ -567,6 +577,9 @@
             
             const currentFlagEl = document.getElementById('current-flag');
             if (currentFlagEl) currentFlagEl.src = flagUrl;
+
+            const badgeFlagEl = document.getElementById('badge-flag-img');
+            if (badgeFlagEl) badgeFlagEl.src = flagUrl;
             
             const langNameEl = document.getElementById('current-lang-name');
             if (langNameEl) langNameEl.innerText = langName;
@@ -757,7 +770,6 @@
             const targetBlock = document.getElementById(nextId);
             if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
 
-            // Если переходим на Hall, запускаем эмбиент бара
             const sndAmbient = document.getElementById('snd-ambient');
             if (nextId === 'block-hall') {
                 if (sndAmbient) {
@@ -834,7 +846,7 @@
         function generateAvatar() {
             const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000000"/></svg>`;
-            currentUserImage = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            currentUserImage = 'data:image/svg+xml;utf8,+ encodeURIComponent(svg);';
             const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = "block"; }
             const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = 'none';
             const pp = document.getElementById('pp'); if (pp) pp.style.display = "none";
