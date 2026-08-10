@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GYGY Club — Interactive Portal 001 </title>
+    <title>GYGY Club — Interactive Portal [v1.0.5]</title>
     
     <!-- External Dependencies & Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <!-- Styles (Visual layout strictly preserved) -->
+    <!-- Styles (Visual layout strictly preserved v1.0.4) -->
     <style>
         :root {
             --bg-color: #050505;
@@ -143,10 +143,10 @@
 </head>
 <body>
 
-    <div id="app-version">v1.0.4-ARDUINO</div>
+    <div id="app-version">v1.0.4</div>
 
     <!-- Global Badge -->
-    <div id="global-user-badge" onclick="UI_Interface.openPassport()">
+    <div id="global-user-badge" onclick="PassportModule.openPassport()">
         <div class="badge-card">
             <img id="badge-avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' fill='#222'/></svg>">
             <span id="id-label">GY-000000</span>
@@ -155,12 +155,12 @@
 
     <!-- Navigation -->
     <div id="club-nav-arrows">
-        <button class="nav-btn" onclick="CoreSystem.navigateBack()">← BACK</button>
+        <button class="nav-btn" onclick="NavigationModule.navigateBack()">← BACK</button>
     </div>
 
     <!-- BLOCK 1: ENTRANCE -->
     <div id="block-entrance" class="block active">
-        <div class="main-door-container" id="main-door" onclick="CoreSystem.triggerEntrance()">
+        <div class="main-door-container" id="main-door" onclick="NavigationModule.triggerEntrance()">
             <h1>GYGY CLUB</h1>
             <p>[ Click to Breach Portal ]</p>
         </div>
@@ -171,13 +171,13 @@
         <div class="welcome-box">
             <h2>SELECT LANGUAGE</h2>
             <div class="club-lang-dropdown-wrapper">
-                <div class="club-lang-current" onclick="UI_Interface.toggleLangDropdown()">
+                <div class="club-lang-current" onclick="LanguageModule.toggleDropdown()">
                     <img id="current-flag" src="https://flagcdn.com/w20/gb.png">
                     <span id="current-lang-name">English</span>
                 </div>
                 <div class="club-lang-list" id="club-lang-list"></div>
             </div>
-            <button class="primary-action-btn" onclick="CoreSystem.switchBlock('block-identity')">PROCEED →</button>
+            <button class="primary-action-btn" onclick="NavigationModule.switchBlock('block-identity')">PROCEED →</button>
         </div>
     </div>
 
@@ -192,40 +192,40 @@
             </div>
             
             <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
-                <input type="file" id="file-input" style="display:none;" onchange="ProfileModule.handleFileUpload(this)">
+                <input type="file" id="file-input" style="display:none;" onchange="PassportModule.handleFileUpload(this)">
                 <button class="nav-btn" onclick="document.getElementById('file-input').click()">Upload</button>
-                <button class="nav-btn" onclick="ProfileModule.generateSvgAvatar()">Generate SVG</button>
+                <button class="nav-btn" onclick="PassportModule.generateSvgAvatar()">Generate SVG</button>
             </div>
 
             <div class="nickname-inputs">
-                <div class="nick-option selected" id="box-own-nick" onclick="ProfileModule.selectNickMode('own')">
+                <div class="nick-option selected" id="box-own-nick" onclick="PassportModule.selectNickMode('own')">
                     <span style="font-size: 11px; color: var(--text-muted);">Custom Nickname</span>
-                    <input type="text" id="input-own-nick" placeholder="Enter name..." oninput="ProfileModule.updateNickname(this.value)">
+                    <input type="text" id="input-own-nick" placeholder="Enter name..." oninput="PassportModule.updateNickname(this.value)">
                 </div>
-                <div class="nick-option" id="box-club-nick" onclick="ProfileModule.selectNickMode('club')">
+                <div class="nick-option" id="box-club-nick" onclick="PassportModule.selectNickMode('club')">
                     <span style="font-size: 11px; color: var(--text-muted);">Assigned Club Nickname</span>
                     <div id="club-nick-label" style="font-family: 'Share Tech Mono', monospace; font-size: 14px; color: var(--accent-color); margin-top: 5px;">-</div>
                 </div>
             </div>
 
-            <button class="primary-action-btn" onclick="ProfileModule.saveAndEnter(); CoreSystem.switchBlock('block-hall')">ENTER CLUB →</button>
+            <button class="primary-action-btn" onclick="PassportModule.saveAndEnter(); NavigationModule.switchBlock('block-hall')">ENTER CLUB →</button>
         </div>
     </div>
 
     <!-- BLOCK 4: HALL -->
     <div id="block-hall" class="block">
         <div class="hall-menu">
-            <button class="hall-btn" onclick="CoreSystem.switchBlock('block-server')">VERSES</button>
-            <button class="hall-btn" onclick="CoreSystem.switchBlock('block-bar')">BAR</button>
-            <button class="hall-btn" onclick="CoreSystem.switchBlock('block-tables')">TABLES</button>
-            <button class="hall-btn" onclick="CoreSystem.switchBlock('block-office')">OFFICE</button>
+            <button class="hall-btn" onclick="NavigationModule.switchBlock('block-server')">VERSES</button>
+            <button class="hall-btn" onclick="NavigationModule.switchBlock('block-bar')">BAR</button>
+            <button class="hall-btn" onclick="NavigationModule.switchBlock('block-tables')">TABLES</button>
+            <button class="hall-btn" onclick="NavigationModule.switchBlock('block-office')">OFFICE</button>
         </div>
     </div>
 
     <!-- MODAL PASSPORT -->
     <div id="modal-passport">
         <div class="passport-card">
-            <button class="passport-close" onclick="UI_Interface.closePassport()">×</button>
+            <button class="passport-close" onclick="PassportModule.closePassport()">×</button>
             <h3 style="font-family: 'Share Tech Mono', monospace; color: var(--accent-color); margin-bottom: 15px;">MEMBERSHIP DOSSIER</h3>
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; text-align: left;">
                 <img id="pass-avatar-img" src="" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 1px solid var(--accent-color);">
@@ -242,318 +242,24 @@
     <audio id="snd-door" src="https://actions.google.com/sounds/v1/doors/wood_creak.ogg" preload="auto"></audio>
     <audio id="snd-ambient" src="https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg" preload="auto" loop></audio>
 
-    <!-- Arduino-Style Structured Scripting -->
+    <!-- Подключение ваших модулей (архитектура Arduino / модульный подход) -->
+    <script src="modules/language.js"></script>
+    <script src="modules/passport.js"></script>
+    <script src="modules/situationalScanner.js"></script>
+    <script src="modules/navigation.js"></script>
+
+    <!-- Системный инициализатор (Setup Loop) -->
     <script>
-        /**
-         * CONFIGURATION & CONSTANTS (Global Setup)
-         */
-        const CONFIG = {
-            VERSION: "v1.0.4-ARDUINO",
-            LANGUAGES: [
-                { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
-                { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
-                { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
-                { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
-                { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
-                { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' },
-                { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
-                { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
-                { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
-                { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
-                { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png' },
-                { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
-            ]
-        };
-
-        /**
-         * STORAGE CONTROLLER (EEPROM Layer emulation)
-         */
-        const StorageController = {
-            get(key, fallback = "") {
-                try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
-            },
-            set(key, val) {
-                try { localStorage.setItem(key, val); } catch (e) {}
-            }
-        };
-
-        /**
-         * CORE SYSTEM (Main Loop & State Machine)
-         */
-        const CoreSystem = {
-            currentBlock: 'block-entrance',
-            
-            setup() {
-                console.log(`System Initialized: ${CONFIG.VERSION}`);
-                
-                // Init ID if missing
-                let id = StorageController.get('gygy_id');
-                if (!id) {
-                    id = "GY-" + Math.floor(100000 + Math.random() * 900000);
-                    StorageController.set('gygy_id', id);
-                }
-
-                ProfileModule.loadState();
-                UI_Interface.setupLanguageDropdown();
-                UI_Interface.updateGlobalFlags();
-
-                setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
-            },
-
-            switchBlock(nextId) {
-                // Handle redirection to external sub-pages
-                if (['block-server', 'block-bar', 'block-tables', 'block-office'].includes(nextId)) {
-                    const pages = { 'block-server': 'verses.html', 'block-bar': 'bar.html', 'block-tables': 'tables.html', 'block-office': 'office.html' };
-                    window.location.href = pages[nextId];
-                    return;
-                }
-
-                const target = document.getElementById(nextId);
-                if (!target) return;
-
-                // Stop ambient if going back to entrance
-                if (nextId === 'block-entrance') {
-                    const ambient = document.getElementById('snd-ambient');
-                    if (ambient) { ambient.pause(); ambient.currentTime = 0; }
-                }
-
-                this.currentBlock = nextId;
-                document.querySelectorAll('.block').forEach(b => {
-                    b.classList.remove('active');
-                    b.style.display = 'none';
-                });
-
-                target.style.display = 'flex';
-                setTimeout(() => target.classList.add('active'), 20);
-
-                // Update navigation/badge visibility
-                const navArrows = document.getElementById('club-nav-arrows');
-                const badge = document.getElementById('global-user-badge');
-                
-                if (nextId === 'block-entrance') {
-                    if (navArrows) navArrows.style.display = 'none';
-                    if (badge) badge.style.display = 'none';
-                    const door = document.getElementById('main-door');
-                    if (door) door.classList.remove('door-exploded');
-                } else {
-                    if (navArrows) navArrows.style.display = 'flex';
-                    if (badge && ProfileModule.image) badge.style.display = 'block';
-                }
-            },
-
-            navigateBack() {
-                const map = { 'block-hall': 'block-identity', 'block-identity': 'block-welcome', 'block-welcome': 'block-entrance' };
-                if (this.currentBlock in map) {
-                    this.switchBlock(map[this.currentBlock]);
-                }
-            },
-
-            triggerEntrance() {
-                const sndDoor = document.getElementById('snd-door');
-                const sndAmbient = document.getElementById('snd-ambient');
-                const door = document.getElementById('main-door');
-
-                if (sndDoor) sndDoor.play();
-                if (door) door.classList.add('door-exploded');
-
-                setTimeout(() => {
-                    if (sndAmbient) {
-                        sndAmbient.volume = 0.5;
-                        sndAmbient.play().catch(() => {});
-                    }
-                    this.switchBlock('block-welcome');
-                }, 700);
-            }
-        };
-
-        /**
-         * PROFILE MODULE (User Data Management)
-         */
-        const ProfileModule = {
-            image: '',
-            nickname: '',
-            nickMode: 'own',
-
-            loadState() {
-                this.image = StorageController.get('gygy_avatar') || StorageController.get('gy_user_img');
-                this.nickname = StorageController.get('gygy_nickname');
-                const id = StorageController.get('gygy_id');
-
-                // Fill UI inputs
-                if (this.nickname) {
-                    const input = document.getElementById('input-own-nick');
-                    if (input) input.value = this.nickname;
-                }
-
-                if (this.image) {
-                    this.applyAvatarToUI(this.image);
-                }
-
-                // Club Nickname setup
-                let clubNick = StorageController.get('gygy_club_nick');
-                if (!clubNick) {
-                    const list = ["Magnate", "Striker", "Champagne", "Insider", "Phantom", "Maestro", "Prime", "Oracle"];
-                    clubNick = list[Math.floor(Math.random() * list.length)];
-                    StorageController.set('gygy_club_nick', clubNick);
-                }
-                const clubLabel = document.getElementById('club-nick-label');
-                if (clubLabel) clubLabel.innerText = clubNick;
-
-                // Passports & Badges info update
-                UI_Interface.updatePassportsData(id);
-            },
-
-            applyAvatarToUI(src) {
-                this.image = src;
-                const badgeImg = document.getElementById('badge-avatar-img');
-                const passImg = document.getElementById('pass-avatar-img');
-                if (badgeImg) badgeImg.src = src;
-                if (passImg) passImg.src = src;
-
-                if (src.startsWith('data:image/svg+xml')) {
-                    const avImg = document.getElementById('avatar-img');
-                    if (avImg) { avImg.src = src; avImg.style.display = 'block'; }
-                } else {
-                    const ppImg = document.getElementById('pp');
-                    if (ppImg) { ppImg.src = src; ppImg.style.display = 'block'; }
-                }
-                const txtPhoto = document.getElementById('txt-photo');
-                if (txtPhoto) txtPhoto.style.display = 'none';
-            },
-
-            handleFileUpload(input) {
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => this.applyAvatarToUI(e.target.result);
-                    reader.readAsDataURL(input.files[0]);
-                }
-            },
-
-            generateSvgAvatar() {
-                const hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-                const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/></svg>`;
-                const uri = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-                this.applyAvatarToUI(uri);
-            },
-
-            selectNickMode(mode) {
-                this.nickMode = mode;
-                const boxOwn = document.getElementById('box-own-nick');
-                const boxClub = document.getElementById('box-club-nick');
-                if (mode === 'own') {
-                    boxOwn.classList.add('selected');
-                    boxClub.classList.remove('selected');
-                    document.getElementById('input-own-nick').focus();
-                } else {
-                    boxClub.classList.add('selected');
-                    boxOwn.classList.remove('selected');
-                }
-            },
-
-            updateNickname(val) {
-                this.nickname = val;
-                StorageController.set('gygy_nickname', val);
-            },
-
-            saveAndEnter() {
-                if (!this.image) return;
-                const finalNick = this.nickMode === 'club' 
-                    ? (StorageController.get('gygy_club_nick') || 'Magnate') 
-                    : (this.nickname || 'Anonymous');
-
-                StorageController.set('gygy_nickname', finalNick);
-                StorageController.set('gygy_avatar', this.image);
-                StorageController.set('gy_user_img', this.image);
-
-                const badge = document.getElementById('global-user-badge');
-                if (badge) badge.style.display = 'block';
-            }
-        };
-
-        /**
-         * UI INTERFACE MODULE (DOM Elements & Dropdowns)
-         */
-        const UI_Interface = {
-            setupLanguageDropdown() {
-                const listContainer = document.getElementById('club-lang-list');
-                if (!listContainer) return;
-
-                const activeCode = StorageController.get('gygy_lang_code', 'en');
-                listContainer.innerHTML = '';
-
-                CONFIG.LANGUAGES.forEach(lang => {
-                    if (lang.code !== activeCode) {
-                        const item = document.createElement('div');
-                        item.className = 'club-lang-item';
-                        item.onclick = () => this.setLanguage(lang.code, lang.name, lang.flag);
-                        item.innerHTML = `<img src="${lang.flag}" style="width:20px; height:14px; object-fit:cover;"><span>${lang.name}</span>`;
-                        listContainer.appendChild(item);
-                    }
-                });
-            },
-
-            toggleLangDropdown() {
-                const list = document.getElementById('club-lang-list');
-                if (list) list.classList.toggle('open');
-            },
-
-            setLanguage(code, name, flagUrl) {
-                StorageController.set('gygy_lang_code', code);
-                StorageController.set('gygy_lang_name', name);
-                const country = code === 'ru' ? 'ru' : 'gb'; // simplified mapper
-                StorageController.set('gygy_flag', country);
-
-                this.updateGlobalFlags();
-                this.setupLanguageDropdown();
-            },
-
-            updateGlobalFlags() {
-                const country = StorageController.get('gygy_flag', 'gb');
-                const flagEl = document.getElementById('current-flag');
-                if (flagEl) flagEl.src = `https://flagcdn.com/w20/${country.toLowerCase()}.png`;
-
-                const nameEl = document.getElementById('current-lang-name');
-                const savedName = StorageController.get('gygy_lang_name', 'English');
-                if (nameEl) nameEl.innerText = savedName;
-            },
-
-            updatePassportsData(id) {
-                const idLabel = document.getElementById('id-label');
-                const passIdVal = document.getElementById('pass-id-val');
-                const qrBox = document.getElementById('pass-qr-box');
-
-                if (idLabel) idLabel.innerText = id;
-                if (passIdVal) passIdVal.innerText = id;
-
-                if (qrBox && typeof QRCode !== 'undefined') {
-                    qrBox.innerHTML = '';
-                    new QRCode(qrBox, { text: id, width: 90, height: 90 });
-                }
-            },
-
-            openPassport() {
-                const modal = document.getElementById('modal-passport');
-                if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
-            },
-
-            closePassport() {
-                const modal = document.getElementById('modal-passport');
-                if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
-            }
-        };
-
-        // Global Window Click Listener for Dropdown closing
-        window.addEventListener('click', (e) => {
-            const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
-            const list = document.getElementById('club-lang-list');
-            if (wrapper && list && !wrapper.contains(e.target)) {
-                list.classList.remove('open');
-            }
-        });
-
-        // System Boot (Arduino setup() equivalent)
         window.addEventListener('DOMContentLoaded', () => {
-            CoreSystem.setup();
+            console.log("GYGY Club System Booting...");
+            
+            // Инициализация подсистем, если они используют методы инициализации
+            if (window.LanguageModule && typeof LanguageModule.init === 'function') LanguageModule.init();
+            if (window.PassportModule && typeof PassportModule.init === 'function') PassportModule.init();
+            if (window.SituationalScanner && typeof SituationalScanner.init === 'function') SituationalScanner.init();
+            if (window.NavigationModule && typeof NavigationModule.init === 'function') NavigationModule.init();
+
+            setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
         });
     </script>
 </body>
