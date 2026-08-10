@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.20 CORE</title>
+    <title>GY-GY Club v4.6.16.21 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -745,12 +745,6 @@
         }
 
         function portalTransition(nextId) {
-            const ambientBar = document.getElementById('snd-ambient');
-            if (ambientBar) {
-                ambientBar.pause();
-                ambientBar.currentTime = 0;
-            }
-
             if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
             if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
             if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
@@ -762,6 +756,20 @@
 
             const targetBlock = document.getElementById(nextId);
             if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
+
+            // Если переходим на Hall, запускаем эмбиент бара
+            const sndAmbient = document.getElementById('snd-ambient');
+            if (nextId === 'block-hall') {
+                if (sndAmbient) {
+                    sndAmbient.volume = 0.5;
+                    sndAmbient.play().catch(e => console.log("Ambient play prevented:", e));
+                }
+            } else {
+                if (sndAmbient && nextId !== 'block-welcome') {
+                    sndAmbient.pause();
+                    sndAmbient.currentTime = 0;
+                }
+            }
 
             currentBlockId = nextId;
 
@@ -796,17 +804,15 @@
 
         function handleDoor() {
             const sndDoor = document.getElementById('snd-door');
-            const sndAmbient = document.getElementById('snd-ambient');
             const mainDoor = document.getElementById('main-door');
 
-            if (sndDoor) sndDoor.play();
+            if (sndDoor) {
+                sndDoor.currentTime = 0;
+                sndDoor.play().catch(e => console.log("Door sound error:", e));
+            }
             if (mainDoor) mainDoor.classList.add('door-exploded');
 
             setTimeout(() => {
-                if (sndAmbient) {
-                    sndAmbient.volume = 0.5;
-                    sndAmbient.play().catch(e => console.log("Ambient blocked"));
-                }
                 portalTransition('block-welcome');
             }, 700);
         }
