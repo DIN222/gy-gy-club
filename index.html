@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.33 CORE</title>
+    <title>GY-GY Club v4.6.16.36 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root { --gold: #d4af37; --violet: #8A2BE2; }
@@ -18,7 +17,6 @@
         }
         body.page-loaded { opacity: 1; }
 
-        /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
             font-size: 24px; letter-spacing: 5px; font-weight: bold; 
@@ -26,7 +24,6 @@
             user-select: none; pointer-events: none;
         }
         
-        /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
             width: 42px; height: 42px; border-radius: 50%;
@@ -41,14 +38,12 @@
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
         }
 
-        /* ПАСПОРТ */
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
         .passport-card .box-final { margin: 15px auto; border-color: #000; }
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
         .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        /* НАВИГАЦИОННЫЕ СТРЕЛКИ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
             display: flex; gap: 20px; align-items: center; user-select: none;
@@ -65,7 +60,6 @@
         .arrow-item:hover { opacity: 0.8; }
         .arrow-item span:nth-child(2) { margin-left: -4px; }
 
-        /* ХОЛЛ (ЦЕНТРАЛЬНАЯ СЦЕНА) */
         .hall-container {
             width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
         }
@@ -76,7 +70,6 @@
             transform-origin: center center;
         }
 
-        /* АКТИВНЫЕ ЗОНЫ ХОЛЛА ПО АРХИТЕКТУРЕ */
         .hall-zone {
             position: absolute; cursor: pointer; display: flex; align-items: center; justify-content: center;
             background: rgba(138, 43, 226, 0.15); border: 1px dashed var(--violet); border-radius: 8px;
@@ -84,21 +77,18 @@
         }
         .hall-zone:hover { background: rgba(138, 43, 226, 0.4); box-shadow: 0 0 15px var(--violet); }
 
-        /* Точные координаты зон Холла */
-        .zone-ai { top: 15%; left: 15%; width: 160px; height: 120px; }       /* 🟢 Левый Верх: AI-ROOM (verses.html) */
-        .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    /* 💼 Левый Низ: OFFICE (office.html) */
-        .zone-studio { top: 15%; right: 15%; width: 160px; height: 120px; }   /* 🟠 Правый Верх: STUDIO (studio.html) */
-        .zone-bar { top: 45%; left: 42%; width: 160px; height: 180px; }       /* 🟢 Центр: VIP БАР (bar.html) */
+        .zone-ai { top: 15%; left: 15%; width: 160px; height: 120px; }       
+        .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    
+        .zone-studio { top: 15%; right: 15%; width: 160px; height: 120px; }   
+        .zone-bar { top: 45%; left: 42%; width: 160px; height: 180px; }       
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- НАВИГАЦИЯ -->
     <div class="notranslate ui-nav-arrows" id="global-nav">
         <div class="arrow-item" onclick="leaveToEntrance()">&lt;&lt;</div>
     </div>
 
-    <!-- АВАТАР И ПАСПОРТ -->
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
@@ -110,27 +100,19 @@
             <div style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px; font-size:11px; text-align:center; word-break:break-all; display:flex; align-items:center; justify-content:center;">#QR_ID</div>
             <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
 
     <div class="ui-header-right notranslate">GY-GY</div>
 
-    <!-- ОСНОВНАЯ СЦЕНА ХОЛЛА И ПЕРЕХОДЫ -->
     <div class="hall-container">
         <div class="hall-scene">
-            <!-- 🟢 Левый Верх: AI-ROOM (verses.html) -->
-            <div class="hall-zone zone-ai" onclick="navigateTo('verses.html')" title="AI-ROOM: Verses & Modules"></div>
-            
-            <!-- 💼 Левый Низ: OFFICE (office.html) -->
-            <div class="hall-zone zone-office" onclick="navigateTo('office.html')" title="OFFICE: Control Center"></div>
-            
-            <!-- 🟠 Правый Верх: STUDIO (studio.html) -->
-            <div class="hall-zone zone-studio" onclick="navigateTo('studio.html')" title="STUDIO: Atelier, Souvenirs & Vintage"></div>
-            
-            <!-- 🟢 Центр: VIP БАР (bar.html) -->
-            <div class="hall-zone zone-bar" onclick="navigateTo('bar.html')" title="VIP BAR: Complaints, Tables & Open Mic"></div>
+            <div class="hall-zone zone-ai" onclick="navigateTo('verses.html')" title="AI-ROOM"></div>
+            <div class="hall-zone zone-office" onclick="navigateTo('office.html')" title="OFFICE"></div>
+            <div class="hall-zone zone-studio" onclick="navigateTo('studio.html')" title="STUDIO"></div>
+            <div class="hall-zone zone-bar" onclick="navigateTo('bar.html')" title="VIP BAR"></div>
         </div>
     </div>
 
@@ -164,10 +146,7 @@
                 const passIdVal = document.getElementById('pass-id-val');
                 const passQrBox = document.getElementById('pass-qr-box');
                 if (passIdVal) passIdVal.innerText = currentID;
-                if (passQrBox && typeof QRCode !== 'undefined') {
-                    passQrBox.innerHTML = ""; 
-                    new QRCode(passQrBox, { text: currentID, width: 100, height: 100 });
-                }
+                if (passQrBox) passQrBox.innerText = currentID;
             }
         }
 
@@ -193,10 +172,9 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             syncUserBadge();
-            // Гарантированное отображение страницы без зависаний
             setTimeout(() => {
                 document.body.classList.add('page-loaded');
-            }, 100);
+            }, 50);
         });
     </script>
 </body>
