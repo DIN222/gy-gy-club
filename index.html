@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.26 CORE</title>
+    <title>GY-GY Club v4.6.16.27 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -273,14 +273,14 @@
             opacity: 0 !important;
         }
 
-        /* ВИЗУАЛЬНЫЙ ИНДИКАТОР ЗВУКА */
-        .audio-status-indicator {
+        /* ОТЛАДОЧНАЯ КНОПКА СТАТУСА (НОВИЧЕК / ЗАВСЕГДАТАЙ) */
+        .debug-status-indicator {
             position: fixed; bottom: 15px; right: 20px; z-index: 1000000;
             background: rgba(0,0,0,0.85); border: 2px solid var(--gold); border-radius: 8px;
             padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer;
             box-shadow: 0 0 10px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 6px;
         }
-        .audio-status-indicator span { color: var(--gold); }
+        .debug-status-indicator span { color: var(--gold); }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -297,13 +297,13 @@
     
     <div class="ui-header-right notranslate">GY-GY</div>
 
-    <!-- Интерактивный индикатор / кнопка активации аудио -->
-    <div id="audio-toggle-btn" class="audio-status-indicator notranslate" onclick="toggleAudioPlayback()">
-        <span>🔊 SOUND: <b id="audio-status-text">OFF (CLICK)</b></span>
+    <!-- Отладочная кнопка статуса пользователя (Новичок / Завсегдатай) -->
+    <div id="debug-status-btn" class="debug-status-indicator notranslate" onclick="toggleUserStatusDebug()">
+        <span>STATUS: <b id="debug-status-text">НОВИЧЕК</b></span>
     </div>
 
-    <!-- Синтезированный фоновый эмбиент через Web Audio API (чтобы не зависеть от внешних файлов) -->
-    <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
+    <!-- Аудио элемент для фонового бара -->
+    <audio id="snd-bar" src="bar_ambient.mp3" loop preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
         <div class="club-lang-dropdown-wrapper notranslate">
@@ -370,7 +370,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="playUiClickSound(); portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
-    <div id="block-hall" class="block">
+    <div id="block-hall" class="block" onmousemove="handleHallMouseMove(event)" ontouchmove="handleHallTouchMove(event)">
         <div class="hall-interior" style="position: relative;">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
             
@@ -425,10 +425,9 @@
     let currentBlockId = 'block-entrance';
     let selectedNickType = 'own';
     let userChosenNickname = '';
+    let isRegularUser = false; // Состояние отладочной кнопки: Новичок / Завсегдатай
 
-    // Web Audio API контекст для генерации звуков интерфейса и подстраховки эмбиента
     let audioCtx = null;
-    let isAudioEnabled = false;
 
     function initAudioContext() {
         if (!audioCtx) {
@@ -439,9 +438,8 @@
         }
     }
 
-    // Синтезированный звук клика / тапа
+    // Звук обычного клика интерфейса
     function playUiClickSound() {
-        if (!isAudioEnabled) return;
         try {
             initAudioContext();
             const osc = audioCtx.createOscillator();
@@ -450,7 +448,7 @@
             osc.frequency.setValueAtTime(580, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 0.08);
             
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
 
             osc.connect(gain);
@@ -461,84 +459,109 @@
         } catch (e) {}
     }
 
-    // Синтезированный звук взрыва двери / перехода
-    function playDoorSound() {
-        if (!isAudioEnabled) return;
+    // Громкий щелчок ручки входной двери + запуск нарастающего фонового звука бара
+    function playDoorAndBarSound() {
         try {
             initAudioContext();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.4);
             
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            // 1. Громкий металлический щелчок ручки двери
+            const oscClick = audioCtx.createOscillator();
+            const gainClick = audioCtx.createGain();
+            oscClick.type = 'square';
+            oscClick.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            oscClick.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.06);
+            
+            gainClick.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gainClick.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
 
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+            oscClick.connect(gainClick);
+            gainClick.connect(audioCtx.destination);
             
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.4);
+            oscClick.start();
+            oscClick.stop(audioCtx.currentTime + 0.06);
+
+            // 2. Плавный нарастающий звук бара (эмбиент)
+            const barAudio = document.getElementById('snd-bar');
+            if (barAudio) {
+                barAudio.volume = 0.0;
+                barAudio.play().catch(() => {
+                    // Если файл отсутствует, используем процедурный синтезатор гула бара
+                    startProceduralBarAmbient();
+                });
+
+                // Плавное нарастание громкости
+                let vol = 0.0;
+                const fadeInterval = setInterval(() => {
+                    vol += 0.05;
+                    if (vol >= 1.0) {
+                        vol = 1.0;
+                        clearInterval(fadeInterval);
+                    }
+                    barAudio.volume = vol;
+                }, 100);
+            } else {
+                startProceduralBarAmbient();
+            }
         } catch (e) {}
     }
 
-    function toggleAudioPlayback() {
-        isAudioEnabled = !isAudioEnabled;
-        const statusText = document.getElementById('audio-status-text');
-        const ambientAudio = document.getElementById('snd-ambient');
-
-        if (isAudioEnabled) {
-            if (statusText) statusText.innerText = "ON 🔊";
+    let proceduralBarGain = null;
+    function startProceduralBarAmbient() {
+        try {
             initAudioContext();
-            if (ambientAudio) {
-                ambientAudio.play().catch(() => {
-                    // Если аудиофайл bar_ambient.mp3 отсутствует на сервере, включаем Web Audio генератор гула бара
-                    startProceduralAmbient();
-                });
-            } else {
-                startProceduralAmbient();
-            }
-            playUiClickSound();
-        } else {
-            if (statusText) statusText.innerText = "OFF (CLICK)";
-            if (ambientAudio) ambientAudio.pause();
-            stopProceduralAmbient();
+            if (proceduralBarGain) return;
+            
+            proceduralBarGain = audioCtx.createGain();
+            proceduralBarGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
+            // Плавное нарастание процедурного звука
+            proceduralBarGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 3.0);
+            proceduralBarGain.connect(audioCtx.destination);
+
+            const osc1 = audioCtx.createOscillator();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
+            osc1.connect(proceduralBarGain);
+            osc1.start();
+        } catch(e) {}
+    }
+
+    // Динамическая регулировка громкости в зависимости от приближения к двери/бару в холле
+    function handleHallMouseMove(e) {
+        updateBarDistanceVolume(e.clientX, e.clientY);
+    }
+    function handleHallTouchMove(e) {
+        if (e.touches && e.touches[0]) {
+            updateBarDistanceVolume(e.touches[0].clientX, e.touches[0].clientY);
         }
     }
 
-    let ambientOsc1 = null, ambientOsc2 = null, ambientGain = null;
-    function startProceduralAmbient() {
-        try {
-            initAudioContext();
-            if (ambientGain) return;
-            
-            ambientGain = audioCtx.createGain();
-            ambientGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-            ambientGain.connect(audioCtx.destination);
+    function updateBarDistanceVolume(x, y) {
+        const barAudio = document.getElementById('snd-bar');
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight * 0.75; // Центр нижней двери бара в холле
 
-            ambientOsc1 = audioCtx.createOscillator();
-            ambientOsc1.type = 'sine';
-            ambientOsc1.frequency.setValueAtTime(55, audioCtx.currentTime); // Низкий гул A1
+        const distance = Math.hypot(x - centerX, y - centerY);
+        const maxDist = Math.max(window.innerWidth, window.innerHeight);
+        
+        // Чем ближе к центру двери бара (distance -> 0), тем громче звук (volume -> 1.0)
+        let calculatedVolume = 1.0 - Math.min(1.0, distance / (maxDist * 0.6));
+        calculatedVolume = Math.max(0.1, calculatedVolume);
 
-            ambientOsc2 = audioCtx.createOscillator();
-            ambientOsc2.type = 'triangle';
-            ambientOsc2.frequency.setValueAtTime(82.4, audioCtx.currentTime); // E2
-
-            ambientOsc1.connect(ambientGain);
-            ambientOsc2.connect(ambientGain);
-
-            ambientOsc1.start();
-            ambientOsc2.start();
-        } catch(e) {}
+        if (barAudio && !barAudio.paused) {
+            barAudio.volume = calculatedVolume;
+        }
+        if (proceduralBarGain && audioCtx) {
+            proceduralBarGain.gain.setTargetAtTime(calculatedVolume * 0.15, audioCtx.currentTime, 0.1);
+        }
     }
 
-    function stopProceduralAmbient() {
-        try {
-            if (ambientOsc1) { ambientOsc1.stop(); ambientOsc1.disconnect(); ambientOsc1 = null; }
-            if (ambientOsc2) { ambientOsc2.stop(); ambientOsc2.disconnect(); ambientOsc2 = null; }
-            if (ambientGain) { ambientGain.disconnect(); ambientGain = null; }
-        } catch(e) {}
+    function toggleUserStatusDebug() {
+        playUiClickSound();
+        isRegularUser = !isRegularUser;
+        const statusText = document.getElementById('debug-status-text');
+        if (statusText) {
+            statusText.innerText = isRegularUser ? "ЗАВСЕГДАТАЙ" : "НОВИЧЕК";
+        }
     }
 
     const allLanguages = [
@@ -742,7 +765,7 @@
     }
 
     function handleDoor() {
-        playDoorSound();
+        playDoorAndBarSound();
         const door = document.getElementById('main-door');
         
         if (door) {
