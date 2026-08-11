@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.31 CORE</title>
+    <title>GY-GY Club v4.6.16.32 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -247,6 +247,7 @@
         }
         .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
+        /* Скрываем стандартную панель Google Translate */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0 !important; background-color: #000000 !important; opacity: 0; transition: opacity 1.2s ease-in-out !important; }
         body.page-loaded { opacity: 1 !important; }
@@ -273,7 +274,6 @@
             opacity: 0 !important;
         }
 
-        /* ОТЛАДОЧНАЯ КНОПКА СТАТУСА (НОВИЧЕК / ЗАВСЕГДАТАЙ) */
         .debug-status-indicator {
             position: fixed; bottom: 15px; right: 20px; z-index: 1000000;
             background: rgba(0,0,0,0.85); border: 2px solid var(--gold); border-radius: 8px;
@@ -297,7 +297,6 @@
     
     <div class="ui-header-right notranslate">GY-GY</div>
 
-    <!-- Отладочная кнопка статуса пользователя (Новичок / Завсегдатай) -->
     <div id="debug-status-btn" class="debug-status-indicator notranslate" onclick="toggleUserStatusDebug()">
         <span>STATUS: <b id="debug-status-text">НОВИЧЕК</b></span>
     </div>
@@ -306,6 +305,7 @@
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-bar" src="bar_ambient.mp3" loop preload="auto"></audio>
 
+    <!-- 1. ВХОДНАЯ ДВЕРЬ -->
     <div id="block-entrance" class="block active">
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
@@ -320,31 +320,35 @@
             <div id="club-lang-list" class="club-lang-list"></div>
         </div>
 
+        <!-- Скрытый контейнер для системного виджета Google Translate -->
         <div id="google_translate_element" style="display:none;"></div>
+        
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
+    <!-- 2. СТРАНИЦА WELCOME -->
     <div id="block-welcome" class="block">
-        <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
-        <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
+        <div class="quote-text">I'M CHARLIE</div>
+        <div class="quote-text">In every joke there is a share of whisky</div>
         <img src="horse_welcome.png">
-        <div class="welcome-title-elem" data-translate="welcome_title">WELCOME</div>
-        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed_hall">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
+        <div class="welcome-title-elem">WELCOME</div>
+        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
+        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
     </div>  
 
+    <!-- 3. СТРАНИЦА РЕГИСТРАЦИИ ID -->
     <div id="block-identity" class="block">
-        <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
+        <div class="quote-text">There is never too much champagne</div>
         
         <div class="identity-grid-container">
             <div class="identity-grid-row">
                 <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own'); playUiClickSound();">
-                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_own">YOUR NICK</span>
+                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;">YOUR NICK</span>
                     <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" onclick="event.stopPropagation(); setNickType('own');">
                 </div>
 
                 <div id="box-club-nick" class="nickname-square" onclick="setNickType('club'); playUiClickSound();">
-                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_club">CLUB NICK</span>
+                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;">CLUB NICK</span>
                     <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: #000;">БигКоин</span>
                 </div>
 
@@ -357,37 +361,37 @@
                 <div class="box-final" style="cursor:pointer;" onclick="playUiClickSound(); document.getElementById('file-input').click()">
                     <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                     <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900; pointer-events: none;" data-translate="txt_photo">OR PHOTO</span>
+                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900; pointer-events: none;">OR PHOTO</span>
                 </div>
                 
                 <div class="box-final" style="cursor:pointer;" onclick="playUiClickSound(); generateAvatar()">
                     <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;" data-translate="txt_avatar">OR AVATAR</span>
+                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;">OR AVATAR</span>
                 </div>
             </div>
         </div>
 
-        <button id="btn-save" class="btn-gy" onclick="playUiClickSound(); saveUserProfile()" data-translate="btn_save">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="playUiClickSound(); portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
+        <button id="btn-save" class="btn-gy" onclick="playUiClickSound(); saveUserProfile()">SAVE</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="playUiClickSound(); portalTransition('block-hall')">PROCEED</button>
     </div>
 
+    <!-- 4. ХОЛЛ КЛУБА -->
     <div id="block-hall" class="block" onmousemove="handleHallMouseMove(event)" ontouchmove="handleHallTouchMove(event)">
         <div class="hall-interior" style="position: relative;">
-            <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
+            <div class="quote-text">In every joke there is a share of whisky</div>
             
             <div class="painting-zone painting-left" style="position: relative; min-height: 160px;">
                 <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="playUiClickSound(); toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-server')">AI ROOM</button>
                     </div>
                 </div>
 
                 <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="playUiClickSound(); toggleManifest('manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
-                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); playUiClickSound(); enterStaffOffice()">STAFF ROOM</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-office')">OFFICE</button>
                     </div>
                 </div>
             </div>
@@ -395,7 +399,7 @@
             <div class="painting-zone painting-right" onclick="playUiClickSound(); toggleManifest('manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); enterStudio()" data-translate="btn_studio">STUDIO</button>
+                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-studio')">STUDIO</button>
                 </div>
             </div>
         </div>
@@ -408,17 +412,42 @@
         </div>
     </div>
 
+    <!-- 5. ДОПОЛНИТЕЛЬНЫЕ КОМНАТЫ (ПОДКЛЮЧЕНЫ ИЗ ХОЛЛА) -->
+    <div id="block-server" class="block">
+        <div class="quote-text">AI ROOM — DIGITAL INTELLECT</div>
+        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
+    </div>
+
+    <div id="block-office" class="block">
+        <div class="quote-text">CLUB OFFICE</div>
+        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
+    </div>
+
+    <div id="block-studio" class="block">
+        <div class="quote-text">CREATIVE STUDIO</div>
+        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
+    </div>
+
+    <div id="block-bar" class="block">
+        <div class="quote-text">VIP BAR LOUNGE</div>
+        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
+            <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
             <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#000000; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
             <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
+            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
+
+    <!-- Подключаем официальный скрипт Google Translate -->
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
     let currentID = "";
@@ -426,9 +455,16 @@
     let currentBlockId = 'block-entrance';
     let selectedNickType = 'own';
     let userChosenNickname = '';
-    let isRegularUser = false; // Отладочный статус (Новичок / Завсегдатай)
-
+    let isRegularUser = false;
     let audioCtx = null;
+
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
+            autoDisplay: false
+        }, 'google_translate_element');
+    }
 
     function initAudioContext() {
         if (!audioCtx) {
@@ -439,7 +475,6 @@
         }
     }
 
-    // Звук обычного клика интерфейса
     function playUiClickSound() {
         try {
             initAudioContext();
@@ -460,12 +495,10 @@
         } catch (e) {}
     }
 
-    // Обработка клика по входной двери: исключительно ваш файл door_open.mp3 + плавный бар
     function playDoorAndBarSound() {
         try {
             initAudioContext();
             
-            // Воспроизведение вашего звукового файла door_open.mp3
             const doorAudio = document.getElementById('snd-door');
             if (doorAudio) {
                 doorAudio.volume = 1.0;
@@ -473,7 +506,6 @@
                 doorAudio.play().catch(() => {});
             }
 
-            // Запуск плавного нарастающего звука эмбиента бара
             const barAudio = document.getElementById('snd-bar');
             if (barAudio) {
                 barAudio.volume = 0.0;
@@ -492,7 +524,6 @@
         } catch (e) {}
     }
 
-    // Регулировка громкости эмбиента бара в зависимости от близости к центру бара в холле
     function handleHallMouseMove(e) {
         updateBarDistanceVolume(e.clientX, e.clientY);
     }
@@ -548,19 +579,6 @@
     function flagCodeToCountry(code) {
         const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
         return map[code] || 'gb';
-    }
-
-    function syncGTranslateWidget() {
-        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-            if (combo.value !== savedLangCode) {
-                combo.value = savedLangCode;
-                combo.dispatchEvent(new Event('change'));
-            }
-        } else {
-            setTimeout(syncGTranslateWidget, 300);
-        }
     }
 
     function updateGlobalFlagUI() {
@@ -635,8 +653,6 @@
         if (combo) {
             combo.value = langCode;
             combo.dispatchEvent(new Event('change'));
-        } else {
-            setTimeout(syncGTranslateWidget, 500);
         }
     }
 
@@ -813,7 +829,6 @@
     window.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('page-loaded');
         updateGlobalFlagUI();
-        syncGTranslateWidget();
         
         if (!currentID) {
             currentID = 'GY-' + Math.floor(100000 + Math.random() * 900000);
