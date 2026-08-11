@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.30 CORE</title>
+    <title>GY-GY Club v4.6.16.31 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -303,7 +303,7 @@
     </div>
 
     <!-- Аудио элементы -->
-    
+    <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-bar" src="bar_ambient.mp3" loop preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
@@ -460,45 +460,24 @@
         } catch (e) {}
     }
 
-    // Обработка клика по входной двери: Громкий щелчок ручки + door_open.mp3 + плавный нарастающий звук бара
+    // Обработка клика по входной двери: исключительно ваш файл door_open.mp3 + плавный бар
     function playDoorAndBarSound() {
         try {
             initAudioContext();
             
-            // 1. Громкий щелчок ручки
-            const oscClick = audioCtx.createOscillator();
-            const gainClick = audioCtx.createGain();
-            oscClick.type = 'square';
-            oscClick.frequency.setValueAtTime(1200, audioCtx.currentTime);
-            oscClick.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.06);
-            
-            gainClick.gain.setValueAtTime(0.4, audioCtx.currentTime);
-            gainClick.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
-
-            oscClick.connect(gainClick);
-            gainClick.connect(audioCtx.destination);
-            
-            oscClick.start();
-            oscClick.stop(audioCtx.currentTime + 0.06);
-
-            // 2. Воспроизведение файла door_open.mp3 с запасным процедурным скрипом
+            // Воспроизведение вашего звукового файла door_open.mp3
             const doorAudio = document.getElementById('snd-door');
             if (doorAudio) {
                 doorAudio.volume = 1.0;
-                doorAudio.play().catch(() => {
-                    playProceduralDoorOpen();
-                });
-            } else {
-                playProceduralDoorOpen();
+                doorAudio.currentTime = 0;
+                doorAudio.play().catch(() => {});
             }
 
-            // 3. Запуск плавного нарастающего звука бара
+            // Запуск плавного нарастающего звука эмбиента бара
             const barAudio = document.getElementById('snd-bar');
             if (barAudio) {
                 barAudio.volume = 0.0;
-                barAudio.play().catch(() => {
-                    startProceduralBarAmbient();
-                });
+                barAudio.play().catch(() => {});
 
                 let vol = 0.0;
                 const fadeInterval = setInterval(() => {
@@ -509,28 +488,8 @@
                     }
                     barAudio.volume = vol;
                 }, 100);
-            } else {
-                startProceduralBarAmbient();
             }
         } catch (e) {}
-    }
-
-   
-    let proceduralBarGain = null;
-    function startProceduralBarAmbient() {
-        try {
-            if (proceduralBarGain) return;
-            proceduralBarGain = audioCtx.createGain();
-            proceduralBarGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
-            proceduralBarGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 3.0);
-            proceduralBarGain.connect(audioCtx.destination);
-
-            const osc1 = audioCtx.createOscillator();
-            osc1.type = 'sine';
-            osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
-            osc1.connect(proceduralBarGain);
-            osc1.start();
-        } catch(e) {}
     }
 
     // Регулировка громкости эмбиента бара в зависимости от близости к центру бара в холле
@@ -551,15 +510,11 @@
         const distance = Math.hypot(x - centerX, y - centerY);
         const maxDist = Math.max(window.innerWidth, window.innerHeight);
         
-        // Чем ближе к бару, тем громче звук
         let calculatedVolume = 1.0 - Math.min(1.0, distance / (maxDist * 0.6));
         calculatedVolume = Math.max(0.1, calculatedVolume);
 
         if (barAudio && !barAudio.paused) {
             barAudio.volume = calculatedVolume;
-        }
-        if (proceduralBarGain && audioCtx) {
-            proceduralBarGain.gain.setTargetAtTime(calculatedVolume * 0.15, audioCtx.currentTime, 0.1);
         }
     }
 
