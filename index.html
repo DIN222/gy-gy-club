@@ -62,20 +62,23 @@
 
         .hall-container {
             width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+            background: #050505;
         }
         .hall-scene {
             position: relative; width: 1000px; height: 562.5px;
-            background: url('hall_bg_jpg.jpg') no-repeat center center / contain;
+            /* Добавлен резервный градиент на случай отсутствия или ошибки файла картинки */
+            background: linear-gradient(135deg, #111 0%, #000 100%), url('hall_bg_jpg.jpg') no-repeat center center / contain;
+            border: 2px solid rgba(212, 175, 55, 0.3);
             transform: scale(min(100vw / 1000, 100vh / 562.5));
             transform-origin: center center;
         }
 
         .hall-zone {
             position: absolute; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            background: rgba(138, 43, 226, 0.15); border: 1px dashed var(--violet); border-radius: 8px;
+            background: rgba(138, 43, 226, 0.25); border: 1px dashed var(--violet); border-radius: 8px;
             transition: 0.3s;
         }
-        .hall-zone:hover { background: rgba(138, 43, 226, 0.4); box-shadow: 0 0 15px var(--violet); }
+        .hall-zone:hover { background: rgba(138, 43, 226, 0.5); box-shadow: 0 0 15px var(--violet); }
 
         .zone-ai { top: 15%; left: 15%; width: 160px; height: 120px; }       
         .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    
