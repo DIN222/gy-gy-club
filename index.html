@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.25 CORE</title>
+    <title>GY-GY Club v4.6.16.26 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -272,6 +272,15 @@
             transform: scale(3.5) !important;
             opacity: 0 !important;
         }
+
+        /* ВИЗУАЛЬНЫЙ ИНДИКАТОР ЗВУКА */
+        .audio-status-indicator {
+            position: fixed; bottom: 15px; right: 20px; z-index: 1000000;
+            background: rgba(0,0,0,0.85); border: 2px solid var(--gold); border-radius: 8px;
+            padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 6px;
+        }
+        .audio-status-indicator span { color: var(--gold); }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -288,10 +297,15 @@
     
     <div class="ui-header-right notranslate">GY-GY</div>
 
+    <!-- Интерактивный индикатор / кнопка активации аудио -->
+    <div id="audio-toggle-btn" class="audio-status-indicator notranslate" onclick="toggleAudioPlayback()">
+        <span>🔊 SOUND: <b id="audio-status-text">OFF (CLICK)</b></span>
+    </div>
+
+    <!-- Синтезированный фоновый эмбиент через Web Audio API (чтобы не зависеть от внешних файлов) -->
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
-        <!-- Компактный языковый блок -->
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
@@ -302,18 +316,13 @@
                 <span class="arrow-down">▼</span>
             </div>
             
-            <div id="club-lang-list" class="club-lang-list">
-                <!-- Список языков генерируется динамически -->
-            </div>
+            <div id="club-lang-list" class="club-lang-list"></div>
         </div>
 
         <div id="google_translate_element" style="display:none;"></div>
-
-        <!-- Дверь -->
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
-    <!-- Вторая страница (Welcome) -->
     <div id="block-welcome" class="block">
         <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
         <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -323,21 +332,17 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- Страница Identity -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
         <div class="identity-grid-container">
-            <!-- Верхний ряд: 3 квадрата -->
             <div class="identity-grid-row">
-                <!-- Квадрат своего ника (Кастомный) -->
-                <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own');">
+                <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own'); playUiClickSound();">
                     <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_own">YOUR NICK</span>
                     <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" onclick="event.stopPropagation(); setNickType('own');">
                 </div>
 
-                <!-- Квадрат клубного ника -->
-                <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
+                <div id="box-club-nick" class="nickname-square" onclick="setNickType('club'); playUiClickSound();">
                     <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_club">CLUB NICK</span>
                     <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: #000;">БигКоин</span>
                 </div>
@@ -345,66 +350,63 @@
                 <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
             </div>
             
-            <!-- Нижний ряд: 3 квадрата -->
             <div class="identity-grid-row">
                 <div class="box-final" id="qr-box-reg"></div>
                 
-                <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
+                <div class="box-final" style="cursor:pointer;" onclick="playUiClickSound(); document.getElementById('file-input').click()">
                     <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
                     <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
                     <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900; pointer-events: none;" data-translate="txt_photo">OR PHOTO</span>
                 </div>
                 
-                <div class="box-final" style="cursor:pointer;" onclick="generateAvatar()">
+                <div class="box-final" style="cursor:pointer;" onclick="playUiClickSound(); generateAvatar()">
                     <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
                     <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;" data-translate="txt_avatar">OR AVATAR</span>
                 </div>
             </div>
         </div>
 
-        <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
+        <button id="btn-save" class="btn-gy" onclick="playUiClickSound(); saveUserProfile()" data-translate="btn_save">SAVE</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="playUiClickSound(); portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
 
-    <!-- Страница Hall -->
     <div id="block-hall" class="block">
         <div class="hall-interior" style="position: relative;">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
             
             <div class="painting-zone painting-left" style="position: relative; min-height: 160px;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-left')">
+                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="playUiClickSound(); toggleManifest('manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-server')" data-translate="btn_ai_room">AI ROOM</button>
                     </div>
                 </div>
 
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="toggleManifest('manifest-office')">
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="playUiClickSound(); toggleManifest('manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
-                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); enterStaffOffice()">STAFF ROOM</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-office')" data-translate="btn_office">OFFICE</button>
+                        <button id="btn-staff-room" class="btn-gy btn-manifest notranslate" style="display: none; border-color: var(--violet); color: var(--violet);" onclick="event.stopPropagation(); playUiClickSound(); enterStaffOffice()">STAFF ROOM</button>
                     </div>
                 </div>
             </div>
                 
-            <div class="painting-zone painting-right" onclick="toggleManifest('manifest-right')">
+            <div class="painting-zone painting-right" onclick="playUiClickSound(); toggleManifest('manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); enterStudio()" data-translate="btn_studio">STUDIO</button>
+                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); enterStudio()" data-translate="btn_studio">STUDIO</button>
                 </div>
             </div>
         </div>
             
         <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; z-index: 5;">
-            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="portalTransition('block-bar')"></div>
+            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="playUiClickSound(); portalTransition('block-bar')"></div>
             <div class="bar-entrance-marker" style="position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
                 <span class="cue-arrow-hall" style="font-size: 34px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно паспорта -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
@@ -423,6 +425,121 @@
     let currentBlockId = 'block-entrance';
     let selectedNickType = 'own';
     let userChosenNickname = '';
+
+    // Web Audio API контекст для генерации звуков интерфейса и подстраховки эмбиента
+    let audioCtx = null;
+    let isAudioEnabled = false;
+
+    function initAudioContext() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    // Синтезированный звук клика / тапа
+    function playUiClickSound() {
+        if (!isAudioEnabled) return;
+        try {
+            initAudioContext();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(580, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 0.08);
+            
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.08);
+        } catch (e) {}
+    }
+
+    // Синтезированный звук взрыва двери / перехода
+    function playDoorSound() {
+        if (!isAudioEnabled) return;
+        try {
+            initAudioContext();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.4);
+            
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        } catch (e) {}
+    }
+
+    function toggleAudioPlayback() {
+        isAudioEnabled = !isAudioEnabled;
+        const statusText = document.getElementById('audio-status-text');
+        const ambientAudio = document.getElementById('snd-ambient');
+
+        if (isAudioEnabled) {
+            if (statusText) statusText.innerText = "ON 🔊";
+            initAudioContext();
+            if (ambientAudio) {
+                ambientAudio.play().catch(() => {
+                    // Если аудиофайл bar_ambient.mp3 отсутствует на сервере, включаем Web Audio генератор гула бара
+                    startProceduralAmbient();
+                });
+            } else {
+                startProceduralAmbient();
+            }
+            playUiClickSound();
+        } else {
+            if (statusText) statusText.innerText = "OFF (CLICK)";
+            if (ambientAudio) ambientAudio.pause();
+            stopProceduralAmbient();
+        }
+    }
+
+    let ambientOsc1 = null, ambientOsc2 = null, ambientGain = null;
+    function startProceduralAmbient() {
+        try {
+            initAudioContext();
+            if (ambientGain) return;
+            
+            ambientGain = audioCtx.createGain();
+            ambientGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+            ambientGain.connect(audioCtx.destination);
+
+            ambientOsc1 = audioCtx.createOscillator();
+            ambientOsc1.type = 'sine';
+            ambientOsc1.frequency.setValueAtTime(55, audioCtx.currentTime); // Низкий гул A1
+
+            ambientOsc2 = audioCtx.createOscillator();
+            ambientOsc2.type = 'triangle';
+            ambientOsc2.frequency.setValueAtTime(82.4, audioCtx.currentTime); // E2
+
+            ambientOsc1.connect(ambientGain);
+            ambientOsc2.connect(ambientGain);
+
+            ambientOsc1.start();
+            ambientOsc2.start();
+        } catch(e) {}
+    }
+
+    function stopProceduralAmbient() {
+        try {
+            if (ambientOsc1) { ambientOsc1.stop(); ambientOsc1.disconnect(); ambientOsc1 = null; }
+            if (ambientOsc2) { ambientOsc2.stop(); ambientOsc2.disconnect(); ambientOsc2 = null; }
+            if (ambientGain) { ambientGain.disconnect(); ambientGain = null; }
+        } catch(e) {}
+    }
 
     const allLanguages = [
         { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
@@ -481,13 +598,12 @@
         if (!listContainer) return;
         
         listContainer.innerHTML = '';
-        
         const availableLanguages = allLanguages.filter(lang => lang.code !== activeCode);
 
         availableLanguages.forEach(lang => {
             const item = document.createElement('div');
             item.className = 'club-lang-item';
-            item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
+            item.onclick = () => { playUiClickSound(); selectClubLanguage(lang.code, lang.name, lang.flag); };
             
             const avatarDiv = document.createElement('div');
             avatarDiv.className = 'item-avatar';
@@ -512,6 +628,7 @@
     }
 
     function toggleLangDropdown() {
+        playUiClickSound();
         const list = document.getElementById('club-lang-list');
         if (list) list.classList.toggle('open');
     }
@@ -607,6 +724,7 @@
     }
 
     function openPassport() {
+        playUiClickSound();
         const modal = document.getElementById('modal-passport');
         if (modal) {
             modal.style.display = 'flex';
@@ -615,6 +733,7 @@
     }
 
     function closePassport() {
+        playUiClickSound();
         const modal = document.getElementById('modal-passport');
         if (modal) {
             modal.style.opacity = '0';
@@ -623,6 +742,7 @@
     }
 
     function handleDoor() {
+        playDoorSound();
         const door = document.getElementById('main-door');
         
         if (door) {
@@ -651,6 +771,7 @@
     }
 
     function handleNavigationBack() {
+        playUiClickSound();
         if (currentBlockId === 'block-welcome') portalTransition('block-entrance');
         else if (currentBlockId === 'block-identity') portalTransition('block-welcome');
         else if (currentBlockId === 'block-hall') portalTransition('block-welcome');
