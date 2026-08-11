@@ -3,88 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.35 CORE</title>
+    <title>GY-GY Club v4.6.16.37 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
-    <style>
-        :root { --gold: #d4af37; --violet: #8A2BE2; }
-        * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        
-        html, body { 
-            width: 100%; height: 100%; background: #000; color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0;
-            opacity: 0; transition: opacity 0.4s ease-in-out;
-        }
-        body.page-loaded { opacity: 1; }
+<style>
+    :root { --gold: #d4af37; --violet: #8A2BE2; }
+    * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
+    
+    html, body { 
+        width: 100%; height: 100%; background: #000; color: var(--gold); 
+        font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0;
+        opacity: 0; transition: opacity 0.4s ease-in-out;
+    }
+    body.page-loaded { opacity: 1; }
 
-        .ui-header-right { 
-            position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            user-select: none; pointer-events: none;
-        }
-        
-        .ui-user-badge {
-            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111;
-            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
-            z-index: 1000000; cursor: pointer; display: none;
-        }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
-        .ui-user-badge .badge-flag {
-            position: absolute; bottom: -2px; right: -4px;
-            width: 17px; height: 12px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
-        }
+    .ui-header-right { 
+        position: fixed; top: 18px; right: 25px; z-index: 1000000; 
+        font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        user-select: none; pointer-events: none;
+    }
+    
+    .ui-user-badge {
+        position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+        width: 42px; height: 42px; border-radius: 50%;
+        border: 2px solid var(--gold); background: #111;
+        box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
+        z-index: 1000000; cursor: pointer; display: none;
+    }
+    .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
+    .ui-user-badge .badge-flag {
+        position: absolute; bottom: -2px; right: -4px;
+        width: 17px; height: 12px; object-fit: cover;
+        border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
+    }
 
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
-        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+    .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+    .passport-card .box-final { margin: 15px auto; border-color: #000; }
+    .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
+    .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
-        .ui-nav-arrows {
-            position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 20px; align-items: center; user-select: none;
-            pointer-events: auto !important;
-        }
-        .arrow-item { 
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 26px; font-weight: 900 !important; 
-            color: var(--gold); cursor: pointer; display: inline-flex;
-            align-items: center; line-height: 1; 
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-            transition: opacity 0.2s; 
-        }
-        .arrow-item:hover { opacity: 0.8; }
+    .ui-nav-arrows {
+        position: fixed; top: 18px; left: 20px; z-index: 9999999; 
+        display: flex; gap: 20px; align-items: center; user-select: none;
+        pointer-events: auto !important;
+    }
+    .arrow-item { 
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 26px; font-weight: 900 !important; 
+        color: var(--gold); cursor: pointer; display: inline-flex;
+        align-items: center; line-height: 1; 
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        transition: opacity 0.2s; 
+    }
+    .arrow-item:hover { opacity: 0.8; }
 
-        .hall-container {
-            width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
-            background: #000;
-        }
-        
-        /* Чистая сцена только с door_1.jpg */
-        .hall-scene {
-            position: relative; width: 1000px; height: 562.5px;
-            background: url('door_1.jpg') no-repeat center center / contain;
-            transform: scale(min(100vw / 1000, 100vh / 562.5));
-            transform-origin: center center;
-        }
+    .hall-container {
+        width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+        background: #000;
+    }
+    
+    /* Сцена с принудительным растягиванием на весь блок (cover вместо contain) */
+    .hall-scene {
+        position: relative; width: 1000px; height: 562.5px;
+        background: #111 url('door_1.jpg') no-repeat center center / cover !important;
+        border: 2px solid var(--gold);
+        transform: scale(min(100vw / 1000, 100vh / 562.5));
+        transform-origin: center center;
+    }
 
-        /* Интерактивные зоны */
-        .hall-zone {
-            position: absolute; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            background: rgba(138, 43, 226, 0.15); border: 1px dashed var(--violet); border-radius: 8px;
-            transition: 0.3s;
-        }
-        .hall-zone:hover { background: rgba(138, 43, 226, 0.4); box-shadow: 0 0 15px var(--violet); }
+    /* Интерактивные зоны */
+    .hall-zone {
+        position: absolute; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        background: rgba(138, 43, 226, 0.25); border: 1px dashed var(--violet); border-radius: 8px;
+        transition: 0.3s;
+    }
+    .hall-zone:hover { background: rgba(138, 43, 226, 0.5); box-shadow: 0 0 15px var(--violet); }
 
-        .zone-ai { top: 15%; left: 15%; width: 160px; height: 120px; }       
-        .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    
-        .zone-studio { top: 15%; right: 15%; width: 160px; height: 120px; }   
-        .zone-bar { top: 45%; left: 42%; width: 160px; height: 180px; }       
-    </style>
+    .zone-ai { top: 15%; left: 15%; width: 160px; height: 120px; }       
+    .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    
+    .zone-studio { top: 15%; right: 15%; width: 160px; height: 120px; }   
+    .zone-bar { top: 45%; left: 42%; width: 160px; height: 180px; }       
+</style>
 </head>
 <body oncontextmenu="return false;">
 
