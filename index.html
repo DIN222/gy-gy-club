@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.35 CORE</title>
+    <title>GY-GY Club v4.6.16.33 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -89,10 +89,6 @@
         .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    /* 💼 Левый Низ: OFFICE (office.html) */
         .zone-studio { top: 15%; right: 15%; width: 160px; height: 120px; }   /* 🟠 Правый Верх: STUDIO (studio.html) */
         .zone-bar { top: 45%; left: 42%; width: 160px; height: 180px; }       /* 🟢 Центр: VIP БАР (bar.html) */
-
-        /* Системные скрытые элементы перевода */
-        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        font { background-color: transparent !important; color: inherit !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -119,36 +115,26 @@
         </div>
     </div>
 
-    <div id="google_translate_element" style="display:none;"></div>
     <div class="ui-header-right notranslate">GY-GY</div>
 
     <!-- ОСНОВНАЯ СЦЕНА ХОЛЛА И ПЕРЕХОДЫ -->
     <div class="hall-container">
         <div class="hall-scene">
             <!-- 🟢 Левый Верх: AI-ROOM (verses.html) -->
-            <div class="hall-zone zone-ai" onclick="navigateTo('verses.html')" title="AI-ROOM: Verses & Modules (alien, moon, hello)"></div>
+            <div class="hall-zone zone-ai" onclick="navigateTo('verses.html')" title="AI-ROOM: Verses & Modules"></div>
             
             <!-- 💼 Левый Низ: OFFICE (office.html) -->
-            <div class="hall-zone zone-office" onclick="navigateTo('office.html')" title="OFFICE: Control Center & LIVE Log"></div>
+            <div class="hall-zone zone-office" onclick="navigateTo('office.html')" title="OFFICE: Control Center"></div>
             
             <!-- 🟠 Правый Верх: STUDIO (studio.html) -->
             <div class="hall-zone zone-studio" onclick="navigateTo('studio.html')" title="STUDIO: Atelier, Souvenirs & Vintage"></div>
             
-            <!-- 🟢 Центр: VIP БАР (bar.html -> tables.html / openmic.html) -->
+            <!-- 🟢 Центр: VIP БАР (bar.html) -->
             <div class="hall-zone zone-bar" onclick="navigateTo('bar.html')" title="VIP BAR: Complaints, Tables & Open Mic"></div>
         </div>
     </div>
 
     <script>
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
-        }
-
         function safeStorageGet(key, fallback = "") { 
             try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } 
         }
@@ -207,22 +193,10 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             syncUserBadge();
-
-            const savedLangCode = safeStorageGet('gy_lang', 'EN').toLowerCase();
+            // Гарантированное отображение страницы без зависаний
             setTimeout(() => {
-                const selectEl = document.querySelector('.goog-te-combo');
-                if (selectEl) { 
-                    selectEl.value = savedLangCode === 'ua' ? 'uk' : savedLangCode; 
-                    selectEl.dispatchEvent(new Event('change', { bubbles: true })); 
-                }
-            }, 800);
-
-            const script = document.createElement('script'); 
-            script.type = 'text/javascript';
-            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            document.head.appendChild(script);
-            
-            document.body.classList.add('page-loaded');
+                document.body.classList.add('page-loaded');
+            }, 100);
         });
     </script>
 </body>
