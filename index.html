@@ -3,648 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.33 CORE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>GY-GY Club v4.6.16.34 CORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root { --gold: #FFD700; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
-        
+        :root { --gold: #d4af37; --violet: #8A2BE2; }
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
-        body, button, input, div, img, span { pointer-events: auto !important; }
-        img { -webkit-user-drag: none !important; }
-
-        html, body { 
-            width: 100%; height: 100%; background: #000000; color: var(--gold); 
-            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0; padding: 0;
-        }
         
-        button, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .nickname-square {
-            transition: all 0.3s ease !important;
+        html, body { 
+            width: 100%; height: 100%; background: #000; color: var(--gold); 
+            font-family: 'Share Tech Mono', monospace; overflow: hidden; position: fixed; margin: 0;
+            opacity: 0; transition: opacity 0.4s ease-in-out;
         }
-        button:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .nickname-square:hover {
-            filter: brightness(1.1);
-        }
+        body.page-loaded { opacity: 1; }
 
         /* ЛОГОТИП GY-GY */
         .ui-header-right { 
             position: fixed; top: 18px; right: 25px; z-index: 1000000; 
-            font-size: 24px; letter-spacing: 5px; font-weight: bold; font-family: 'Cinzel', serif;
-            text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
+            font-size: 24px; letter-spacing: 5px; font-weight: bold; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            user-select: none; pointer-events: none;
         }
         
         /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
-            position: fixed; top: 4px; left: 50%; transform: translateX(-50%);
-            width: 36px; height: 36px; border-radius: 50%;
-            border: 2px solid var(--gold); background: #111111;
-            box-shadow: 0 0 0 1px #000000, inset 0 0 5px rgba(0,0,0,0.8);
+            position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 2px solid var(--gold); background: #111;
+            box-shadow: 0 0 0 1px #000, inset 0 0 5px rgba(0,0,0,0.8);
             z-index: 1000000; cursor: pointer; display: none;
         }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #ffffff; }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #fff; }
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px;
-            width: 14px; height: 10px; object-fit: cover;
-            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
+            width: 17px; height: 12px; object-fit: cover;
+            border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000;
         }
-
-        /* КОМПАКТНЫЙ ЯЗЫКОВЫЙ БЛОК */
-        .club-lang-dropdown-wrapper {
-            position: absolute; top: 18px; left: 20px; z-index: 1000001;
-            width: 155px; font-family: 'Share Tech Mono', monospace;
-        }
-        .club-lang-current {
-            display: flex; align-items: center; justify-content: space-between;
-            background: rgba(0,0,0,0.95); border: 2px solid var(--gold);
-            padding: 5px 8px; border-radius: 10px; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.9); width: 100%;
-        }
-        .club-lang-current-content { display: flex; align-items: center; gap: 7px; min-width: 0; }
-        .club-lang-current .item-avatar {
-            width: 20px; height: 20px; border-radius: 50%; overflow: hidden;
-            border: 1px solid var(--gold); background: #111; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .club-lang-current .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .club-lang-current .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
-        .club-lang-current .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .club-lang-current .arrow-down { color: var(--gold); font-size: 10px; font-weight: bold; flex-shrink: 0; }
-
-        .club-lang-list {
-            position: absolute; top: calc(100% + 5px); left: 0;
-            background: rgba(0,0,0,0.95); border: 2px solid var(--gold);
-            border-radius: 10px; width: 100%; max-height: 260px; overflow-y: auto;
-            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.9); z-index: 1000002;
-        }
-        .club-lang-list.open { display: block; }
-        
-        .club-lang-item {
-            display: flex; align-items: center; gap: 7px;
-            padding: 6px 8px; cursor: pointer; border-bottom: 1px solid rgba(255,215,0,0.15);
-            transition: background 0.2s;
-        }
-        .club-lang-item:last-child { border-bottom: none; }
-        .club-lang-item:hover { background: rgba(255,215,0,0.15); }
-        .club-lang-item .item-avatar { width: 20px; height: 20px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: #111; flex-shrink: 0; }
-        .club-lang-item .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .club-lang-item .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
-        .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* ПАСПОРТ */
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000000; cursor: pointer; line-height: 1; user-select: none; }
-
-        /* УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ БЛОКОВ */
-        .block { 
-            position: fixed; inset: 0; display: none; flex-direction: column; 
-            align-items: center; justify-content: center; background: #000000; 
-            z-index: 10; opacity: 0; transition: opacity 1.2s ease-in-out; 
-        }
-        .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
-
-        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 20px; text-align: center; max-width: 85%; margin-bottom: 8px; text-shadow: 2px 2px 4px #000000; }
-        .btn-gy { min-width: 240px; padding: 10px 18px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 4px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; font-size: 12px; }
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-
-        /* СЕТКА КВАДРАТОВ 2x3 */
-        .identity-grid-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; width: 250px; }
-        .identity-grid-row { display: flex; gap: 8px; justify-content: center; }
-        .nickname-square { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; color: #000000; padding: 4px; text-align: center; }
-        .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
-        .nickname-square input { position: relative; width: 100%; border: none; background: transparent; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; font-weight: bold; color: #000; outline: none; margin-top: 4px; z-index: 10; pointer-events: auto !important; cursor: text !important; }
-
-        #block-welcome { justify-content: center !important; padding-top: 0 !important; }
-        #block-welcome img { max-height: 22vh !important; width: auto; object-fit: contain; margin: 6px 0 !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
-        #block-welcome .welcome-title-elem { font-size: 24px !important; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 6px !important; font-family: 'Cinzel', serif; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card .box-final { margin: 15px auto; border-color: #000; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000; cursor: pointer; line-height: 1; user-select: none; }
+        .box-final { width: 85px; height: 85px; border: 2px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
 
         /* НАВИГАЦИОННЫЕ СТРЕЛКИ */
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; 
-            display: flex; gap: 15px; font-size: 24px; font-weight: 900 !important; 
-            font-family: 'Share Tech Mono', monospace; cursor: pointer; color: var(--gold); 
-            line-height: 1; letter-spacing: -2px; background: transparent !important; border: none !important;
-            text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
-            pointer-events: auto !important; user-select: none;
+            display: flex; gap: 20px; align-items: center; user-select: none;
+            pointer-events: auto !important;
         }
-        .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
-        .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
-
-        /* ХОЛЛ */
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000000; }
-        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-        .hall-interior .quote-text { 
-            position: absolute; top: 10vh; left: 50%; transform: translateX(-50%); width: 85%; margin: 0; text-align: center;
-            background: transparent !important; color: var(--gold) !important; font-size: 24px; font-weight: 700;
-            -webkit-text-stroke: 1px #000000; text-stroke: 1px #000000;
+        .arrow-item { 
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 26px; font-weight: 900 !important; 
+            color: var(--gold); cursor: pointer; display: inline-flex;
+            align-items: center; line-height: 1; 
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            transition: opacity 0.2s; 
         }
-        .hall-door-target { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; cursor: pointer; z-index: 5; background: transparent; }
+        .arrow-item:hover { opacity: 0.8; }
+        .arrow-item span:nth-child(2) { margin-left: -4px; }
 
-        .painting-zone { position: absolute; top: 25vh; width: 6vw; height: 12vh; cursor: pointer; z-index: 6; background: transparent; display: flex; align-items: center; justify-content: center; }
-        .painting-left { left: 23vw; }
-        .painting-right { right: 23vw; }
-
-        .cue-arrow-hall { color: var(--violet); font-size: 34px; font-weight: 900; font-family: 'Share Tech Mono', monospace; text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); pointer-events: none; user-select: none; z-index: 10; transition: opacity 0.2s; }
-        .painting-zone:hover .cue-arrow-hall { opacity: 0.8; }
-
-        .manifest-btn-box { 
-            position: absolute; bottom: -45px; left: 50%; transform: translateX(-50%); width: 140px; 
-            display: flex; flex-direction: column; gap: 5px; justify-content: center; 
-            opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; 
+        /* ХОЛЛ (ЦЕНТРАЛЬНАЯ СЦЕНА) */
+        .hall-container {
+            width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
         }
-        .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
-        
+        .hall-scene {
+            position: relative; width: 1000px; height: 562.5px;
+            background: url('hall_bg.jpg') no-repeat center center / contain;
+            transform: scale(min(100vw / 1000, 100vh / 562.5));
+            transform-origin: center center;
+        }
+
+        /* АКТИВНЫЕ ЗОНЫ ХОЛЛА ПО АРХИТЕКТУРЕ */
+        .hall-zone {
+            position: absolute; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            background: rgba(138, 43, 226, 0.15); border: 1px dashed var(--violet); border-radius: 8px;
+            transition: 0.3s;
+        }
+        .hall-zone:hover { background: rgba(138, 43, 226, 0.4); box-shadow: 0 0 15px var(--violet); }
+
+        /* Точные координаты зон Холла */
+        .zone-ai { top: 15%; left: 15%; width: 160px; height: 120px; }       /* 🟢 Левый Верх: AI-ROOM (verses.html) */
+        .zone-office { top: 55%; left: 15%; width: 160px; height: 120px; }    /* 💼 Левый Низ: OFFICE (office.html) */
+        .zone-studio { top: 15%; right: 15%; width: 160px; height: 120px; }   /* 🟠 Правый Верх: STUDIO (studio.html) */
+        .zone-bar { top: 45%; left: 42%; width: 160px; height: 180px; }       /* 🟢 Центр: VIP БАР (bar.html) */
+
+        /* Системные скрытые элементы перевода */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; background-color: #000000 !important; opacity: 0; transition: opacity 1.2s ease-in-out !important; }
-        body.page-loaded { opacity: 1 !important; }
-        
-        font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
-        .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
-        .btn-gy font, .quote-text font, .ui-header-right font { color: inherit !important; }
-        
-        #main-door { display: block; height: 48vh; max-height: 400px; width: auto; max-width: 100%; object-fit: contain; margin: 0 auto; transform: scale(1); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; cursor: pointer; }
-        .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
-
-        .debug-status-indicator {
-            position: fixed; bottom: 15px; right: 20px; z-index: 1000000;
-            background: rgba(0,0,0,0.85); border: 2px solid var(--gold); border-radius: 8px;
-            padding: 6px 12px; font-size: 11px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 6px;
-        }
-        .debug-status-indicator span { color: var(--gold); }
+        font { background-color: transparent !important; color: inherit !important; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
+    <!-- НАВИГАЦИЯ -->
+    <div class="notranslate ui-nav-arrows" id="global-nav">
+        <div class="arrow-item" onclick="leaveToEntrance()">&lt;&lt;</div>
+    </div>
+
+    <!-- АВАТАР И ПАСПОРТ -->
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
     </div>
 
-    <div class="notranslate ui-nav-arrows" id="club-nav-arrows" style="display: none;">
-        <div id="arrow-back" class="arrow-item" onclick="handleNavigationBack()">&lt;</div>
-        <div id="arrow-home" class="arrow-item" onclick="portalTransition('block-entrance')">&lt;&lt;</div>
-    </div>
-    
-    <div class="ui-header-right notranslate">GY-GY</div>
-
-    <div id="debug-status-btn" class="debug-status-indicator notranslate" onclick="toggleUserStatusDebug()">
-        <span>STATUS: <b id="debug-status-text">НОВИЧЕК</b></span>
-    </div>
-
-    <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
-    <audio id="snd-bar" src="bar_ambient.mp3" loop preload="auto"></audio>
-
-    <!-- 1. ВХОДНАЯ ДВЕРЬ -->
-    <div id="block-entrance" class="block active">
-        <div class="club-lang-dropdown-wrapper notranslate">
-            <div class="club-lang-current" onclick="toggleLangDropdown()">
-                <div class="club-lang-current-content">
-                    <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
-                    <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
-                    <span id="current-lang-name" class="item-text">English</span>
-                </div>
-                <span class="arrow-down">▼</span>
-            </div>
-            <div id="club-lang-list" class="club-lang-list"></div>
-        </div>
-        <div id="google_translate_element" style="display:none;"></div>
-        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
-    </div>
-
-    <!-- 2. WELCOME -->
-    <div id="block-welcome" class="block">
-        <div class="quote-text">I'M CHARLIE</div>
-        <div class="quote-text">In every joke there is a share of whisky</div>
-        <img src="horse_welcome.png">
-        <div class="welcome-title-elem">WELCOME</div>
-        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
-        <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
-    </div>  
-
-    <!-- 3. IDENTITY / РЕГИСТРАЦИЯ -->
-    <div id="block-identity" class="block">
-        <div class="quote-text">There is never too much champagne</div>
-        <div class="identity-grid-container">
-            <div class="identity-grid-row">
-                <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own'); playUiClickSound();">
-                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;">YOUR NICK</span>
-                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" onclick="event.stopPropagation(); setNickType('own');">
-                </div>
-                <div id="box-club-nick" class="nickname-square" onclick="setNickType('club'); playUiClickSound();">
-                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;">CLUB NICK</span>
-                    <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: #000;">БигКоин</span>
-                </div>
-                <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
-            </div>
-            <div class="identity-grid-row">
-                <div class="box-final" id="qr-box-reg"></div>
-                <div class="box-final" style="cursor:pointer;" onclick="playUiClickSound(); document.getElementById('file-input').click()">
-                    <input type="file" id="file-input" onchange="preview(this)" style="display:none;">
-                    <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900; pointer-events: none;">OR PHOTO</span>
-                </div>
-                <div class="box-final" style="cursor:pointer;" onclick="playUiClickSound(); generateAvatar()">
-                    <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;">OR AVATAR</span>
-                </div>
-            </div>
-        </div>
-        <button id="btn-save" class="btn-gy" onclick="playUiClickSound(); saveUserProfile()">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" onclick="playUiClickSound(); portalTransition('block-hall')">PROCEED</button>
-    </div>
-
-    <!-- 4. ГЛАВНЫЙ ХОЛЛ КЛУБА (#block-hall) С РАЗВОДКОЙ ПО ВЕТКАМ -->
-    <div id="block-hall" class="block" onmousemove="handleHallMouseMove(event)" ontouchmove="handleHallTouchMove(event)">
-        <div class="hall-interior" style="position: relative;">
-            <div class="quote-text">In every joke there is a share of whisky</div>
-            
-            <!-- Левая стена: Картины (AI-Room сверху, Office снизу) -->
-            <div class="painting-zone painting-left" style="position: relative; min-height: 160px;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="playUiClickSound(); toggleManifest('manifest-left-top')">
-                    <span class="cue-arrow-hall">→</span>
-                    <div id="manifest-left-top" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-server')">🟢 AI ROOM</button>
-                    </div>
-                </div>
-
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="playUiClickSound(); toggleManifest('manifest-left-bottom')">
-                    <span class="cue-arrow-hall">→</span>
-                    <div id="manifest-left-bottom" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-office')">💼 OFFICE</button>
-                    </div>
-                </div>
-            </div>
-                
-            <!-- Правая стена: Картина (Studio) -->
-            <div class="painting-zone painting-right" onclick="playUiClickSound(); toggleManifest('manifest-right')">
-                <span class="cue-arrow-hall">←</span>
-                <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" onclick="event.stopPropagation(); playUiClickSound(); portalTransition('block-studio')">🟠 STUDIO</button>
-                </div>
-            </div>
-        </div>
-            
-        <!-- Центральная дверь: Вход в БАР -->
-        <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; z-index: 5;">
-            <div id="hall-doors" class="hall-door-target" style="width: 100%; height: 100%; cursor: pointer; background: transparent;" onclick="playUiClickSound(); portalTransition('block-bar')"></div>
-            <div class="bar-entrance-marker" style="position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
-                <span class="cue-arrow-hall" style="font-size: 34px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. ДОЧЕРНИЕ КОМНАТЫ И ЗОНЫ ИЗ ХОЛЛА -->
-    
-    <!-- 🟢 AI ROOM (verses.html) -->
-    <div id="block-server" class="block">
-        <div class="quote-text">🟢 AI ROOM — DIGITAL INTELLECT & VERSES</div>
-        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
-    </div>
-
-    <!-- 💼 OFFICE / BACK-END (office.html) -->
-    <div id="block-office" class="block">
-        <div class="quote-text">💼 CONTROL CENTER — CLUB OFFICE & TELEMETRY</div>
-        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
-    </div>
-
-    <!-- 🟠 STUDIO (studio.html) -->
-    <div id="block-studio" class="block">
-        <div class="quote-text">🟠 CREATIVE STUDIO & ATELIER</div>
-        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
-    </div>
-
-    <!-- 🟢 VIP BAR & TABLES (bar.html / tables.html) -->
-    <div id="block-bar" class="block">
-        <div class="quote-text">🟢 VIP BAR LOUNGE & TABLES MATRIX (3x2)</div>
-        <button class="btn-gy" onclick="portalTransition('block-hall')">BACK TO HALL</button>
-    </div>
-
-    <!-- ПАСПОРТ -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
-            <div style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
-            <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#000000; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
-            <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
-            <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
+            <div style="font-weight:900; font-size:16px; letter-spacing:1px;">GY-GY PASSPORT</div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
+            <div class="box-final" style="width:100px; height:100px; border-radius:50%; border:2px solid var(--gold);"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
+            <div class="box-final" id="pass-qr-box" style="width:110px; height:110px; padding:5px;"></div>
+            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div>
 
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div id="google_translate_element" style="display:none;"></div>
+    <div class="ui-header-right notranslate">GY-GY</div>
 
-<script>
-    let currentID = "";
-    let currentUserImage = "";
-    let currentBlockId = 'block-entrance';
-    let selectedNickType = 'own';
-    let userChosenNickname = '';
-    let isRegularUser = false;
-    let audioCtx = null;
-
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
-            autoDisplay: false
-        }, 'google_translate_element');
-    }
-
-    function initAudioContext() {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-    }
-
-    function playUiClickSound() {
-        try {
-            initAudioContext();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(580, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(220, audioCtx.currentTime + 0.08);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.08);
-        } catch (e) {}
-    }
-
-    function playDoorAndBarSound() {
-        try {
-            initAudioContext();
-            const doorAudio = document.getElementById('snd-door');
-            if (doorAudio) { doorAudio.volume = 1.0; doorAudio.currentTime = 0; doorAudio.play().catch(() => {}); }
-
-            const barAudio = document.getElementById('snd-bar');
-            if (barAudio) {
-                barAudio.volume = 0.0;
-                barAudio.play().catch(() => {});
-                let vol = 0.0;
-                const fadeInterval = setInterval(() => {
-                    vol += 0.05;
-                    if (vol >= 1.0) { vol = 1.0; clearInterval(fadeInterval); }
-                    barAudio.volume = vol;
-                }, 100);
-            }
-        } catch (e) {}
-    }
-
-    function handleHallMouseMove(e) { updateBarDistanceVolume(e.clientX, e.clientY); }
-    function handleHallTouchMove(e) { if (e.touches && e.touches[0]) updateBarDistanceVolume(e.touches[0].clientX, e.touches[0].clientY); }
-
-    function updateBarDistanceVolume(x, y) {
-        const barAudio = document.getElementById('snd-bar');
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight * 0.75;
-        const distance = Math.hypot(x - centerX, y - centerY);
-        const maxDist = Math.max(window.innerWidth, window.innerHeight);
-        let calculatedVolume = 1.0 - Math.min(1.0, distance / (maxDist * 0.6));
-        calculatedVolume = Math.max(0.1, calculatedVolume);
-        if (barAudio && !barAudio.paused) barAudio.volume = calculatedVolume;
-    }
-
-    function toggleUserStatusDebug() {
-        playUiClickSound();
-        isRegularUser = !isRegularUser;
-        const statusText = document.getElementById('debug-status-text');
-        if (statusText) statusText.innerText = isRegularUser ? "ЗАВСЕГДАТАЙ" : "НОВИЧЕК";
-    }
-
-    const allLanguages = [
-        { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
-        { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
-        { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
-        { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
-        { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
-        { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' },
-        { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
-        { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
-        { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
-        { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
-        { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png' },
-        { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
-    ];
-
-    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
-
-    function flagCodeToCountry(code) {
-        const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
-        return map[code] || 'gb';
-    }
-
-    function updateGlobalFlagUI() {
-        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
-        const activeLang = allLanguages.find(l => l.code === savedLangCode) || allLanguages[0];
-
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) currentFlagEl.src = activeLang.flag;
-
-        const langNameEl = document.getElementById('current-lang-name');
-        if (langNameEl) langNameEl.innerText = activeLang.name;
-
-        const badgeFlagEl = document.getElementById('badge-flag-img');
-        if (badgeFlagEl) badgeFlagEl.src = activeLang.flag;
-
-        rebuildLanguageList(savedLangCode);
-    }
-
-    function rebuildLanguageList(activeCode) {
-        const listContainer = document.getElementById('club-lang-list');
-        if (!listContainer) return;
-        listContainer.innerHTML = '';
-        allLanguages.filter(lang => lang.code !== activeCode).forEach(lang => {
-            const item = document.createElement('div');
-            item.className = 'club-lang-item';
-            item.onclick = () => { playUiClickSound(); selectClubLanguage(lang.code, lang.name, lang.flag); };
+    <!-- ОСНОВНАЯ СЦЕНА ХОЛЛА И ПЕРЕХОДЫ -->
+    <div class="hall-container">
+        <div class="hall-scene">
+            <!-- 🟢 Левый Верх: AI-ROOM (verses.html) -->
+            <div class="hall-zone zone-ai" onclick="navigateTo('verses.html')" title="AI-ROOM: Verses & Modules (alien, moon, hello)"></div>
             
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'item-avatar';
-            const avatarImg = document.createElement('img');
-            avatarImg.src = 'horse_welcome.png';
-            avatarDiv.appendChild(avatarImg);
+            <!-- 💼 Левый Низ: OFFICE (office.html) -->
+            <div class="hall-zone zone-office" onclick="navigateTo('office.html')" title="OFFICE: Control Center & LIVE Log"></div>
+            
+            <!-- 🟠 Правый Верх: STUDIO (studio.html) -->
+            <div class="hall-zone zone-studio" onclick="navigateTo('studio.html')" title="STUDIO: Atelier, Souvenirs & Vintage"></div>
+            
+            <!-- 🟢 Центр: VIP БАР (bar.html -> tables.html / openmic.html) -->
+            <div class="hall-zone zone-bar" onclick="navigateTo('bar.html')" title="VIP BAR: Complaints, Tables & Open Mic"></div>
+        </div>
+    </div>
 
-            const flagImg = document.createElement('img');
-            flagImg.className = 'item-flag';
-            flagImg.src = lang.flag;
-
-            const textSpan = document.createElement('span');
-            textSpan.className = 'item-text';
-            textSpan.innerText = lang.name;
-
-            item.appendChild(avatarDiv);
-            item.appendChild(flagImg);
-            item.appendChild(textSpan);
-            listContainer.appendChild(item);
-        });
-    }
-
-    function toggleLangDropdown() {
-        playUiClickSound();
-        const list = document.getElementById('club-lang-list');
-        if (list) list.classList.toggle('open');
-    }
-
-    function selectClubLanguage(langCode, langName, flagUrl) {
-        const countryCode = flagCodeToCountry(langCode);
-        safeStorageSet('gygy_flag', countryCode);
-        safeStorageSet('gygy_lang_code', langCode);
-        safeStorageSet('gygy_lang_name', langName);
-        updateGlobalFlagUI();
-
-        const listContainer = document.getElementById('club-lang-list');
-        if (listContainer) listContainer.classList.remove('open');
-
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) { combo.value = langCode; combo.dispatchEvent(new Event('change')); }
-    }
-
-    window.addEventListener('click', (e) => {
-        const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
-        const list = document.getElementById('club-lang-list');
-        if (wrapper && list && !wrapper.contains(e.target)) list.classList.remove('open');
-    });
-
-    function setNickType(type) {
-        selectedNickType = type;
-        const boxOwn = document.getElementById('box-own-nick');
-        const boxClub = document.getElementById('box-club-nick');
-        if (boxOwn && boxClub) {
-            if (type === 'own') { boxOwn.classList.add('selected'); boxClub.classList.remove('selected'); }
-            else { boxClub.classList.add('selected'); boxOwn.classList.remove('selected'); }
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
         }
-    }
 
-    function updateNicknameValue(val, type) {
-        if (type === 'own') { userChosenNickname = val; safeStorageSet('gygy_nickname', val); }
-    }
+        function safeStorageGet(key, fallback = "") { 
+            try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } 
+        }
 
-    function toggleManifest(boxId) {
-        document.querySelectorAll('.manifest-btn-box').forEach(box => {
-            if (box.id === boxId) {
-                const isOpened = box.getAttribute('data-opened') === "true";
-                box.style.opacity = isOpened ? "0" : "1";
-                box.style.pointerEvents = isOpened ? "none" : "auto";
-                box.setAttribute('data-opened', isOpened ? "false" : "true");
-                box.style.bottom = isOpened ? "-45px" : "-32px";
-            } else {
-                box.style.opacity = "0"; box.style.pointerEvents = "none"; box.setAttribute('data-opened', "false"); box.style.bottom = "-45px";
+        function syncUserBadge() {
+            const currentUserImage = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || safeStorageGet('gy_user_avatar');
+            const currentID = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || safeStorageGet('gy_trace');
+            
+            let savedFlag = safeStorageGet('gygy_flag', 'gb') || safeStorageGet('gy_user_flag', 'gb');
+            if (savedFlag && savedFlag.includes('/')) {
+                savedFlag = savedFlag.split('/').pop().replace('.png', '');
             }
-        });
-    }
 
-    function renderUserPassports(targetID) {
-        const idLabel = document.getElementById('id-label');
-        const passIdVal = document.getElementById('pass-id-val');
-        const qrBoxReg = document.getElementById('qr-box-reg');
-        const passQrBox = document.getElementById('pass-qr-box');
-        
-        if (idLabel) idLabel.innerText = targetID;
-        if (passIdVal) passIdVal.innerText = targetID;
-        
-        if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 75, height: 75 }); }
-        if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); }
-
-        let clubNick = safeStorageGet('gygy_club_nick', 'БигКоин');
-        let finalNick = (selectedNickType === 'club') ? clubNick : (safeStorageGet('gygy_nickname') || 'Guest');
-        const passNicknameVal = document.getElementById('pass-nickname-val');
-        if (passNicknameVal) passNicknameVal.innerText = finalNick;
-    }
-
-    function openPassport() {
-        playUiClickSound();
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); }
-    }
-
-    function closePassport() {
-        playUiClickSound();
-        const modal = document.getElementById('modal-passport');
-        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); }
-    }
-
-    function handleDoor() {
-        playDoorAndBarSound();
-        const door = document.getElementById('main-door');
-        if (door) door.classList.add('door-exploded');
-        setTimeout(() => {
-            portalTransition('block-welcome');
-            if (door) door.classList.remove('door-exploded');
-        }, 700);
-    }
-
-    function portalTransition(targetBlockId) {
-        const currentBlock = document.getElementById(currentBlockId);
-        const targetBlock = document.getElementById(targetBlockId);
-        if (currentBlock) currentBlock.classList.remove('active');
-        if (targetBlock) targetBlock.classList.add('active');
-        currentBlockId = targetBlockId;
-        
-        const navArrows = document.getElementById('club-nav-arrows');
-        if (navArrows) navArrows.style.display = (targetBlockId === 'block-entrance') ? 'none' : 'flex';
-    }
-
-    function handleNavigationBack() {
-        playUiClickSound();
-        if (currentBlockId === 'block-welcome') portalTransition('block-entrance');
-        else if (currentBlockId === 'block-identity') portalTransition('block-welcome');
-        else if (currentBlockId === 'block-hall') portalTransition('block-welcome');
-        else portalTransition('block-hall');
-    }
-
-    function saveUserProfile() {
-        const btnPass = document.getElementById('btn-pass');
-        if (btnPass) btnPass.classList.remove('btn-sleep');
-        const badge = document.getElementById('global-user-badge');
-        if (badge) badge.style.display = 'block';
-        portalTransition('block-hall');
-    }
-
-    function preview(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentUserImage = e.target.result;
-                safeStorageSet('gygy_user_image', currentUserImage);
-                const pp = document.getElementById('pp');
-                const txtPhoto = document.getElementById('txt-photo');
-                if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
-                if (txtPhoto) txtPhoto.style.display = 'none';
+            if (currentUserImage) {
+                const badge = document.getElementById('global-user-badge');
                 const badgeImg = document.getElementById('badge-avatar-img');
-                const passAvatarImg = document.getElementById('pass-avatar-img');
+                const passImg = document.getElementById('pass-avatar-img');
+                const badgeFlagImg = document.getElementById('badge-flag-img');
+                
+                if (badge) badge.style.display = 'block';
                 if (badgeImg) badgeImg.src = currentUserImage;
-                if (passAvatarImg) passAvatarImg.src = currentUserImage;
-            };
-            reader.readAsDataURL(input.files[0]);
+                if (passImg) passImg.src = currentUserImage;
+                if (badgeFlagImg && savedFlag) badgeFlagImg.src = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+            }
+
+            if (currentID) {
+                const passIdVal = document.getElementById('pass-id-val');
+                const passQrBox = document.getElementById('pass-qr-box');
+                if (passIdVal) passIdVal.innerText = currentID;
+                if (passQrBox && typeof QRCode !== 'undefined') {
+                    passQrBox.innerHTML = ""; 
+                    new QRCode(passQrBox, { text: currentID, width: 100, height: 100 });
+                }
+            }
         }
-    }
 
-    function generateAvatar() {
-        currentUserImage = 'horse_welcome.png';
-        safeStorageSet('gygy_user_image', currentUserImage);
-        const avatarImg = document.getElementById('avatar-img');
-        const txtAvatar = document.getElementById('txt-avatar');
-        if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
-        if (txtAvatar) txtAvatar.style.display = 'none';
-        const badgeImg = document.getElementById('badge-avatar-img');
-        const passAvatarImg = document.getElementById('pass-avatar-img');
-        if (badgeImg) badgeImg.src = currentUserImage;
-        if (passAvatarImg) passAvatarImg.src = currentUserImage;
-    }
+        function navigateTo(url) {
+            document.body.classList.remove('page-loaded');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 400);
+        }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        document.body.classList.add('page-loaded');
-        updateGlobalFlagUI();
-        if (!currentID) currentID = 'GY-' + Math.floor(100000 + Math.random() * 900000);
-        renderUserPassports(currentID);
-    });
-</script>
+        function leaveToEntrance() {
+            navigateTo('index.html');
+        }
+
+        function openPassport() { 
+            const modal = document.getElementById('modal-passport'); 
+            if (modal) { modal.style.display = 'flex'; setTimeout(() => modal.style.opacity = '1', 10); } 
+        }
+        function closePassport() { 
+            const modal = document.getElementById('modal-passport'); 
+            if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.style.display = 'none', 300); } 
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            syncUserBadge();
+
+            const savedLangCode = safeStorageGet('gy_lang', 'EN').toLowerCase();
+            setTimeout(() => {
+                const selectEl = document.querySelector('.goog-te-combo');
+                if (selectEl) { 
+                    selectEl.value = savedLangCode === 'ua' ? 'uk' : savedLangCode; 
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true })); 
+                }
+            }, 800);
+
+            const script = document.createElement('script'); 
+            script.type = 'text/javascript';
+            script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.head.appendChild(script);
+            
+            document.body.classList.add('page-loaded');
+        });
+    </script>
 </body>
 </html>
