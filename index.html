@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.24 CORE</title>
+    <title>GY-GY Club v4.6.16.25 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -288,7 +288,6 @@
     
     <div class="ui-header-right notranslate">GY-GY</div>
 
-    <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
 
     <div id="block-entrance" class="block active">
@@ -304,7 +303,7 @@
             </div>
             
             <div id="club-lang-list" class="club-lang-list">
-                <!-- Список языков генерируется динамически (исключая выбранный язык рамки) -->
+                <!-- Список языков генерируется динамически -->
             </div>
         </div>
 
@@ -416,9 +415,10 @@
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
-    </div> 
+    </div>
 
-  let currentID = "";
+<script>
+    let currentID = "";
     let currentUserImage = "";
     let currentBlockId = 'block-entrance';
     let selectedNickType = 'own';
@@ -488,11 +488,25 @@
             const item = document.createElement('div');
             item.className = 'club-lang-item';
             item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
-            item.innerHTML = `
-                <div class="item-avatar"><img src="horse_welcome.png"></div>
-                <img class="item-flag" src="${lang.flag}">
-                <span class="item-text">${lang.name}</span>
-            `;
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'item-avatar';
+            const avatarImg = document.createElement('img');
+            avatarImg.src = 'horse_welcome.png';
+            avatarDiv.appendChild(avatarImg);
+
+            const flagImg = document.createElement('img');
+            flagImg.className = 'item-flag';
+            flagImg.src = lang.flag;
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'item-text';
+            textSpan.innerText = lang.name;
+
+            item.appendChild(avatarDiv);
+            item.appendChild(flagImg);
+            item.appendChild(textSpan);
+
             listContainer.appendChild(item);
         });
     }
@@ -535,12 +549,14 @@
         selectedNickType = type;
         const boxOwn = document.getElementById('box-own-nick');
         const boxClub = document.getElementById('box-club-nick');
-        if (type === 'own') {
-            boxOwn.classList.add('selected');
-            boxClub.classList.remove('selected');
-        } else {
-            boxClub.classList.add('selected');
-            boxOwn.classList.remove('selected');
+        if (boxOwn && boxClub) {
+            if (type === 'own') {
+                boxOwn.classList.add('selected');
+                boxClub.classList.remove('selected');
+            } else {
+                boxClub.classList.add('selected');
+                boxOwn.classList.remove('selected');
+            }
         }
     }
 
@@ -608,11 +624,6 @@
 
     function handleDoor() {
         const door = document.getElementById('main-door');
-        const sndDoor = document.getElementById('snd-door');
-        
-        if (sndDoor) {
-            sndDoor.play().catch(e => console.log("Audio play blocked:", e));
-        }
         
         if (door) {
             door.classList.add('door-exploded');
@@ -654,6 +665,42 @@
         if (badge) badge.style.display = 'block';
         
         portalTransition('block-hall');
+    }
+
+    function preview(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentUserImage = e.target.result;
+                safeStorageSet('gygy_user_image', currentUserImage);
+                
+                const pp = document.getElementById('pp');
+                const txtPhoto = document.getElementById('txt-photo');
+                if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
+                if (txtPhoto) txtPhoto.style.display = 'none';
+
+                const badgeImg = document.getElementById('badge-avatar-img');
+                const passAvatarImg = document.getElementById('pass-avatar-img');
+                if (badgeImg) badgeImg.src = currentUserImage;
+                if (passAvatarImg) passAvatarImg.src = currentUserImage;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function generateAvatar() {
+        currentUserImage = 'horse_welcome.png';
+        safeStorageSet('gygy_user_image', currentUserImage);
+        
+        const avatarImg = document.getElementById('avatar-img');
+        const txtAvatar = document.getElementById('txt-avatar');
+        if (avatarImg) { avatarImg.src = currentUserImage; avatarImg.style.display = 'block'; }
+        if (txtAvatar) txtAvatar.style.display = 'none';
+
+        const badgeImg = document.getElementById('badge-avatar-img');
+        const passAvatarImg = document.getElementById('pass-avatar-img');
+        if (badgeImg) badgeImg.src = currentUserImage;
+        if (passAvatarImg) passAvatarImg.src = currentUserImage;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
