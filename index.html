@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.32 CORE</title>
+    <title>GY-GY Club v4.6.33 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,7 +458,7 @@
     </div>
 <script>
 /* ==========================================================================
-   CLUB v4.6.12 CORE - SYNTAX & BLACK SCREEN FIX
+   CLUB v4.6.13 CORE - LANGUAGE SYNC & DEBUG FIX
    ========================================================================== */
 
 (function() {
@@ -474,8 +474,6 @@
     let selectedNickType = 'own';
     let userChosenNickname = '';
 
-    let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
-    
     const allLanguages = [
         { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
         { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
@@ -505,9 +503,7 @@
     }
 
     function syncGTranslateWidget() {
-        const savedLangCode = safeStorageGet('gygy_lang_code');
-        if (!savedLangCode) return;
-        
+        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
         const combo = document.querySelector('.goog-te-combo');
         if (combo) {
             if (combo.value !== savedLangCode) {
@@ -520,15 +516,17 @@
     }
 
     function updateGlobalFlagUI() {
-        const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
-        const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
+        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
+        const targetLang = allLanguages.find(l => l.code === savedLangCode) || allLanguages[0];
+        
+        const countryCode = flagCodeToCountry(targetLang.code);
+        const flagUrl = `https://flagcdn.com/w20/${countryCode}.png`;
         
         const currentFlagEl = document.getElementById('current-flag');
         if (currentFlagEl) currentFlagEl.src = flagUrl;
 
-        const savedLangName = safeStorageGet('gygy_lang_name') || 'English';
         const langNameEl = document.getElementById('current-lang-name');
-        if (langNameEl) langNameEl.innerText = savedLangName;
+        if (langNameEl) langNameEl.innerText = targetLang.name;
     }
 
     function toggleLangDropdown() {
@@ -559,19 +557,13 @@
     }
 
     function selectClubLanguage(langCode, langName, flagUrl) {
-        currentLangData = { code: langCode, name: langName, flag: flagUrl };
-        
         const countryCode = flagCodeToCountry(langCode);
         safeStorageSet('gygy_flag', countryCode);
         safeStorageSet('gy_user_flag', countryCode);
         safeStorageSet('gygy_lang_code', langCode);
         safeStorageSet('gygy_lang_name', langName);
         
-        const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) currentFlagEl.src = flagUrl;
-        
-        const langNameEl = document.getElementById('current-lang-name');
-        if (langNameEl) langNameEl.innerText = langName;
+        updateGlobalFlagUI();
 
         const listContainer = document.getElementById('club-lang-list');
         if (listContainer) {
@@ -828,7 +820,7 @@
         const nickname = safeStorageGet('gygy_nickname') || 'Guest';
         const flag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
         const avatar = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || '';
-        const isBoss = safeStorageGet('gygy_is_boss') === 'true';
+        const isBoss = safeStorageGet('gygy_is_boss'] === 'true'; // исправлено
 
         let registry = getGlobalRegistry();
         const existingIndex = registry.findIndex(user => user.id === id);
