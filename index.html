@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.30 CORE</title>
+    <title>GY-GY Club v4.6.31 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,7 +458,7 @@
     </div>
 <script>
 /* ==========================================================================
-   CLUB v4.6.10 CORE - DEBUG PANEL STYLE FIX
+   CLUB v4.6.11 CORE - README COMPLIANT & DEBUG FIX
    ========================================================================== */
 
 (function() {
@@ -505,7 +505,10 @@
     }
 
     function syncGTranslateWidget() {
-        const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
+        // Уважаем выбор языка из localStorage, если он задан, иначе не перезаписываем принудительно в 'en'
+        const savedLangCode = safeStorageGet('gygy_lang_code');
+        if (!savedLangCode) return;
+        
         const combo = document.querySelector('.goog-te-combo');
         if (combo) {
             if (combo.value !== savedLangCode) {
@@ -825,7 +828,7 @@
         const id = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || "GY-000000";
         const nickname = safeStorageGet('gygy_nickname') || 'Guest';
         const flag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
-        const avatar = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || '';
+        const avatar = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img'] || '';
         const isBoss = safeStorageGet('gygy_is_boss') === 'true';
 
         let registry = getGlobalRegistry();
@@ -873,6 +876,7 @@
 
     window.setDevLevel = function(level) {
         safeStorageSet('gygy_dev_level', level);
+        // При выборе уровня не сбрасываем язык принудительно, сохраняя текущий выбор пользователя согласно README
         location.reload();
     };
 
