@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.20 CORE</title>
+    <title>GY-GY Club v4.6.21 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,6 +458,7 @@
     </div>
 
 <script>
+<script>
 /* ==========================================================================
    CLUB v4.6.1 CORE - COMPLETE UNIFIED SCRIPT CONTROLLER & SYSTEM RUNTIME
    ========================================================================== */
@@ -537,7 +538,7 @@
         if (list) list.classList.toggle('open');
     }
 
- function selectClubLanguage(langCode, langName, flagUrl) {
+    function selectClubLanguage(langCode, langName, flagUrl) {
         currentLangData = { code: langCode, name: langName, flag: flagUrl };
         
         const countryCode = flagCodeToCountry(langCode);
@@ -556,7 +557,6 @@
         if (listContainer) {
             listContainer.innerHTML = '';
             
-            // Берем актуальный аватар пользователя из памяти или используем дефолтный
             const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
 
             allLanguages.forEach(lang => {
@@ -583,6 +583,7 @@
         }
         updateCountryCounters();
     }
+
     window.addEventListener('click', (e) => {
         const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
         const list = document.getElementById('club-lang-list');
@@ -988,7 +989,26 @@
         openGlobalRegistryModal(callback);
     };
 
-    // --- ДИНАМИЧЕСКИЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН РЕЕСТРА ---
+    // --- ОТЛАДОЧНАЯ ПАНЕЛЬ (Новичок / Бывалый) ---
+    function initDebugPanel() {
+        if (document.getElementById('club-debug-panel')) return;
+        const panel = document.createElement('div');
+        panel.id = 'club-debug-panel';
+        panel.innerHTML = `
+            <div class="debug-title">DEBUG MODE</div>
+            <button onclick="setDevLevel('beginner')">Новичок</button>
+            <button onclick="setDevLevel('experienced')">Бывалый</button>
+        `;
+        document.body.appendChild(panel);
+    }
+
+    window.setDevLevel = function(level) {
+        safeStorageSet('gygy_dev_level', level);
+        console.log("Уровень переключен на:", level);
+        location.reload();
+    };
+
+    // --- ДИНАМИЧЕСКИЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН И ПАНЕЛИ ---
     const registryStyles = document.createElement('style');
     registryStyles.innerHTML = `
         .club-modal-overlay {
@@ -1039,6 +1059,24 @@
         .reg-card-nick { color: var(--gold, #FFD700); font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .reg-card-id { color: #888; font-size: 11px; font-family: 'Share Tech Mono', monospace; }
         .reg-card-role { color: #aaa; font-size: 10px; margin-top: 2px; }
+
+        /* Стили для отладочной панели в правом нижнем углу */
+        #club-debug-panel {
+            position: fixed; bottom: 15px; right: 15px; z-index: 10000;
+            background: rgba(11, 11, 11, 0.9); border: 1px solid var(--gold, #FFD700);
+            padding: 8px 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); font-family: 'Montserrat', sans-serif;
+        }
+        #club-debug-panel .debug-title {
+            color: var(--gold, #FFD700); font-size: 10px; font-weight: bold; text-align: center; letter-spacing: 1px;
+        }
+        #club-debug-panel button {
+            background: #1f1f1f; border: 1px solid rgba(255, 215, 0, 0.5); color: #fff;
+            padding: 4px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+        }
+        #club-debug-panel button:hover {
+            background: var(--gold, #FFD700); color: #000; font-weight: bold;
+        }
     `;
     document.head.appendChild(registryStyles);
 
@@ -1072,6 +1110,7 @@
         updateGlobalFlagUI();
         syncGTranslateWidget();
         syncUserToGlobalRegistry();
+        initDebugPanel();
 
         window.addEventListener('storage', (e) => {
             if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
@@ -1087,7 +1126,7 @@
 
 })();
 
-// АВАРИЙНЫЙ СБРОС ЧЕРНОГО ЭКРАНА (на случай ошибок)
+// АВАРИЙНЫЙ СБРОС ЧЕРНОГО ЭКРАНА
 setTimeout(() => {
     if (!document.body.classList.contains('page-loaded')) {
         document.body.classList.add('page-loaded');
