@@ -450,11 +450,14 @@
         </div>
     </div>
 
-<script src="userlang-data.js"></script>
-<script src="translations.js"></script>
-<script src="language.js"></script>
+/* ==========================================================================
+   CLUB v4.6.1 CORE - COMPLETE UNIFIED SCRIPT CONTROLLER & SYSTEM RUNTIME
+   ========================================================================== */
 
-<script type="text/javascript">
+(function() {
+    'use strict';
+
+    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СОСТОЯНИЕ ---
     let currentID = "";
     let currentUserImage = "";
     let currentBlockId = 'block-entrance';
@@ -477,16 +480,21 @@
         { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
     ];
 
-    function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
-    function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
+    // --- БАЗОВЫЕ УТИЛИТЫ ХРАНИЛИЩА ---
+    function safeStorageGet(key, fallback = "") { 
+        try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } 
+    }
 
-    // Вспомогательная функция сопоставления языкового кода с двухбуквенным кодом страны для CDN флагов
+    function safeStorageSet(key, value) { 
+        try { localStorage.setItem(key, value); } catch (e) {} 
+    }
+
     function flagCodeToCountry(code) {
         const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
         return map[code] || 'gb';
     }
 
-    // Принудительная синхронизация виджета GTranslate с сохраненным языком
+    // --- СИНХРОНИЗАЦИЯ ЯЗЫКОВЫХ ВИДЖЕТОВ И ИНТЕРФЕЙСА ---
     function syncGTranslateWidget() {
         const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
         const combo = document.querySelector('.goog-te-combo');
@@ -500,7 +508,6 @@
         }
     }
 
-    // Обновление отображения флага и текста названия языка из localStorage
     function updateGlobalFlagUI() {
         const savedFlag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
         const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
@@ -525,7 +532,6 @@
     function selectClubLanguage(langCode, langName, flagUrl) {
         currentLangData = { code: langCode, name: langName, flag: flagUrl };
         
-        // Сохраняем во все ключи флага, код и название для мгновенной синхронизации
         const countryCode = flagCodeToCountry(langCode);
         safeStorageSet('gygy_flag', countryCode);
         safeStorageSet('gy_user_flag', countryCode);
@@ -547,9 +553,10 @@
                     item.className = 'club-lang-item';
                     item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
                     item.innerHTML = `
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="${lang.flag}">
+                        <div class="item-avatar"><img src="horse_welcome.png" alt="Avatar"></div>
+                        <img class="item-flag" src="${lang.flag}" alt="Flag">
                         <span class="item-text">${lang.name}</span>
+                        <span id="count-badge-${lang.code}" style="margin-left:auto; font-size:11px; color:var(--gold);"></span>
                     `;
                     listContainer.appendChild(item);
                 }
@@ -562,6 +569,7 @@
             combo.value = langCode;
             combo.dispatchEvent(new Event('change'));
         }
+        updateCountryCounters();
     }
 
     window.addEventListener('click', (e) => {
@@ -572,16 +580,17 @@
         }
     });
 
+    // --- УПРАВЛЕНИЕ НИКНЕЙМАМИ И ПАСПОРТОМ ---
     function setNickType(type) {
         selectedNickType = type;
         const boxOwn = document.getElementById('box-own-nick');
         const boxClub = document.getElementById('box-club-nick');
         if (type === 'own') {
-            boxOwn.classList.add('selected');
-            boxClub.classList.remove('selected');
+            if (boxOwn) boxOwn.classList.add('selected');
+            if (boxClub) boxClub.classList.remove('selected');
         } else {
-            boxClub.classList.add('selected');
-            boxOwn.classList.remove('selected');
+            if (boxClub) boxClub.classList.add('selected');
+            if (boxOwn) boxOwn.classList.remove('selected');
         }
     }
 
@@ -663,6 +672,7 @@
         }
     }
 
+    // --- НАВИГАЦИЯ И ПЕРЕХОДЫ МЕЖДУ ЗОНАМИ ---
     function enterStudio() { 
         window.location.href = 'studio.html'; 
     }
@@ -685,11 +695,7 @@
         if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
         if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
         if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
-        
-        if (nextId === 'block-office') {
-            window.location.href = 'office.html';
-            return;
-        }
+        if (nextId === 'block-office') { window.location.href = 'office.html'; return; }
 
         const targetBlock = document.getElementById(nextId);
         if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
@@ -793,6 +799,8 @@
 
         const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
         const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
+
+        syncUserToGlobalRegistry();
     }
 
     function openPassport() {
@@ -811,6 +819,238 @@
         }
     }
 
+    // --- ГЛОБАЛЬНЫЙ РЕЕСТР И СИСТЕМА УПРАВЛЕНИЯ УЧАСТНИКАМИ ---
+    function getGlobalRegistry() {
+        let registry = [];
+        try {
+            const stored = localStorage.getItem('gygy_global_registry');
+            if (stored) {
+                registry = JSON.parse(stored);
+            }
+        } catch (e) {
+            registry = [];
+        }
+        return registry;
+    }
+
+    function saveGlobalRegistry(registry) {
+        try {
+            localStorage.setItem('gygy_global_registry', JSON.stringify(registry));
+        } catch (e) {}
+    }
+
+    function syncUserToGlobalRegistry() {
+        const id = safeStorageGet('gygy_id') || safeStorageGet('gy_user_id') || "GY-000000";
+        const nickname = safeStorageGet('gygy_nickname') || 'Guest';
+        const flag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
+        const avatar = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || '';
+        const isBoss = safeStorageGet('gygy_is_boss') === 'true';
+
+        let registry = getGlobalRegistry();
+        const existingIndex = registry.findIndex(user => user.id === id);
+
+        const userData = {
+            id: id,
+            nickname: nickname,
+            flag: flag.toLowerCase(),
+            avatar: avatar,
+            role: isBoss ? 'Boss / Staff' : 'Resident',
+            lastActive: Date.now()
+        };
+
+        if (existingIndex >= 0) {
+            registry[existingIndex] = userData;
+        } else {
+            registry.push(userData);
+        }
+
+        saveGlobalRegistry(registry);
+        updateCountryCounters();
+    }
+
+    function updateCountryCounters() {
+        const registry = getGlobalRegistry();
+        const counts = {};
+
+        registry.forEach(user => {
+            const f = (user.flag || 'gb').toLowerCase();
+            counts[f] = (counts[f] || 0) + 1;
+        });
+
+        allLanguages.forEach(lang => {
+            const country = flagCodeToCountry(lang.code).toLowerCase();
+            const count = counts[country] || 0;
+            const badgeEl = document.getElementById(`count-badge-${lang.code}`);
+            if (badgeEl) {
+                badgeEl.innerText = count > 0 ? `(${count})` : '';
+            }
+        });
+    }
+
+    function openGlobalRegistryModal(callbackOnSelect) {
+        let modal = document.getElementById('modal-global-registry');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'modal-global-registry';
+            modal.className = 'club-modal-overlay';
+            modal.innerHTML = `
+                <div class="club-modal-content">
+                    <div class="modal-header">
+                        <h3>Глобальный Реестр Участников</h3>
+                        <button class="modal-close-btn" onclick="closeGlobalRegistryModal()">&times;</button>
+                    </div>
+                    <div class="modal-search-bar">
+                        <input type="text" id="registry-search-input" placeholder="Поиск по нику, ID или стране..." oninput="filterGlobalRegistry()">
+                    </div>
+                    <div id="registry-users-list" class="modal-users-grid"></div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        renderRegistryUsersList(callbackOnSelect);
+        modal.style.display = 'flex';
+        setTimeout(() => { modal.style.opacity = '1'; }, 10);
+    }
+
+    function closeGlobalRegistryModal() {
+        const modal = document.getElementById('modal-global-registry');
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+    }
+
+    function renderRegistryUsersList(callbackOnSelect, filterQuery = '') {
+        const container = document.getElementById('registry-users-list');
+        if (!container) return;
+
+        const registry = getGlobalRegistry();
+        container.innerHTML = '';
+
+        const filtered = registry.filter(u => {
+            if (!filterQuery) return true;
+            const q = filterQuery.toLowerCase();
+            return (u.nickname && u.nickname.toLowerCase().includes(q)) ||
+                   (u.id && u.id.toLowerCase().includes(q)) ||
+                   (u.flag && u.flag.toLowerCase().includes(q));
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="color: var(--gold); text-align: center; grid-column: 1/-1; padding: 20px;">Участники не найдены</div>';
+            return;
+        }
+
+        filtered.forEach(user => {
+            const card = document.createElement('div');
+            card.className = 'registry-user-card';
+            card.innerHTML = `
+                <div class="reg-card-avatar">
+                    <img src="${user.avatar || 'horse_welcome.png'}" alt="Avatar">
+                    <img class="reg-card-flag" src="https://flagcdn.com/w20/${user.flag}.png" alt="Flag">
+                </div>
+                <div class="reg-card-info">
+                    <div class="reg-card-nick">${user.nickname}</div>
+                    <div class="reg-card-id">${user.id}</div>
+                    <div class="reg-card-role">${user.role}</div>
+                </div>
+            `;
+            card.onclick = () => {
+                if (typeof callbackOnSelect === 'function') {
+                    callbackOnSelect(user);
+                }
+                closeGlobalRegistryModal();
+            };
+            container.appendChild(card);
+        });
+    }
+
+    function filterGlobalRegistry() {
+        const input = document.getElementById('registry-search-input');
+        if (input) {
+            renderRegistryUsersList(window._currentRegistryCallback, input.value);
+        }
+    }
+
+    window.showRegistryPicker = function(callback) {
+        window._currentRegistryCallback = callback;
+        openGlobalRegistryModal(callback);
+    };
+
+    // --- ДИНАМИЧЕСКИЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН РЕЕСТРА ---
+    const registryStyles = document.createElement('style');
+    registryStyles.innerHTML = `
+        .club-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .club-modal-content {
+            background: #0b0b0b; border: 2px solid var(--gold, #FFD700);
+            width: 90%; max-width: 600px; max-height: 80vh;
+            border-radius: 12px; padding: 20px; display: flex; flex-direction: column;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3); padding-bottom: 10px;
+            color: var(--gold, #FFD700); font-family: 'Cinzel', 'Montserrat', sans-serif;
+        }
+        .modal-close-btn {
+            background: transparent; border: none; color: var(--gold, #FFD700);
+            font-size: 28px; cursor: pointer; transition: transform 0.2s;
+        }
+        .modal-close-btn:hover { transform: scale(1.2); }
+        .modal-search-bar { padding: 15px 0; }
+        .modal-search-bar input {
+            width: 100%; background: #000; border: 1px solid var(--gold, #FFD700);
+            color: #fff; padding: 10px 15px; border-radius: 6px; font-family: 'Montserrat', sans-serif;
+        }
+        .modal-users-grid {
+            overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px; padding-right: 5px;
+        }
+        .registry-user-card {
+            background: #141414; border: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 12px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .registry-user-card:hover {
+            border-color: var(--gold, #FFD700);
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+        .reg-card-avatar { position: relative; width: 45px; height: 45px; flex-shrink: 0; }
+        .reg-card-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold); }
+        .reg-card-flag { position: absolute; bottom: 0; right: 0; width: 16px; height: 12px; border-radius: 2px; }
+        .reg-card-info { overflow: hidden; }
+        .reg-card-nick { color: var(--gold, #FFD700); font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .reg-card-id { color: #888; font-size: 11px; font-family: 'Share Tech Mono', monospace; }
+        .reg-card-role { color: #aaa; font-size: 10px; margin-top: 2px; }
+    `;
+    document.head.appendChild(registryStyles);
+
+    // --- ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ ---
+    window.toggleLangDropdown = toggleLangDropdown;
+    window.selectClubLanguage = selectClubLanguage;
+    window.setNickType = setNickType;
+    window.updateNicknameValue = updateNicknameValue;
+    window.toggleManifest = toggleManifest;
+    window.enterStudio = enterStudio;
+    window.enterStaffOffice = enterStaffOffice;
+    window.handleNavigationBack = handleNavigationBack;
+    window.portalTransition = portalTransition;
+    window.handleDoor = handleDoor;
+    window.preview = preview;
+    window.generateAvatar = generateAvatar;
+    window.saveUserProfile = saveUserProfile;
+    window.openPassport = openPassport;
+    window.closePassport = closePassport;
+    window.closeGlobalRegistryModal = closeGlobalRegistryModal;
+    window.filterGlobalRegistry = filterGlobalRegistry;
+
+    // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ DOM ---
     window.addEventListener('DOMContentLoaded', () => {
         if (!currentID) {
             currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
@@ -818,13 +1058,10 @@
         }
         checkAndFillRegistrationForm();
 
-        // 1. Восстанавливаем сохраненный флаг и текст языка в UI
         updateGlobalFlagUI();
-        
-        // 2. Принудительно синхронизируем сам переводчик страницы
         syncGTranslateWidget();
+        syncUserToGlobalRegistry();
 
-        // Слушаем изменения localStorage (если флаг сменили на другой вкладке/странице)
         window.addEventListener('storage', (e) => {
             if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
                 updateGlobalFlagUI();
@@ -836,6 +1073,8 @@
 
         setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
+
+})();
 </script>
 </body>
 </html>
