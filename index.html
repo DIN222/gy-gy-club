@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.25 CORE</title>
+    <title>GY-GY Club v4.6.26 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,7 +458,7 @@
     </div>
 <script>
 /* ==========================================================================
-   CLUB v4.6.5 CORE - LANGUAGE MAP FIX
+   CLUB v4.6.6 CORE - UNIQUE LANGUAGE FILTER FIX
    ========================================================================== */
 
 (function() {
@@ -555,6 +555,7 @@
             const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
 
             allLanguages.forEach(lang => {
+                // Сравниваем строго по уникальному коду языка (lang.code !== langCode), исключая дублирование
                 if (lang.code !== langCode) {
                     const item = document.createElement('div');
                     item.className = 'club-lang-item';
@@ -912,7 +913,7 @@
     window.enterStudio = enterStudio;
     window.enterStaffOffice = enterStaffOffice;
     window.handleNavigationBack = handleNavigationBack;
-    window.portalTransition =portalTransition;
+    window.portalTransition = portalTransition;
     window.handleDoor = handleDoor;
     window.preview = preview;
     window.generateAvatar = generateAvatar;
