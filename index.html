@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.26 CORE</title>
+    <title>GY-GY Club v4.6.27 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,13 +458,12 @@
     </div>
 <script>
 /* ==========================================================================
-   CLUB v4.6.6 CORE - UNIQUE LANGUAGE FILTER FIX
+   CLUB v4.6.7 CORE - LANGUAGE MAP FIX FINAL
    ========================================================================== */
 
 (function() {
     'use strict';
 
-    // Гарантированный показ экрана через 50мс при любых условиях
     setTimeout(() => {
         document.body.classList.add('page-loaded');
     }, 50);
@@ -476,6 +475,8 @@
     let userChosenNickname = '';
 
     let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
+    
+    // Массив всех доступных языков (английский гарантированно присутствует)
     const allLanguages = [
         { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
         { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
@@ -524,14 +525,37 @@
         const currentFlagEl = document.getElementById('current-flag');
         if (currentFlagEl) currentFlagEl.src = flagUrl;
 
-        const savedLangName = safeStorageGet('gygy_lang_name');
+        const savedLangName = safeStorageGet('gygy_lang_name') || 'English';
         const langNameEl = document.getElementById('current-lang-name');
-        if (savedLangName && langNameEl) langNameEl.innerText = savedLangName;
+        if (langNameEl) langNameEl.innerText = savedLangName;
     }
 
     function toggleLangDropdown() {
         const list = document.getElementById('club-lang-list');
-        if (list) list.classList.toggle('open');
+        if (!list) return;
+
+        // Принудительно перестраиваем список при каждом открытии, исключая текущий язык
+        const currentActiveCode = safeStorageGet('gygy_lang_code') || 'en';
+        list.innerHTML = '';
+        const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
+
+        allLanguages.forEach(lang => {
+            if (lang.code !== currentActiveCode) {
+                const item = document.createElement('div');
+                item.className = 'club-lang-item';
+                item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
+                item.innerHTML = `
+                    <div class="item-avatar"><img src="${userAvatarSrc}" alt="Avatar"></div>
+                    <img class="item-flag" src="${lang.flag}" alt="Flag">
+                    <span class="item-text">${lang.name}</span>
+                    <span id="count-badge-${lang.code}" style="margin-left:auto; font-size:11px; color:var(--gold);"></span>
+                `;
+                list.appendChild(item);
+            }
+        });
+
+        list.classList.toggle('open');
+        updateCountryCounters();
     }
 
     function selectClubLanguage(langCode, langName, flagUrl) {
@@ -551,24 +575,6 @@
 
         const listContainer = document.getElementById('club-lang-list');
         if (listContainer) {
-            listContainer.innerHTML = '';
-            const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
-
-            allLanguages.forEach(lang => {
-                // Сравниваем строго по уникальному коду языка (lang.code !== langCode), исключая дублирование
-                if (lang.code !== langCode) {
-                    const item = document.createElement('div');
-                    item.className = 'club-lang-item';
-                    item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
-                    item.innerHTML = `
-                        <div class="item-avatar"><img src="${userAvatarSrc}" alt="Avatar"></div>
-                        <img class="item-flag" src="${lang.flag}" alt="Flag">
-                        <span class="item-text">${lang.name}</span>
-                        <span id="count-badge-${lang.code}" style="margin-left:auto; font-size:11px; color:var(--gold);"></span>
-                    `;
-                    listContainer.appendChild(item);
-                }
-            });
             listContainer.classList.remove('open');
         }
 
@@ -822,7 +828,7 @@
         const nickname = safeStorageGet('gygy_nickname') || 'Guest';
         const flag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
         const avatar = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || '';
-        const isBoss = safeStorageGet('gygy_is_boss') === 'true';
+        const isBoss = safeStorageGet('gygy_is_boss'] === 'true';
 
         let registry = getGlobalRegistry();
         const existingIndex = registry.findIndex(user => user.id === id);
