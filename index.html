@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.17 CORE</title>
+    <title>GY-GY Club v4.6.18 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -25,6 +25,15 @@
             margin: 0; 
             padding: 0;
         }
+
+        /* Исправление черного экрана: начальное состояние для плавной анимации */
+        body {
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out !important;
+        }
+        body.page-loaded {
+            opacity: 1 !important;
+        }
         
         button, .ui-user-badge, .arrow-item, .painting-zone, #main-door, .box-final, .nickname-square {
             transition: all 0.3s ease !important;
@@ -41,7 +50,7 @@
             text-shadow: -1px -1px 0 #000000, 1px -1px 0 #000000, -1px 1px 0 #000000, 1px 1px 0 #000000;
         }
         
-        /* СКВОЗНОЙ АВАТАР (уменьшен еще на 5% -> ~36px, приподнят еще на 3px -> top: 4px) */
+        /* СКВОЗНОЙ АВАТАР */
         .ui-user-badge {
             position: fixed; top: 4px; left: 50%; transform: translateX(-50%);
             width: 36px; height: 36px; border-radius: 50%;
@@ -237,8 +246,6 @@
         .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
-        body { top: 0 !important; background-color: #000000 !important; opacity: 0; transition: opacity 1.2s ease-in-out !important; }
-        body.page-loaded { opacity: 1 !important; }
         
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
