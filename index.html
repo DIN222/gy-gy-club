@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.27 CORE</title>
+    <title>GY-GY Club v4.6.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,7 +458,7 @@
     </div>
 <script>
 /* ==========================================================================
-   CLUB v4.6.7 CORE - LANGUAGE MAP FIX FINAL
+   CLUB v4.6.8 CORE - ABSOLUTE FINAL FIX
    ========================================================================== */
 
 (function() {
@@ -476,7 +476,6 @@
 
     let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
     
-    // Массив всех доступных языков (английский гарантированно присутствует)
     const allLanguages = [
         { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
         { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
@@ -534,7 +533,6 @@
         const list = document.getElementById('club-lang-list');
         if (!list) return;
 
-        // Принудительно перестраиваем список при каждом открытии, исключая текущий язык
         const currentActiveCode = safeStorageGet('gygy_lang_code') || 'en';
         list.innerHTML = '';
         const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
@@ -828,7 +826,7 @@
         const nickname = safeStorageGet('gygy_nickname') || 'Guest';
         const flag = safeStorageGet('gygy_flag') || safeStorageGet('gy_user_flag') || 'gb';
         const avatar = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || '';
-        const isBoss = safeStorageGet('gygy_is_boss'] === 'true';
+        const isBoss = safeStorageGet('gygy_is_boss') === 'true';
 
         let registry = getGlobalRegistry();
         const existingIndex = registry.findIndex(user => user.id === id);
