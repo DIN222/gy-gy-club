@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.21 CORE</title>
+    <title>GY-GY Club v4.6.22 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -459,14 +459,19 @@
 
 <script>
 <script>
+<script>
 /* ==========================================================================
-   CLUB v4.6.1 CORE - COMPLETE UNIFIED SCRIPT CONTROLLER & SYSTEM RUNTIME
+   CLUB v4.6.2 CORE - UNIFIED SCRIPT CONTROLLER & AUTO-SANITIZER
    ========================================================================== */
 
 (function() {
     'use strict';
 
-    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СОСТОЯНИЕ ---
+    // Автоматически показываем экран при любых обстоятельствах через 100мс
+    setTimeout(() => {
+        document.body.classList.add('page-loaded');
+    }, 100);
+
     let currentID = "";
     let currentUserImage = "";
     let currentBlockId = 'block-entrance';
@@ -489,7 +494,6 @@
         { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
     ];
 
-    // --- БАЗОВЫЕ УТИЛИТЫ ХРАНИЛИЩА ---
     function safeStorageGet(key, fallback = "") { 
         try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } 
     }
@@ -503,7 +507,6 @@
         return map[code] || 'gb';
     }
 
-    // --- СИНХРОНИЗАЦИЯ ЯЗЫКОВЫХ ВИДЖЕТОВ И ИНТЕРФЕЙСА ---
     function syncGTranslateWidget() {
         const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
         const combo = document.querySelector('.goog-te-combo');
@@ -522,15 +525,11 @@
         const flagUrl = `https://flagcdn.com/w20/${savedFlag.toLowerCase()}.png`;
         
         const currentFlagEl = document.getElementById('current-flag');
-        if (currentFlagEl) {
-            currentFlagEl.src = flagUrl;
-        }
+        if (currentFlagEl) currentFlagEl.src = flagUrl;
 
         const savedLangName = safeStorageGet('gygy_lang_name');
         const langNameEl = document.getElementById('current-lang-name');
-        if (savedLangName && langNameEl) {
-            langNameEl.innerText = savedLangName;
-        }
+        if (savedLangName && langNameEl) langNameEl.innerText = savedLangName;
     }
 
     function toggleLangDropdown() {
@@ -556,7 +555,6 @@
         const listContainer = document.getElementById('club-lang-list');
         if (listContainer) {
             listContainer.innerHTML = '';
-            
             const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
 
             allLanguages.forEach(lang => {
@@ -592,7 +590,6 @@
         }
     });
 
-    // --- УПРАВЛЕНИЕ НИКНЕЙМАМИ И ПАСПОРТОМ ---
     function setNickType(type) {
         selectedNickType = type;
         const boxOwn = document.getElementById('box-own-nick');
@@ -652,7 +649,7 @@
         if (currentID) { renderUserPassports(currentID); }
         
         const clubNickLabel = document.getElementById('club-nick-label');
-        if (clubNickLabel && currentID) { clubNickLabel.innerText = currentID; }
+        if (clubNickLabel && currentID) clubNickLabel.innerText = currentID;
 
         if (savedAvatar) {
             currentUserImage = savedAvatar;
@@ -679,19 +676,11 @@
         
         const isBoss = safeStorageGet('gygy_is_boss') === 'true';
         const staffBtn = document.getElementById('btn-staff-room');
-        if (isBoss && staffBtn) {
-            staffBtn.style.display = 'block';
-        }
+        if (isBoss && staffBtn) staffBtn.style.display = 'block';
     }
 
-    // --- НАВИГАЦИЯ И ПЕРЕХОДЫ МЕЖДУ ЗОНАМИ ---
-    function enterStudio() { 
-        window.location.href = 'studio.html'; 
-    }
-
-    function enterStaffOffice() {
-        window.location.href = 'staff_office.html';
-    }
+    function enterStudio() { window.location.href = 'studio.html'; }
+    function enterStaffOffice() { window.location.href = 'staff_office.html'; }
 
     function handleNavigationBack() {
         if (currentBlockId === 'block-hall') {
@@ -710,10 +699,9 @@
         if (nextId === 'block-office') { window.location.href = 'office.html'; return; }
 
         const targetBlock = document.getElementById(nextId);
-        if (!targetBlock) { console.error(`Блок не найден: ${nextId}`); return; }
+        if (!targetBlock) return;
 
         currentBlockId = nextId;
-
         const badge = document.getElementById('global-user-badge');
         const navArrows = document.getElementById('club-nav-arrows');
 
@@ -723,10 +711,7 @@
         });
 
         targetBlock.style.display = 'flex';
-        
-        setTimeout(() => {
-            targetBlock.classList.add('active');
-        }, 20);
+        setTimeout(() => { targetBlock.classList.add('active'); }, 20);
 
         if (nextId === 'block-entrance') {
             const mainDoor = document.getElementById('main-door');
@@ -750,7 +735,7 @@
         setTimeout(() => {
             if (sndAmbient) {
                 sndAmbient.volume = 0.5;
-                sndAmbient.play().catch(e => console.log("Ambient blocked"));
+                sndAmbient.play().catch(e => {});
             }
             portalTransition('block-welcome');
         }, 700);
@@ -786,9 +771,7 @@
         if (selectedNickType === 'club') {
             safeStorageSet('gygy_nickname', currentID);
         } else {
-            if (userChosenNickname) {
-                safeStorageSet('gygy_nickname', userChosenNickname);
-            }
+            if (userChosenNickname) safeStorageSet('gygy_nickname', userChosenNickname);
         }
 
         safeStorageSet('gygy_avatar', currentUserImage);
@@ -817,38 +800,23 @@
 
     function openPassport() {
         const modal = document.getElementById('modal-passport');
-        if (modal) { 
-            modal.style.display = 'flex'; 
-            setTimeout(() => { modal.style.opacity = '1'; }, 10); 
-        }
+        if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.style.opacity = '1'; }, 10); }
     }
 
     function closePassport() {
         const modal = document.getElementById('modal-passport');
-        if (modal) {
-            modal.style.opacity = '0';
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => { modal.style.display = 'none'; }, 300); }
     }
 
-    // --- ГЛОБАЛЬНЫЙ РЕЕСТР И СИСТЕМА УПРАВЛЕНИЯ УЧАСТНИКАМИ ---
     function getGlobalRegistry() {
-        let registry = [];
         try {
             const stored = localStorage.getItem('gygy_global_registry');
-            if (stored) {
-                registry = JSON.parse(stored);
-            }
-        } catch (e) {
-            registry = [];
-        }
-        return registry;
+            return stored ? JSON.parse(stored) : [];
+        } catch (e) { return []; }
     }
 
     function saveGlobalRegistry(registry) {
-        try {
-            localStorage.setItem('gygy_global_registry', JSON.stringify(registry));
-        } catch (e) {}
+        try { localStorage.setItem('gygy_global_registry', JSON.stringify(registry)); } catch (e) {}
     }
 
     function syncUserToGlobalRegistry() {
@@ -862,19 +830,12 @@
         const existingIndex = registry.findIndex(user => user.id === id);
 
         const userData = {
-            id: id,
-            nickname: nickname,
-            flag: flag.toLowerCase(),
-            avatar: avatar,
-            role: isBoss ? 'Boss / Staff' : 'Resident',
-            lastActive: Date.now()
+            id: id, nickname: nickname, flag: flag.toLowerCase(),
+            avatar: avatar, role: isBoss ? 'Boss / Staff' : 'Resident', lastActive: Date.now()
         };
 
-        if (existingIndex >= 0) {
-            registry[existingIndex] = userData;
-        } else {
-            registry.push(userData);
-        }
+        if (existingIndex >= 0) registry[existingIndex] = userData;
+        else registry.push(userData);
 
         saveGlobalRegistry(registry);
         updateCountryCounters();
@@ -883,7 +844,6 @@
     function updateCountryCounters() {
         const registry = getGlobalRegistry();
         const counts = {};
-
         registry.forEach(user => {
             const f = (user.flag || 'gb').toLowerCase();
             counts[f] = (counts[f] || 0) + 1;
@@ -893,103 +853,10 @@
             const country = flagCodeToCountry(lang.code).toLowerCase();
             const count = counts[country] || 0;
             const badgeEl = document.getElementById(`count-badge-${lang.code}`);
-            if (badgeEl) {
-                badgeEl.innerText = count > 0 ? `(${count})` : '';
-            }
+            if (badgeEl) badgeEl.innerText = count > 0 ? `(${count})` : '';
         });
     }
 
-    function openGlobalRegistryModal(callbackOnSelect) {
-        let modal = document.getElementById('modal-global-registry');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'modal-global-registry';
-            modal.className = 'club-modal-overlay';
-            modal.innerHTML = `
-                <div class="club-modal-content">
-                    <div class="modal-header">
-                        <h3>Глобальный Реестр Участников</h3>
-                        <button class="modal-close-btn" onclick="closeGlobalRegistryModal()">&times;</button>
-                    </div>
-                    <div class="modal-search-bar">
-                        <input type="text" id="registry-search-input" placeholder="Поиск по нику, ID или стране..." oninput="filterGlobalRegistry()">
-                    </div>
-                    <div id="registry-users-list" class="modal-users-grid"></div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        renderRegistryUsersList(callbackOnSelect);
-        modal.style.display = 'flex';
-        setTimeout(() => { modal.style.opacity = '1'; }, 10);
-    }
-
-    function closeGlobalRegistryModal() {
-        const modal = document.getElementById('modal-global-registry');
-        if (modal) {
-            modal.style.opacity = '0';
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
-    }
-
-    function renderRegistryUsersList(callbackOnSelect, filterQuery = '') {
-        const container = document.getElementById('registry-users-list');
-        if (!container) return;
-
-        const registry = getGlobalRegistry();
-        container.innerHTML = '';
-
-        const filtered = registry.filter(u => {
-            if (!filterQuery) return true;
-            const q = filterQuery.toLowerCase();
-            return (u.nickname && u.nickname.toLowerCase().includes(q)) ||
-                   (u.id && u.id.toLowerCase().includes(q)) ||
-                   (u.flag && u.flag.toLowerCase().includes(q));
-        });
-
-        if (filtered.length === 0) {
-            container.innerHTML = '<div style="color: var(--gold); text-align: center; grid-column: 1/-1; padding: 20px;">Участники не найдены</div>';
-            return;
-        }
-
-        filtered.forEach(user => {
-            const card = document.createElement('div');
-            card.className = 'registry-user-card';
-            card.innerHTML = `
-                <div class="reg-card-avatar">
-                    <img src="${user.avatar || 'horse_welcome.png'}" alt="Avatar">
-                    <img class="reg-card-flag" src="https://flagcdn.com/w20/${user.flag}.png" alt="Flag">
-                </div>
-                <div class="reg-card-info">
-                    <div class="reg-card-nick">${user.nickname}</div>
-                    <div class="reg-card-id">${user.id}</div>
-                    <div class="reg-card-role">${user.role}</div>
-                </div>
-            `;
-            card.onclick = () => {
-                if (typeof callbackOnSelect === 'function') {
-                    callbackOnSelect(user);
-                }
-                closeGlobalRegistryModal();
-            };
-            container.appendChild(card);
-        });
-    }
-
-    function filterGlobalRegistry() {
-        const input = document.getElementById('registry-search-input');
-        if (input) {
-            renderRegistryUsersList(window._currentRegistryCallback, input.value);
-        }
-    }
-
-    window.showRegistryPicker = function(callback) {
-        window._currentRegistryCallback = callback;
-        openGlobalRegistryModal(callback);
-    };
-
-    // --- ОТЛАДОЧНАЯ ПАНЕЛЬ (Новичок / Бывалый) ---
     function initDebugPanel() {
         if (document.getElementById('club-debug-panel')) return;
         const panel = document.createElement('div');
@@ -1004,11 +871,9 @@
 
     window.setDevLevel = function(level) {
         safeStorageSet('gygy_dev_level', level);
-        console.log("Уровень переключен на:", level);
         location.reload();
     };
 
-    // --- ДИНАМИЧЕСКИЕ СТИЛИ ДЛЯ МОДАЛЬНЫХ ОКОН И ПАНЕЛИ ---
     const registryStyles = document.createElement('style');
     registryStyles.innerHTML = `
         .club-modal-overlay {
@@ -1023,44 +888,6 @@
             border-radius: 12px; padding: 20px; display: flex; flex-direction: column;
             box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
         }
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3); padding-bottom: 10px;
-            color: var(--gold, #FFD700); font-family: 'Cinzel', 'Montserrat', sans-serif;
-        }
-        .modal-close-btn {
-            background: transparent; border: none; color: var(--gold, #FFD700);
-            font-size: 28px; cursor: pointer; transition: transform 0.2s;
-        }
-        .modal-close-btn:hover { transform: scale(1.2); }
-        .modal-search-bar { padding: 15px 0; }
-        .modal-search-bar input {
-            width: 100%; background: #000; border: 1px solid var(--gold, #FFD700);
-            color: #fff; padding: 10px 15px; border-radius: 6px; font-family: 'Montserrat', sans-serif;
-        }
-        .modal-users-grid {
-            overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 12px; padding-right: 5px;
-        }
-        .registry-user-card {
-            background: #141414; border: 1px solid rgba(255, 215, 0, 0.4);
-            border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 12px;
-            cursor: pointer; transition: all 0.3s ease;
-        }
-        .registry-user-card:hover {
-            border-color: var(--gold, #FFD700);
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-        }
-        .reg-card-avatar { position: relative; width: 45px; height: 45px; flex-shrink: 0; }
-        .reg-card-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid var(--gold); }
-        .reg-card-flag { position: absolute; bottom: 0; right: 0; width: 16px; height: 12px; border-radius: 2px; }
-        .reg-card-info { overflow: hidden; }
-        .reg-card-nick { color: var(--gold, #FFD700); font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .reg-card-id { color: #888; font-size: 11px; font-family: 'Share Tech Mono', monospace; }
-        .reg-card-role { color: #aaa; font-size: 10px; margin-top: 2px; }
-
-        /* Стили для отладочной панели в правом нижнем углу */
         #club-debug-panel {
             position: fixed; bottom: 15px; right: 15px; z-index: 10000;
             background: rgba(11, 11, 11, 0.9); border: 1px solid var(--gold, #FFD700);
@@ -1080,7 +907,6 @@
     `;
     document.head.appendChild(registryStyles);
 
-    // --- ЭКСПОРТ ФУНКЦИЙ В ГЛОБАЛЬНУЮ ОБЛАСТЬ ВИДИМОСТИ ---
     window.toggleLangDropdown = toggleLangDropdown;
     window.selectClubLanguage = selectClubLanguage;
     window.setNickType = setNickType;
@@ -1096,42 +922,20 @@
     window.saveUserProfile = saveUserProfile;
     window.openPassport = openPassport;
     window.closePassport = closePassport;
-    window.closeGlobalRegistryModal = closeGlobalRegistryModal;
-    window.filterGlobalRegistry = filterGlobalRegistry;
 
-    // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ DOM ---
     window.addEventListener('DOMContentLoaded', () => {
         if (!currentID) {
             currentID = "GY-" + Math.floor(100000 + Math.random() * 900000);
             safeStorageSet('gygy_id', currentID);
         }
         checkAndFillRegistrationForm();
-
         updateGlobalFlagUI();
         syncGTranslateWidget();
         syncUserToGlobalRegistry();
         initDebugPanel();
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'gygy_flag' || e.key === 'gy_user_flag' || e.key === 'gygy_lang_name') {
-                updateGlobalFlagUI();
-            }
-            if (e.key === 'gygy_lang_code') {
-                syncGTranslateWidget();
-            }
-        });
-
-        setTimeout(() => { document.body.classList.add('page-loaded'); }, 50);
     });
 
 })();
-
-// АВАРИЙНЫЙ СБРОС ЧЕРНОГО ЭКРАНА
-setTimeout(() => {
-    if (!document.body.classList.contains('page-loaded')) {
-        document.body.classList.add('page-loaded');
-    }
-}, 800);
 </script>
 </body>
 </html>
