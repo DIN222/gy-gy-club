@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.25 CORE</title>
+    <title>GY-GY Club v4.6.16.26 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -81,13 +81,23 @@
         .club-lang-current .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .club-lang-current .arrow-down { color: var(--gold); font-size: 10px; font-weight: bold; flex-shrink: 0; }
 
-        .club-lang-list {
-            position: absolute; top: calc(100% + 5px); left: 0;
-            background: rgba(0,0,0,0.95); border: 2px solid var(--gold);
-            border-radius: 10px; width: 100%; max-height: 260px; overflow-y: auto;
-            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.9); z-index: 1000002;
+       .club-lang-list {
+            position: absolute; 
+            top: calc(100% + 5px); 
+            left: 0;
+            background: rgba(0,0,0,0.98); 
+            border: 2px solid var(--gold);
+            border-radius: 10px; 
+            width: 100%; 
+            max-height: 260px; 
+            overflow-y: auto;
+            display: none; /* Управляется скриптом */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.9); 
+            z-index: 99999999 !important; /* Максимальный приоритет */
         }
-        .club-lang-list.open { display: block; }
+        .club-lang-list.open { 
+            display: block !important; 
+        }
         
         .club-lang-item {
             display: flex; align-items: center; gap: 7px;
@@ -551,7 +561,7 @@
             if (langNameEl) langNameEl.innerText = targetLang.name;
         }
 
-        function toggleLangDropdown() {
+      function toggleLangDropdown() {
             if (safeStorageGet('gygy_dev_level') === 'beginner') {
                 return;
             }
@@ -563,25 +573,38 @@
             list.innerHTML = '';
             const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
 
+            // Рендерим все языки (можно убрать условие фильтрации, чтобы список был полным)
             allLanguages.forEach(lang => {
-                if (lang.code !== currentActiveCode) {
-                    const item = document.createElement('div');
-                    item.className = 'club-lang-item';
-                    item.onclick = () => selectClubLanguage(lang.code, lang.name, lang.flag);
-                    item.innerHTML = `
-                        <div class="item-avatar"><img src="${userAvatarSrc}" alt="Avatar"></div>
-                        <img class="item-flag" src="${lang.flag}" alt="Flag">
-                        <span class="item-text">${lang.name}</span>
-                        <span id="count-badge-${lang.code}" style="margin-left:auto; font-size:11px; color:var(--gold);"></span>
-                    `;
-                    list.appendChild(item);
+                const item = document.createElement('div');
+                item.className = 'club-lang-item';
+                if (lang.code === currentActiveCode) {
+                    item.style.background = 'rgba(255,215,0,0.1)'; // Подсветка активного
                 }
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    selectClubLanguage(lang.code, lang.name, lang.flag);
+                };
+                item.innerHTML = `
+                    <div class="item-avatar"><img src="${userAvatarSrc}" alt="Avatar"></div>
+                    <img class="item-flag" src="${lang.flag}" alt="Flag">
+                    <span class="item-text">${lang.name}</span>
+                    <span id="count-badge-${lang.code}" style="margin-left:auto; font-size:11px; color:var(--gold);"></span>
+                `;
+                list.appendChild(item);
             });
 
-            list.classList.toggle('open');
+            // Переключаем отображение через classList и принудительный display
+            const isOpen = list.classList.contains('open');
+            if (isOpen) {
+                list.classList.remove('open');
+                list.style.display = 'none';
+            } else {
+                list.classList.add('open');
+                list.style.display = 'block';
+            }
+            
             updateCountryCounters();
         }
-
         function selectClubLanguage(langCode, langName, flagUrl) {
             if (safeStorageGet('gygy_dev_level') === 'beginner') return;
 
