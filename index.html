@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.18 CORE</title>
+    <title>GY-GY Club v4.6.16.25 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -261,7 +261,7 @@
             max-height: 400px;
             width: auto;
             max-width: 100%;
-            object-fit: contain;
+            object-type: contain;
             margin: 0 auto; 
             transform: scale(1);
             transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out;
@@ -379,23 +379,17 @@
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
     </div>  
 
-    <!-- Страница Identity с исправленными кликами по квадратам -->
-    <!-- Страница Identity с исправленными кликами по нику -->
-    <!-- Страница Identity с исправленными кликами по нику -->
-   <!-- Страница Identity с рабочими никами -->
+    <!-- Страница Identity -->
     <div id="block-identity" class="block">
         <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
         
         <div class="identity-grid-container">
-            <!-- Верхний ряд: 3 квадрата -->
             <div class="identity-grid-row">
-                <!-- Квадрат своего ника (Кастомный) -->
                 <div id="box-own-nick" class="nickname-square selected" onclick="setNickType('own'); document.getElementById('input-own-nick').focus();">
                     <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_own">YOUR NICK</span>
                     <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="updateNicknameValue(this.value, 'own')" onclick="event.stopPropagation(); setNickType('own');" style="width: 95%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; font-weight: bold; color: #000; outline: none; margin-top: 4px; z-index: 5;">
                 </div>
 
-                <!-- Квадрат клубного ника (Яркое запоминающееся слово без цифр) -->
                 <div id="box-club-nick" class="nickname-square" onclick="setNickType('club')">
                     <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_club">CLUB NICK</span>
                     <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: #000;">БигКоин</span>
@@ -404,7 +398,6 @@
                 <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
             </div>
             
-            <!-- Нижний ряд: 3 квадрата -->
             <div class="identity-grid-row">
                 <div class="box-final" id="qr-box-reg"></div>
                 
@@ -424,6 +417,7 @@
         <button id="btn-save" class="btn-gy" onclick="saveUserProfile()" data-translate="btn_save">SAVE</button>
         <button id="btn-pass" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed">PROCEED</button>
     </div>
+
     <div id="block-hall" class="block">
         <div class="hall-interior" style="position: relative;">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -473,9 +467,9 @@
         </div>
     </div> 
 <script>
-    /* ==========================================================================
-       CLUB v4.6.15 CORE - STABLE & CLEAN FIX
-       ========================================================================== */
+/* ==========================================================================
+        CLUB v4.6.16.18 CORE - STABLE & CLEAN FIX
+        ========================================================================== */
 
     (function() {
         'use strict';
@@ -657,10 +651,16 @@
         function renderUserPassports(targetID) {
             const idLabel = document.getElementById('id-label');
             const passIdVal = document.getElementById('pass-id-val');
+            const passNickVal = document.getElementById('pass-nickname-val');
             const qrBoxReg = document.getElementById('qr-box-reg');
             const passQrBox = document.getElementById('pass-qr-box');
+            
             if (idLabel) idLabel.innerText = targetID;
             if (passIdVal) passIdVal.innerText = targetID;
+            
+            const activeNick = safeStorageGet('gygy_nickname') || 'GUEST';
+            if (passNickVal) passNickVal.innerText = activeNick;
+
             if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 75, height: 75 }); }
             if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); }
         }
@@ -825,10 +825,12 @@
             const btnWHall = document.getElementById('btn-w-hall'); if (btnWHall) btnWHall.classList.remove('btn-sleep');
             const btnPass = document.getElementById('btn-pass'); if (btnPass) btnPass.classList.remove('btn-sleep');
 
+            renderUserPassports(currentID);
             syncUserToGlobalRegistry();
         }
 
         function openPassport() {
+            renderUserPassports(currentID || "GY-000000");
             const modal = document.getElementById('modal-passport');
             if (modal) { modal.style.display = 'flex'; setTimeout(() => { modal.style.opacity = '1'; }, 10); }
         }
@@ -946,6 +948,7 @@
 
         window.toggleLangDropdown = toggleLangDropdown;
         window.selectClubLanguage = selectClubLanguage;
+        window.setNickNameType = setNickType;
         window.setNickType = setNickType;
         window.updateNicknameValue = updateNicknameValue;
         window.toggleManifest = toggleManifest;
@@ -974,7 +977,8 @@
         });
 
     })();
-    </script>
+      </script>
 </body>
-</html>
+</html> 
+
 
