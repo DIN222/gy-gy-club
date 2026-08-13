@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.27 CORE</title>
+    <title>GY-GY Club v4.6.16.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -58,7 +58,7 @@
 
         /* КОМПАКТНЫЙ ЯЗЫКОВЫЙ БЛОК */
         .club-lang-dropdown-wrapper {
-            position: absolute; top: 18px; left: 20px; z-index: 1000001;
+            position: absolute; top: 18px; left: 20px; z-index: 2147483647;
             width: 155px; font-family: 'Share Tech Mono', monospace;
         }
         
@@ -91,9 +91,9 @@
             width: 100%; 
             max-height: 260px; 
             overflow-y: auto;
-            display: none; /* Управляется скриптом */
+            display: none;
             box-shadow: 0 10px 25px rgba(0,0,0,0.9); 
-            z-index: 99999999 !important; /* Максимальный приоритет */
+            z-index: 2147483647 !important;
         }
         .club-lang-list.open { 
             display: block !important; 
@@ -305,7 +305,7 @@
     <div id="block-entrance" class="block active">
         <!-- Компактный языковый блок -->
         <div class="club-lang-dropdown-wrapper notranslate">
-            <div class="club-lang-current" onclick="toggleLangDropdown()">
+            <div class="club-lang-current" id="club-lang-current-btn" onclick="toggleLangDropdown(event)">
                 <div class="club-lang-current-content">
                     <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
@@ -476,8 +476,6 @@
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
-</body>
-</html>
 <script>
 /* ==========================================================================
         CLUB v4.6.16.18 CORE - STABLE & CLEAN FIX
@@ -563,7 +561,7 @@
             if (langNameEl) langNameEl.innerText = targetLang.name;
         }
 
-      function toggleLangDropdown() {
+        function toggleLangDropdown() {
             if (safeStorageGet('gygy_dev_level') === 'beginner') {
                 return;
             }
@@ -575,12 +573,11 @@
             list.innerHTML = '';
             const userAvatarSrc = safeStorageGet('gygy_avatar') || safeStorageGet('gy_user_img') || 'horse_welcome.png';
 
-            // Рендерим все языки (можно убрать условие фильтрации, чтобы список был полным)
             allLanguages.forEach(lang => {
                 const item = document.createElement('div');
                 item.className = 'club-lang-item';
                 if (lang.code === currentActiveCode) {
-                    item.style.background = 'rgba(255,215,0,0.1)'; // Подсветка активного
+                    item.style.background = 'rgba(255,215,0,0.1)';
                 }
                 item.onclick = (e) => {
                     e.stopPropagation();
@@ -595,7 +592,6 @@
                 list.appendChild(item);
             });
 
-            // Переключаем отображение через classList и принудительный display
             const isOpen = list.classList.contains('open');
             if (isOpen) {
                 list.classList.remove('open');
@@ -607,6 +603,7 @@
             
             updateCountryCounters();
         }
+
         function selectClubLanguage(langCode, langName, flagUrl) {
             if (safeStorageGet('gygy_dev_level') === 'beginner') return;
 
@@ -1002,7 +999,7 @@
         });
 
     })();
-      </script>
+</script>
 </body>
 </html> 
 
