@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.29 CORE</title>
+    <title>GY-GY Club v4.6.16.30 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -965,6 +965,68 @@
             #club-debug-panel button:hover {
                 border-color: var(--gold, #FFD700); color: var(--gold, #FFD700); background: transparent !important;
             }
+            /* Стили для выпадающего списка языков */
+            .club-lang-list {
+                position: absolute;
+                top: calc(100% + 5px);
+                left: 0;
+                background: rgba(0, 0, 0, 0.98);
+                border: 2px solid var(--gold, #FFD700);
+                border-radius: 10px;
+                width: 100%;
+                max-height: 260px;
+                overflow-y: auto;
+                display: none;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.9);
+                z-index: 2147483647 !important;
+            }
+            .club-lang-list.open {
+                display: block !important;
+            }
+            .club-lang-item {
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                padding: 6px 8px;
+                cursor: pointer;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+                transition: background 0.2s;
+            }
+            .club-lang-item:last-child {
+                border-bottom: none;
+            }
+            .club-lang-item:hover {
+                background: rgba(255, 215, 0, 0.15);
+            }
+            .club-lang-item .item-avatar {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 1px solid var(--gold, #FFD700);
+                background: #111;
+                flex-shrink: 0;
+            }
+            .club-lang-item .item-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .club-lang-item .item-flag {
+                width: 16px;
+                height: 11px;
+                object-fit: cover;
+                border: 1px solid var(--gold, #FFD700);
+                flex-shrink: 0;
+            }
+            .club-lang-item .item-text {
+                color: var(--gold, #FFD700);
+                font-size: 11px;
+                font-weight: bold;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
         `;
         document.head.appendChild(registryStyles);
 
@@ -1001,6 +1063,4 @@
     })();
 </script>
 </body>
-</html> 
-
-
+</html>
