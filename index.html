@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.20 CORE</title>
+    <title>GY-GY Club v4.6.16.21 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -458,7 +458,6 @@
             if (savedLangName && langNameEl) langNameEl.innerText = savedLangName;
         }
 
-        // Обновление счетчиков в выпадающем списке языков на основе внешних данных
         function updateLangCounters() {
             if (window.allLangs && Array.isArray(window.allLangs)) {
                 window.allLangs.forEach(item => {
@@ -470,7 +469,6 @@
             }
         }
 
-        // Единый глобальный диспетчер событий (Event-Driven Architecture)
         document.addEventListener('click', function(e) {
             const actionEl = e.target.closest('[data-action]');
             
@@ -597,14 +595,11 @@
                 arrows.style.display = (targetBlockId === 'block-entrance') ? 'none' : 'flex';
             }
 
-            // Автозапуск фоновых звуков бара при переходе в хол или бар
             if (targetBlockId === 'block-hall' || targetBlockId === 'block-bar') {
                 const ambient = document.getElementById('snd-ambient');
                 if (ambient) {
                     ambient.currentTime = 0;
-                    ambient.play().catch(e => {
-                        console.log("Audio autoplay prevented, waiting for user interaction");
-                    });
+                    ambient.play().catch(e => {});
                 }
             }
         }
@@ -630,6 +625,7 @@
         function handleDoor() {
             const door = document.getElementById('main-door');
             const snd = document.getElementById('snd-door');
+            const ambient = document.getElementById('snd-ambient');
             
             if (snd) {
                 snd.currentTime = 0;
@@ -637,10 +633,16 @@
             }
             if (door) door.classList.add('door-exploded');
 
+            // Мгновенный запуск звуков бара сразу после начала воспроизведения щелчка двери
+            if (ambient) {
+                ambient.currentTime = 0;
+                ambient.play().catch(e => {});
+            }
+
             setTimeout(() => {
                 portalTransition('block-welcome');
                 if (door) door.classList.remove('door-exploded');
-            }, 300); // Сокращено с 600мс для исключения запаздывания звука/анимации
+            }, 300);
         }
 
         function setNickType(type) {
