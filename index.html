@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.9 </title>
+    <title>GY-GY Club v4.6.10 </title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -72,7 +72,6 @@
         .club-lang-item-left { display: flex; align-items: center; gap: 6px; min-width: 0; }
         .club-lang-item .item-flag { width: 15px; height: 10px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
         .club-lang-item .item-text { color: var(--gold); font-size: 10px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .club-lang-counter { font-size: 8px; color: rgba(255,215,0,0.7); background: rgba(255,215,0,0.1); padding: 1px 3px; border-radius: 3px; flex-shrink: 0; }
 
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
@@ -138,27 +137,27 @@
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
     </style>
 
-    <!-- ВСТРОЕННЫЙ СТРАХОВОЙ СКРИПТ ОТКРЫТИЯ ЯЗЫКОВ -->
+    <!-- СТРАХОВОЙ СКРИПТ ЯЗЫКОВ -->
     <script>
         window.allLangs = [
-            { code: 'en', name: 'English', c: 'gb', count: 42 },
-            { code: 'ru', name: 'Русский', c: 'ru', count: 128 },
-            { code: 'uk', name: 'Українська', c: 'ua', count: 64 },
-            { code: 'de', name: 'Deutsch', c: 'de', count: 19 },
-            { code: 'es', name: 'Español', c: 'es', count: 23 },
-            { code: 'fr', name: 'Français', c: 'fr', count: 15 },
-            { code: 'it', name: 'Italiano', c: 'it', count: 11 },
-            { code: 'pl', name: 'Polski', c: 'pl', count: 27 },
-            { code: 'pt', name: 'Português', c: 'pt', count: 14 },
-            { code: 'tr', name: 'Türkçe', c: 'tr', count: 9 },
-            { code: 'zh-CN', name: '中文', c: 'cn', count: 31 }
+            { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
+            { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
+            { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
+            { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
+            { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
+            { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' },
+            { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
+            { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
+            { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
+            { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
+            { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png' },
+            { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
         ];
 
         window.toggleLangDropdown = function() {
             const list = document.getElementById('club-lang-list');
             if (!list) return;
             
-            // Если список пуст, наполняем его прямо сейчас
             if (list.children.length === 0) {
                 window.allLangs.forEach(lang => {
                     const item = document.createElement('div');
@@ -166,15 +165,14 @@
                     item.onclick = (e) => {
                         e.stopPropagation();
                         if (typeof window.selectClubLanguage === 'function') {
-                            window.selectClubLanguage(lang.code, lang.name, lang.c);
+                            window.selectClubLanguage(lang.code, lang.name, lang.flag);
                         }
                     };
                     item.innerHTML = `
                         <div class="club-lang-item-left">
-                            <img class="item-flag" src="https://flagcdn.com/w20/${lang.c}.png">
+                            <img class="item-flag" src="${lang.flag}">
                             <span class="item-text">${lang.name}</span>
                         </div>
-                        <span class="club-lang-counter">${lang.count}</span>
                     `;
                     list.appendChild(item);
                 });
@@ -183,7 +181,6 @@
             list.classList.toggle('open');
         };
 
-        // Закрытие при клике вне элемента
         window.addEventListener('click', function(e) {
             const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
             const list = document.getElementById('club-lang-list');
