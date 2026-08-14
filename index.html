@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.5 EVENT-DRIVEN</title>
+    <title>GY-GY Club v4.6.6 EVENT-DRIVEN</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -45,7 +45,7 @@
         }
 
         .club-lang-dropdown-wrapper {
-            position: absolute; top: 18px; left: 20px; z-index: 1000001; width: 165px; font-family: 'Share Tech Mono', monospace;
+            position: absolute; top: 18px; left: 20px; z-index: 1000001; width: 180px; font-family: 'Share Tech Mono', monospace;
         }
         .club-lang-current {
             display: flex; align-items: center; justify-content: space-between;
@@ -64,7 +64,7 @@
 
         .club-lang-list {
             position: absolute; top: calc(100% + 5px); left: 0; background: rgba(0,0,0,0.98); border: 2px solid var(--gold);
-            border-radius: 10px; width: 100%; max-height: 280px; overflow-y: auto; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.9); z-index: 1000002;
+            border-radius: 10px; width: 100%; max-height: 300px; overflow-y: auto; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.9); z-index: 1000002;
         }
         .club-lang-list.open { display: block; }
         
@@ -78,6 +78,7 @@
         .club-lang-item .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .club-lang-item .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
         .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .club-lang-counter { font-size: 9px; color: rgba(255,215,0,0.7); background: rgba(255,215,0,0.1); padding: 1px 4px; border-radius: 4px; flex-shrink: 0; }
 
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
@@ -165,7 +166,7 @@
 
     <!-- БЛОК 1: ВХОД -->
     <div id="block-entrance" class="block active">
-        <!-- ЯЗЫКОВОЙ БЛОК СО СПИСКОМ -->
+        <!-- ЯЗЫКОВОЙ БЛОК СО СПИСКОМ (11 ЯЗЫКОВ) -->
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
@@ -359,20 +360,19 @@
             }
         };
 
-       /* 3. Языковая база и словари (12 языков) */
+        /* 3. Языковая база (11 языков по Манифесту) */
         window.allLangs = [
-            { code: 'en', name: 'English', c: 'gb' },
-            { code: 'ru', name: 'Русский', c: 'ru' },
-            { code: 'uk', name: 'Українська', c: 'ua' },
-            { code: 'de', name: 'Deutsch', c: 'de' },
-            { code: 'es', name: 'Español', c: 'es' },
-            { code: 'fr', name: 'Français', c: 'fr' },
-            { code: 'it', name: 'Italiano', c: 'it' },
-            { code: 'pl', name: 'Polski', c: 'pl' },
-            { code: 'pt', name: 'Português', c: 'pt' },
-            { code: 'tr', name: 'Türkçe', c: 'tr' },
-            { code: 'zh-CN', name: '中文', c: 'cn' },
-            { code: 'ja', name: '日本語', c: 'jp' }
+            { code: 'en', name: 'English', c: 'gb', count: 42 },
+            { code: 'ru', name: 'Русский', c: 'ru', count: 128 },
+            { code: 'uk', name: 'Українська', c: 'ua', count: 64 },
+            { code: 'de', name: 'Deutsch', c: 'de', count: 19 },
+            { code: 'es', name: 'Español', c: 'es', count: 23 },
+            { code: 'fr', name: 'Français', c: 'fr', count: 15 },
+            { code: 'it', name: 'Italiano', c: 'it', count: 11 },
+            { code: 'pl', name: 'Polski', c: 'pl', count: 27 },
+            { code: 'pt', name: 'Português', c: 'pt', count: 14 },
+            { code: 'tr', name: 'Türkçe', c: 'tr', count: 9 },
+            { code: 'zh-CN', name: '中文', c: 'cn', count: 31 }
         ];
 
         window.translations = {
@@ -458,6 +458,7 @@
                             <img class="item-flag" src="https://flagcdn.com/w20/${lang.c}.png">
                             <span class="item-text">${lang.name}</span>
                         </div>
+                        <span class="club-lang-counter">${lang.count}</span>
                     `;
                     listEl.appendChild(item);
                 });
@@ -474,7 +475,7 @@
                 if (typeof google !== 'undefined' && google.translate) {
                     new google.translate.TranslateElement({
                         pageLanguage: 'en',
-                        includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN,ja',
+                        includedLanguages: 'en,de,es,fr,it,pl,pt,ru,tr,uk,zh-CN',
                         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                         autoDisplay: false
                     }, 'google_translate_element');
@@ -629,7 +630,7 @@
                 if (roomName === 'block-bar') {
                     if (ambientBar) { ambientBar.volume = 0.4; ambientBar.play().catch(()=>{}); }
                 } else if (ambientBar) {
-                    let vol = audioElement.volume = ambientBar.volume;
+                    let vol = ambientBar.volume;
                     const fadeInterval = setInterval(() => {
                         if (vol > 0.05) {
                             vol -= 0.05;
