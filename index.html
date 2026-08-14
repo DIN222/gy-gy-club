@@ -87,11 +87,6 @@
 
         .registry-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .registry-card { background: #000; border: 3px solid var(--gold); border-radius: 16px; padding: 20px; width: 340px; max-height: 80vh; overflow-y: auto; color: var(--gold); position: relative; box-shadow: 0 0 30px rgba(255,215,0,0.3); }
-        .registry-item { display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,215,0,0.2); gap: 10px; }
-        .registry-item:last-child { border-bottom: none; }
-        .registry-item-info { display: flex; align-items: center; gap: 8px; min-width: 0; }
-        .registry-item-avatar { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--gold); object-fit: cover; }
-        .registry-item-text { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .block { 
             position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000; z-index: 10; opacity: 0; transition: opacity 1.2s ease-in-out; 
@@ -128,15 +123,9 @@
         .arrow-item { transition: opacity 0.2s, transform 0.2s; background: transparent !important; border: none !important; }
         .arrow-item:hover { opacity: 0.8; transform: scale(1.1); }
 
-        #block-hall { background: url('hall_bg_jpg.jpg') center/cover no-repeat #000; }
-        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
-        .hall-interior .quote-text { 
-            position: absolute; top: 10vh; left: 50%; transform: translateX(-50%); width: 85%; margin: 0; text-align: center;
-            background: transparent !important; color: var(--gold) !important; font-size: 24px; font-weight: 700;
-            -webkit-text-stroke: 1px #000; text-stroke: 1px #000;
-        }
-        .hall-door-target { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; cursor: pointer; z-index: 5; background: transparent; }
-
+        #block-hall { background: #000; }
+        .hall-interior { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
         .painting-zone { position: absolute; top: 25vh; width: 6vw; height: 12vh; cursor: pointer; z-index: 6; background: transparent; display: flex; align-items: center; justify-content: center; }
         .painting-left { left: 23vw; }
         .painting-right { right: 23vw; }
@@ -163,14 +152,14 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="global-user-badge" class="ui-user-badge notranslate" data-action="open-passport">
+    <div id="global-user-badge" class="ui-user-badge notranslate" onclick="EventBus.emit('PASSPORT_OPEN')">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
     </div>
 
     <div class="notranslate ui-nav-arrows" id="club-nav-arrows" style="display: none;">
-        <div id="arrow-back" class="arrow-item" data-action="nav-back">&lt;</div>
-        <div id="arrow-home" class="arrow-item" data-action="nav-home">&lt;&lt;</div>
+        <div id="arrow-back" class="arrow-item" onclick="NavModule.goBack()">&lt;</div>
+        <div id="arrow-home" class="arrow-item" onclick="NavModule.goHome()">&lt;&lt;</div>
     </div>
     
     <div class="ui-header-right notranslate">GY-GY</div>
@@ -178,134 +167,63 @@
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
 
+    <!-- БЛОК 1: ВХОД -->
     <div id="block-entrance" class="block active">
         <div class="club-lang-dropdown-wrapper notranslate">
-            <div class="club-lang-current" data-action="toggle-lang-dropdown">
+            <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
                     <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
-                    <span id="current-lang-name" class="item-text">English</span>
+                    <span id="current-lang-name" class="item-text" data-translate="lang_en">English</span>
                 </div>
                 <span class="arrow-down">▼</span>
             </div>
             
             <div id="club-lang-list" class="club-lang-list">
-                <div class="club-lang-item" data-action="select-lang" data-code="en" data-name="English" data-flag="https://flagcdn.com/w20/gb.png">
+                <div class="club-lang-item" onclick="selectClubLanguage('en', 'English', 'gb')">
                     <div class="club-lang-item-left">
                         <div class="item-avatar"><img src="horse_welcome.png"></div>
                         <img class="item-flag" src="https://flagcdn.com/w20/gb.png">
                         <span class="item-text">English</span>
                     </div>
-                    <span class="item-counter" id="cnt-en">0</span>
                 </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="ru" data-name="Русский" data-flag="https://flagcdn.com/w20/ru.png">
+                <div class="club-lang-item" onclick="selectClubLanguage('ru', 'Русский', 'ru')">
                     <div class="club-lang-item-left">
                         <div class="item-avatar"><img src="horse_welcome.png"></div>
                         <img class="item-flag" src="https://flagcdn.com/w20/ru.png">
                         <span class="item-text">Русский</span>
                     </div>
-                    <span class="item-counter" id="cnt-ru">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="es" data-name="Español" data-flag="https://flagcdn.com/w20/es.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/es.png">
-                        <span class="item-text">Español</span>
-                    </div>
-                    <span class="item-counter" id="cnt-es">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="de" data-name="Deutsch" data-flag="https://flagcdn.com/w20/de.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/de.png">
-                        <span class="item-text">Deutsch</span>
-                    </div>
-                    <span class="item-counter" id="cnt-de">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="fr" data-name="Français" data-flag="https://flagcdn.com/w20/fr.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/fr.png">
-                        <span class="item-text">Français</span>
-                    </div>
-                    <span class="item-counter" id="cnt-fr">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="zh" data-name="中文" data-flag="https://flagcdn.com/w20/cn.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/cn.png">
-                        <span class="item-text">中文</span>
-                    </div>
-                    <span class="item-counter" id="cnt-zh">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="ja" data-name="日本語" data-flag="https://flagcdn.com/w20/jp.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/jp.png">
-                        <span class="item-text">日本語</span>
-                    </div>
-                    <span class="item-counter" id="cnt-ja">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="it" data-name="Italiano" data-flag="https://flagcdn.com/w20/it.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/it.png">
-                        <span class="item-text">Italiano</span>
-                    </div>
-                    <span class="item-counter" id="cnt-it">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="pt" data-name="Português" data-flag="https://flagcdn.com/w20/pt.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/pt.png">
-                        <span class="item-text">Português</span>
-                    </div>
-                    <span class="item-counter" id="cnt-pt">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="tr" data-name="Türkçe" data-flag="https://flagcdn.com/w20/tr.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/tr.png">
-                        <span class="item-text">Türkçe</span>
-                    </div>
-                    <span class="item-counter" id="cnt-tr">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="ar" data-name="العربية" data-flag="https://flagcdn.com/w20/sa.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/sa.png">
-                        <span class="item-text">العربية</span>
-                    </div>
-                    <span class="item-counter" id="cnt-ar">0</span>
                 </div>
             </div>
         </div>
 
         <div id="google_translate_element" style="display:none;"></div>
-        <img src="door_1.jpg?v=2" id="main-door" translate="no" data-action="open-door">
+        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="NavModule.openMainDoor()">
     </div>
 
+    <!-- БЛОК 2: ПРИВЕТСТВИЕ -->
     <div id="block-welcome" class="block">
-        <div class="quote-text">I'M CHARLIE</div>
-        <div class="quote-text">In every joke there is a share of whisky</div>
-        <img src="horse_welcome.png">
-        <div class="welcome-title-elem">WELCOME</div>
-        <button id="btn-w-hall" class="btn-gy btn-sleep" data-action="navigate" data-target="block-hall">PROCEED TO HALL</button>
-        <button id="btn-w-reg" class="btn-gy" data-action="navigate" data-target="block-identity">PROCEED TO REGISTRATION</button>
+        <div class="quote-text" data-translate="charlie_intro">I'M CHARLIE</div>
+        <div class="quote-text" data-translate="whisky_quote">In every joke there is a share of whisky</div>
+        <img src="horse_welcome.png" alt="Charlie">
+        <div class="welcome-title-elem" data-translate="welcome_title">WELCOME</div>
+        <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="NavModule.navigateTo('block-hall')" data-translate="proceed_hall">PROCEED TO HALL</button>
+        <button id="btn-w-reg" class="btn-gy" onclick="NavModule.navigateTo('block-identity')" data-translate="proceed_reg">PROCEED TO REGISTRATION</button>
     </div>  
 
+    <!-- БЛОК 3: РЕГИСТРАЦИЯ / ИДЕНТИЧНОСТЬ -->
     <div id="block-identity" class="block">
-        <div class="quote-text">There is never too much champagne</div>
+        <div class="quote-text" data-translate="champagne_quote">There is never too much champagne</div>
         
         <div class="identity-grid-container">
             <div class="identity-grid-row">
-                <div id="box-own-nick" class="nickname-square selected" data-action="select-nick-type" data-type="own">
-                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;">YOUR NICK</span>
-                    <input type="text" id="input-own-nick" placeholder="Enter nick" data-action="input-nick" style="width: 95%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; font-weight: bold; color: #000; outline: none; margin-top: 4px; z-index: 5;">
+                <div id="box-own-nick" class="nickname-square selected" onclick="PassportModule.selectedNickType='own'; document.getElementById('box-own-nick').classList.add('selected'); document.getElementById('box-club-nick').classList.remove('selected'); document.getElementById('input-own-nick').focus();">
+                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="your_nick">YOUR NICK</span>
+                    <input type="text" id="input-own-nick" placeholder="Enter nick" oninput="PassportModule.userChosenNickname=this.value" style="width: 95%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; font-weight: bold; color: #000; outline: none; margin-top: 4px; z-index: 5;">
                 </div>
 
-                <div id="box-club-nick" class="nickname-square" data-action="select-nick-type" data-type="club">
-                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;">CLUB NICK</span>
+                <div id="box-club-nick" class="nickname-square" onclick="PassportModule.selectedNickType='club'; document.getElementById('box-club-nick').classList.add('selected'); document.getElementById('box-own-nick').classList.remove('selected');">
+                    <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="club_nick">CLUB NICK</span>
                     <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: #000;">БигКоин</span>
                 </div>
 
@@ -314,466 +232,308 @@
             
             <div class="identity-grid-row">
                 <div class="box-final" id="qr-box-reg"></div>
-                <div class="box-final" style="cursor:pointer;" data-action="trigger-file-input">
-                    <input type="file" id="file-input" data-action="file-changed" style="display:none;">
+                <div class="box-final" style="cursor:pointer;" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" onchange="PassportModule.handleFilePreview(this.files[0])" style="display:none;">
                     <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-photo" style="color:#000; font-size:9px; font-weight:900; pointer-events: none;">OR PHOTO</span>
+                    <span id="txt-photo" style="color:#000; font-size:9px; font-weight:900; pointer-events: none;" data-translate="or_photo">OR PHOTO</span>
                 </div>
-                <div class="box-final" style="cursor:pointer;" data-action="generate-avatar">
+                <div class="box-final" style="cursor:pointer;" onclick="EventBus.emit('GENERATE_AVATAR')">
                     <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-avatar" style="color:#000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;">OR AVATAR</span>
+                    <span id="txt-avatar" style="color:#000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;" data-translate="or_avatar">OR AVATAR</span>
                 </div>
             </div>
         </div>
 
-        <button id="btn-save" class="btn-gy" data-action="save-profile">SAVE</button>
-        <button id="btn-pass" class="btn-gy btn-sleep" data-action="navigate" data-target="block-hall">PROCEED</button>
+        <button id="btn-save" class="btn-gy" onclick="EventBus.emit('SAVE_PROFILE')" data-translate="save_btn">SAVE</button>
+        <button id="btn-pass" class="btn-gy btn-sleep" onclick="NavModule.navigateTo('block-hall')" data-translate="proceed_btn">PROCEED</button>
     </div>
     
+    <!-- БЛОК 4: ГЛАВНЫЙ ХОЛЛ -->
     <div id="block-hall" class="block">
         <div class="hall-interior" style="position: relative;">
-            <div class="quote-text">In every joke there is a share of whisky</div>
+            <div class="quote-text" data-translate="whisky_quote">In every joke there is a share of whisky</div>
             
             <div class="painting-zone painting-left" style="position: relative; min-height: 160px;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%;" data-action="toggle-manifest" data-target="manifest-left">
+                <div style="position: absolute; top: 0; left: 0; width: 100%;" onclick="EventBus.emit('HALL_MANIFEST_TOGGLE', 'manifest-left')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-left" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" data-action="navigate" data-target="block-server">AI ROOM</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="NavModule.navigateTo('block-server')">AI ROOM</button>
                     </div>
                 </div>
 
-                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" data-action="toggle-manifest" data-target="manifest-office">
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%;" onclick="EventBus.emit('HALL_MANIFEST_TOGGLE', 'manifest-office')">
                     <span class="cue-arrow-hall">→</span>
                     <div id="manifest-office" class="manifest-btn-box" data-opened="false">
-                        <button class="btn-gy btn-manifest notranslate" data-action="navigate" data-target="block-office">OFFICE</button>
+                        <button class="btn-gy btn-manifest notranslate" onclick="NavModule.navigateTo('block-office')">OFFICE</button>
                     </div>
                 </div>
             </div>
                 
-            <div class="painting-zone painting-right" data-action="toggle-manifest" data-target="manifest-right">
+            <div class="painting-zone painting-right" onclick="EventBus.emit('HALL_MANIFEST_TOGGLE', 'manifest-right')">
                 <span class="cue-arrow-hall">←</span>
                 <div id="manifest-right" class="manifest-btn-box" data-opened="false">
-                    <button class="btn-gy btn-manifest notranslate" data-action="studio-action">STUDIO</button>
+                    <button class="btn-gy btn-manifest notranslate" onclick="NavModule.navigateTo('block-studio')">STUDIO</button>
                 </div>
             </div>
         </div>
             
         <div class="hall-doors-container" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 24vw; height: 60vh; z-index: 5;">
-            <div id="hall-doors" class="hall-door-target" data-action="navigate" data-target="block-bar"></div>
+            <div id="hall-doors" class="hall-door-target" onclick="NavModule.navigateTo('block-bar')" style="position: absolute; inset: 0; cursor: pointer;"></div>
             <div class="bar-entrance-marker" style="position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%); pointer-events: none; text-align: center;">
                 <span class="cue-arrow-hall" style="font-size: 34px; line-height: 1; color: var(--violet); text-shadow: 0 0 12px var(--violet), 0 0 20px var(--violet); font-weight: 900;">↑</span>
             </div>
         </div>
     </div>
 
-    <div id="modal-passport" class="passport-overlay" data-action="close-passport">
+    <!-- МОДАЛЬНОЕ ОКНО: ПАСПОРТ -->
+    <div id="modal-passport" class="passport-overlay" onclick="EventBus.emit('PASSPORT_CLOSE')">
         <div class="passport-card" onclick="event.stopPropagation()">
-            <div class="passport-close-btn" data-action="close-passport">&times;</div>
-            <div style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;">GY-GY PASSPORT</div>
+            <div class="passport-close-btn" onclick="EventBus.emit('PASSPORT_CLOSE')">&times;</div>
+            <div style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="passport_title">GY-GY PASSPORT</div>
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555;">#ID</div>
             <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#000; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
             <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#fff;"></div>
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333; margin-top:5px; text-transform:uppercase;">Click &times; or outside to close</div>
         </div>
     </div> 
 
-    <div id="modal-registry" class="registry-modal-overlay" data-action="close-registry">
-        <div class="registry-card" onclick="event.stopPropagation()">
-            <div class="passport-close-btn" data-action="close-registry" style="color:var(--gold);">&times;</div>
-            <div style="font-weight:900; font-size:15px; letter-spacing:1px; font-family:'Cinzel',serif; margin-bottom:12px; text-align:center;">GLOBAL REGISTRY</div>
-            <div id="registry-list-container"></div>
-        </div>
-    </div>
-
-<script>
-    /* =========================================================
-       CORE EVENT BUS (v4.6.2)
-       ========================================================= */
-    const EventBus = {
-        listeners: {},
-        on(event, callback) {
-            if (!this.listeners[event]) this.listeners[event] = [];
-            this.listeners[event].push(callback);
-        },
-        emit(event, data) {
-            if (this.listeners[event]) {
-                this.listeners[event].forEach(cb => cb(data));
-            }
-        }
-    };
-
-    /* =========================================================
-       APP STATE & LOCAL STORAGE STORAGE SYNC
-       ========================================================= */
-    const AppState = {
-        currentBlockId: 'block-entrance',
-        currentID: localStorage.getItem('gygy_user_id') || '',
-        currentUserImage: localStorage.getItem('gygy_user_avatar') || '',
-        selectedNickType: 'own',
-        userChosenNickname: localStorage.getItem('gygy_user_nick') || '',
-        lang: { 
-            code: localStorage.getItem('gygy_lang_code') || 'en', 
-            name: localStorage.getItem('gygy_lang_name') || 'English', 
-            flag: localStorage.getItem('gygy_flag') || 'https://flagcdn.com/w20/gb.png' 
-        },
-        registry: JSON.parse(localStorage.getItem('gygy_global_registry') || '[]')
-    };
-
-    /* =========================================================
-       GLOBAL UI EVENT DELEGATION
-       ========================================================= */
-    document.addEventListener('click', (e) => {
-        const actionEl = e.target.closest('[data-action]');
-        if (!actionEl) return;
-
-        const action = actionEl.getAttribute('data-action');
-        
-        switch(action) {
-            case 'open-passport': EventBus.emit('passport:open'); break;
-            case 'close-passport': EventBus.emit('passport:close'); break;
-            case 'open-registry': EventBus.emit('registry:open'); break;
-            case 'close-registry': EventBus.emit('registry:close'); break;
-            case 'nav-back': EventBus.emit('nav:back'); break;
-            case 'nav-home': EventBus.emit('nav:home'); break;
-            case 'toggle-lang-dropdown': EventBus.emit('lang:dropdown:toggle'); break;
-            case 'select-lang': 
-                EventBus.emit('lang:select', {
-                    code: actionEl.getAttribute('data-code'),
-                    name: actionEl.getAttribute('data-name'),
-                    flag: actionEl.getAttribute('data-flag')
-                });
-                break;
-            case 'open-door': EventBus.emit('door:open'); break;
-            case 'navigate': EventBus.emit('navigation:change', actionEl.getAttribute('data-target')); break;
-            case 'select-nick-type': 
-                EventBus.emit('identity:nick:type', actionEl.getAttribute('data-type'));
-                if (actionEl.getAttribute('data-type') === 'own') {
-                    const input = actionEl.querySelector('input');
-                    if (input) input.focus();
+    <!-- СИСТЕМНЫЕ СКРИПТЫ (EVENT BUS & MODULES) -->
+    <script>
+        /* 1. Core Event Bus */
+        window.EventBus = {
+            listeners: {},
+            on(event, callback) {
+                if (!this.listeners[event]) this.listeners[event] = [];
+                this.listeners[event].push(callback);
+            },
+            emit(event, data) {
+                if (this.listeners[event]) {
+                    this.listeners[event].forEach(cb => cb(data));
                 }
-                break;
-            case 'trigger-file-input':
-                document.getElementById('file-input').click();
-                break;
-            case 'generate-avatar': EventBus.emit('identity:avatar:generate'); break;
-            case 'save-profile': EventBus.emit('identity:save'); break;
-            case 'toggle-manifest': EventBus.emit('hall:manifest:toggle', actionEl.getAttribute('data-target')); break;
-            case 'studio-action': EventBus.emit('studio:open'); break;
-        }
-    });
-
-    document.addEventListener('input', (e) => {
-        if (e.target.getAttribute('data-action') === 'input-nick') {
-            EventBus.emit('identity:nick:input', e.target.value);
-        }
-    });
-
-    document.addEventListener('change', (e) => {
-        if (e.target.getAttribute('data-action') === 'file-changed') {
-            EventBus.emit('identity:file:selected', e.target.files[0]);
-        }
-    });
-
-    /* =========================================================
-       MODULE LISTENERS (Event Handlers)
-       ========================================================= */
-
-    EventBus.on('navigation:change', (targetId) => {
-        const currentBlock = document.getElementById(AppState.currentBlockId);
-        const targetBlock = document.getElementById(targetId);
-        if (!targetBlock) return;
-
-        if (currentBlock) {
-            currentBlock.style.opacity = '0';
-            setTimeout(() => currentBlock.classList.remove('active'), 600);
-        }
-
-        setTimeout(() => {
-            targetBlock.classList.add('active');
-            targetBlock.style.opacity = '1';
-            AppState.currentBlockId = targetId;
-            
-            const navArrows = document.getElementById('club-nav-arrows');
-            if (navArrows) {
-                navArrows.style.display = (targetId === 'block-entrance') ? 'none' : 'flex';
-            }
-        }, 600);
-    });
-
-    EventBus.on('nav:back', () => {
-        if (AppState.currentBlockId === 'block-hall') EventBus.emit('navigation:change', 'block-welcome');
-        else if (AppState.currentBlockId === 'block-welcome') EventBus.emit('navigation:change', 'block-entrance');
-        else EventBus.emit('navigation:change', 'block-hall');
-    });
-
-    EventBus.on('nav:home', () => EventBus.emit('navigation:change', 'block-entrance'));
-
-    EventBus.on('door:open', () => {
-        const door = document.getElementById('main-door');
-        const sndDoor = document.getElementById('snd-door');
-        const sndAmbient = document.getElementById('snd-ambient');
-
-        if (sndDoor) { sndDoor.volume = 0.8; sndDoor.play().catch(() => {}); }
-        if (sndAmbient) {
-            sndAmbient.volume = 0.4;
-            setTimeout(() => sndAmbient.play().catch(() => {}), 500);
-        }
-        if (door) door.classList.add('door-exploded');
-
-        setTimeout(() => {
-            const hasRegistered = Boolean(AppState.currentID);
-            EventBus.emit('navigation:change', hasRegistered ? 'block-hall' : 'block-welcome');
-            if (door) door.classList.remove('door-exploded');
-        }, 800);
-    });
-
-    EventBus.on('lang:dropdown:toggle', () => {
-        document.getElementById('club-lang-list')?.classList.toggle('open');
-    });
-
-    EventBus.on('lang:select', (langData) => {
-        AppState.lang = langData;
-        try {
-            localStorage.setItem('gygy_lang_code', langData.code);
-            localStorage.setItem('gygy_lang_name', langData.name);
-            localStorage.setItem('gygy_flag', langData.flag);
-        } catch(e){}
-
-        document.getElementById('current-flag').src = langData.flag;
-        document.getElementById('current-lang-name').innerText = langData.name;
-        document.getElementById('club-lang-list')?.classList.remove('open');
-    });
-
-    EventBus.on('identity:nick:type', (type) => {
-        AppState.selectedNickType = type;
-        const boxOwn = document.getElementById('box-own-nick');
-        const boxClub = document.getElementById('box-club-nick');
-        if (boxOwn && boxClub) {
-            boxOwn.classList.toggle('selected', type === 'own');
-            boxClub.classList.toggle('selected', type === 'club');
-        }
-    });
-
-    EventBus.on('identity:nick:input', (val) => {
-        AppState.userChosenNickname = val;
-    });
-
-    EventBus.on('identity:avatar:generate', () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 100; canvas.height = 100;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#' + Math.floor(Math.random()*16777215).toString(16);
-        ctx.fillRect(0, 0, 100, 100);
-        ctx.fillStyle = '#FFF';
-        ctx.font = 'bold 40px sans-serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('GY', 50, 50);
-
-        AppState.currentUserImage = canvas.toDataURL();
-        const avatarImg = document.getElementById('avatar-img');
-        const txtAvatar = document.getElementById('txt-avatar');
-        if (avatarImg && txtAvatar) {
-            avatarImg.src = AppState.currentUserImage;
-            avatarImg.style.display = 'block';
-            txtAvatar.style.display = 'none';
-        }
-    });
-
-    EventBus.on('identity:file:selected', (file) => {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            AppState.currentUserImage = e.target.result;
-            const pp = document.getElementById('pp');
-            const txtPhoto = document.getElementById('txt-photo');
-            if (pp && txtPhoto) {
-                pp.src = AppState.currentUserImage;
-                pp.style.display = 'block';
-                txtPhoto.style.display = 'none';
             }
         };
-        reader.readAsDataURL(file);
-    });
 
-    EventBus.on('identity:save', () => {
-        if (!AppState.currentID) {
-            AppState.currentID = 'GY-' + Math.floor(100000 + Math.random() * 900000);
-        }
-        const finalNick = AppState.selectedNickType === 'club' ? document.getElementById('club-nick-label').innerText : (AppState.userChosenNickname || 'Guest');
-        
-        try {
-            localStorage.setItem('gygy_user_id', AppState.currentID);
-            localStorage.setItem('gygy_user_nick', finalNick);
-            if (AppState.currentUserImage) localStorage.setItem('gygy_user_avatar', AppState.currentUserImage);
-        } catch(e){}
+        /* 2. Navigation Control Sub-System */
+        window.NavModule = {
+            historyStack: [],
+            currentBlockId: 'block-entrance',
 
-        // Обновление глобального реестра
-        const userEntry = {
-            id: AppState.currentID,
-            nick: finalNick,
-            avatar: AppState.currentUserImage || 'horse_welcome.png',
-            lang: AppState.lang.code,
-            flag: AppState.lang.flag
+            navigateTo(targetId) {
+                const currentBlock = document.getElementById(this.currentBlockId);
+                const targetBlock = document.getElementById(targetId);
+                if (!targetBlock || this.currentBlockId === targetId) return;
+
+                this.historyStack.push(this.currentBlockId);
+
+                if (currentBlock) {
+                    currentBlock.style.opacity = '0';
+                    setTimeout(() => {
+                        currentBlock.classList.remove('active');
+                        targetBlock.classList.add('active');
+                        setTimeout(() => targetBlock.style.opacity = '1', 50);
+                    }, 600);
+                } else {
+                    targetBlock.classList.add('active');
+                    targetBlock.style.opacity = '1';
+                }
+
+                this.currentBlockId = targetId;
+                this.updateArrows();
+
+                // Публикуем событие для саб-систем и сканера аудио
+                EventBus.emit('NAVIGATE_TO', { blockId: targetId });
+                EventBus.emit('ROOM_CHANGED', { room: targetId });
+            },
+
+            goBack() {
+                if (this.historyStack.length === 0) return;
+                const prevId = this.historyStack.pop();
+                this.navigateTo(prevId);
+            },
+
+            goHome() {
+                this.navigateTo('block-entrance');
+                this.historyStack = [];
+            },
+
+            openMainDoor() {
+                const door = document.getElementById('main-door');
+                const sound = document.getElementById('snd-door');
+                if (sound) sound.play().catch(() => {});
+                door.classList.add('door-exploded');
+                setTimeout(() => {
+                    this.navigateTo('block-welcome');
+                    setTimeout(() => door.classList.remove('door-exploded'), 1000);
+                }, 600);
+            },
+
+            updateArrows() {
+                const arrows = document.getElementById('club-nav-arrows');
+                arrows.style.display = (this.currentBlockId === 'block-entrance') ? 'none' : 'flex';
+            }
         };
 
-        const existingIdx = AppState.registry.findIndex(u => u.id === AppState.currentID);
-        if (existingIdx >= 0) {
-            AppState.registry[existingIdx] = userEntry;
-        } else {
-            AppState.registry.push(userEntry);
+        /* 3. Подключение ваших модулей */
+    </script>
+    
+    <!-- Включение предоставленных вами модулей -->
+    <script>
+        // Встраивание HallModule
+        const HallModule = {
+            init() {
+                EventBus.on('NAVIGATE_TO', (data) => {
+                    if (data.blockId === 'block-hall') this.activateHall();
+                });
+                EventBus.on('PROFILE_SAVED', () => this.unlockDirections());
+            },
+            activateHall() {
+                const isBoss = localStorage.getItem('gygy_is_boss') === 'true';
+                if (localStorage.getItem('gygy_avatar') || localStorage.getItem('gy_user_img')) {
+                    this.unlockDirections();
+                }
+            },
+            unlockDirections() {
+                const btnWHall = document.getElementById('btn-w-hall');
+                const btnPass = document.getElementById('btn-pass');
+                if (btnWHall) btnWHall.classList.remove('btn-sleep');
+                if (btnPass) btnPass.classList.remove('btn-sleep');
+                EventBus.emit('HALL_DIRECTIONS_UNLOCKED');
+            }
+        };
+
+        // Встраивание PassportModule
+        const PassportModule = {
+            currentID: '',
+            currentUserImage: '',
+            selectedNickType: 'own',
+            userChosenNickname: '',
+            init() {
+                this.currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
+                localStorage.setItem('gygy_id', this.currentID);
+                
+                EventBus.on('GENERATE_AVATAR', () => this.generateAvatar());
+                EventBus.on('SAVE_PROFILE', () => this.saveUserProfile());
+                EventBus.on('AVATAR_UPDATED', (data) => {
+                    this.currentUserImage = data.image;
+                    const imgEl = document.getElementById('avatar-img');
+                    imgEl.src = data.image;
+                    imgEl.style.display = 'block';
+                    document.getElementById('txt-avatar').style.display = 'none';
+                });
+                this.checkAndFillForm();
+            },
+            generateAvatar() {
+                const hex = Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+                const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="#${hex}"/><circle cx="50" cy="40" r="20" fill="#000000"/><path d="M20,90 C20,70 80,70 80,90" fill="#000000"/></svg>`;
+                const imgUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+                EventBus.emit('AVATAR_UPDATED', { image: imgUrl });
+            },
+            handleFilePreview(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => EventBus.emit('AVATAR_UPDATED', { image: e.target.result });
+                reader.readAsDataURL(file);
+            },
+            renderPassports(targetID) {
+                document.getElementById('id-label').innerText = targetID;
+                document.getElementById('pass-id-val').innerText = targetID;
+                const qrBoxReg = document.getElementById('qr-box-reg');
+                const passQrBox = document.getElementById('pass-qr-box');
+                if (qrBoxReg && typeof QRCode !== 'undefined') { qrBoxReg.innerHTML = ""; new QRCode(qrBoxReg, { text: targetID, width: 75, height: 75 }); }
+                if (passQrBox && typeof QRCode !== 'undefined') { passQrBox.innerHTML = ""; new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); }
+            },
+            saveUserProfile() {
+                if (!this.currentUserImage) return;
+                const nick = (this.selectedNickType === 'club') ? this.currentID : (this.userChosenNickname || 'Resident');
+                localStorage.setItem('gygy_nickname', nick);
+                localStorage.setItem('gygy_avatar', this.currentUserImage);
+                localStorage.setItem('gy_user_img', this.currentUserImage);
+
+                document.getElementById('global-user-badge').style.display = 'block';
+                document.getElementById('badge-avatar-img').src = this.currentUserImage;
+                
+                EventBus.emit('PROFILE_SAVED', { id: this.currentID, image: this.currentUserImage, nickname: nick });
+                alert('Profile Saved Successfully!');
+            },
+            checkAndFillForm() {
+                this.renderPassports(this.currentID);
+                const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+                if (savedAvatar) {
+                    this.currentUserImage = savedAvatar;
+                    document.getElementById('global-user-badge').style.display = 'block';
+                    document.getElementById('badge-avatar-img').src = savedAvatar;
+                }
+            }
+        };
+
+        // Встраивание SituationalScanner (Аудио контур)
+        class SituationalScanner {
+            constructor() {
+                this.initListeners();
+            }
+            initListeners() {
+                EventBus.on('ROOM_CHANGED', (data) => this.handleRoomAudio(data.room));
+            }
+            handleRoomAudio(roomName) {
+                const ambientBar = document.getElementById('snd-ambient');
+                if (roomName === 'block-bar') {
+                    if (ambientBar) { ambientBar.volume = 0.4; ambientBar.play().catch(()=>{}); }
+                } else if (ambientBar) {
+                    this.fadeOutAudio(ambientBar);
+                }
+            }
+            fadeOutAudio(audioElement) {
+                let vol = audioElement.volume;
+                const fadeInterval = setInterval(() => {
+                    if (vol > 0.05) {
+                        vol -= 0.05;
+                        audioElement.volume = Math.max(0, vol);
+                    } else {
+                        audioElement.pause();
+                        audioElement.currentTime = 0;
+                        audioElement.volume = 0.5;
+                        clearInterval(fadeInterval);
+                    }
+                }, 100);
+            }
         }
-        try {
-            localStorage.setItem('gygy_global_registry', JSON.stringify(AppState.registry));
-        } catch(e){}
 
-        document.getElementById('btn-pass')?.classList.remove('btn-sleep');
-        
-        const globalBadge = document.getElementById('global-user-badge');
-        const badgeImg = document.getElementById('badge-avatar-img');
-        const badgeFlag = document.getElementById('badge-flag-img');
-        if (globalBadge && badgeImg) {
-            badgeImg.src = AppState.currentUserImage || 'horse_welcome.png';
-            if (badgeFlag) badgeFlag.src = AppState.lang.flag;
-            globalBadge.style.display = 'block';
-        }
+        // Инициализация при загрузке страницы
+        window.addEventListener('load', () => {
+            document.body.classList.add('page-loaded');
+            HallModule.init();
+            PassportModule.init();
+            window.Scanner = new SituationalScanner();
+        });
 
-        EventBus.emit('registry:update-counters');
-    });
-
-    EventBus.on('passport:open', () => {
-        const modal = document.getElementById('modal-passport');
-        if (!modal) return;
-
-        document.getElementById('pass-id-val').innerText = AppState.currentID || '#ID';
-        document.getElementById('pass-nickname-val').innerText = AppState.userChosenNickname || localStorage.getItem('gygy_user_nick') || 'NICKNAME';
-        
-        const passAvatar = document.getElementById('pass-avatar-img');
-        const savedAvatar = AppState.currentUserImage || localStorage.getItem('gygy_user_avatar');
-        if (passAvatar && savedAvatar) passAvatar.src = savedAvatar;
-
-        const qrBox = document.getElementById('pass-qr-box');
-        if (qrBox) {
-            qrBox.innerHTML = '';
-            new QRCode(qrBox, { text: AppState.currentID || 'GY-GY-CLUB', width: 90, height: 90 });
-        }
-
-        modal.style.display = 'flex';
-        setTimeout(() => modal.style.opacity = '1', 10);
-    });
-
-    EventBus.on('passport:close', () => {
-        const modal = document.getElementById('modal-passport');
-        if (!modal) return;
-        modal.style.opacity = '0';
-        setTimeout(() => modal.style.display = 'none', 300);
-    });
-
-    EventBus.on('registry:open', () => {
-        const modal = document.getElementById('modal-registry');
-        const container = document.getElementById('registry-list-container');
-        if (!modal || !container) return;
-
-        container.innerHTML = '';
-        if (AppState.registry.length === 0) {
-            container.innerHTML = '<div style="text-align:center; font-size:11px; padding:15px; opacity:0.7;">No residents registered yet</div>';
-        } else {
-            AppState.registry.forEach(user => {
-                const item = document.createElement('div');
-                item.className = 'registry-item';
-                item.innerHTML = `
-                    <div class="registry-item-info">
-                        <img class="registry-item-avatar" src="${user.avatar}">
-                        <div>
-                            <div class="registry-item-text" style="font-weight:bold;">${user.nick}</div>
-                            <div style="font-size:8px; opacity:0.6;">${user.id}</div>
-                        </div>
-                    </div>
-                    <img src="${user.flag}" style="width:16px; height:11px; border:1px solid var(--gold); object-fit:cover;">
-                `;
-                container.appendChild(item);
+        // Дополнительные UI эмиттеры для модальных окон и манифестов Холла
+        EventBus.on('PASSPORT_OPEN', () => {
+            document.getElementById('pass-nickname-val').textContent = localStorage.getItem('gygy_nickname') || 'ANONYMOUS';
+            const modal = document.getElementById('modal-passport');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.style.opacity = '1', 10);
+        });
+        EventBus.on('PASSPORT_CLOSE', () => {
+            const modal = document.getElementById('modal-passport');
+            modal.style.opacity = '0';
+            setTimeout(() => modal.style.display = 'none', 300);
+        });
+        EventBus.on('HALL_MANIFEST_TOGGLE', (targetId) => {
+            const targetBox = document.getElementById(targetId);
+            const isOpen = targetBox.getAttribute('data-opened') === 'true';
+            document.querySelectorAll('.manifest-btn-box').forEach(box => {
+                box.style.opacity = '0';
+                box.style.bottom = '-45px';
+                box.setAttribute('data-opened', 'false');
+                box.style.pointerEvents = 'none';
             });
-        }
-
-        modal.style.display = 'flex';
-        setTimeout(() => modal.style.opacity = '1', 10);
-    });
-
-    EventBus.on('registry:close', () => {
-        const modal = document.getElementById('modal-registry');
-        if (!modal) return;
-        modal.style.opacity = '0';
-        setTimeout(() => modal.style.display = 'none', 300);
-    });
-
-    EventBus.on('registry:update-counters', () => {
-        const counts = {};
-        AppState.registry.forEach(u => {
-            counts[u.lang] = (counts[u.lang] || 0) + 1;
-        });
-
-        document.querySelectorAll('.club-lang-item').forEach(item => {
-            const code = item.getAttribute('data-code');
-            const cntEl = item.querySelector('.item-counter');
-            if (cntEl) {
-                cntEl.innerText = counts[code] || 0;
+            if (!isOpen) {
+                targetBox.style.opacity = '1';
+                targetBox.style.bottom = '20px';
+                targetBox.setAttribute('data-opened', 'true');
+                targetBox.style.pointerEvents = 'auto';
             }
         });
-    });
-
-    EventBus.on('hall:manifest:toggle', (targetId) => {
-        const box = document.getElementById(targetId);
-        if (!box) return;
-        const opened = box.getAttribute('data-opened') === 'true';
-        
-        document.querySelectorAll('.manifest-btn-box').forEach(el => {
-            el.style.opacity = '0';
-            el.style.bottom = '-45px';
-            el.style.pointerEvents = 'none';
-            el.setAttribute('data-opened', 'false');
-        });
-
-        if (!opened) {
-            box.style.opacity = '1';
-            box.style.bottom = '20px';
-            box.style.pointerEvents = 'auto';
-            box.setAttribute('data-opened', 'true');
-        }
-    });
-
-    /* =========================================================
-       INITIALIZATION & RUNTIME
-       ========================================================= */
-    window.onload = () => {
-        document.body.classList.add('page-loaded');
-        
-        // Установка языка по умолчанию из стейта
-        document.getElementById('current-flag').src = AppState.lang.flag;
-        document.getElementById('current-lang-name').innerText = AppState.lang.name;
-
-        const savedId = AppState.currentID;
-        if (savedId) {
-            const globalBadge = document.getElementById('global-user-badge');
-            const badgeImg = document.getElementById('badge-avatar-img');
-            const badgeFlag = document.getElementById('badge-flag-img');
-            const savedAvatar = AppState.currentUserImage;
-            if (globalBadge && badgeImg && savedAvatar) {
-                badgeImg.src = savedAvatar;
-                if (badgeFlag) badgeFlag.src = AppState.lang.flag;
-                globalBadge.style.display = 'block';
-            }
-            // Если уже зарегистрирован, активируем кнопку перехода в холл на welcome экране
-            document.getElementById('btn-w-hall')?.classList.remove('btn-sleep');
-            document.getElementById('btn-w-reg')?.classList.add('btn-sleep');
-        }
-
-        const qrReg = document.getElementById('qr-box-reg');
-        if (qrReg) {
-            new QRCode(qrReg, { text: AppState.currentID || "GY-GY-CLUB-CORE", width: 67, height: 67 });
-        }
-
-        EventBus.emit('registry:update-counters');
-    };
-</script>
+    </script>
 </body>
 </html>
