@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.16.21 CORE</title>
+    <title>GY-GY Club v4.6.16.22 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -23,7 +23,7 @@
             transition: all 0.3s ease !important;
         }
         button:hover, .ui-user-badge:hover, .arrow-item:hover, .painting-zone:hover, #main-door:hover, .box-final:hover, .nickname-square:hover {
-            filter: brightness(1.1);
+            filter: brightness(1.2);
         }
 
         .ui-header-right { 
@@ -38,7 +38,7 @@
             box-shadow: 0 0 0 1px #000000, inset 0 0 5px rgba(0,0,0,0.8);
             z-index: 1000000; cursor: pointer; display: none;
         }
-        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #ffffff; }
+        .ui-user-badge .badge-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; background-color: #000000; }
         .ui-user-badge .badge-flag {
             position: absolute; bottom: -2px; right: -4px; width: 14px; height: 10px; object-fit: cover;
             border: 1px solid var(--gold); box-shadow: 0 0 0 1px #000000;
@@ -82,30 +82,35 @@
         .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .club-lang-counter { font-size: 9px; color: var(--gold); opacity: 0.7; font-weight: bold; flex-shrink: 0; margin-left: 4px; }
 
-        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000000; }
-        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000000; cursor: pointer; line-height: 1; user-select: none; }
+        .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .passport-card { background: #0a0a0a; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: var(--gold); text-align: center; box-shadow: 0 0 25px rgba(255,215,0,0.3); position: relative; }
+        .passport-card .box-final { margin: 15px auto; border-color: var(--gold); background: #000; }
+        .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: var(--gold); cursor: pointer; line-height: 1; user-select: none; }
 
         .block { 
             position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000000; z-index: 10; opacity: 0; transition: opacity 1.2s ease-in-out; 
         }
         .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
 
-        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 20px; text-align: center; max-width: 85%; margin-bottom: 8px; text-shadow: 2px 2px 4px #000000; }
-        .btn-gy { min-width: 240px; padding: 10px 18px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 4px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; font-size: 12px; }
+        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 20px; text-align: center; max-width: 85%; margin-bottom: 12px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); color: var(--gold); }
+        .btn-gy { min-width: 240px; padding: 10px 18px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 4px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; font-size: 12px; box-shadow: 0 0 10px rgba(255,215,0,0.1); }
         
-        .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
-        .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
-
-        .identity-grid-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; width: 250px; }
-        .identity-grid-row { display: flex; gap: 8px; justify-content: center; }
-        .nickname-square {
-            width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; color: #000000; padding: 4px; text-align: center;
+        .btn-sleep { opacity: 0.2 !important; pointer-events: none !important; cursor: not-allowed; }
+        
+        /* Квадраты Манифеста в блоке регистратора */
+        .box-final { 
+            width: 75px; height: 75px; border: 2px solid var(--gold); background: #050505; 
+            display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; color: var(--gold);
         }
-        .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
+
+        .identity-grid-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; width: 250px; }
+        .identity-grid-row { display: flex; gap: 10px; justify-content: center; }
+        .nickname-square {
+            width: 75px; height: 75px; border: 2px solid var(--gold); background: #050505; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; color: var(--gold); padding: 4px; text-align: center;
+        }
+        .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 12px var(--gold); background: #111; }
         .nickname-square input {
             position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent;
         }
@@ -177,11 +182,13 @@
 </head>
 <body oncontextmenu="return false;">
 
+    <!-- Глобальный аватар гостя -->
     <div id="global-user-badge" class="ui-user-badge notranslate" data-action="open-passport">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
     </div>
 
+    <!-- Стрелки навигации -->
     <div class="notranslate ui-nav-arrows" id="club-nav-arrows" style="display: none;">
         <div id="arrow-back" class="arrow-item" data-action="nav-back">&lt;</div>
         <div id="arrow-home" class="arrow-item" data-action="navigate" data-target="block-entrance">&lt;&lt;</div>
@@ -189,10 +196,12 @@
     
     <div class="ui-header-right notranslate">GY-GY</div>
 
+    <!-- Звуковые файлы -->
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
+    <!-- БЛОК ВХОДА (ДВЕРЬ) -->
     <div id="block-entrance" class="block active">
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" data-action="toggle-lang-dropdown">
@@ -245,54 +254,6 @@
                     </div>
                     <span class="club-lang-counter" data-lang-counter="it">0</span>
                 </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="zh-CN" data-name="中文" data-flag="https://flagcdn.com/w20/cn.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/cn.png">
-                        <span class="item-text">中文</span>
-                    </div>
-                    <span class="club-lang-counter" data-lang-counter="zh-CN">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="ja" data-name="日本語" data-flag="https://flagcdn.com/w20/jp.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/jp.png">
-                        <span class="item-text">日本語</span>
-                    </div>
-                    <span class="club-lang-counter" data-lang-counter="ja">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="ar" data-name="العربية" data-flag="https://flagcdn.com/w20/sa.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/sa.png">
-                        <span class="item-text">العربية</span>
-                    </div>
-                    <span class="club-lang-counter" data-lang-counter="ar">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="pt" data-name="Português" data-flag="https://flagcdn.com/w20/pt.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/pt.png">
-                        <span class="item-text">Português</span>
-                    </div>
-                    <span class="club-lang-counter" data-lang-counter="pt">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="uk" data-name="Українська" data-flag="https://flagcdn.com/w20/ua.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/ua.png">
-                        <span class="item-text">Українська</span>
-                    </div>
-                    <span class="club-lang-counter" data-lang-counter="uk">0</span>
-                </div>
-                <div class="club-lang-item" data-action="select-lang" data-code="pl" data-name="Polski" data-flag="https://flagcdn.com/w20/pl.png">
-                    <div class="club-lang-item-left">
-                        <div class="item-avatar"><img src="horse_welcome.png"></div>
-                        <img class="item-flag" src="https://flagcdn.com/w20/pl.png">
-                        <span class="item-text">Polski</span>
-                    </div>
-                    <span class="club-lang-counter" data-lang-counter="pl">0</span>
-                </div>
             </div>
         </div>
 
@@ -300,6 +261,7 @@
         <img src="door_1.jpg?v=2" id="main-door" translate="no" data-action="handle-door">
     </div>
 
+    <!-- БЛОК ПРИВЕТСТВИЯ -->
     <div id="block-welcome" class="block">
         <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
         <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -309,36 +271,39 @@
         <button class="btn-gy" data-action="navigate" data-target="block-identity" data-translate="btn_get_id">GET ID</button>
     </div>  
 
+    <!-- БЛОК РЕГИСТРАЦИИ (IDENTITY GRID ПО МАНИФЕСТУ) -->
     <div id="block-identity" class="block">
-        <div class="quote-text" data-translate="identity_quote">There is never too much champagne</div>
+        <div class="quote-text" data-translate="identity_quote">В каждой шутке есть доля виски</div>
         
         <div class="identity-grid-container">
+            <!-- Верхняя строка сетки: Никнейм, Клубный ник, Сгенерированный ID (#GY-XXXX) -->
             <div class="identity-grid-row">
                 <div id="box-own-nick" class="nickname-square selected" data-action="set-nick-type" data-type="own">
                     <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_own">YOUR NICK</span>
-                    <input type="text" id="input-own-nick" placeholder="Enter nick" data-action="input-own-nick" style="width: 95%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; font-weight: bold; color: #000; outline: none; margin-top: 4px; z-index: 5;">
+                    <input type="text" id="input-own-nick" placeholder="Enter nick" data-action="input-own-nick" style="width: 95%; background: transparent; border: none; text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; font-weight: bold; color: var(--gold); outline: none; margin-top: 4px; z-index: 5;">
                 </div>
 
                 <div id="box-club-nick" class="nickname-square" data-action="set-nick-type" data-type="club">
                     <span style="font-size: 7px; font-weight: 900; pointer-events: none;" data-translate="nick_club">CLUB NICK</span>
-                    <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: #000;">БигКоин</span>
+                    <span id="club-nick-label" style="font-size: 8px; margin-top: 4px; font-weight: 700; pointer-events: none; color: var(--gold);">БигКоин</span>
                 </div>
 
-                <div class="box-final" style="color:#000000; font-size:10px; font-weight:900;" id="id-label">#ID</div>
+                <div class="box-final" id="id-label" style="font-size: 9px; font-weight: 900; text-align: center; padding: 2px;">#ID</div>
             </div>
             
+            <!-- Нижняя строка сетки: QR-код регистрации, Загрузка фото, Клубный Аватар -->
             <div class="identity-grid-row">
-                <div class="box-final" id="qr-box-reg"></div>
+                <div class="box-final" id="qr-box-reg" style="padding: 4px;"></div>
                 
                 <div class="box-final" style="cursor:pointer;" data-action="trigger-file-input">
                     <input type="file" id="file-input" style="display:none;">
                     <img id="pp" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-photo" style="color:#000000; font-size:9px; font-weight:900; pointer-events: none;" data-translate="txt_photo">OR PHOTO</span>
+                    <span id="txt-photo" style="font-size:8px; font-weight:900; pointer-events: none;" data-translate="txt_photo">OR PHOTO</span>
                 </div>
                 
                 <div class="box-final" style="cursor:pointer;" data-action="generate-avatar">
                     <img id="avatar-img" style="display:none; width:100%; height:100%; object-fit:cover;">
-                    <span id="txt-avatar" style="color:#000000; font-size:9px; font-weight:900; text-align:center; pointer-events: none;" data-translate="txt_avatar">OR AVATAR</span>
+                    <span id="txt-avatar" style="font-size:8px; font-weight:900; text-align:center; pointer-events: none;" data-translate="txt_avatar">OR AVATAR</span>
                 </div>
             </div>
         </div>
@@ -347,6 +312,7 @@
         <button id="btn-pass" class="btn-gy btn-sleep" data-action="navigate" data-target="block-hall" data-translate="btn_proceed">PROCEED</button>
     </div>
 
+    <!-- БЛОК ХОЛЛА -->
     <div id="block-hall" class="block">
         <div class="hall-interior" style="position: relative;">
             <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
@@ -384,15 +350,16 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ПАСПОРТА -->
     <div id="modal-passport" class="passport-overlay" data-action="close-passport">
         <div class="passport-card" data-stop-propagation="true">
             <div class="passport-close-btn" data-action="close-passport">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
-            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
-            <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#000000; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
-            <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
+            <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:var(--gold);">#ID</div>
+            <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#ffffff; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
+            <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#000000;"></div>
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
-            <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
+            <div style="font-size:10px; font-weight:900; color:#888888; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div> 
 
@@ -410,20 +377,6 @@
         let navigationHistory = [];
 
         let currentLangData = { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' };
-        const allLanguages = [
-            { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
-            { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
-            { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
-            { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
-            { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
-            { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' },
-            { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
-            { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
-            { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
-            { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
-            { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png' },
-            { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
-        ];
 
         function safeStorageGet(key, fallback = "") { try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; } }
         function safeStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (e) {} }
@@ -431,19 +384,6 @@
         function flagCodeToCountry(code) {
             const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
             return map[code] || 'gb';
-        }
-
-        function syncGTranslateWidget() {
-            const savedLangCode = safeStorageGet('gygy_lang_code') || 'en';
-            const combo = document.querySelector('.goog-te-combo');
-            if (combo) {
-                if (combo.value !== savedLangCode) {
-                    combo.value = savedLangCode;
-                    combo.dispatchEvent(new Event('change'));
-                }
-            } else {
-                setTimeout(syncGTranslateWidget, 100);
-            }
         }
 
         function updateGlobalFlagUI() {
@@ -456,17 +396,6 @@
             const savedLangName = safeStorageGet('gygy_lang_name');
             const langNameEl = document.getElementById('current-lang-name');
             if (savedLangName && langNameEl) langNameEl.innerText = savedLangName;
-        }
-
-        function updateLangCounters() {
-            if (window.allLangs && Array.isArray(window.allLangs)) {
-                window.allLangs.forEach(item => {
-                    const counterEl = document.querySelector(`[data-lang-counter="${item.code}"]`);
-                    if (counterEl) {
-                        counterEl.innerText = item.count || 0;
-                    }
-                });
-            }
         }
 
         document.addEventListener('click', function(e) {
@@ -488,12 +417,7 @@
 
             switch(action) {
                 case 'toggle-lang-dropdown':
-                    if (langList) {
-                        langList.classList.toggle('open');
-                        if (langList.classList.contains('open')) {
-                            updateLangCounters();
-                        }
-                    }
+                    if (langList) langList.classList.toggle('open');
                     break;
                 case 'select-lang':
                     selectClubLanguage(actionEl.dataset.code, actionEl.dataset.name, actionEl.dataset.flag);
@@ -533,20 +457,12 @@
                 case 'toggle-manifest':
                     toggleManifest(actionEl.dataset.target);
                     break;
-                case 'enter-staff-office':
-                    e.stopPropagation();
-                    enterStaffOffice();
-                    break;
-                case 'enter-studio':
-                    e.stopPropagation();
-                    enterStudio();
-                    break;
             }
         });
 
         document.addEventListener('input', function(e) {
             if (e.target.id === 'input-own-nick') {
-                updateNicknameValue(e.target.value, 'own');
+                userChosenNickname = e.target.value;
             }
         });
 
@@ -559,10 +475,8 @@
 
         function selectClubLanguage(langCode, langName, flagUrl) {
             currentLangData = { code: langCode, name: langName, flag: flagUrl };
-            
             const countryCode = flagCodeToCountry(langCode);
             safeStorageSet('gygy_flag', countryCode);
-            safeStorageSet('gy_user_flag', countryCode);
             safeStorageSet('gygy_lang_code', langCode);
             safeStorageSet('gygy_lang_name', langName);
             
@@ -571,11 +485,6 @@
             
             const langNameEl = document.getElementById('current-lang-name');
             if (langNameEl) langNameEl.innerText = langName;
-
-            syncGTranslateWidget();
-            if (typeof window.applyTranslations === 'function') {
-                window.applyTranslations(langCode);
-            }
         }
 
         function portalTransition(targetBlockId) {
@@ -593,14 +502,6 @@
             const arrows = document.getElementById('club-nav-arrows');
             if (arrows) {
                 arrows.style.display = (targetBlockId === 'block-entrance') ? 'none' : 'flex';
-            }
-
-            if (targetBlockId === 'block-hall' || targetBlockId === 'block-bar') {
-                const ambient = document.getElementById('snd-ambient');
-                if (ambient) {
-                    ambient.currentTime = 0;
-                    ambient.play().catch(e => {});
-                }
             }
         }
 
@@ -624,20 +525,20 @@
 
         function handleDoor() {
             const door = document.getElementById('main-door');
-            const snd = document.getElementById('snd-door');
-            const ambient = document.getElementById('snd-ambient');
+            const sndDoor = document.getElementById('snd-door');
+            const sndAmbient = document.getElementById('snd-ambient');
             
-            if (snd) {
-                snd.currentTime = 0;
-                snd.play().catch(e => {});
+            if (sndDoor) {
+                sndDoor.currentTime = 0;
+                sndDoor.play().catch(e => {});
             }
-            if (door) door.classList.add('door-exploded');
 
-            // Мгновенный запуск звуков бара сразу после начала воспроизведения щелчка двери
-            if (ambient) {
-                ambient.currentTime = 0;
-                ambient.play().catch(e => {});
+            if (sndAmbient) {
+                sndAmbient.currentTime = 0;
+                sndAmbient.play().catch(e => {});
             }
+
+            if (door) door.classList.add('door-exploded');
 
             setTimeout(() => {
                 portalTransition('block-welcome');
@@ -656,33 +557,6 @@
             } else {
                 if (clubBox) clubBox.classList.add('selected');
                 if (ownBox) ownBox.classList.remove('selected');
-            }
-        }
-
-        function updateNicknameValue(val, type) {
-            if (type === 'own') {
-                userChosenNickname = val;
-            }
-        }
-
-        function toggleManifest(manifestId) {
-            const box = document.getElementById(manifestId);
-            if (!box) return;
-
-            const isOpen = box.getAttribute('data-opened') === 'true';
-            
-            document.querySelectorAll('.manifest-btn-box').forEach(b => {
-                b.style.opacity = '0';
-                b.style.bottom = '-45px';
-                b.style.pointerEvents = 'none';
-                b.setAttribute('data-opened', 'false');
-            });
-
-            if (!isOpen) {
-                box.style.opacity = '1';
-                box.style.bottom = '-55px';
-                box.style.pointerEvents = 'auto';
-                box.setAttribute('data-opened', 'true');
             }
         }
 
@@ -708,15 +582,14 @@
             canvas.height = 150;
             const ctx = canvas.getContext('2d');
             
-            ctx.fillStyle = '#FFD700';
-            ctx.fillRect(0, 0, 150, 150);
             ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, 150, 150);
+            
+            ctx.fillStyle = '#FFD700';
             ctx.font = 'bold 60px Cinzel, serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            
-            const letters = 'GY';
-            ctx.fillText(letters, 75, 75);
+            ctx.fillText('GY', 75, 75);
 
             currentUserImage = canvas.toDataURL('image/png');
             
@@ -740,6 +613,7 @@
             }
         }
 
+        /* Сохранение профиля: генерация уникального ID (#GY-XXXX) и QR-кода */
         function saveUserProfile() {
             currentID = 'GY-' + Math.floor(1000 + Math.random() * 9000);
             
@@ -756,13 +630,13 @@
             const qrBoxReg = document.getElementById('qr-box-reg');
             if (qrBoxReg) {
                 qrBoxReg.innerHTML = '';
-                new QRCode(qrBoxReg, { text: currentID, width: 65, height: 65 });
+                new QRCode(qrBoxReg, { text: currentID, width: 65, height: 65, colorDark: "#FFD700", colorLight: "#000000" });
             }
 
             const passQrBox = document.getElementById('pass-qr-box');
             if (passQrBox) {
                 passQrBox.innerHTML = '';
-                new QRCode(passQrBox, { text: currentID, width: 90, height: 90 });
+                new QRCode(passQrBox, { text: currentID, width: 90, height: 90, colorDark: "#FFD700", colorLight: "#000000" });
             }
 
             if (currentUserImage) {
@@ -777,16 +651,35 @@
 
             const btnPass = document.getElementById('btn-pass');
             if (btnPass) btnPass.classList.remove('btn-sleep');
+            
+            const btnWHall = document.getElementById('btn-w-hall');
+            if (btnWHall) btnWHall.classList.remove('btn-sleep');
         }
 
-        function enterStaffOffice() { portalTransition('block-staff-office'); }
-        function enterStudio() { portalTransition('block-studio'); }
+        function toggleManifest(manifestId) {
+            const box = document.getElementById(manifestId);
+            if (!box) return;
+
+            const isOpen = box.getAttribute('data-opened') === 'true';
+            
+            document.querySelectorAll('.manifest-btn-box').forEach(b => {
+                b.style.opacity = '0';
+                b.style.bottom = '-45px';
+                b.style.pointerEvents = 'none';
+                b.setAttribute('data-opened', 'false');
+            });
+
+            if (!isOpen) {
+                box.style.opacity = '1';
+                box.style.bottom = '-55px';
+                box.style.pointerEvents = 'auto';
+                box.setAttribute('data-opened', 'true');
+            }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('page-loaded');
             updateGlobalFlagUI();
-            updateLangCounters();
-            setTimeout(syncGTranslateWidget, 500);
         });
     </script>
 </body>
