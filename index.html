@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.11 </title>
+    <title>GY-GY Club v4.6.12 </title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -130,15 +130,18 @@
         }
         .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
+        /* КОНТЕЙНЕР ДВЕРИ ДЛЯ НАДЕЖНОГО КЛИКА */
+        .door-container {
+            display: inline-block; cursor: pointer; position: relative; z-index: 100;
+        }
         #main-door {
             display: block; height: 48vh; max-height: 400px; width: auto; max-width: 100%; object-fit: contain; margin: 0 auto; 
-            transform: scale(1); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; cursor: pointer;
-            position: relative; z-index: 100;
+            transform: scale(1); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease-out; pointer-events: auto !important;
         }
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
     </style>
 
-    <!-- СТРАХОВОЙ СКРИПТ ЯЗЫКОВ -->
+    <!-- СТРАХОВОЙ СКРИПТ ЯЗЫКОВ БЕЗ ДУБЛИКАТОВ -->
     <script>
         window.allLangs = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
@@ -159,28 +162,30 @@
             const list = document.getElementById('club-lang-list');
             if (!list) return;
             
-            if (list.children.length === 0) {
-                window.allLangs.forEach(lang => {
-                    const item = document.createElement('div');
-                    item.className = 'club-lang-item';
-                    item.onclick = (e) => {
-                        e.stopPropagation();
-                        document.getElementById('current-lang-name').innerText = lang.name;
-                        document.getElementById('badge-flag-img-top').src = lang.flag;
-                        list.classList.remove('open');
-                        if (typeof window.selectClubLanguage === 'function') {
-                            window.selectClubLanguage(lang.code, lang.name, lang.flag);
-                        }
-                    };
-                    item.innerHTML = `
-                        <div class="club-lang-item-left">
-                            <img class="item-flag" src="${lang.flag}">
-                            <span class="item-text">${lang.name}</span>
-                        </div>
-                    `;
-                    list.appendChild(item);
-                });
-            }
+            // Всегда очищаем перед заполнением, чтобы не возникало дублей
+            list.innerHTML = '';
+            
+            window.allLangs.forEach(lang => {
+                const item = document.createElement('div');
+                item.className = 'club-lang-item';
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    document.getElementById('current-lang-name').innerText = lang.name;
+                    document.getElementById('badge-flag-img-top').src = lang.flag;
+                    list.classList.remove('open');
+                    if (typeof window.selectClubLanguage === 'function') {
+                        window.selectClubLanguage(lang.code, lang.name, lang.flag);
+                    }
+                };
+                item.innerHTML = `
+                    <div class="club-lang-item-left">
+                        <img class="item-flag" src="${lang.flag}">
+                        <span class="item-text">${lang.name}</span>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+            
             list.classList.toggle('open');
         };
 
@@ -225,7 +230,11 @@
         </div>
 
         <div id="google_translate_element" style="display:none;"></div>
-        <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="NavModule.openMainDoor()">
+        
+        <!-- Дверь теперь обернута в кликабельный контейнер с гарантированным срабатыванием -->
+        <div class="door-container" onclick="if(typeof NavModule !== 'undefined' && NavModule.openMainDoor) NavModule.openMainDoor();">
+            <img src="door_1.jpg?v=2" id="main-door" translate="no">
+        </div>
     </div>
 
     <!-- БЛОК 2: ПРИВЕТСТВИЕ -->
