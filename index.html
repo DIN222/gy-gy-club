@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v4.6.8 </title>
+    <title>GY-GY Club v4.6.9 </title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -137,6 +137,61 @@
         }
         .door-exploded { transform: scale(3.5) !important; opacity: 0 !important; }
     </style>
+
+    <!-- ВСТРОЕННЫЙ СТРАХОВОЙ СКРИПТ ОТКРЫТИЯ ЯЗЫКОВ -->
+    <script>
+        window.allLangs = [
+            { code: 'en', name: 'English', c: 'gb', count: 42 },
+            { code: 'ru', name: 'Русский', c: 'ru', count: 128 },
+            { code: 'uk', name: 'Українська', c: 'ua', count: 64 },
+            { code: 'de', name: 'Deutsch', c: 'de', count: 19 },
+            { code: 'es', name: 'Español', c: 'es', count: 23 },
+            { code: 'fr', name: 'Français', c: 'fr', count: 15 },
+            { code: 'it', name: 'Italiano', c: 'it', count: 11 },
+            { code: 'pl', name: 'Polski', c: 'pl', count: 27 },
+            { code: 'pt', name: 'Português', c: 'pt', count: 14 },
+            { code: 'tr', name: 'Türkçe', c: 'tr', count: 9 },
+            { code: 'zh-CN', name: '中文', c: 'cn', count: 31 }
+        ];
+
+        window.toggleLangDropdown = function() {
+            const list = document.getElementById('club-lang-list');
+            if (!list) return;
+            
+            // Если список пуст, наполняем его прямо сейчас
+            if (list.children.length === 0) {
+                window.allLangs.forEach(lang => {
+                    const item = document.createElement('div');
+                    item.className = 'club-lang-item';
+                    item.onclick = (e) => {
+                        e.stopPropagation();
+                        if (typeof window.selectClubLanguage === 'function') {
+                            window.selectClubLanguage(lang.code, lang.name, lang.c);
+                        }
+                    };
+                    item.innerHTML = `
+                        <div class="club-lang-item-left">
+                            <img class="item-flag" src="https://flagcdn.com/w20/${lang.c}.png">
+                            <span class="item-text">${lang.name}</span>
+                        </div>
+                        <span class="club-lang-counter">${lang.count}</span>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+            
+            list.classList.toggle('open');
+        };
+
+        // Закрытие при клике вне элемента
+        window.addEventListener('click', function(e) {
+            const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
+            const list = document.getElementById('club-lang-list');
+            if (wrapper && list && !wrapper.contains(e.target)) {
+                list.classList.remove('open');
+            }
+        });
+    </script>
 </head>
 <body oncontextmenu="return false;">
 
@@ -166,9 +221,7 @@
                 <span class="arrow-down">▼</span>
             </div>
             
-            <div id="club-lang-list" class="club-lang-list">
-                <!-- Заполняется динамически из массива allLangs -->
-            </div>
+            <div id="club-lang-list" class="club-lang-list"></div>
         </div>
 
         <div id="google_translate_element" style="display:none;"></div>
