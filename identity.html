@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GY-GY CLUB — Онбординг (Регистрация)</title>
+    <!-- Подключаем шрифты из схемы -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0b0b0b;
+            color: #f0f0f0;
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .identity-box {
+            border: 2px solid #d4af37;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            background: #141414;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 { font-family: 'Cinzel', serif; color: #d4af37; font-size: 24px; margin-bottom: 20px; }
+        input, select {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            font-family: inherit;
+        }
+        button {
+            background: #d4af37;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-family: 'Cinzel', serif;
+            width: 100%;
+        }
+        button:hover { background: #f3c653; }
+        #qr-container { margin: 15px 0; }
+    </style>
+</head>
+<body>
 
+    <div class="identity-box" id="block-identity">
+        <h1>РЕГИСТРАЦИЯ РЕЗИДЕНТА</h1>
+        
+        <div id="step-1">
+            <input type="text" id="nickname" placeholder="Введите ваш никнейм..." autocomplete="off">
+            <button onclick="generateResident()">Получить ID и войти</button>
+        </div>
+
+        <div id="step-2" style="display:none;">
+            <p>Ваш ID: <span id="display-id" style="color: #d4af37; font-weight: bold;"></span></p>
+            <div id="qr-container"></div>
+            <p style="font-size: 14px; color: #888;">Добро в клуб! Данные сохранены.</p>
+            <button onclick="enterHall()">Пройти в Парадный Холл</button>
+        </div>
+    </div>
+
+    <!-- Подключаем библиотеку для генерации QR-кодов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Подключаем ядро системы (storage.js) -->
+    <script src="core/storage.js"></script>
+    <script src="core/eventBus.js"></script>
+
+    <script>
+        function generateResident() {
+            const nicknameInput = document.getElementById('nickname').value.trim();
+            const nick = nicknameInput !== "" ? nicknameInput : "Гость Клуба";
+
+            // Генерируем уникальный ID: GY-XXXXXX (порядковый номер + 4 случайных символа)
+            const randomNum = Math.floor(100000 + Math.random() * 900000);
+            const residentId = `GY-${randomNum}`;
+
+            // Сохраняем через ваш менеджер storage.js (или напрямую в localStorage, если метод другой)
+            if (typeof StorageManager !== 'undefined' && StorageManager.saveResident) {
+                StorageManager.saveResident({ id: residentId, name: nick });
+            } else {
+                localStorage.setItem('gy_resident_id', residentId);
+                localStorage.setItem('gy_resident_name', nick);
+            }
+
+            // Переключаем интерфейс на показ ID и QR
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+            document.getElementById('display-id').innerText = residentId;
+
+            // Генерируем QR-код на основе ID
+            document.getElementById('qr-container').innerHTML = "";
+            new QRCode(document.getElementById("qr-container"), {
+                text: `https://gy-gy.club/resident?id=${residentId}&name=${encodeURIComponent(nick)}`,
+                width: 128,
+                height: 128,
+                colorDark: "#d4af37",
+                colorLight: "#141414",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function enterHall() {
+            // Переход в Модуль 04 (Парадный Холл)
+            window.location.href = "hall.html";
+        }
+    </script>
+</body>
+</html>
