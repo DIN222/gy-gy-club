@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.5 CORE</title>
+    <title>GY-GY Club v7.0.6 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -287,7 +287,6 @@
             GyLocalization.selectLanguage(langCode, langName, flagUrl, () => {
                 GyLocalization.renderDropdownItems('club-lang-list', selectClubLanguage);
                 document.getElementById('club-lang-list').classList.remove('open');
-                // Применяем переводы сразу при смене языка
                 if (typeof GyLocalization.applyTranslations === 'function') {
                     GyLocalization.applyTranslations();
                 }
@@ -575,13 +574,17 @@
             }
             checkAndFillRegistrationForm();
 
-            GyLocalization.updateGlobalFlagUI();
-            GyLocalization.syncGTranslateWidget();
-            GyLocalization.renderDropdownItems('club-lang-list', selectClubLanguage);
-
-            // Принудительно применяем локализацию при загрузке
-            if (typeof GyLocalization.applyTranslations === 'function') {
-                GyLocalization.applyTranslations();
+            // Принудительная инициализация языка при загрузке индекса
+            const savedLang = GyStorage.get('gygy_lang_code') || 'en';
+            if (typeof GyLocalization !== 'undefined') {
+                GyLocalization.selectLanguage(savedLang, GyStorage.get('gygy_lang_name'), GyStorage.get('gygy_flag'), () => {
+                    GyLocalization.updateGlobalFlagUI();
+                    GyLocalization.syncGTranslateWidget();
+                    GyLocalization.renderDropdownItems('club-lang-list', selectClubLanguage);
+                    if (typeof GyLocalization.applyTranslations === 'function') {
+                        GyLocalization.applyTranslations();
+                    }
+                });
             }
 
             window.addEventListener('storage', (e) => {
