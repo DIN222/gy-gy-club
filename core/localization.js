@@ -1,5 +1,4 @@
 const ALL_LANGUAGES = [
-    { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png' },
     { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
     { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
     { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
@@ -7,7 +6,7 @@ const ALL_LANGUAGES = [
     { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' },
     { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
     { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
-    { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
+    { code: 'tr', name: 'Türkçe', flag: 'https://flagcdn.com/w20/tr.png' },
     { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
     { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png' },
     { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png' }
@@ -15,7 +14,11 @@ const ALL_LANGUAGES = [
 
 window.GyLocalization = {
     flagCodeToCountry(code) {
-        const map = { 'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'ar': 'sa', 'pt': 'pt', 'uk': 'ua', 'pl': 'pl' };
+        const map = { 
+            'en': 'gb', 'ru': 'ru', 'es': 'es', 'de': 'de', 'fr': 'fr', 
+            'it': 'it', 'zh-CN': 'cn', 'ja': 'jp', 'tr': 'tr', 'pt': 'pt', 
+            'uk': 'ua', 'pl': 'pl' 
+        };
         return map[code] || 'gb';
     },
     syncGTranslateWidget() {
