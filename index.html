@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.18 CORE</title>
+    <title>GY-GY Club v7.0.19 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -14,7 +14,6 @@
         body, button, input, div, img, span { pointer-events: auto !important; }
         img { -webkit-user-drag: none !important; }
 
-        /* Сразу задаем черный фон для html и body, чтобы не было белых вспышек */
         html { 
             width: 100%; height: 100%; background: #000000 !important; 
             margin: 0; padding: 0; overflow: hidden; position: fixed;
@@ -142,8 +141,9 @@
         .manifest-btn-box { position: absolute; bottom: -45px; left: 50%; transform: translateX(-50%); width: 130px; display: flex; flex-direction: column; gap: 5px; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
-        /* Стили для скрытия панелей Google Translate */
+        /* Стили для полного скрытия панелей Google Translate */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
+        body { top: 0px !important; }
         
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
         .goog-text-highlight { background-color: transparent !important; background: transparent !important; box-shadow: none !important; color: inherit !important; }
@@ -175,7 +175,7 @@
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown()">
                 <div class="club-lang-current-content">
-                    <div class="item-avatar"><img src="horse_welcome.png" alt="Club AI"></div>
+                    <div class="item-avatar"><img id="current-avatar" src="horse_welcome.png" alt="Club AI"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
                     <span id="current-lang-name" class="item-text">English</span>
                 </div>
@@ -184,7 +184,7 @@
             <div id="club-lang-list" class="club-lang-list"></div>
         </div>
 
-        <!-- Скрытый контейнер для системного скрипта Google Translate -->
+        <!-- Контейнер для инициализации Google Translate -->
         <div id="google_translate_element" style="display:none;"></div>
         
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
@@ -314,6 +314,21 @@
 
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
+                
+                // Находим текущий язык в массиве, чтобы обновить верхнюю рамку
+                const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
+                if (activeLangObj) {
+                    const nameElem = document.getElementById('current-lang-name');
+                    if (nameElem) nameElem.innerText = activeLangObj.name;
+                    
+                    const flagElem = document.getElementById('current-flag');
+                    if (flagElem && activeLangObj.flag) flagElem.src = activeLangObj.flag;
+
+                    const avatarElem = document.getElementById('current-avatar');
+                    if (avatarElem && activeLangObj.avatar) avatarElem.src = activeLangObj.avatar;
+                }
+
+                // Заполняем выпадающий список ВСЕМИ языками КРОМЕ текущего выбранного
                 clubLanguages.forEach(lang => {
                     if (lang.code === currentLangCode) return;
 
@@ -339,22 +354,25 @@
                 GyStorage.set('gygy_lang_code', langCode);
                 GyStorage.set('gygy_lang_name', nameToSave);
                 GyStorage.set('gygy_flag', flagUrl);
+            } else {
+                localStorage.setItem('gygy_lang_code', langCode);
+                localStorage.setItem('gygy_lang_name', nameToSave);
+                localStorage.setItem('gygy_lang_flag', flagUrl);
             }
-
-            const nameElem = document.getElementById('current-lang-name');
-            if (nameElem) nameElem.innerText = nameToSave;
-            
-            const flagElem = document.getElementById('current-flag');
-            if (flagElem && flagUrl) flagElem.src = flagUrl;
 
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            renderFilteredLanguageList();
-
-            // Устанавливаем куки Google Translate для перевода всей страницы и перезагружаем
-            document.cookie = `googtrans=/en/${langCode}; path=/; domain=` + window.location.hostname;
+            // Устанавливаем корректные куки Google Translate для поддомена и корня
+            const host = window.location.hostname;
             document.cookie = `googtrans=/en/${langCode}; path=/;`;
+            document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
+
+            // Если выбран английский (сброс перевода), дополнительно очищаем куки
+            if (langCode === 'en') {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            }
             
             location.reload();
         }
@@ -478,17 +496,6 @@
                     if (staffBtn) staffBtn.style.display = 'block';
                 }
             }
-
-            const savedLangName = GyStorage ? GyStorage.get('gygy_lang_name') : null;
-            const savedFlag = GyStorage ? GyStorage.get('gygy_flag') : null;
-            if (savedLangName) {
-                const nameElem = document.getElementById('current-lang-name');
-                if (nameElem) nameElem.innerText = savedLangName;
-            }
-            if (savedFlag) {
-                const flagElem = document.getElementById('current-flag');
-                if (flagElem) flagElem.src = savedFlag;
-            }
         }
 
         function enterStudio() { window.location.href = 'studio.html'; }
@@ -588,7 +595,7 @@
             renderFilteredLanguageList();
             checkAndFillRegistrationForm();
 
-            // Плавное проявление сайта после того, как перевод применился
+            // Плавное проявление сайта
             setTimeout(() => {
                 document.body.classList.add('page-loaded');
             }, 350);
