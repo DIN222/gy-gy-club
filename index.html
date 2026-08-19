@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.8 CORE</title>
+    <title>GY-GY Club v7.0.9 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -283,27 +283,30 @@
             if (list) list.classList.toggle('open');
         }
 
-        function selectClubLanguage(langCode, langName, flagUrl) {
-            const nameToSave = langName || 'English';
-            GyLocalization.selectLanguage(langCode, nameToSave, flagUrl, () => {
-                const nameElem = document.getElementById('current-lang-name');
-                if (nameElem) nameElem.innerText = nameToSave;
-                
-                GyLocalization.renderDropdownItems('club-lang-list', selectClubLanguage);
-                document.getElementById('club-lang-list').classList.remove('open');
-                if (typeof GyLocalization.applyTranslations === 'function') {
-                    GyLocalization.applyTranslations();
-                }
-            });
-        }
+     function selectClubLanguage(langCode, langName, flagUrl) {
+    const nameToSave = langName || 'English';
+    
+    // 1. Сохраняем в хранилище через вашу систему
+    if (typeof GyLocalization !== 'undefined' && typeof GyLocalization.selectLanguage === 'function') {
+        GyLocalization.selectLanguage(langCode, nameToSave, flagUrl, () => {});
+    } else {
+        GyStorage.set('gygy_lang_code', langCode);
+        GyStorage.set('gygy_lang_name', nameToSave);
+        GyStorage.set('gygy_flag', flagUrl);
+    }
 
-        window.addEventListener('click', (e) => {
-            const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
-            const list = document.getElementById('club-lang-list');
-            if (wrapper && list && !wrapper.contains(e.target)) {
-                list.classList.remove('open');
-            }
-        });
+    // 2. Меняем текст в рамке выбранного языка
+    const nameElem = document.getElementById('current-lang-name');
+    if (nameElem) nameElem.innerText = nameToSave;
+
+    // 3. Закрываем выпадающий список
+    const listElem = document.getElementById('club-lang-list');
+    if (listElem) listElem.classList.remove('open');
+
+    // 4. Принудительный запуск перевода через куки Google Translate
+    document.cookie = `googtrans=/auto/${langCode}`;
+    location.reload(); // Перезагружаем страницу, чтобы Google Translate мгновенно перерисовал текст
+}
 
         function setNickType(type) {
             selectedNickType = type;
