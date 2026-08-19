@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.19 CORE</title>
+    <title>GY-GY Club v7.0.20 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -184,7 +184,6 @@
             <div id="club-lang-list" class="club-lang-list"></div>
         </div>
 
-        <!-- Контейнер для инициализации Google Translate -->
         <div id="google_translate_element" style="display:none;"></div>
         
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
@@ -306,16 +305,28 @@
             if (list) list.classList.toggle('open');
         }
 
+        // Читаем текущий язык из куки googtrans, чтобы синхронизировать интерфейс
+        function getGoogleTransCookie() {
+            const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
+            if (match) {
+                const parts = decodeURIComponent(match[2]).split('/');
+                if (parts.length > 2 && parts[2]) {
+                    return parts[2];
+                }
+            }
+            return (typeof GyStorage !== 'undefined' ? GyStorage.get('gygy_lang_code') : localStorage.getItem('gygy_lang_code')) || 'en';
+        }
+
         function renderFilteredLanguageList() {
             const listContainer = document.getElementById('club-lang-list');
             if (!listContainer) return;
 
-            const currentLangCode = (typeof GyStorage !== 'undefined' ? GyStorage.get('gygy_lang_code') : localStorage.getItem('gygy_lang_code')) || 'en';
+            const currentLangCode = getGoogleTransCookie();
 
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
                 
-                // Находим текущий язык в массиве, чтобы обновить верхнюю рамку
+                // Находим текущий язык для верхней рамки
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) {
                     const nameElem = document.getElementById('current-lang-name');
@@ -328,7 +339,7 @@
                     if (avatarElem && activeLangObj.avatar) avatarElem.src = activeLangObj.avatar;
                 }
 
-                // Заполняем выпадающий список ВСЕМИ языками КРОМЕ текущего выбранного
+                // Заполняем выпадающий список остальными языками
                 clubLanguages.forEach(lang => {
                     if (lang.code === currentLangCode) return;
 
@@ -342,8 +353,6 @@
                     `;
                     listContainer.appendChild(item);
                 });
-            } else if (typeof GyLocalization !== 'undefined' && typeof GyLocalization.renderDropdownItems === 'function') {
-                GyLocalization.renderDropdownItems('club-lang-list', selectClubLanguage);
             }
         }
 
@@ -363,15 +372,14 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // Устанавливаем корректные куки Google Translate для поддомена и корня
+            // Безотказный сброс и установка куки googtrans для всех вариантов путей/доменов
             const host = window.location.hostname;
-            document.cookie = `googtrans=/en/${langCode}; path=/;`;
-            document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
 
-            // Если выбран английский (сброс перевода), дополнительно очищаем куки
-            if (langCode === 'en') {
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            if (langCode !== 'en') {
+                document.cookie = `googtrans=/en/${langCode}; path=/;`;
+                document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
             }
             
             location.reload();
