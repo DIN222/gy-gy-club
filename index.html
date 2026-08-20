@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.21 CORE</title>
+    <title>GY-GY Club v7.0.22 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -54,7 +54,7 @@
         }
 
         .club-lang-dropdown-wrapper {
-            position: absolute; top: 18px; left: 20px; z-index: 1000001; width: 155px; font-family: 'Share Tech Mono', monospace;
+            position: absolute; top: 18px; left: 20px; z-index: 1000001; width: 165px; font-family: 'Share Tech Mono', monospace;
         }
         .club-lang-current {
             display: flex; align-items: center; justify-content: space-between;
@@ -141,7 +141,6 @@
         .manifest-btn-box { position: absolute; bottom: -45px; left: 50%; transform: translateX(-50%); width: 130px; display: flex; flex-direction: column; gap: 5px; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
-        /* Стили для полного скрытия панелей Google Translate */
         .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
         body { top: 0px !important; }
         
@@ -274,21 +273,33 @@
         </div>
     </div>
 
-    <!-- Подключаем модули ядра -->
-    <script src="core/eventBus.js"></script>
-    <script src="core/storage.js"></script>
-    <script src="core/localization.js"></script>
-    <script src="userlang-data.js"></script>
-    <script src="translations.js"></script>
-    <script src="language.js"></script>
+    <!-- Встроенные данные языков для надежности -->
+    <script>
+        const clubLanguages = [
+            { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
+            { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
+            { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png', avatar: 'horse_welcome.png' },
+            { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png', avatar: 'horse_welcome.png' },
+            { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png', avatar: 'horse_welcome.png' },
+            { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png', avatar: 'horse_welcome.png' },
+            { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png', avatar: 'horse_welcome.png' },
+            { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png', avatar: 'horse_welcome.png' },
+            { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png', avatar: 'horse_welcome.png' },
+            { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png', avatar: 'horse_welcome.png' },
+            { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png', avatar: 'horse_welcome.png' },
+            { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png', avatar: 'horse_welcome.png' }
+        ];
+    </script>
 
     <!-- Скрипт инициализации Google Translate -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                autoDisplay: false
-            }, 'google_translate_element');
+            try {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    autoDisplay: false
+                }, 'google_translate_element');
+            } catch(e) {}
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -309,14 +320,16 @@
         }
 
         function getGoogleTransCookie() {
-            const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
-            if (match) {
-                const parts = decodeURIComponent(match[2]).split('/');
-                if (parts.length > 2 && parts[2]) {
-                    return parts[2];
+            try {
+                const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
+                if (match) {
+                    const parts = decodeURIComponent(match[2]).split('/');
+                    if (parts.length > 2 && parts[2]) {
+                        return parts[2];
+                    }
                 }
-            }
-            return (typeof GyStorage !== 'undefined' ? GyStorage.get('gygy_lang_code') : localStorage.getItem('gygy_lang_code')) || 'en';
+            } catch(e) {}
+            return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
         function renderFilteredLanguageList() {
@@ -328,7 +341,6 @@
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
                 
-                // Находим текущий язык для верхней рамки
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) {
                     const nameElem = document.getElementById('current-lang-name');
@@ -341,7 +353,6 @@
                     if (avatarElem && activeLangObj.avatar) avatarElem.src = activeLangObj.avatar;
                 }
 
-                // Заполняем выпадающий список остальными языками (кроме выбранного)
                 clubLanguages.forEach(lang => {
                     if (lang.code === currentLangCode) return;
 
@@ -364,27 +375,26 @@
         function selectClubLanguage(langCode, langName, flagUrl) {
             const nameToSave = langName || 'English';
             
-            if (typeof GyStorage !== 'undefined') {
-                GyStorage.set('gygy_lang_code', langCode);
-                GyStorage.set('gygy_lang_name', nameToSave);
-                GyStorage.set('gygy_flag', flagUrl);
-            } else {
+            try {
                 localStorage.setItem('gygy_lang_code', langCode);
                 localStorage.setItem('gygy_lang_name', nameToSave);
                 localStorage.setItem('gygy_lang_flag', flagUrl);
-            }
+            } catch(e) {}
 
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // Очистка старых кук и установка нового языка
             const host = window.location.hostname;
             document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            if (host) {
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            }
 
             if (langCode !== 'en') {
                 document.cookie = `googtrans=/en/${langCode}; path=/;`;
-                document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
+                if (host) {
+                    document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
+                }
             }
             
             location.reload();
@@ -414,7 +424,7 @@
         function updateNicknameValue(val, type) {
             if (type === 'own') {
                 userChosenNickname = val;
-                if (typeof GyStorage !== 'undefined') GyStorage.set('gygy_nickname', val);
+                try { localStorage.setItem('gygy_nickname', val); } catch(e) {}
             }
         }
 
@@ -450,11 +460,11 @@
                 new QRCode(passQrBox, { text: targetID, width: 90, height: 90 }); 
             }
 
-            let clubNick = (typeof GyStorage !== 'undefined' ? GyStorage.get('gygy_club_nick') : null);
+            let clubNick = localStorage.getItem('gygy_club_nick');
             if (!clubNick) {
                 const coolNicks = ["БигКоин", "Нападающий", "Шампань", "Магнат", "Счастливчик", "Инсайдер", "Фантом", "Победитель", "Капитан", "Маэстро", "Прайм", "Штурман", "Панчер", "Триумф", "Оракул"];
                 clubNick = coolNicks[Math.floor(Math.random() * coolNicks.length)];
-                if (typeof GyStorage !== 'undefined') GyStorage.set('gygy_club_nick', clubNick);
+                try { localStorage.setItem('gygy_club_nick', clubNick); } catch(e) {}
             }
 
             const clubNickLabel = document.getElementById('club-nick-label');
@@ -462,20 +472,13 @@
         }
 
         function checkAndFillRegistrationForm() {
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-                const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-                if (tgUser.first_name) {
-                    const fullName = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
-                    if (typeof GyStorage !== 'undefined') GyStorage.set('gygy_nickname', fullName);
-                }
-            }
-
-            const savedAvatar = (typeof GyStorage !== 'undefined') ? (GyStorage.get('gy_user_img') || GyStorage.get('gygy_avatar')) : null;
-            currentID = (typeof GyStorage !== 'undefined') ? (GyStorage.get('gygy_id') || GyStorage.get('gy_user_id') || GyStorage.get('gy_trace')) : "";
+            const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
+            currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace') || "GY-" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('gygy_id', currentID);
 
             if (currentID) { renderUserPassports(currentID); }
 
-            const savedNickname = (typeof GyStorage !== 'undefined') ? GyStorage.get('gygy_nickname') || '' : '';
+            const savedNickname = localStorage.getItem('gygy_nickname') || '';
             const ownNickInput = document.getElementById('input-own-nick');
             if (ownNickInput && savedNickname) {
                 ownNickInput.value = savedNickname;
@@ -489,25 +492,13 @@
                 if (badgeImg) badgeImg.src = savedAvatar;
                 if (passImg) passImg.src = savedAvatar;
 
-                if (savedAvatar.startsWith('data:image/svg+xml')) {
-                    const avatarImg = document.getElementById('avatar-img'); if (avatarImg) { avatarImg.src = savedAvatar; avatarImg.style.display = "block"; }
-                    const txtAvatar = document.getElementById('txt-avatar'); if (txtAvatar) txtAvatar.style.display = "none";
-                } else { 
-                    const ppImg = document.getElementById('pp'); if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                    const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = "none";
-                }
+                const ppImg = document.getElementById('pp'); 
+                if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
+                const txtPhoto = document.getElementById('txt-photo'); 
+                if (txtPhoto) txtPhoto.style.display = "none";
+
                 const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
                 const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
-            }
-
-            if (typeof GyStorage !== 'undefined') {
-                if ((GyStorage.get('gygy_nickname') || '').toLowerCase() === 'модермех') {
-                    GyStorage.set('gygy_is_boss', 'true');
-                }
-                if (GyStorage.get('gygy_is_boss') === 'true') {
-                    const staffBtn = document.getElementById('btn-staff-room');
-                    if (staffBtn) staffBtn.style.display = 'block';
-                }
             }
         }
 
@@ -533,9 +524,6 @@
             if (!targetBlock) return;
 
             currentBlockId = nextId;
-            if (window.EventBus && typeof window.EventBus.emit === 'function') {
-                window.EventBus.emit('ROOM_CHANGED', { room: nextId });
-            }
 
             const badge = document.getElementById('global-user-badge');
             const navArrows = document.getElementById('club-nav-arrows');
@@ -581,11 +569,23 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     currentUserImage = e.target.result;
+                    try { localStorage.setItem('gy_user_img', currentUserImage); } catch(e) {}
                     const pp = document.getElementById('pp'); if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
                     const txtPhoto = document.getElementById('txt-photo'); if (txtPhoto) txtPhoto.style.display = 'none';
+                    
+                    const badgeImg = document.getElementById('badge-avatar-img');
+                    if (badgeImg) badgeImg.src = currentUserImage;
+                    const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
+                    const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        function saveUserProfile() {
+            const btnPass = document.getElementById('btn-pass');
+            if (btnPass) btnPass.classList.remove('btn-sleep');
+            alert('Profile saved successfully!');
         }
 
         function openPassport() {
@@ -608,7 +608,6 @@
             renderFilteredLanguageList();
             checkAndFillRegistrationForm();
 
-            // Плавное проявление сайта
             setTimeout(() => {
                 document.body.classList.add('page-loaded');
             }, 350);
