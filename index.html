@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.36 CORE</title>
+    <title>GY-GY Club v7.0.37 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -591,7 +591,6 @@
             const sndAmbient = document.getElementById('snd-ambient');
             const mainDoor = document.getElementById('main-door');
 
-            // Мгновенный запуск звуков прямо по клику (разрешено браузером)
             if (sndDoor) {
                 sndDoor.currentTime = 0;
                 sndDoor.play().catch(e => {});
@@ -658,6 +657,18 @@
             
             const savedRole = localStorage.getItem('gygy_user_role') || 'novice';
             setUserRole(savedRole);
+
+            // Восстановление выбранного пользователем языка после загрузки элементов
+            setTimeout(() => {
+                const currentLangCode = getCurrentLangCode();
+                if (currentLangCode && currentLangCode !== 'en') {
+                    const selectElement = document.querySelector('.goog-te-combo');
+                    if (selectElement) {
+                        selectElement.value = currentLangCode;
+                        selectElement.dispatchEvent(new Event('change'));
+                    }
+                }
+            }, 600);
 
             setTimeout(() => {
                 document.body.classList.add('page-loaded');
