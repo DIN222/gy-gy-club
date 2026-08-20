@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.24 CORE</title>
+    <title>GY-GY Club v7.0.25 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -88,9 +88,21 @@
         .club-lang-item .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
         .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* Отладочные блоки роли (Новичок / Участник) */
+        .debug-entrance-panel {
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 1000; background: rgba(0,0,0,0.8);
+            padding: 6px 12px; border-radius: 20px; border: 1px solid var(--gold);
+        }
+        .debug-role-btn {
+            padding: 3px 8px; border: 1px solid var(--gold); background: transparent; 
+            color: var(--gold); cursor: pointer; border-radius: 10px; font-size: 9px; font-family: 'Share Tech Mono', monospace;
+        }
+        .debug-role-btn.active-role { background: var(--gold); color: #000; font-weight: bold; }
+
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 25px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
-        .passport-card .box-final { margin: 15px auto; border-color: #000000; }
+        .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 20px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
+        .passport-card .box-final { margin: 10px auto; border-color: #000000; }
         .passport-close-btn { position: absolute; top: 10px; right: 14px; font-size: 28px; font-weight: bold; color: #000000; cursor: pointer; line-height: 1; user-select: none; }
 
         .block { 
@@ -170,6 +182,7 @@
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
 
+    <!-- БЛОК ВХОДА С ОТЛАДОЧНОЙ ПАНЕЛЬЮ -->
     <div id="block-entrance" class="block active">
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown(event)">
@@ -186,6 +199,12 @@
         <div id="google_translate_element" style="display:none;"></div>
         
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
+
+        <!-- Отладочный блок Новичок / Участник на главной -->
+        <div class="debug-entrance-panel notranslate">
+            <button id="btn-role-novice" class="debug-role-btn active-role" onclick="setUserRole('novice')">Новичок</button>
+            <button id="btn-role-member" class="debug-role-btn" onclick="setUserRole('member')">Участник</button>
+        </div>
     </div>
 
     <div id="block-welcome" class="block">
@@ -261,10 +280,18 @@
         </div>
     </div>
 
+    <!-- Модальное окно паспорта -->
     <div id="modal-passport" class="passport-overlay" onclick="closePassport()">
         <div class="passport-card" onclick="event.stopPropagation()">
             <div class="passport-close-btn" onclick="closePassport()">&times;</div>
             <div id="pass-id-title" style="font-weight:900; font-size:16px; letter-spacing:1px; font-family:'Cinzel',serif;" data-translate="pass_title">GY-GY PASSPORT</div>
+            
+            <!-- Отладочный блок внутри паспорта -->
+            <div class="debug-entrance-panel" style="position:relative; bottom:auto; left:auto; transform:none; margin: 10px auto; width:100%; justify-content:center; background:rgba(0,0,0,0.05); border-color:#ccc;">
+                <button id="btn-role-novice-mod" class="debug-role-btn" style="border-color:#333; color:#000;" onclick="setUserRole('novice')">Новичок</button>
+                <button id="btn-role-member-mod" class="debug-role-btn" style="border-color:#333; color:#000;" onclick="setUserRole('member')">Участник</button>
+            </div>
+
             <div id="pass-id-val" style="font-weight:700; font-size:13px; margin-top:5px; color:#555555;">#ID</div>
             <div id="pass-nickname-val" style="font-weight:700; font-size:14px; margin-top:4px; color:#000000; font-family:'Share Tech Mono', monospace;">NICKNAME</div>
             <div class="box-final" style="width:90px; height:90px; border-radius:50%; border:2px solid var(--gold); margin: 8px auto;"><img id="pass-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%; background-color:#ffffff;"></div>
@@ -273,8 +300,7 @@
         </div>
     </div>
 
-    <!-- Встроенные данные языков для надежности -->
- <!-- Встроенные данные языков -->
+    <!-- Список языков -->
     <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
@@ -292,7 +318,7 @@
         ];
     </script>
 
-    <!-- Скрипт инициализации Google Translate -->
+    <!-- Google Translate Init -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             try {
@@ -305,6 +331,7 @@
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+    <!-- Основной скрипт -->
     <script type="text/javascript">
         let currentID = "";
         let currentUserImage = "";
@@ -312,12 +339,27 @@
         let selectedNickType = 'own';
         let userChosenNickname = '';
 
+        // Управление ролями (Новичок / Участник) с синхронизацией
+        function setUserRole(role) {
+            try {
+                localStorage.setItem('gygy_user_role', role);
+            } catch(e) {}
+
+            document.querySelectorAll('.debug-role-btn').forEach(btn => btn.classList.remove('active-role'));
+            
+            const activeBtns = document.querySelectorAll(role === 'member' ? '#btn-role-member, #btn-role-member-mod' : '#btn-role-novice, #btn-role-novice-mod');
+            activeBtns.forEach(b => b.classList.add('active-role'));
+
+            const staffRoomBtn = document.getElementById('btn-staff-room');
+            if (staffRoomBtn) {
+                staffRoomBtn.style.display = (role === 'member') ? 'block' : 'none';
+            }
+        }
+
         function toggleLangDropdown(event) {
             if (event) event.stopPropagation();
             const list = document.getElementById('club-lang-list');
-            if (list) {
-                list.classList.toggle('open');
-            }
+            if (list) list.classList.toggle('open');
         }
 
         function getCurrentLangCode() {
@@ -327,20 +369,15 @@
         function renderFilteredLanguageList() {
             const listContainer = document.getElementById('club-lang-list');
             if (!listContainer) return;
-
             const currentLangCode = getCurrentLangCode();
 
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
-                
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
-                if (activeLangObj) {
-                    updateCurrentLangUI(activeLangObj);
-                }
+                if (activeLangObj) updateCurrentLangUI(activeLangObj);
 
                 clubLanguages.forEach(lang => {
                     if (lang.code === currentLangCode) return;
-
                     const item = document.createElement('div');
                     item.className = 'club-lang-item';
                     item.onclick = (e) => {
@@ -360,10 +397,8 @@
         function updateCurrentLangUI(langObj) {
             const nameElem = document.getElementById('current-lang-name');
             if (nameElem) nameElem.innerText = langObj.name;
-            
             const flagElem = document.getElementById('current-flag');
             if (flagElem && langObj.flag) flagElem.src = langObj.flag;
-
             const avatarElem = document.getElementById('current-avatar');
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
@@ -384,14 +419,12 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // Надежный метод переключения через скрытый селектор Google Translate
             try {
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
                     selectElement.dispatchEvent(new Event('change'));
                 } else {
-                    // Если виджет еще не прогрузился, пробуем через куки и перезагрузку
                     document.cookie = "googtrans=/en/" + langCode + "; path=/;";
                     location.reload();
                 }
@@ -425,6 +458,8 @@
             if (type === 'own') {
                 userChosenNickname = val;
                 try { localStorage.setItem('gygy_nickname', val); } catch(e) {}
+                const passNickVal = document.getElementById('pass-nickname-val');
+                if (passNickVal) passNickVal.innerText = val || 'NICKNAME';
             }
         }
 
@@ -469,6 +504,10 @@
 
             const clubNickLabel = document.getElementById('club-nick-label');
             if (clubNickLabel) clubNickLabel.innerText = clubNick;
+
+            const passNickVal = document.getElementById('pass-nickname-val');
+            const savedNickname = localStorage.getItem('gygy_nickname') || clubNick;
+            if (passNickVal) passNickVal.innerText = savedNickname;
         }
 
         function checkAndFillRegistrationForm() {
@@ -575,6 +614,9 @@
                     
                     const badgeImg = document.getElementById('badge-avatar-img');
                     if (badgeImg) badgeImg.src = currentUserImage;
+                    const passImg = document.getElementById('pass-avatar-img');
+                    if (passImg) passImg.src = currentUserImage;
+
                     const btnWHall = document.getElementById('btn-w-hall'); if(btnWHall) btnWHall.classList.remove('btn-sleep');
                     const btnPass = document.getElementById('btn-pass'); if(btnPass) btnPass.classList.remove('btn-sleep');
                 }
@@ -607,6 +649,9 @@
         document.addEventListener("DOMContentLoaded", () => {
             renderFilteredLanguageList();
             checkAndFillRegistrationForm();
+            
+            const savedRole = localStorage.getItem('gygy_user_role') || 'novice';
+            setUserRole(savedRole);
 
             setTimeout(() => {
                 document.body.classList.add('page-loaded');
