@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.24 CORE</title>
+    <title>GY-GY Club v7.0.25 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -141,7 +141,8 @@
         .manifest-btn-box { position: absolute; bottom: -45px; left: 50%; transform: translateX(-50%); width: 130px; display: flex; flex-direction: column; gap: 5px; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s, bottom 0.4s; z-index: 10; }
         .btn-manifest { width: 100%; padding: 5px 0; font-size: 11px; margin: 0; background: #000000; box-shadow: 0 4px 10px rgba(0,0,0,0.9); }
         
-        .goog-te-banner-frame, .skiptranslate, iframe.goog-te-menu-frame { display: none !important; }
+        /* Стили для корректной работы виджета Google Translate без затрогивания верстки */
+        .goog-te-banner-frame, .skiptranslate { display: none !important; }
         body { top: 0px !important; }
         
         font { background-color: transparent !important; background: transparent !important; color: inherit !important; box-shadow: none !important; text-shadow: none !important; }
@@ -273,8 +274,7 @@
         </div>
     </div>
 
-    <!-- Встроенные данные языков для надежности -->
- <!-- Встроенные данные языков -->
+    <!-- Список языков -->
     <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
@@ -292,7 +292,7 @@
         ];
     </script>
 
-    <!-- Скрипт инициализации Google Translate -->
+    <!-- Инициализация Google Translate -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             try {
@@ -384,14 +384,12 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // Надежный метод переключения через скрытый селектор Google Translate
             try {
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
                     selectElement.dispatchEvent(new Event('change'));
                 } else {
-                    // Если виджет еще не прогрузился, пробуем через куки и перезагрузку
                     document.cookie = "googtrans=/en/" + langCode + "; path=/;";
                     location.reload();
                 }
