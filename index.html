@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.22 CORE</title>
+    <title>GY-GY Club v7.0.23 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -332,7 +332,7 @@
             return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
-        function renderFilteredLanguageList() {
+    function renderFilteredLanguageList() {
             const listContainer = document.getElementById('club-lang-list');
             if (!listContainer) return;
 
@@ -343,14 +343,8 @@
                 
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) {
-                    const nameElem = document.getElementById('current-lang-name');
-                    if (nameElem) nameElem.innerText = activeLangObj.name;
-                    
-                    const flagElem = document.getElementById('current-flag');
-                    if (flagElem && activeLangObj.flag) flagElem.src = activeLangObj.flag;
-
-                    const avatarElem = document.getElementById('current-avatar');
-                    if (avatarElem && activeLangObj.avatar) avatarElem.src = activeLangObj.avatar;
+                    // Обновляем рамку текущим языком
+                    updateCurrentLangUI(activeLangObj);
                 }
 
                 clubLanguages.forEach(lang => {
@@ -360,7 +354,7 @@
                     item.className = 'club-lang-item';
                     item.onclick = (e) => {
                         e.stopPropagation();
-                        selectClubLanguage(lang.code, lang.name, lang.flag);
+                        selectClubLanguage(lang.code, lang.name, lang.flag, lang.avatar);
                     };
                     item.innerHTML = `
                         <div class="item-avatar"><img src="${lang.avatar || 'horse_welcome.png'}" alt=""></div>
@@ -372,6 +366,52 @@
             }
         }
 
+        function updateCurrentLangUI(langObj) {
+            const nameElem = document.getElementById('current-lang-name');
+            if (nameElem) nameElem.innerText = langObj.name;
+            
+            const flagElem = document.getElementById('current-flag');
+            if (flagElem && langObj.flag) flagElem.src = langObj.flag;
+
+            const avatarElem = document.getElementById('current-avatar');
+            if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
+        }
+
+        function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
+            const nameToSave = langName || 'English';
+            const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
+            const avatarToSave = avatarUrl || 'horse_welcome.png';
+            
+            // 1. Мгновенно обновляем интерфейс рамки перед перезагрузкой
+            updateCurrentLangUI({ code: langCode, name: nameToSave, flag: flagToSave, avatar: avatarToSave });
+
+            try {
+                localStorage.setItem('gygy_lang_code', langCode);
+                localStorage.setItem('gygy_lang_name', nameToSave);
+                localStorage.setItem('gygy_lang_flag', flagToSave);
+            } catch(e) {}
+
+            const listElem = document.getElementById('club-lang-list');
+            if (listElem) listElem.classList.remove('open');
+
+            const host = window.location.hostname;
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            if (host) {
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
+            }
+
+            if (langCode !== 'en') {
+                document.cookie = `googtrans=/en/${langCode}; path=/;`;
+                if (host) {
+                    document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
+                }
+            }
+            
+            // Небольшая задержка, чтобы куки успели записаться перед перезагрузкой страницы
+            setTimeout(() => {
+                location.reload();
+            }, 50);
+        }
         function selectClubLanguage(langCode, langName, flagUrl) {
             const nameToSave = langName || 'English';
             
