@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.26 CORE</title>
+    <title>GY-GY Club v7.0.27 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -281,8 +281,7 @@
         <button class="btn-gy" style="min-width: auto; padding: 4px 8px; font-size: 10px;" onclick="portalTransition('block-hall')">To Hall</button>
         <button class="btn-gy" style="min-width: auto; padding: 4px 8px; font-size: 10px;" onclick="portalTransition('block-entrance')">To Door</button>
     </div>
-
-    <script>
+<script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -637,6 +636,29 @@
         function debugReset() {
             localStorage.clear();
             location.reload();
+        }
+
+        function switchDebugMode(mode) {
+            const btnNovice = document.getElementById('btn-mode-novice');
+            const btnMember = document.getElementById('btn-mode-member');
+            
+            if (mode === 'novice') {
+                if(btnNovice) btnNovice.style.borderColor = 'var(--gold)';
+                if(btnMember) btnMember.style.borderColor = '#666';
+                localStorage.removeItem('gy_user_img');
+                localStorage.removeItem('gygy_avatar');
+                currentUserImage = "";
+                const badge = document.getElementById('global-user-badge');
+                if(badge) badge.style.display = 'none';
+                portalTransition('block-welcome');
+            } else {
+                if(btnMember) btnMember.style.borderColor = 'var(--gold)';
+                if(btnNovice) btnNovice.style.borderColor = '#666';
+                if (!currentUserImage) {
+                    generateAvatar();
+                }
+                portalTransition('block-hall');
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
