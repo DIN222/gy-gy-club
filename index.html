@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.23 CORE</title>
+    <title>GY-GY Club v7.0.24 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -274,6 +274,7 @@
     </div>
 
     <!-- Встроенные данные языков для надежности -->
+ <!-- Встроенные данные языков -->
     <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
@@ -319,31 +320,21 @@
             }
         }
 
-        function getGoogleTransCookie() {
-            try {
-                const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
-                if (match) {
-                    const parts = decodeURIComponent(match[2]).split('/');
-                    if (parts.length > 2 && parts[2]) {
-                        return parts[2];
-                    }
-                }
-            } catch(e) {}
+        function getCurrentLangCode() {
             return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
-    function renderFilteredLanguageList() {
+        function renderFilteredLanguageList() {
             const listContainer = document.getElementById('club-lang-list');
             if (!listContainer) return;
 
-            const currentLangCode = getGoogleTransCookie();
+            const currentLangCode = getCurrentLangCode();
 
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
                 
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) {
-                    // Обновляем рамку текущим языком
                     updateCurrentLangUI(activeLangObj);
                 }
 
@@ -382,7 +373,6 @@
             const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
             const avatarToSave = avatarUrl || 'horse_welcome.png';
             
-            // 1. Мгновенно обновляем интерфейс рамки перед перезагрузкой
             updateCurrentLangUI({ code: langCode, name: nameToSave, flag: flagToSave, avatar: avatarToSave });
 
             try {
@@ -394,50 +384,20 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            const host = window.location.hostname;
-            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            if (host) {
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
-            }
-
-            if (langCode !== 'en') {
-                document.cookie = `googtrans=/en/${langCode}; path=/;`;
-                if (host) {
-                    document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
-                }
-            }
-            
-            // Небольшая задержка, чтобы куки успели записаться перед перезагрузкой страницы
-            setTimeout(() => {
-                location.reload();
-            }, 50);
-        }
-        function selectClubLanguage(langCode, langName, flagUrl) {
-            const nameToSave = langName || 'English';
-            
+            // Надежный метод переключения через скрытый селектор Google Translate
             try {
-                localStorage.setItem('gygy_lang_code', langCode);
-                localStorage.setItem('gygy_lang_name', nameToSave);
-                localStorage.setItem('gygy_lang_flag', flagUrl);
-            } catch(e) {}
-
-            const listElem = document.getElementById('club-lang-list');
-            if (listElem) listElem.classList.remove('open');
-
-            const host = window.location.hostname;
-            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            if (host) {
-                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${host};`;
-            }
-
-            if (langCode !== 'en') {
-                document.cookie = `googtrans=/en/${langCode}; path=/;`;
-                if (host) {
-                    document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host};`;
+                const selectElement = document.querySelector('.goog-te-combo');
+                if (selectElement) {
+                    selectElement.value = langCode;
+                    selectElement.dispatchEvent(new Event('change'));
+                } else {
+                    // Если виджет еще не прогрузился, пробуем через куки и перезагрузку
+                    document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+                    location.reload();
                 }
+            } catch(e) {
+                location.reload();
             }
-            
-            location.reload();
         }
 
         window.addEventListener('click', (e) => {
