@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.2 CORE</title>
+    <title>GY-GY Club v7.0.29 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
-        :root { --gold: #FFD700; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
+        :root { --gold: #FFD700; --gold-intense: #FFE55C; --door-wood: #3E2723; --violet: #8A2BE2; --neon-glow: rgba(138, 43, 226, 0.6); }
         
         * { -webkit-tap-highlight-color: transparent !important; box-sizing: border-box; }
         body, button, input, div, img, span { pointer-events: auto !important; }
@@ -88,16 +88,26 @@
         .club-lang-item .item-flag { width: 16px; height: 11px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; }
         .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* Панель ролей: золото на черном, без заливки по умолчанию + усиление букв при активации на 15% */
         .debug-entrance-panel {
             position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 8px; z-index: 1000; background: rgba(0,0,0,0.8);
+            display: flex; gap: 8px; z-index: 1000; background: rgba(0,0,0,0.85);
             padding: 6px 12px; border-radius: 20px; border: 1px solid var(--gold);
         }
         .debug-role-btn {
-            padding: 3px 8px; border: 1px solid var(--gold); background: transparent; 
-            color: var(--gold); cursor: pointer; border-radius: 10px; font-size: 9px; font-family: 'Share Tech Mono', monospace;
+            padding: 4px 10px; border: 1px solid var(--gold); background: transparent; 
+            color: var(--gold); cursor: pointer; border-radius: 10px; font-size: 10px; font-family: 'Share Tech Mono', monospace;
+            transition: all 0.3s ease;
         }
-        .debug-role-btn.active-role { background: var(--gold); color: #000; font-weight: bold; }
+        .debug-role-btn:hover { background: rgba(255,215,0,0.15); }
+        .debug-role-btn.active-role { 
+            background: var(--gold) !important; 
+            color: #000000 !important; 
+            font-weight: bold; 
+            text-shadow: 0 0 4px rgba(255, 229, 92, 0.9);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            filter: brightness(1.15); /* +15% интенсивности */
+        }
 
         .passport-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .passport-card { background: #F5F5DC; border: 3px solid var(--gold); border-radius: 16px; padding: 20px; width: 280px; color: #000000; text-align: center; box-shadow: 0 0 25px rgba(0,0,0,0.5); position: relative; }
@@ -416,18 +426,26 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            try {
+            applyGoogleTranslate(langCode);
+        }
+
+        function applyGoogleTranslate(langCode) {
+            let attempts = 0;
+            const maxAttempts = 20;
+            
+            const interval = setInterval(() => {
+                attempts++;
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
                     selectElement.dispatchEvent(new Event('change'));
-                } else {
+                    clearInterval(interval);
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(interval);
                     document.cookie = "googtrans=/en/" + langCode + "; path=/;";
                     location.reload();
                 }
-            } catch(e) {
-                location.reload();
-            }
+            }, 250);
         }
 
         window.addEventListener('click', (e) => {
@@ -658,17 +676,10 @@
             const savedRole = localStorage.getItem('gygy_user_role') || 'novice';
             setUserRole(savedRole);
 
-            // Восстановление выбранного пользователем языка после загрузки элементов
-            setTimeout(() => {
-                const currentLangCode = getCurrentLangCode();
-                if (currentLangCode && currentLangCode !== 'en') {
-                    const selectElement = document.querySelector('.goog-te-combo');
-                    if (selectElement) {
-                        selectElement.value = currentLangCode;
-                        selectElement.dispatchEvent(new Event('change'));
-                    }
-                }
-            }, 600);
+            const currentLangCode = getCurrentLangCode();
+            if (currentLangCode) {
+                applyGoogleTranslate(currentLangCode);
+            }
 
             setTimeout(() => {
                 document.body.classList.add('page-loaded');
