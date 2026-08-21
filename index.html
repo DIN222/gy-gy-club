@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.29 CORE</title>
+    <title>GY-GY Club v7.0.30 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -294,7 +294,10 @@
         </div>
     </div>
 
-<script>
+<!-- Скрытый контейнер для инициализации виджета Google Translate -->
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -311,10 +314,15 @@
         ];
     </script>
 
+    <!-- Инициализация Google Translate -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             try {
-                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
+                    autoDisplay: false
+                }, 'google_translate_element');
             } catch(e) {}
         }
     </script>
@@ -338,7 +346,6 @@
             }
 
             if (ambientFadeInterval) clearInterval(ambientFadeInterval);
-
             if (targetVolume === 0 && sndAmbient.paused) return;
 
             const steps = 15;
@@ -408,6 +415,7 @@
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
 
+        // Жесткая привязка перевода всего сайта через Google Translate API и куки
         function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
             const nameToSave = langName || 'English';
             const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
@@ -424,16 +432,17 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            try {
-                const selectElement = document.querySelector('.goog-te-combo');
-                if (selectElement) {
-                    selectElement.value = langCode;
-                    selectElement.dispatchEvent(new Event('change'));
-                } else {
-                    document.cookie = "googtrans=/en/" + langCode + "; path=/;";
-                    location.reload();
-                }
-            } catch(e) {
+            // Устанавливаем официальную куку Google Translate для всего домена
+            document.cookie = `googtrans=/en/${langCode}; path=/; domain=${document.domain}`;
+            document.cookie = `googtrans=/en/${langCode}; path=/;`;
+
+            // Пытаемся плавно переключить через внутренний select виджета, либо перезагружаем для чистого применения
+            const googleSelect = document.querySelector('.goog-te-combo');
+            if (googleSelect) {
+                googleSelect.value = langCode;
+                googleSelect.dispatchEvent(new Event('change'));
+                setTimeout(() => location.reload(), 300);
+            } else {
                 location.reload();
             }
         }
@@ -671,3 +680,4 @@
     </script>
 </body>
 </html>
+
