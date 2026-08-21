@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.30 CORE</title>
+    <title>GY-GY Club v7.0.31 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -311,22 +311,27 @@
         ];
     </script>
 
-    <script type="text/javascript">
+   <script type="text/javascript">
+        let gTranslateInitDone = false;
         function googleTranslateElementInit() {
+            if (gTranslateInitDone) return;
+            gTranslateInitDone = true;
             try {
-                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
+                    autoDisplay: false
+                }, 'google_translate_element');
+                
+                // Прячем технический элемент гугла
+                setTimeout(() => {
+                    const gtEle = document.getElementById('google_translate_element');
+                    if (gtEle) gtEle.style.display = 'none';
+                }, 100);
             } catch(e) {}
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-    <script type="text/javascript">
-        let currentID = "";
-        let currentUserImage = "";
-        let currentBlockId = 'block-entrance';
-        let selectedNickType = 'own';
-        let userChosenNickname = '';
-        let ambientFadeInterval = null;
 
         function setAmbientVolumeSmooth(targetVolume, duration = 1500) {
             const sndAmbient = document.getElementById('snd-ambient');
@@ -408,7 +413,7 @@
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
 
-       function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
+     function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
             const nameToSave = langName || 'English';
             const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
             const avatarToSave = avatarUrl || 'horse_welcome.png';
@@ -424,24 +429,20 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
+            // 1. ПОЛНОСТЬЮ вычищаем старые куки перевода для всех доменов/путей
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+
+            // 2. Если выбрали английский — просто перезагружаем страницу (это вернет чистый оригинал)
+            if (langCode === 'en') {
+                location.reload();
+                return;
+            }
+
+            // 3. Для других языков ставим свежую куку и дергаем селект Google
+            document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+
             try {
-                // Уничтожаем все куки переводчика для всех путей и поддоменов
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname;
-
-                // Если выбран английский — стираем следы Google Translate с html-элемента и перезагружаем
-                if (langCode === 'en') {
-                    document.documentElement.removeAttribute('class');
-                    document.documentElement.removeAttribute('style');
-                    document.documentElement.lang = 'en';
-                    location.reload();
-                    return;
-                }
-
-                // Для других языков ставим куку
-                document.cookie = "googtrans=/en/" + langCode + "; path=/;";
-
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
