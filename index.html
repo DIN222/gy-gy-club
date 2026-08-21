@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.33 CORE</title>
+    <title>GY-GY Club v7.0.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-<script>
+    <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -309,23 +309,12 @@
             { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png', avatar: 'horse_welcome.png' },
             { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png', avatar: 'horse_welcome.png' }
         ];
+    </script>
 
-        let gTranslateInitDone = false;
-
+    <script type="text/javascript">
         function googleTranslateElementInit() {
-            if (gTranslateInitDone) return;
-            gTranslateInitDone = true;
             try {
-                new google.translate.TranslateElement({
-                    pageLanguage: 'en',
-                    includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
-                    autoDisplay: false
-                }, 'google_translate_element');
-                
-                setTimeout(() => {
-                    const gtEle = document.getElementById('google_translate_element');
-                    if (gtEle) gtEle.style.display = 'none';
-                }, 100);
+                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
             } catch(e) {}
         }
     </script>
@@ -349,6 +338,7 @@
             }
 
             if (ambientFadeInterval) clearInterval(ambientFadeInterval);
+
             if (targetVolume === 0 && sndAmbient.paused) return;
 
             const steps = 15;
@@ -378,13 +368,6 @@
         }
 
         function getCurrentLangCode() {
-            const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
-            if (match) {
-                const parts = match[2].split('/');
-                if (parts.length > 0 && parts[parts.length - 1]) {
-                    return parts[parts.length - 1];
-                }
-            }
             return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
@@ -395,11 +378,11 @@
             const currentLangCode = getCurrentLangCode();
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
-                
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) updateCurrentLangUI(activeLangObj);
 
                 clubLanguages.forEach(lang => {
+                    if (lang.code === currentLangCode) return;
                     const item = document.createElement('div');
                     item.className = 'club-lang-item';
                     item.onclick = (e) => {
@@ -423,37 +406,56 @@
             if (flagElem && langObj.flag) flagElem.src = langObj.flag;
             const avatarElem = document.getElementById('current-avatar');
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
-            const badgeFlagImg = document.getElementById('badge-flag-img');
-            if (badgeFlagImg && langObj.flag) badgeFlagImg.src = langObj.flag;
         }
 
         function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
-            updateCurrentLangUI({ code: langCode, name: langName, flag: flagUrl, avatar: avatarUrl });
+            const nameToSave = langName || 'English';
+            const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
+            const avatarToSave = avatarUrl || 'horse_welcome.png';
+            
+            updateCurrentLangUI({ code: langCode, name: nameToSave, flag: flagToSave, avatar: avatarToSave });
 
             try {
                 localStorage.setItem('gygy_lang_code', langCode);
+                localStorage.setItem('gygy_lang_name', nameToSave);
+                localStorage.setItem('gygy_lang_flag', flagToSave);
             } catch(e) {}
 
-            const translateSelect = document.querySelector('.goog-te-combo');
-            if (translateSelect) {
-                translateSelect.value = langCode;
-                translateSelect.dispatchEvent(new Event('change'));
-            } else {
-                document.cookie = `googtrans=/en/${langCode}; path=/;`;
+            const listElem = document.getElementById('club-lang-list');
+            if (listElem) listElem.classList.remove('open');
+
+            try {
+                const selectElement = document.querySelector('.goog-te-combo');
+                if (selectElement) {
+                    selectElement.value = langCode;
+                    selectElement.dispatchEvent(new Event('change'));
+                } else {
+                    document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+                    location.reload();
+                }
+            } catch(e) {
                 location.reload();
             }
         }
+
+        window.addEventListener('click', (e) => {
+            const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
+            const list = document.getElementById('club-lang-list');
+            if (wrapper && list && !wrapper.contains(e.target)) {
+                list.classList.remove('open');
+            }
+        });
 
         function setNickType(type) {
             selectedNickType = type;
             const boxOwn = document.getElementById('box-own-nick');
             const boxClub = document.getElementById('box-club-nick');
             if (type === 'own') {
-                if (boxOwn) boxOwn.classList.add('selected');
-                if (boxClub) boxClub.classList.remove('selected');
+                boxOwn.classList.add('selected');
+                boxClub.classList.remove('selected');
             } else {
-                if (boxClub) boxClub.classList.add('selected');
-                if (boxOwn) boxOwn.classList.remove('selected');
+                boxClub.classList.add('selected');
+                boxOwn.classList.remove('selected');
             }
         }
 
@@ -498,23 +500,16 @@
 
             let clubNick = localStorage.getItem('gygy_club_nick');
             if (!clubNick) {
-                const coolNicks = ["BigCoin", "Striker", "Champagne", "Tycoon", "Lucky", "Insider", "Phantom", "Winner", "Captain", "Maestro", "Prime", "Navigator", "Puncher", "Triumph", "Oracle"];
+                const coolNicks = ["БигКоин", "Нападающий", "Шампань", "Магнат", "Счастливчик", "Инсайдер", "Фантом", "Победитель", "Капитан", "Маэстро", "Прайм", "Штурман", "Панчер", "Триумф", "Оракул"];
                 clubNick = coolNicks[Math.floor(Math.random() * coolNicks.length)];
                 try { localStorage.setItem('gygy_club_nick', clubNick); } catch(e) {}
             }
 
             const clubNickLabel = document.getElementById('club-nick-label');
             if (clubNickLabel) clubNickLabel.innerText = clubNick;
-            
-            const passNicknameVal = document.getElementById('pass-nickname-val');
-            if (passNicknameVal) {
-                passNicknameVal.innerText = localStorage.getItem('gygy_nickname') || clubNick;
-            }
         }
 
         function checkAndFillRegistrationForm() {
-            renderFilteredLanguageList();
-
             const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
             currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace') || "GY-" + Math.floor(100000 + Math.random() * 900000);
             localStorage.setItem('gygy_id', currentID);
@@ -666,6 +661,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            renderFilteredLanguageList();
             checkAndFillRegistrationForm();
 
             setTimeout(() => {
