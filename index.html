@@ -294,20 +294,6 @@
         </div>
     </div>
 
-<!-- Скрытый контейнер для инициализации виджета Google Translate -->
-    <div id="google_translate_element" style="display:none;"></div>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Club Portal</title>
-</head>
-<body>
-
-    <!-- Скрытый контейнер для инициализации виджета Google Translate -->
-    <div id="google_translate_element" style="display:none;"></div>
-
     <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
@@ -323,10 +309,7 @@
             { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png', avatar: 'horse_welcome.png' },
             { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png', avatar: 'horse_welcome.png' }
         ];
-    </script>
 
-    <!-- Инициализация Google Translate -->
-    <script type="text/javascript">
         function googleTranslateElementInit() {
             try {
                 new google.translate.TranslateElement({
@@ -386,6 +369,13 @@
         }
 
         function getCurrentLangCode() {
+            const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
+            if (match) {
+                const parts = match[2].split('/');
+                if (parts.length > 0 && parts[parts.length - 1]) {
+                    return parts[parts.length - 1];
+                }
+            }
             return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
@@ -423,6 +413,8 @@
             if (flagElem && langObj.flag) flagElem.src = langObj.flag;
             const avatarElem = document.getElementById('current-avatar');
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
+            const badgeFlagImg = document.getElementById('badge-flag-img');
+            if (badgeFlagImg && langObj.flag) badgeFlagImg.src = langObj.flag;
         }
 
         function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
@@ -516,9 +508,16 @@
 
             const clubNickLabel = document.getElementById('club-nick-label');
             if (clubNickLabel) clubNickLabel.innerText = clubNick;
+            
+            const passNicknameVal = document.getElementById('pass-nickname-val');
+            if (passNicknameVal) {
+                passNicknameVal.innerText = localStorage.getItem('gygy_nickname') || clubNick;
+            }
         }
 
         function checkAndFillRegistrationForm() {
+            renderFilteredLanguageList();
+
             const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
             currentID = localStorage.getItem('gygy_id') || localStorage.getItem('gy_user_id') || localStorage.getItem('gy_trace') || "GY-" + Math.floor(100000 + Math.random() * 900000);
             localStorage.setItem('gygy_id', currentID);
@@ -670,7 +669,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            renderFilteredLanguageList();
             checkAndFillRegistrationForm();
 
             setTimeout(() => {
@@ -680,4 +678,3 @@
     </script>
 </body>
 </html>
-
