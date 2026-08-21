@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.31 CORE</title>
+    <title>GY-GY Club v7.0.32 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -417,35 +417,27 @@
             if (badgeFlagImg && langObj.flag) badgeFlagImg.src = langObj.flag;
         }
 
-        function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
-            const nameToSave = langName || 'English';
-            const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
-            const avatarToSave = avatarUrl || 'horse_welcome.png';
-            
-            updateCurrentLangUI({ code: langCode, name: nameToSave, flag: flagToSave, avatar: avatarToSave });
+      function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
+            // 1. Обновляем UI мгновенно без перезагрузки, чтобы не ломать состояние
+            updateCurrentLangUI({ code: langCode, name: langName, flag: flagUrl, avatar: avatarUrl });
 
+            // 2. Сохраняем настройки
             try {
                 localStorage.setItem('gygy_lang_code', langCode);
-                localStorage.setItem('gygy_lang_name', nameToSave);
-                localStorage.setItem('gygy_lang_flag', flagToSave);
             } catch(e) {}
 
-            const listElem = document.getElementById('club-lang-list');
-            if (listElem) listElem.classList.remove('open');
-
-            document.cookie = `googtrans=/en/${langCode}; path=/; domain=${document.domain}`;
-            document.cookie = `googtrans=/en/${langCode}; path=/;`;
-
-            location.reload();
-        }
-
-        window.addEventListener('click', (e) => {
-            const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
-            const list = document.getElementById('club-lang-list');
-            if (wrapper && list && !wrapper.contains(e.target)) {
-                list.classList.remove('open');
+            // 3. Используем специфичный для Google Translate метод переключения через объект, 
+            // если он уже проинициализирован, вместо агрессивного location.reload()
+            const translateSelect = document.querySelector('.goog-te-combo');
+            if (translateSelect) {
+                translateSelect.value = langCode;
+                translateSelect.dispatchEvent(new Event('change'));
+            } else {
+                // Если селект еще не загрузился, используем старый метод кук
+                document.cookie = `googtrans=/en/${langCode}; path=/;`;
+                location.reload();
             }
-        });
+        }
 
         function setNickType(type) {
             selectedNickType = type;
