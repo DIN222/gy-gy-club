@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.23 CORE</title>
+    <title>GY-GY Club v7.0.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -113,7 +113,6 @@
         .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
         .nickname-square input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent; }
 
-        /* Увеличенный портрет Коня без перегрузки интерфейса */
         #block-welcome { justify-content: center !important; padding: 10px 0 !important; }
         #block-welcome img { max-height: 34vh !important; width: auto; object-fit: contain; margin: 4px 0 !important; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.7)); }
         #block-welcome .welcome-title-elem { font-size: 22px !important; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 4px !important; font-family: 'Cinzel', serif; }
@@ -155,7 +154,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <!-- ДЕБАГ-ПАНЕЛЬ РОЛЕЙ -->
     <div id="debug-panel" style="position: fixed; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #00ffcc; padding: 4px 8px; border-radius: 4px; font-family: monospace; z-index: 9999; font-size: 10px; border: 1px solid #00ffcc; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
         <span>🧪 Debug:</span>
         <button onclick="debugSetRole('newbie')" style="background: #111; color: #fff; border: 1px solid #551; padding: 2px 4px; cursor: pointer; font-size: 9px; border-radius: 2px;">Новичок</button>
@@ -190,7 +188,6 @@
     
     <div class="ui-header-right notranslate">GY-GY</div>
 
-    <!-- АУДИО БАРА И ОКРУЖЕНИЯ -->
     <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
     <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
     <audio id="snd-pour" src="pour_drink.mp3" preload="auto"></audio>
@@ -297,7 +294,6 @@
         </div>
     </div>
 
-    <!-- ДАННЫЕ ЯЗЫКОВ -->
     <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
@@ -315,7 +311,6 @@
         ];
     </script>
 
-    <!-- GOOGLE TRANSLATE INIT -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             try {
@@ -325,13 +320,46 @@
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- ЛОГИКА ПРИЛОЖЕНИЯ -->
     <script type="text/javascript">
         let currentID = "";
         let currentUserImage = "";
         let currentBlockId = 'block-entrance';
         let selectedNickType = 'own';
         let userChosenNickname = '';
+        let ambientFadeInterval = null;
+
+        function setAmbientVolumeSmooth(targetVolume, duration = 1500) {
+            const sndAmbient = document.getElementById('snd-ambient');
+            if (!sndAmbient) return;
+
+            if (sndAmbient.paused && targetVolume > 0) {
+                sndAmbient.volume = 0;
+                sndAmbient.play().catch(e => console.log("Ambient play prevented:", e));
+            }
+
+            if (ambientFadeInterval) clearInterval(ambientFadeInterval);
+
+            if (targetVolume === 0 && sndAmbient.paused) return;
+
+            const steps = 15;
+            const stepTime = duration / steps;
+            const currentVol = sndAmbient.volume;
+            const volumeStep = (targetVolume - currentVol) / steps;
+
+            ambientFadeInterval = setInterval(() => {
+                let newVol = sndAmbient.volume + volumeStep;
+                if ((volumeStep > 0 && newVol >= targetVolume) || (volumeStep < 0 && newVol <= targetVolume)) {
+                    sndAmbient.volume = Math.max(0, Math.min(1, targetVolume));
+                    clearInterval(ambientFadeInterval);
+                    if (targetVolume === 0) {
+                        sndAmbient.pause();
+                        sndAmbient.currentTime = 0;
+                    }
+                } else {
+                    sndAmbient.volume = Math.max(0, Math.min(1, newVol));
+                }
+            }, stepTime);
+        }
 
         function toggleLangDropdown(event) {
             if (event) event.stopPropagation();
@@ -522,19 +550,18 @@
         }
 
         function portalTransition(nextId) {
-            const ambientBar = document.getElementById('snd-ambient');
             const sndPour = document.getElementById('snd-pour');
-
-            // Затухание звуков бара при уходе из залов
-            if (ambientBar && nextId !== 'block-hall' && nextId !== 'block-bar') { 
-                ambientBar.pause(); 
-                ambientBar.currentTime = 0; 
-            }
 
             if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
             if (nextId === 'block-bar') { 
-                if (sndPour) { sndPour.play().catch(e => {}); }
-                window.location.href = 'bar.html'; 
+                setAmbientVolumeSmooth(0.5, 500);
+                if (sndPour) {
+                    sndPour.currentTime = 0;
+                    sndPour.play().catch(e => console.log("Audio play prevented:", e));
+                }
+                setTimeout(() => {
+                    window.location.href = 'bar.html'; 
+                }, 400);
                 return; 
             }
             if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
@@ -561,31 +588,34 @@
                 if (mainDoor) mainDoor.classList.remove('door-exploded');
                 if (navArrows) navArrows.style.display = 'none';
                 if (badge) badge.style.display = 'none';
+                setAmbientVolumeSmooth(0, 1000);
             } else {
                 if (navArrows) navArrows.style.display = 'flex';
                 if (badge && currentUserImage) badge.style.display = 'block';
 
-                // Запуск эмбиента бара при входе в холл
-                if (nextId === 'block-hall' && ambientBar) {
-                    ambientBar.volume = 0.4;
-                    ambientBar.play().catch(e => {});
+                if (nextId === 'block-welcome') {
+                    setAmbientVolumeSmooth(0.1, 1500);
+                } else if (nextId === 'block-identity') {
+                    setAmbientVolumeSmooth(0.2, 1500);
+                } else if (nextId === 'block-hall') {
+                    setAmbientVolumeSmooth(0.35, 1500);
                 }
             }
         }
 
         function handleDoor() {
             const sndDoor = document.getElementById('snd-door');
-            const sndAmbient = document.getElementById('snd-ambient');
             const mainDoor = document.getElementById('main-door');
 
-            if (sndDoor) sndDoor.play().catch(e => {});
+            if (sndDoor) {
+                sndDoor.currentTime = 0;
+                sndDoor.play().catch(e => console.log("Door sound prevented:", e));
+            }
             if (mainDoor) mainDoor.classList.add('door-exploded');
 
+            setAmbientVolumeSmooth(0.1, 2000);
+
             setTimeout(() => {
-                if (sndAmbient) {
-                    sndAmbient.volume = 0.4;
-                    sndAmbient.play().catch(e => {});
-                }
                 portalTransition('block-welcome');
             }, 700);
         }
