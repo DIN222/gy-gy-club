@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.31 CORE</title>
+    <title>GY-GY Club v7.0.32 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -413,7 +413,7 @@
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
 
-     function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
+    function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
             const nameToSave = langName || 'English';
             const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
             const avatarToSave = avatarUrl || 'horse_welcome.png';
@@ -429,17 +429,21 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // 1. ПОЛНОСТЬЮ вычищаем старые куки перевода для всех доменов/путей
+            // Жестко вычищаем куки переводчика для всех возможных путей и доменов
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname;
 
-            // 2. Если выбрали английский — просто перезагружаем страницу (это вернет чистый оригинал)
             if (langCode === 'en') {
+                // Дополнительно страхуем сброс через хэш истории, если он остался от гугла
+                if (window.location.hash && window.location.hash.includes('googtrans')) {
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
+                }
                 location.reload();
                 return;
             }
 
-            // 3. Для других языков ставим свежую куку и дергаем селект Google
+            // Для остальных языков ставим куку
             document.cookie = "googtrans=/en/" + langCode + "; path=/;";
 
             try {
