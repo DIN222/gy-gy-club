@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.28 CORE</title>
+    <title>GY-GY Club v7.0.29 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-    <script>
+<script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -451,11 +451,11 @@
             const boxOwn = document.getElementById('box-own-nick');
             const boxClub = document.getElementById('box-club-nick');
             if (type === 'own') {
-                boxOwn.classList.add('selected');
-                boxClub.classList.remove('selected');
+                if (boxOwn) boxOwn.classList.add('selected');
+                if (boxClub) boxClub.classList.remove('selected');
             } else {
-                boxClub.classList.add('selected');
-                boxOwn.classList.remove('selected');
+                if (boxClub) boxClub.classList.add('selected');
+                if (boxOwn) boxOwn.classList.remove('selected');
             }
         }
 
@@ -500,7 +500,7 @@
 
             let clubNick = localStorage.getItem('gygy_club_nick');
             if (!clubNick) {
-                const coolNicks = ["БигКоин", "Нападающий", "Шампань", "Магнат", "Счастливчик", "Инсайдер", "Фантом", "Победитель", "Капитан", "Маэстро", "Прайм", "Штурман", "Панчер", "Триумф", "Оракул"];
+                const coolNicks = ["BigCoin", "Striker", "Champagne", "Tycoon", "Lucky", "Insider", "Phantom", "Winner", "Captain", "Maestro", "Prime", "Navigator", "Puncher", "Triumph", "Oracle"];
                 clubNick = coolNicks[Math.floor(Math.random() * coolNicks.length)];
                 try { localStorage.setItem('gygy_club_nick', clubNick); } catch(e) {}
             }
