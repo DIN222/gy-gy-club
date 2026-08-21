@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.32 CORE</title>
+    <title>GY-GY Club v7.0.33 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-    <script>
+<script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -310,13 +310,22 @@
             { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png', avatar: 'horse_welcome.png' }
         ];
 
+        let gTranslateInitDone = false;
+
         function googleTranslateElementInit() {
+            if (gTranslateInitDone) return;
+            gTranslateInitDone = true;
             try {
                 new google.translate.TranslateElement({
                     pageLanguage: 'en',
                     includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
                     autoDisplay: false
                 }, 'google_translate_element');
+                
+                setTimeout(() => {
+                    const gtEle = document.getElementById('google_translate_element');
+                    if (gtEle) gtEle.style.display = 'none';
+                }, 100);
             } catch(e) {}
         }
     </script>
@@ -386,6 +395,7 @@
             const currentLangCode = getCurrentLangCode();
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
+                
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) updateCurrentLangUI(activeLangObj);
 
@@ -417,23 +427,18 @@
             if (badgeFlagImg && langObj.flag) badgeFlagImg.src = langObj.flag;
         }
 
-      function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
-            // 1. Обновляем UI мгновенно без перезагрузки, чтобы не ломать состояние
+        function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
             updateCurrentLangUI({ code: langCode, name: langName, flag: flagUrl, avatar: avatarUrl });
 
-            // 2. Сохраняем настройки
             try {
                 localStorage.setItem('gygy_lang_code', langCode);
             } catch(e) {}
 
-            // 3. Используем специфичный для Google Translate метод переключения через объект, 
-            // если он уже проинициализирован, вместо агрессивного location.reload()
             const translateSelect = document.querySelector('.goog-te-combo');
             if (translateSelect) {
                 translateSelect.value = langCode;
                 translateSelect.dispatchEvent(new Event('change'));
             } else {
-                // Если селект еще не загрузился, используем старый метод кук
                 document.cookie = `googtrans=/en/${langCode}; path=/;`;
                 location.reload();
             }
