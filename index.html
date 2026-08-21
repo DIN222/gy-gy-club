@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.29 CORE</title>
+    <title>GY-GY Club v7.0.30 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -425,17 +425,21 @@
             if (listElem) listElem.classList.remove('open');
 
             try {
-                // Жестко очищаем куки переводчика при переключении, чтобы избежать склейки en/uk
+                // Уничтожаем все куки переводчика для всех путей и поддоменов
                 document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
                 document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname;
 
+                // Если выбран английский — стираем следы Google Translate с html-элемента и перезагружаем
                 if (langCode === 'en') {
-                    // Если выбран английский — принудительно перезагружаем страницу для полного сброса
+                    document.documentElement.removeAttribute('class');
+                    document.documentElement.removeAttribute('style');
+                    document.documentElement.lang = 'en';
                     location.reload();
                     return;
                 }
 
-                // Для остальных языков выставляем куку и селект Google
+                // Для других языков ставим куку
                 document.cookie = "googtrans=/en/" + langCode + "; path=/;";
 
                 const selectElement = document.querySelector('.goog-te-combo');
