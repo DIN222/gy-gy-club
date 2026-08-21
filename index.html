@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.28 CORE</title>
+    <title>GY-GY Club v7.0.29 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -408,7 +408,7 @@
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
 
-        function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
+       function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
             const nameToSave = langName || 'English';
             const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
             const avatarToSave = avatarUrl || 'horse_welcome.png';
@@ -425,19 +425,30 @@
             if (listElem) listElem.classList.remove('open');
 
             try {
+                // Жестко очищаем куки переводчика при переключении, чтобы избежать склейки en/uk
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
+
+                if (langCode === 'en') {
+                    // Если выбран английский — принудительно перезагружаем страницу для полного сброса
+                    location.reload();
+                    return;
+                }
+
+                // Для остальных языков выставляем куку и селект Google
+                document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
                     selectElement.dispatchEvent(new Event('change'));
                 } else {
-                    document.cookie = "googtrans=/en/" + langCode + "; path=/;";
                     location.reload();
                 }
             } catch(e) {
                 location.reload();
             }
         }
-
         window.addEventListener('click', (e) => {
             const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
             const list = document.getElementById('club-lang-list');
