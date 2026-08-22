@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.36 CORE</title>
+    <title>GY-GY Club v7.0.28 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -311,27 +311,22 @@
         ];
     </script>
 
-   <script type="text/javascript">
-        let gTranslateInitDone = false;
+    <script type="text/javascript">
         function googleTranslateElementInit() {
-            if (gTranslateInitDone) return;
-            gTranslateInitDone = true;
             try {
-                new google.translate.TranslateElement({
-                    pageLanguage: 'en',
-                    includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
-                    autoDisplay: false
-                }, 'google_translate_element');
-                
-                // Прячем технический элемент гугла
-                setTimeout(() => {
-                    const gtEle = document.getElementById('google_translate_element');
-                    if (gtEle) gtEle.style.display = 'none';
-                }, 100);
+                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
             } catch(e) {}
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script type="text/javascript">
+        let currentID = "";
+        let currentUserImage = "";
+        let currentBlockId = 'block-entrance';
+        let selectedNickType = 'own';
+        let userChosenNickname = '';
+        let ambientFadeInterval = null;
 
         function setAmbientVolumeSmooth(targetVolume, duration = 1500) {
             const sndAmbient = document.getElementById('snd-ambient');
@@ -376,7 +371,7 @@
             return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
-      function renderFilteredLanguageList() {
+        function renderFilteredLanguageList() {
             const listContainer = document.getElementById('club-lang-list');
             if (!listContainer) return;
 
@@ -394,16 +389,16 @@
                         e.stopPropagation();
                         selectClubLanguage(lang.code, lang.name, lang.flag, lang.avatar);
                     };
-                    
-                    const avatarSrc = lang.avatar || 'horse_welcome.png';
-                    item.innerHTML = '<div class="item-avatar"><img src="' + avatarSrc + '" alt=""></div>' +
-                                     '<img class="item-flag" src="' + lang.flag + '" alt="">' +
-                                     '<span class="item-text">' + lang.name + '</span>';
-                    
+                    item.innerHTML = `
+                        <div class="item-avatar"><img src="${lang.avatar || 'horse_welcome.png'}" alt=""></div>
+                        <img class="item-flag" src="${lang.flag}" alt="">
+                        <span class="item-text">${lang.name}</span>
+                    `;
                     listContainer.appendChild(item);
                 });
             }
         }
+
         function updateCurrentLangUI(langObj) {
             const nameElem = document.getElementById('current-lang-name');
             if (nameElem) nameElem.innerText = langObj.name;
@@ -413,7 +408,7 @@
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
 
-    function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
+        function selectClubLanguage(langCode, langName, flagUrl, avatarUrl) {
             const nameToSave = langName || 'English';
             const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
             const avatarToSave = avatarUrl || 'horse_welcome.png';
@@ -429,35 +424,20 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // Жестко вычищаем куки переводчика для всех возможных путей и доменов
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname;
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname;
-
-            if (langCode === 'en') {
-                // Дополнительно страхуем сброс через хэш истории, если он остался от гугла
-                if (window.location.hash && window.location.hash.includes('googtrans')) {
-                    history.pushState("", document.title, window.location.pathname + window.location.search);
-                }
-                location.reload();
-                return;
-            }
-
-            // Для остальных языков ставим куку
-            document.cookie = "googtrans=/en/" + langCode + "; path=/;";
-
             try {
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
                     selectElement.dispatchEvent(new Event('change'));
                 } else {
+                    document.cookie = "googtrans=/en/" + langCode + "; path=/;";
                     location.reload();
                 }
             } catch(e) {
                 location.reload();
             }
         }
+
         window.addEventListener('click', (e) => {
             const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
             const list = document.getElementById('club-lang-list');
