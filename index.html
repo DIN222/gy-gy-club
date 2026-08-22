@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.35 CORE</title>
+    <title>GY-GY Club v7.0.36 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -376,7 +376,7 @@
             return localStorage.getItem('gygy_lang_code') || 'en';
         }
 
-       function renderFilteredLanguageList() {
+      function renderFilteredLanguageList() {
             const listContainer = document.getElementById('club-lang-list');
             if (!listContainer) return;
 
@@ -394,11 +394,12 @@
                         e.stopPropagation();
                         selectClubLanguage(lang.code, lang.name, lang.flag, lang.avatar);
                     };
-                    item.innerHTML = `
-                        <div class="item-avatar"><img src="${lang.avatar || 'horse_welcome.png'}" alt=""></div>
-                        <img class="item-flag" src="${lang.flag}" alt="">
-                        <span class="item-text">${lang.name}</span>
-                    `;
+                    
+                    const avatarSrc = lang.avatar || 'horse_welcome.png';
+                    item.innerHTML = '<div class="item-avatar"><img src="' + avatarSrc + '" alt=""></div>' +
+                                     '<img class="item-flag" src="' + lang.flag + '" alt="">' +
+                                     '<span class="item-text">' + lang.name + '</span>';
+                    
                     listContainer.appendChild(item);
                 });
             }
