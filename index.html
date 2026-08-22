@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.30 CORE</title>
+    <title>GY-GY Club v7.0.31 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -292,8 +292,7 @@
             <div class="box-final" id="pass-qr-box" style="width:100px; height:100px; padding:5px; margin: 8px auto;"></div>
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
-    </div>
-<script>
+    </div><script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -311,7 +310,11 @@
 
         function googleTranslateElementInit() {
             try {
-                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
+                new google.translate.TranslateElement({ 
+                    pageLanguage: 'en', 
+                    includedLanguages: 'en,ru,es,de,fr,it,zh-CN,ja,ar,pt,uk,pl',
+                    autoDisplay: false 
+                }, 'google_translate_element');
             } catch(e) {}
         }
 
@@ -375,12 +378,11 @@
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
                 if (activeLangObj) updateCurrentLangUI(activeLangObj);
 
-                // Рендерим ВСЕ языки в список без исключения текущего
                 clubLanguages.forEach(lang => {
                     const item = document.createElement('div');
                     item.className = 'club-lang-item';
                     if (lang.code === currentLangCode) {
-                        item.classList.add('selected-lang'); // Можно добавить класс для визуального выделения текущего в списке, если нужно
+                        item.classList.add('selected-lang');
                     }
                     item.onclick = (e) => {
                         e.stopPropagation();
@@ -421,16 +423,18 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            try {
-                const selectElement = document.querySelector('.goog-te-combo');
-                if (selectElement) {
-                    selectElement.value = langCode;
-                    selectElement.dispatchEvent(new Event('change'));
-                } else {
-                    document.cookie = "googtrans=/en/" + langCode + "; path=/;";
-                    location.reload();
-                }
-            } catch(e) {
+            // Устанавливаем куки для Google Translate правильно
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+            document.cookie = "googtrans=/en/" + langCode + "; path=/; domain=" + document.domain;
+
+            // Пробуем переключить через селект Google, если он уже прогрузился
+            const selectElement = document.querySelector('.goog-te-combo');
+            if (selectElement) {
+                selectElement.value = langCode;
+                selectElement.dispatchEvent(new Event('change'));
+            } else {
+                // Если селект еще не появился в DOM, перезагружаем страницу — кука подхватится автоматически
                 location.reload();
             }
         }
@@ -669,4 +673,3 @@
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
-
