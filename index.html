@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.32 CORE</title>
+    <title>GY-GY Club v7.0.33 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -293,7 +293,7 @@
             <div style="font-size:10px; font-weight:900; color:#333333; margin-top:5px; text-transform:uppercase;" data-translate="pass_close_hint">Click &times; or outside to close</div>
         </div>
     </div>
-    <script>
+ <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
             { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
@@ -366,7 +366,6 @@
         }
 
         function getCurrentLangCode() {
-            // Проверяем куку Google Translate в первую очередь для точного соответствия
             const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
             if (match) {
                 const parts = match[2].split('/');
@@ -432,22 +431,27 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
-            // Очищаем старые куки перевода перед установкой новых
+            // 1. Очищаем старые куки перевода
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + document.domain;
 
-            if (langCode === 'en') {
-                // Если выбран английский (исходный язык), просто перезагружаем без куки перевода
-                location.reload();
-                return;
+            if (langCode !== 'en') {
+                // 2. Устанавливаем новые куки для Google Translate
+                document.cookie = "googtrans=/en/" + langCode + "; path=/;";
+                document.cookie = "googtrans=/en/" + langCode + "; path=/; domain=" + document.domain;
             }
 
-            // Устанавливаем корректные куки для Google Translate
-            document.cookie = "googtrans=/en/" + langCode + "; path=/;";
-            document.cookie = "googtrans=/en/" + langCode + "; path=/; domain=" + document.domain;
+            // 3. Пробуем программно дернуть системный селект Google, если он уже отрисован
+            const googleSelect = document.querySelector('.goog-te-combo');
+            if (googleSelect) {
+                googleSelect.value = langCode;
+                googleSelect.dispatchEvent(new Event('change'));
+            }
 
-            // Перезагружаем страницу, чтобы Google Translate применил перевод с чистим листом
-            location.reload();
+            // 4. Перезагружаем страницу для гарантированного применения перевода ко всему сайту
+            setTimeout(() => {
+                location.reload();
+            }, 100);
         }
 
         window.addEventListener('click', (e) => {
@@ -597,7 +601,7 @@
 
             if (nextId === 'block-entrance') {
                 const mainDoor = document.getElementById('main-door');
-                if (mainDoor) mainDoor.classList.remove('door-exploded');
+                if (mainDoor) mainDoor.classList.0 && mainDoor.classList.remove('door-exploded');
                 if (navArrows) navArrows.style.display = 'none';
                 if (badge) badge.style.display = 'none';
                 setAmbientVolumeSmooth(0, 1000);
