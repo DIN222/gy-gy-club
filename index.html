@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.3.28 CORE</title>
+    <title>GY-GY Club v7.0.24 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -98,8 +98,8 @@
         }
         .block.active { display: flex !important; opacity: 1 !important; z-index: 5000 !important; }
 
-        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 20px; text-align: center; max-width: 85%; margin-bottom: 6px; text-shadow: 2px 2px 4px #000000; }
-        .btn-gy { min-width: 240px; padding: 9px 16px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 3px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; font-size: 11px; }
+        .quote-text { font-family: 'Cormorant Garamond', 'Playfair Display', serif; font-style: italic; font-size: 20px; text-align: center; max-width: 85%; margin-bottom: 8px; text-shadow: 2px 2px 4px #000000; }
+        .btn-gy { min-width: 240px; padding: 10px 18px; background: #000000; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; text-transform: uppercase; font-weight: 700; margin: 4px 0; font-family: 'Montserrat', 'Cinzel', sans-serif; font-size: 12px; }
         
         .btn-sleep { opacity: 0.15 !important; pointer-events: none !important; cursor: not-allowed; }
         .box-final { width: 75px; height: 75px; border: 2px solid var(--gold); background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
@@ -113,9 +113,9 @@
         .nickname-square.selected { border-color: #ffffff; box-shadow: 0 0 10px var(--gold); }
         .nickname-square input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: none; background: transparent; }
 
-        #block-welcome { justify-content: center !important; padding: 10px 0 !important; }
-        #block-welcome img { max-height: 34vh !important; width: auto; object-fit: contain; margin: 4px 0 !important; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.7)); }
-        #block-welcome .welcome-title-elem { font-size: 22px !important; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 4px !important; font-family: 'Cinzel', serif; }
+        #block-welcome { justify-content: center !important; padding-top: 0 !important; }
+        #block-welcome img { max-height: 22vh !important; width: auto; object-fit: contain; margin: 6px 0 !important; filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)); }
+        #block-welcome .welcome-title-elem { font-size: 24px !important; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 6px !important; font-family: 'Cinzel', serif; }
 
         .ui-nav-arrows {
             position: fixed; top: 18px; left: 20px; z-index: 9999999; display: flex; gap: 15px; font-size: 24px; font-weight: 900 !important; 
@@ -154,28 +154,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-    <div id="debug-panel" style="position: fixed; bottom: 5px; right: 5px; background: rgba(0,0,0,0.7); color: #00ffcc; padding: 4px 8px; border-radius: 4px; font-family: monospace; z-index: 9999; font-size: 10px; border: 1px solid #00ffcc; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-        <span>🧪 Debug:</span>
-        <button onclick="debugSetRole('newbie')" style="background: #111; color: #fff; border: 1px solid #551; padding: 2px 4px; cursor: pointer; font-size: 9px; border-radius: 2px;">Новичок</button>
-        <button onclick="debugSetRole('resident')" style="background: #111; color: #fff; border: 1px solid #551; padding: 2px 4px; cursor: pointer; font-size: 9px; border-radius: 2px;">Резидент</button>
-    </div>
-    <script>
-        function debugSetRole(role) {
-            if (role === 'newbie') {
-                localStorage.clear();
-                alert("Режим сменен: ЧИСТЫЙ НОВИЧОК. Память очищена.");
-            } else if (role === 'resident') {
-                localStorage.clear();
-                localStorage.setItem('gygy_id', 'GY-777777');
-                localStorage.setItem('gygy_avatar', 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><rect width="100" height="100" fill="%23ff0055"/><circle cx="50" cy="50" r="30" fill="%23ffffff"/></svg>');
-                localStorage.setItem('gygy_nickname', 'TestResident');
-                localStorage.setItem('gygy_lang_code', 'en');
-                alert("Режим сменен: ГОТОВЫЙ РЕЗИДЕНТ.");
-            }
-            location.reload();
-        }
-    </script>
-
     <div id="global-user-badge" class="ui-user-badge notranslate" onclick="openPassport()">
         <img id="badge-avatar-img" class="badge-img" src="">
         <img id="badge-flag-img" class="badge-flag" src="https://flagcdn.com/w20/gb.png">
@@ -206,13 +184,14 @@
         </div>
 
         <div id="google_translate_element" style="display:none;"></div>
+        
         <img src="door_1.jpg?v=2" id="main-door" translate="no" onclick="handleDoor()">
     </div>
 
     <div id="block-welcome" class="block">
         <div class="quote-text" data-translate="welcome_charlie">I'M CHARLIE</div>
         <div class="quote-text" data-translate="welcome_quote">In every joke there is a share of whisky</div>
-        <img src="horse_welcome.png" alt="Charlie">
+        <img src="horse_welcome.png">
         <div class="welcome-title-elem" data-translate="welcome_title">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')" data-translate="btn_proceed_hall">PROCEED TO HALL</button>
         <button class="btn-gy" onclick="portalTransition('block-identity')" data-translate="btn_get_id">GET ID</button>
@@ -294,6 +273,8 @@
         </div>
     </div>
 
+    <!-- Встроенные данные языков для надежности -->
+ <!-- Встроенные данные языков -->
     <script>
         const clubLanguages = [
             { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
@@ -311,10 +292,14 @@
         ];
     </script>
 
+    <!-- Скрипт инициализации Google Translate -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             try {
-                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
+                new google.translate.TranslateElement({
+                    pageLanguage: 'en',
+                    autoDisplay: false
+                }, 'google_translate_element');
             } catch(e) {}
         }
     </script>
@@ -326,45 +311,13 @@
         let currentBlockId = 'block-entrance';
         let selectedNickType = 'own';
         let userChosenNickname = '';
-        let ambientFadeInterval = null;
-
-        function setAmbientVolumeSmooth(targetVolume, duration = 1500) {
-            const sndAmbient = document.getElementById('snd-ambient');
-            if (!sndAmbient) return;
-
-            if (sndAmbient.paused && targetVolume > 0) {
-                sndAmbient.volume = 0;
-                sndAmbient.play().catch(e => console.log("Ambient play prevented:", e));
-            }
-
-            if (ambientFadeInterval) clearInterval(ambientFadeInterval);
-
-            if (targetVolume === 0 && sndAmbient.paused) return;
-
-            const steps = 15;
-            const stepTime = duration / steps;
-            const currentVol = sndAmbient.volume;
-            const volumeStep = (targetVolume - currentVol) / steps;
-
-            ambientFadeInterval = setInterval(() => {
-                let newVol = sndAmbient.volume + volumeStep;
-                if ((volumeStep > 0 && newVol >= targetVolume) || (volumeStep < 0 && newVol <= targetVolume)) {
-                    sndAmbient.volume = Math.max(0, Math.min(1, targetVolume));
-                    clearInterval(ambientFadeInterval);
-                    if (targetVolume === 0) {
-                        sndAmbient.pause();
-                        sndAmbient.currentTime = 0;
-                    }
-                } else {
-                    sndAmbient.volume = Math.max(0, Math.min(1, newVol));
-                }
-            }, stepTime);
-        }
 
         function toggleLangDropdown(event) {
             if (event) event.stopPropagation();
             const list = document.getElementById('club-lang-list');
-            if (list) list.classList.toggle('open');
+            if (list) {
+                list.classList.toggle('open');
+            }
         }
 
         function getCurrentLangCode() {
@@ -376,13 +329,18 @@
             if (!listContainer) return;
 
             const currentLangCode = getCurrentLangCode();
+
             if (typeof clubLanguages !== 'undefined') {
                 listContainer.innerHTML = '';
+                
                 const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
-                if (activeLangObj) updateCurrentLangUI(activeLangObj);
+                if (activeLangObj) {
+                    updateCurrentLangUI(activeLangObj);
+                }
 
                 clubLanguages.forEach(lang => {
                     if (lang.code === currentLangCode) return;
+
                     const item = document.createElement('div');
                     item.className = 'club-lang-item';
                     item.onclick = (e) => {
@@ -402,8 +360,10 @@
         function updateCurrentLangUI(langObj) {
             const nameElem = document.getElementById('current-lang-name');
             if (nameElem) nameElem.innerText = langObj.name;
+            
             const flagElem = document.getElementById('current-flag');
             if (flagElem && langObj.flag) flagElem.src = langObj.flag;
+
             const avatarElem = document.getElementById('current-avatar');
             if (avatarElem && langObj.avatar) avatarElem.src = langObj.avatar;
         }
@@ -424,12 +384,14 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
+            // Надежный метод переключения через скрытый селектор Google Translate
             try {
                 const selectElement = document.querySelector('.goog-te-combo');
                 if (selectElement) {
                     selectElement.value = langCode;
                     selectElement.dispatchEvent(new Event('change'));
                 } else {
+                    // Если виджет еще не прогрузился, пробуем через куки и перезагрузку
                     document.cookie = "googtrans=/en/" + langCode + "; path=/;";
                     location.reload();
                 }
@@ -550,20 +512,11 @@
         }
 
         function portalTransition(nextId) {
-            const sndPour = document.getElementById('snd-pour');
+            const ambientBar = document.getElementById('snd-ambient');
+            if (ambientBar) { ambientBar.pause(); ambientBar.currentTime = 0; }
 
             if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
-            if (nextId === 'block-bar') { 
-                setAmbientVolumeSmooth(0.5, 500);
-                if (sndPour) {
-                    sndPour.currentTime = 0;
-                    sndPour.play().catch(e => console.log("Audio play prevented:", e));
-                }
-                setTimeout(() => {
-                    window.location.href = 'bar.html'; 
-                }, 400);
-                return; 
-            }
+            if (nextId === 'block-bar') { window.location.href = 'bar.html'; return; }
             if (nextId === 'block-tables') { window.location.href = 'tables.html'; return; } 
             if (nextId === 'block-office') { window.location.href = 'office.html'; return; }
 
@@ -588,34 +541,25 @@
                 if (mainDoor) mainDoor.classList.remove('door-exploded');
                 if (navArrows) navArrows.style.display = 'none';
                 if (badge) badge.style.display = 'none';
-                setAmbientVolumeSmooth(0, 1000);
             } else {
                 if (navArrows) navArrows.style.display = 'flex';
                 if (badge && currentUserImage) badge.style.display = 'block';
-
-                if (nextId === 'block-welcome') {
-                    setAmbientVolumeSmooth(0.1, 1500);
-                } else if (nextId === 'block-identity') {
-                    setAmbientVolumeSmooth(0.2, 1500);
-                } else if (nextId === 'block-hall') {
-                    setAmbientVolumeSmooth(0.35, 1500);
-                }
             }
         }
 
         function handleDoor() {
             const sndDoor = document.getElementById('snd-door');
+            const sndAmbient = document.getElementById('snd-ambient');
             const mainDoor = document.getElementById('main-door');
 
-            if (sndDoor) {
-                sndDoor.currentTime = 0;
-                sndDoor.play().catch(e => console.log("Door sound prevented:", e));
-            }
+            if (sndDoor) sndDoor.play().catch(e => {});
             if (mainDoor) mainDoor.classList.add('door-exploded');
 
-            setAmbientVolumeSmooth(0.1, 2000);
-
             setTimeout(() => {
+                if (sndAmbient) {
+                    sndAmbient.volume = 0.5;
+                    sndAmbient.play().catch(e => {});
+                }
                 portalTransition('block-welcome');
             }, 700);
         }
