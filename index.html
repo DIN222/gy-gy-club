@@ -12,13 +12,19 @@
         body { background-color: #0d0d0d; color: #fff; overflow-x: hidden; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; opacity: 0; transition: opacity 0.5s ease; }
         body.page-loaded { opacity: 1; }
         
-        /* Стили блоков и переходов */
-        .block { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; position: absolute; top: 0; left: 0; }
+        /* Стили блоков с оригинальными фонами */
+        .block { display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; position: absolute; top: 0; left: 0; background-size: cover; background-position: center; background-repeat: no-repeat; }
         .block.active { display: flex; opacity: 1; position: relative; }
+
+        /* Фоновые изображения для каждого блока (как было до модернизации) */
+        #block-entrance { background-image: url('entrance_bg.jpg'); }
+        #block-welcome { background-image: url('welcome_bg.jpg'); }
+        #block-identity { background-image: url('identity_bg.jpg'); }
+        #block-hall { background-image: url('hall_bg.jpg'); }
 
         /* Верхняя панель языков */
         .club-lang-dropdown-wrapper { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .club-lang-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .club-lang-btn { background: rgba(26, 26, 26, 0.8); backdrop-filter: blur(5px); border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .club-lang-btn img { width: 20px; height: 14px; object-fit: cover; }
         .club-lang-list { display: none; position: absolute; right: 0; top: 45px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; max-height: 250px; overflow-y: auto; width: 180px; z-index: 1001; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .club-lang-list.open { display: block; }
@@ -42,8 +48,8 @@
         .nav-arrows { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 999; display: none; gap: 10px; }
         
         /* Стили полей выбора ника */
-        .nick-box { border: 1px solid #444; padding: 10px; margin: 5px; cursor: pointer; border-radius: 6px; }
-        .nick-box.selected { border-color: #4f46e5; background: rgba(79, 70, 229, 0.1); }
+        .nick-box { border: 1px solid #444; padding: 10px; margin: 5px; cursor: pointer; border-radius: 6px; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+        .nick-box.selected { border-color: #4f46e5; background: rgba(79, 70, 229, 0.3); }
     </style>
 </head>
 <body>
@@ -70,7 +76,7 @@
     <!-- БЛОК 1: Вход -->
     <div id="block-entrance" class="block active">
         <div id="main-door" onclick="handleDoor()">🚪</div>
-        <p style="margin-top: 20px;">Click the door to enter GyGy Club</p>
+        <p style="margin-top: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Click the door to enter GyGy Club</p>
         <div style="margin-top: 30px;">
             <button onclick="debugSetRole('newbie')">Debug: Newbie</button>
             <button onclick="debugSetRole('resident')">Debug: Resident</button>
@@ -87,7 +93,7 @@
     <!-- БЛОК 3: Идентификация и аватар -->
     <div id="block-identity" class="block">
         <h2>Identity & Registration</h2>
-        <div onclick="document.getElementById('avatar-input').click()" style="width: 100px; height: 100px; border: 2px dashed #666; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; margin-bottom: 15px;">
+        <div onclick="document.getElementById('avatar-input').click()" style="width: 100px; height: 100px; border: 2px dashed #666; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; margin-bottom: 15px; background: rgba(0,0,0,0.5);">
             <span id="txt-photo">Upload photo</span>
             <img id="pp" style="display:none; width: 100px; height: 100px; object-fit: cover;" src="" alt="">
         </div>
@@ -96,7 +102,7 @@
         <!-- Выбор никнейма -->
         <div id="box-own-nick" class="nick-box selected" onclick="setNickType('own')">
             <label>Custom Nickname:</label>
-            <input type="text" id="input-own-nick" placeholder="Enter nickname" oninput="updateNicknameValue(this.value, 'own')">
+            <input type="text" id="input-own-nick" placeholder="Enter nickname" oninput="updateNicknameValue(this.value, 'own')" style="background: transparent; border: none; color: #fff; outline: none;">
         </div>
         <div id="box-club-nick" class="nick-box" onclick="setNickType('club')">
             Club Nick: <span id="club-nick-label">---</span>
