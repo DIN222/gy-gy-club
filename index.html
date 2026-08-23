@@ -8,7 +8,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <title>GY-GY Club v7.1.28 CORE</title>
+    <title>GY-GY Club v7.1.29 CORE</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
@@ -610,6 +610,23 @@
         let selectedNickType = 'own';
         let userChosenNickname = '';
         let ambientFadeInterval = null;
+
+        // Функция отладки для переключения ролей (Новичок / Резидент) сброса кук перевода
+        function debugSetRole(role) {
+            if (role === 'newbie') {
+                localStorage.clear();
+                // Полный сброс кук Google Translate для возврата на английский
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + document.domain;
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + document.domain;
+            } else if (role === 'resident') {
+                localStorage.clear();
+                localStorage.setItem('gygy_id', 'GY-777777');
+                localStorage.setItem('gygy_nickname', 'TestResident');
+                localStorage.setItem('gygy_lang_code', 'en');
+            }
+            window.location.reload();
+        }
 
         function setAmbientVolumeSmooth(targetVolume, duration = 1500) {
             const sndAmbient = document.getElementById('snd-ambient');
