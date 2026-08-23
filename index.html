@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club v7.0.42 CORE</title>
+    <title>GY-GY Club v7.0.43 CORE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -356,12 +356,17 @@
         }
 
         function getCurrentLangCode() {
+            // Главный источник правды — то, что пользователь выбрал сам в интерфейсе
+            const savedLang = localStorage.getItem('gygy_lang_code');
+            if (savedLang) return savedLang;
+
+            // Запасной вариант через куки Google Translate
             const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
             if (match) {
                 const parts = match[2].split('/');
                 if (parts.length > 2 && parts[2]) return parts[2];
             }
-            return localStorage.getItem('gygy_lang_code') || 'en';
+            return 'en';
         }
 
         function updateCurrentLangUI(langObj) {
@@ -417,6 +422,7 @@
             const listElem = document.getElementById('club-lang-list');
             if (listElem) listElem.classList.remove('open');
 
+            // Очищаем старые куки перевода
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + document.domain;
 
@@ -535,7 +541,6 @@
         }
 
         function portalTransition(nextId) {
-            // Изменено с snd-pour на snd-bar-fx (убедитесь, что в HTML аудиоэлемент имеет id="snd-bar-fx" или нужный вам)
             const sndBarFx = document.getElementById('snd-bar-fx') || document.getElementById('snd-pour');
 
             if (nextId === 'block-server') { window.location.href = 'verses.html'; return; }
@@ -653,7 +658,6 @@
         }
     </script>
 
-    <!-- Аудиоэлемент для нового звука бара (не забудьте вставить этот тег в HTML, если его еще нет) -->
     <audio id="snd-bar-fx" src="charlie_bar_fx.mp3" preload="auto"></audio>
 
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -663,7 +667,6 @@
             renderFilteredLanguageList();
             checkAndFillRegistrationForm();
 
-            // Закрытие выпадающего списка языков при клике вне его области
             document.addEventListener('click', (e) => {
                 const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
                 const list = document.getElementById('club-lang-list');
