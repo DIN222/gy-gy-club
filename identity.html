@@ -78,40 +78,53 @@
     <script src="core/eventBus.js"></script>
 
     <script>
-        function generateResident() {
-            const nicknameInput = document.getElementById('nickname').value.trim();
-            const nick = nicknameInput !== "" ? nicknameInput : "Гость Клуба";
+      <script>
+    function generateResident() {
+        const nicknameInput = document.getElementById('nickname').value.trim();
+        const nick = nicknameInput !== "" ? nicknameInput : "Гость Клуба";
 
-            // Генерируем уникальный ID: GY-XXXXXX (порядковый номер + 4 случайных символа)
-            const randomNum = Math.floor(100000 + Math.random() * 900000);
-            const residentId = `GY-${randomNum}`;
+        // Генерируем ID
+        const randomNum = Math.floor(100000 + Math.random() * 900000);
+        const residentId = `GY-${randomNum}`;
+        
+        // Получаем текущий флаг из локализации или дефолтный
+        const userFlag = GyStorage.get('gygy_flag', 'gb');
 
-            // Сохраняем через ваш менеджер storage.js (или напрямую в localStorage, если метод другой)
-            if (typeof StorageManager !== 'undefined' && StorageManager.saveResident) {
-                StorageManager.saveResident({ id: residentId, name: nick });
-            } else {
-                localStorage.setItem('gy_resident_id', residentId);
-                localStorage.setItem('gy_resident_name', nick);
-            }
+        // Единый объект резидента для всей системы (соответствует hall.html)
+        const residentData = {
+            id: residentId,
+            name: nick,
+            numCode: randomNum,
+            flag: `<img src="https://flagcdn.com/w20/${userFlag.toLowerCase()}.png" width="20">`,
+            avatar: "horse_welcome.png" // Или дефолтный аватар
+        };
 
-            // Переключаем интерфейс на показ ID и QR
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('step-2').style.display = 'block';
-            document.getElementById('display-id').innerText = residentId;
+        // Сохраняем и через старые ключи, и через единый gy_trace
+        GyStorage.set('gy_resident_id', residentId);
+        GyStorage.set('gy_resident_name', nick);
+        GyStorage.set('gy_trace', JSON.stringify(residentData));
 
-            // Генерируем QR-код на основе ID
-            document.getElementById('qr-container').innerHTML = "";
-            new QRCode(document.getElementById("qr-container"), {
-                text: `https://gy-gy.club/resident?id=${residentId}&name=${encodeURIComponent(nick)}`,
-                width: 128,
-                height: 128,
-                colorDark: "#d4af37",
-                colorLight: "#141414",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
+        // Переключаем интерфейс на показ ID и QR
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'block';
+        document.getElementById('display-id').innerText = residentId;
 
-        function enterHall() {
+        // Генерируем QR-код
+        document.getElementById('qr-container').innerHTML = "";
+        new QRCode(document.getElementById("qr-container"), {
+            text: `https://gy-gy.club/resident?id=${residentId}&name=${encodeURIComponent(nick)}`,
+            width: 128,
+            height: 128,
+            colorDark: "#d4af37",
+            colorLight: "#141414",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+
+    function enterHall() {
+        window.location.href = "hall.html";
+    }
+</script>
             // Переход в Модуль 04 (Парадный Холл)
             window.location.href = "hall.html";
         }
