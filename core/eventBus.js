@@ -1,12 +1,12 @@
-window.EventBus = {
-    events: {},
+// core/eventBus.js
+export const EventBus = {
+    listeners: {},
     on(event, callback) {
-        if (!this.events[event]) this.events[event] = [];
-        this.events[event].push(callback);
+        if (!this.listeners[event]) this.listeners[event] = [];
+        this.listeners[event].push(callback);
     },
     emit(event, data) {
-        if (this.events[event]) {
-            this.events[event].forEach(callback => callback(data));
-        }
+        if (!this.listeners[event]) return;
+        this.listeners[event].forEach(cb => cb(data));
     }
 };
