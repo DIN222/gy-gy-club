@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Entrance — Gateway [v2026.10]</title>
+    <title>Club Identity — Gateway</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body {
@@ -31,27 +31,30 @@
             display: flex;
         }
 
-        /* 1. Входная группа */
+        /* 1. Входная группа: аккуратная пропорциональная дверь */
         #block-entrance {
-            background: url('door_1.jpg?v=2026.8') no-repeat center center;
-            background-size: cover;
-        }
-
-        .door-prompt {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 12px 30px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 16px;
-            text-transform: uppercase;
+            background-color: #080808;
+            background-image: url('door_1.jpg?v=2026.8');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain; /* Дверь сохраняет пропорции и не выглядит гигантской */
             cursor: pointer;
-            letter-spacing: 1px;
-            transition: background 0.3s;
         }
 
-        .door-prompt:hover {
-            background: rgba(212, 175, 55, 0.8);
-            color: #000;
+        /* Деликатный минималистичный указатель внизу */
+        .door-hint {
+            position: absolute;
+            bottom: 40px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            transition: color 0.3s;
+            pointer-events: none;
+        }
+
+        #block-entrance:hover .door-hint {
+            color: #d4af37;
         }
 
         /* 2. Приветствие перед переходом на identity.html */
@@ -90,17 +93,17 @@
 </head>
 <body>
 
-    <!-- ЭКРАН 1: Входная группа -->
-    <div id="block-entrance" class="block active">
-        <div class="door-prompt" onclick="goToWelcome()">Touch the door to enter</div>
+    <!-- ЭКРАН 1: Входная группа (кликабельна вся область двери) -->
+    <div id="block-entrance" class="block active" onclick="goToWelcome()">
+        <div class="door-hint">Touch to enter</div>
     </div>
 
     <!-- ЭКРАН 2: Приветствие диспетчера -->
     <div id="block-welcome" class="block">
         <div class="welcome-card">
-            <h2>Welcome to the Club</h2>
-            <p style="color: #888; margin: 15px 0; font-size: 14px;">Preparing your secure session...</p>
-            <button class="btn" onclick="proceedToIdentity()">Continue to Identity</button>
+            <h2>Resident Verification</h2>
+            <p style="color: #888; margin: 15px 0; font-size: 14px;">Preparing secure session...</p>
+            <button class="btn" onclick="proceedToIdentity()">Proceed</button>
         </div>
     </div>
 
@@ -109,13 +112,11 @@
     <script src="navigation.js"></script>
     <script>
         function goToWelcome() {
-            // Переключаем внутренний экран диспетчера
             document.getElementById('block-entrance').classList.remove('active');
             document.getElementById('block-welcome').classList.add('active');
         }
 
         function proceedToIdentity() {
-            // Переход на отдельную страницу онбординга согласно архитектуре
             window.location.href = 'identity.html';
         }
     </script>
