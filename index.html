@@ -3,77 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Test-Bench Hub [v2026.9]</title>
-    <!-- Библиотека для QR-кодов -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Club Entrance — Gateway [v2026.10]</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #0b0b0b; color: #fff; overflow-x: hidden; }
+        body {
+            background-color: #0b0b0b;
+            color: #fff;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
 
-        /* Панель выбора модулей (Тест-стенд) */
-        #test-bench-menu {
-            position: fixed;
+        .block {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            background: rgba(15, 15, 15, 0.95);
-            border-bottom: 1px solid #333;
-            padding: 10px 20px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            overflow-x: auto;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-        }
-
-        .bench-btn {
-            background: #222;
-            color: #ccc;
-            border: 1px solid #444;
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .bench-btn:hover, .bench-btn.active {
-            background: #d4af37;
-            color: #000;
-            border-color: #d4af37;
-            font-weight: bold;
-        }
-
-        .bench-title {
-            color: #d4af37;
-            font-weight: bold;
-            font-size: 14px;
-            margin-right: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Контейнеры модулей */
-        .module-view {
-            display: none;
-            width: 100vw;
-            height: calc(100vh - 50px);
-            margin-top: 50px;
-            position: relative;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .module-view.active {
+        .block.active {
             display: flex;
         }
 
-        /* 1. Модуль Входа (Entrance) */
-        #mod-entrance {
-            background: #111;
+        /* 1. Входная группа */
+        #block-entrance {
+            background: url('door_1.jpg?v=2026.8') no-repeat center center;
+            background-size: cover;
         }
 
         .door-prompt {
@@ -84,160 +45,78 @@
             font-size: 16px;
             text-transform: uppercase;
             cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.3s;
         }
 
-        /* 2. Модуль Онбординга (Identity) */
-        .card {
+        .door-prompt:hover {
+            background: rgba(212, 175, 55, 0.8);
+            color: #000;
+        }
+
+        /* 2. Приветствие перед переходом на identity.html */
+        #block-welcome {
+            background: #111;
+        }
+
+        .welcome-card {
             background: #161616;
             border: 1px solid #333;
             border-radius: 12px;
             padding: 30px;
-            max-width: 450px;
+            max-width: 400px;
             width: 100%;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        .avatar-box {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 20px auto;
-            border: 2px dashed #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #222;
+        .btn {
+            background: #d4af37;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            margin-top: 20px;
+            transition: background 0.3s;
         }
 
-        .avatar-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .input-field { width: 100%; padding: 12px 15px; background: #222; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 16px; margin-bottom: 20px; text-align: center; }
-        
-        .btn {
-            background: #d4af37; color: #000; border: none; padding: 12px 25px;
-            border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; text-transform: uppercase;
-        }
+        .btn:hover { background: #f1c40f; }
     </style>
 </head>
 <body>
 
-    <!-- ИНТЕРАКТИВНОЕ МЕНЮ ТЕСТ-СТЕНДА -->
-    <div id="test-bench-menu">
-        <span class="bench-title">Test Bench:</span>
-        <button class="bench-btn active" onclick="switchModule('entrance')">1. Entrance</button>
-        <button class="bench-btn" onclick="switchModule('identity')">2. Identity</button>
-        <button class="bench-btn" onclick="switchModule('hall')">3. Hall</button>
-        <button class="bench-btn" onclick="switchModule('bar')">4. Bar</button>
-        <button class="bench-btn" onclick="switchModule('studio')">5. Studio</button>
-        <button class="bench-btn" onclick="switchModule('office')">6. Office</button>
+    <!-- ЭКРАН 1: Входная группа -->
+    <div id="block-entrance" class="block active">
+        <div class="door-prompt" onclick="goToWelcome()">Touch the door to enter</div>
     </div>
 
-    <!-- МОДУЛЬ 1: ВХОД (Entrance) -->
-    <div id="mod-entrance" class="module-view active">
-        <div class="door-prompt" onclick="switchModule('identity')">Touch the door to enter</div>
-    </div>
-
-    <!-- МОДУЛЬ 2: ОНБОРДИНГ (Identity) -->
-    <div id="mod-identity" class="module-view">
-        <div class="card">
-            <h2>Resident Identity</h2>
-            <p style="color: #888; margin: 10px 0 20px 0; font-size: 14px;">Setup profile & generate passport.</p>
-            
-            <div class="avatar-box" onclick="document.getElementById('file-input').click()">
-                <span id="txt-photo" style="font-size: 12px; color: #888;">Add Photo</span>
-                <img id="avatar-preview" src="" alt="Avatar">
-            </div>
-            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="handleAvatar(this)">
-
-            <input type="text" id="input-nick" class="input-field" placeholder="Enter nickname..." oninput="saveNick(this.value)">
-
-            <div id="qrcode-container" style="display:flex; justify-content:center; margin-bottom:15px;"></div>
-            <p id="id-display" style="font-family: monospace; color: #d4af37; margin-bottom: 15px;"></p>
-
-            <button class="btn" onclick="switchModule('hall')">Proceed to Hall</button>
+    <!-- ЭКРАН 2: Приветствие диспетчера -->
+    <div id="block-welcome" class="block">
+        <div class="welcome-card">
+            <h2>Welcome to the Club</h2>
+            <p style="color: #888; margin: 15px 0; font-size: 14px;">Preparing your secure session...</p>
+            <button class="btn" onclick="proceedToIdentity()">Continue to Identity</button>
         </div>
     </div>
 
-    <!-- МОДУЛЬ 3: ХОЛЛ (Hall) -->
-    <div id="mod-hall" class="module-view" style="background: #111;">
-        <h2>Grand Hall Module</h2>
-        <p style="color: #888; margin-top: 10px;">Central portals, paintings, and navigation hub.</p>
-    </div>
-
-    <!-- МОДУЛЬ 4: БАР (Bar) -->
-    <div id="mod-bar" class="module-view" style="background: #16120e;">
-        <h2>Club Bar Module</h2>
-        <p style="color: #888; margin-top: 10px;">Tables matrix, complaints & open mic.</p>
-    </div>
-
-    <!-- МОДУЛЬ 5: СТУДИЯ (Studio) -->
-    <div id="mod-studio" class="module-view" style="background: #0e1216;">
-        <h2>Business Studio Module</h2>
-        <p style="color: #888; margin-top: 10px;">Atelier, souvenirs & archives.</p>
-    </div>
-
-    <!-- МОДУЛЬ 6: ОФИС (Office) -->
-    <div id="mod-office" class="module-view" style="background: #1a0f0f;">
-        <h2>Boss Office Module</h2>
-        <p style="color: #888; margin-top: 10px;">Restricted area / Staff management.</p>
-    </div>
-
-    <!-- Подключаем ядро логики хранения -->
+    <!-- Подключаем скрипты ядра и навигации -->
     <script src="core/storage.js"></script>
+    <script src="navigation.js"></script>
     <script>
-        function switchModule(modName) {
-            document.querySelectorAll('.bench-btn').forEach(btn => btn.classList.remove('active'));
-            if (event && event.target) event.target.classList.add('active');
-
-            document.querySelectorAll('.module-view').forEach(view => view.classList.remove('active'));
-            const target = document.getElementById('mod-' + modName);
-            if (target) target.classList.add('active');
-
-            if (modName === 'identity') {
-                initIdentityTest();
-            }
+        function goToWelcome() {
+            // Переключаем внутренний экран диспетчера
+            document.getElementById('block-entrance').classList.remove('active');
+            document.getElementById('block-welcome').classList.add('active');
         }
 
-        function initIdentityTest() {
-            const id = window.GyStorage ? GyStorage.generateIdIfNeeded() : "GY-123456";
-            document.getElementById('id-display').innerText = id;
-            
-            const qrContainer = document.getElementById('qrcode-container');
-            qrContainer.innerHTML = '';
-            new QRCode(qrContainer, {
-                text: id, width: 90, height: 90,
-                colorDark: "#ffffff", colorLight: "#161616"
-            });
-
-            const resident = window.GyStorage ? GyStorage.getResident() : {};
-            if (resident.name) document.getElementById('input-nick').value = resident.name;
-            if (resident.avatar) {
-                const img = document.getElementById('avatar-preview');
-                img.src = resident.avatar;
-                img.style.display = 'block';
-                document.getElementById('txt-photo').style.display = 'none';
-            }
-        }
-
-        function handleAvatar(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64 = e.target.result;
-                    const img = document.getElementById('avatar-preview');
-                    img.src = base64;
-                    img.style.display = 'block';
-                    document.getElementById('txt-photo').style.display = 'none';
-                    if (window.GyStorage) GyStorage.saveResident({ avatar: base64 });
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function saveNick(val) {
-            if (window.GyStorage) GyStorage.saveResident({ name: val });
+        function proceedToIdentity() {
+            // Переход на отдельную страницу онбординга согласно архитектуре
+            window.location.href = 'identity.html';
         }
     </script>
 </body>
