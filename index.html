@@ -3,121 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Identity — Gateway</title>
+    <title>GY-GY Club — Gateway [v4.6.1]</title>
+    <!-- Подключение шрифтов по стандарту Манифеста -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@1,600&family=Montserrat:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        :root {
+            --bg-color: #000000;
+            --gold-color: #FFD700;
+            --gold-hover: #ffdf33;
+            --border-gold: 1px solid #FFD700;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            background-color: #0b0b0b;
-            color: #fff;
+            background-color: var(--bg-color);
+            color: var(--gold-color);
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
             position: relative;
         }
 
-        .block {
+        /* Эффект плавного затухания / проявления сцены (1.2 сек) */
+        #transition-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            opacity: 1;
+            pointer-events: none;
+            transition: opacity 1.2s ease-in-out;
+            z-index: 9999;
+        }
+        body.loaded #transition-overlay {
+            opacity: 0;
+        }
+        body.fade-out #transition-overlay {
+            opacity: 1;
+        }
+
+        /* Верхняя панель (Header Bar) */
+        .header-bar {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            height: 70px;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        /* Языковой модуль слева */
+        .lang-selector-container {
+            position: relative;
+            background: var(--bg-color);
+            border: var(--border-gold);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .lang-selector-container:hover {
+            filter: brightness(1.1);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .lang-dropdown {
             display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 220px;
+            background: var(--bg-color);
+            border: var(--border-gold);
+            margin-top: 5px;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.9);
+            z-index: 200;
+        }
+        .lang-selector-container:hover .lang-dropdown {
+            display: block;
+        }
+        .lang-option {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            transition: background 0.2s;
+        }
+        .lang-option:hover {
+            background: rgba(255, 215, 0, 0.15);
+        }
+        .lang-counter {
+            font-size: 11px;
+            color: rgba(255, 215, 0, 0.6);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Логотип справа */
+        .club-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--gold-color);
+            text-transform: uppercase;
+        }
+
+        /* Центральная зона входа (Entrance Zone) */
+        .entrance-core {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        .block.active {
-            display: flex;
+        /* Слоганы по стандарту Манифеста */
+        .club-slogan {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 20px;
+            color: rgba(255, 215, 0, 0.8);
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: 1px;
         }
 
-        /* 1. Входная группа: аккуратная пропорциональная дверь */
-        #block-entrance {
-            background-color: #080808;
-            background-image: url('door_1.jpg?v=2026.8');
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: contain; /* Дверь сохраняет пропорции и не выглядит гигантской */
+        /* Разделение пространства (TRIZ): визуальная дверь и независимый hitbox */
+        .door-container {
+            position: relative;
+            width: 280px;
+            height: 40vh; /* Строго по стандарту 40vh */
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .door-container:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
         }
 
-        /* Деликатный минималистичный указатель внизу */
+        .door-visual {
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--gold-color);
+            background: linear-gradient(135deg, #111 0%, #050505 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+        }
+        .door-visual::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            background: var(--gold-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold-color);
+        }
+
         .door-hint {
             position: absolute;
-            bottom: 40px;
-            font-size: 13px;
+            bottom: -35px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
             letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.4);
             text-transform: uppercase;
+            color: rgba(255, 215, 0, 0.5);
             transition: color 0.3s;
-            pointer-events: none;
         }
-
-        #block-entrance:hover .door-hint {
-            color: #d4af37;
+        .door-container:hover .door-hint {
+            color: var(--gold-color);
         }
-
-        /* 2. Приветствие перед переходом на identity.html */
-        #block-welcome {
-            background: #111;
-        }
-
-        .welcome-card {
-            background: #161616;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .btn {
-            background: #d4af37;
-            color: #000;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            margin-top: 20px;
-            transition: background 0.3s;
-        }
-
-        .btn:hover { background: #f1c40f; }
     </style>
 </head>
-<body>
+<body class="loaded">
 
-    <!-- ЭКРАН 1: Входная группа (кликабельна вся область двери) -->
-    <div id="block-entrance" class="block active" onclick="goToWelcome()">
-        <div class="door-hint">Touch to enter</div>
-    </div>
+    <!-- Затемнение для анимации затухания/проявления (1.2 сек) -->
+    <div id="transition-overlay"></div>
 
-    <!-- ЭКРАН 2: Приветствие диспетчера -->
-    <div id="block-welcome" class="block">
-        <div class="welcome-card">
-            <h2>Resident Verification</h2>
-            <p style="color: #888; margin: 15px 0; font-size: 14px;">Preparing secure session...</p>
-            <button class="btn" onclick="proceedToIdentity()">Proceed</button>
+    <!-- Фиксированная верхняя панель (Header Bar) -->
+    <header class="header-bar">
+        <!-- Левая часть: Модуль выбора языка со списком из 11 языков и счетчиками -->
+        <div class="lang-selector-container" id="lang-selector">
+            <span id="current-lang-display">🇬🇧 EN (English)</span>
+            <div class="lang-dropdown" id="lang-dropdown-list">
+                <!-- Динамически заполняется из userlang-data.js или статический резерв -->
+                <div class="lang-option" onclick="selectLanguage('en', '🇬🇧', 'English', 1420)"><span>🇬🇧 English</span><span class="lang-counter">1420</span></div>
+                <div class="lang-option" onclick="selectLanguage('ru', '🇷🇺', 'Русский', 890)"><span>🇷🇺 Русский</span><span class="lang-counter">890</span></div>
+                <div class="lang-option" onclick="selectLanguage('es', '🇪🇸', 'Español', 430)"><span>🇪🇸 Español</span><span class="lang-counter">430</span></div>
+                <div class="lang-option" onclick="selectLanguage('de', '🇩🇪', 'Deutsch', 310)"><span>🇩🇪 Deutsch</span><span class="lang-counter">310</span></div>
+                <div class="lang-option" onclick="selectLanguage('fr', '🇫🇷', 'Français', 295)"><span>🇫🇷 Français</span><span class="lang-counter">295</span></div>
+                <div class="lang-option" onclick="selectLanguage('zh', '🇨🇳', '中文', 610)"><span>🇨🇳 中文</span><span class="lang-counter">610</span></div>
+                <div class="lang-option" onclick="selectLanguage('ja', '🇯🇵', '日本語', 215)"><span>🇯🇵 日本語</span><span class="lang-counter">215</span></div>
+                <div class="lang-option" onclick="selectLanguage('ar', '🇸🇦', 'العربية', 180)"><span>🇸🇦 العربية</span><span class="lang-counter">180</span></div>
+                <div class="lang-option" onclick="selectLanguage('pt', '🇵🇹', 'Português', 240)"><span>🇵🇹 Português</span><span class="lang-counter">240</span></div>
+                <div class="lang-option" onclick="selectLanguage('it', '🇮🇹', 'Italiano', 190)"><span>🇮🇹 Italiano</span><span class="lang-counter">190</span></div>
+                <div class="lang-option" onclick="selectLanguage('tr', '🇹🇷', 'Türkçe', 260)"><span>🇹🇷 Türkçe</span><span class="lang-counter">260</span></div>
+            </div>
         </div>
-    </div>
 
-    <!-- Подключаем скрипты ядра и навигации -->
+        <!-- Правая часть: Логотип GY-GY -->
+        <div class="club-logo">GY-GY Club</div>
+    </header>
+
+    <!-- Основной контент Входа -->
+    <main class="entrance-core">
+        <div class="club-slogan" data-translate="entrance_slogan">“In Silence We Trust, In Code We Unite”</div>
+        
+        <!-- Дверь по центру (40vh) с независимым Hitbox -->
+        <div class="door-container" onclick="triggerEntranceTransition()" title="Touch to enter">
+            <div class="door-visual">
+                <div class="door-hint">[ Touch to Open ]</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Подключение скриптов ядра согласно архитектуре -->
+    <script src="userlang-data.js"></script>
+    <script src="translations.js"></script>
     <script src="core/storage.js"></script>
-    <script src="navigation.js"></script>
     <script>
-        function goToWelcome() {
-            document.getElementById('block-entrance').classList.remove('active');
-            document.getElementById('block-welcome').classList.add('active');
+        // Инициализация языка по умолчанию (English)
+        function selectLanguage(code, flag, name, count) {
+            document.getElementById('current-lang-display').innerText = `${flag} ${code.toUpperCase()} (${name})`;
+            // Сохранение выбора в localStorage через стандарты ядра
+            if (window.GyStorage) {
+                GyStorage.savePreferences({ lang: code });
+            } else {
+                localStorage.setItem('gy_lang_code', code);
+            }
         }
 
-        function proceedToIdentity() {
-            window.location.href = 'identity.html';
+        // Анимация перехода с эффектом затухания (1.2 сек) и звуковым имитатором замка
+        function triggerEntranceTransition() {
+            // Защита от повторных кликов
+            if (document.body.classList.contains('fade-out')) return;
+
+            // Запускаем эффект затухания сцены (1.2s по спецификации)
+            document.body.classList.add('fade-out');
+
+            // Фиксация события в хранилище / логах
+            if (window.GyStorage) {
+                GyStorage.setFlag('entrance_passed', true);
+            }
+
+            // Перенаправление на страницу регистрации / онбординга (identity.html) по окончании анимации
+            setTimeout(() => {
+                window.location.href = 'identity.html';
+            }, 1200);
         }
     </script>
 </body>
