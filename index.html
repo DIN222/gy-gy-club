@@ -3,86 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club Entrance — Gateway [v2026.8]</title>
-    <!-- Подключаем библиотеку для генерации QR-кодов -->
+    <title>Club Test-Bench Hub [v2026.9]</title>
+    <!-- Библиотека для QR-кодов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #0b0b0b; color: #fff; overflow-x: hidden; }
 
-        body {
-            background-color: #0b0b0b;
-            color: #fff;
-            overflow-x: hidden;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        body.page-loaded {
-            opacity: 1;
-        }
-
-        /* Блочная система */
-        .block {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
+        /* Панель выбора модулей (Тест-стенд) */
+        #test-bench-menu {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.95);
+            border-bottom: 1px solid #333;
+            padding: 10px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            overflow-x: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .bench-btn {
+            background: #222;
+            color: #ccc;
+            border: 1px solid #444;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .bench-btn:hover, .bench-btn.active {
+            background: #d4af37;
+            color: #000;
+            border-color: #d4af37;
+            font-weight: bold;
+        }
+
+        .bench-title {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Контейнеры модулей */
+        .module-view {
+            display: none;
+            width: 100vw;
+            height: calc(100vh - 50px);
+            margin-top: 50px;
+            position: relative;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            transition: opacity 0.6s ease;
         }
 
-        .block.active {
+        .module-view.active {
             display: flex;
-            opacity: 1;
-            z-index: 10;
         }
 
-        /* 1. ЭКРАН ВХОДА (block-entrance) с версией ассета */
-        #block-entrance {
-            background: url('door_1.jpg?v=2026.8') no-repeat center center fixed;
-            background-size: cover;
-        }
-
-        .door-container {
-            cursor: pointer;
-            text-align: center;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .door-container.door-exploded {
-            transform: scale(3.5);
-            opacity: 0;
-            pointer-events: none;
+        /* 1. Модуль Входа (Entrance) */
+        #mod-entrance {
+            background: #111;
         }
 
         .door-prompt {
-            margin-top: 20px;
             background: rgba(0, 0, 0, 0.7);
-            padding: 10px 25px;
+            padding: 12px 30px;
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 16px;
-            letter-spacing: 1px;
             text-transform: uppercase;
+            cursor: pointer;
         }
 
-        /* 2. ЭКРАН ПРИВЕТСТВИЯ (block-welcome) */
-        #block-welcome {
-            background: rgba(11, 11, 11, 0.95);
-            padding: 20px;
-        }
-
-        .welcome-card {
+        /* 2. Модуль Онбординга (Identity) */
+        .card {
             background: #161616;
             border: 1px solid #333;
             border-radius: 12px;
@@ -105,470 +110,135 @@
             overflow: hidden;
             background: #222;
             cursor: pointer;
-            position: relative;
         }
 
-        .avatar-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px 15px;
-            background: #222;
-            border: 1px solid #444;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .input-field { width: 100%; padding: 12px 15px; background: #222; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 16px; margin-bottom: 20px; text-align: center; }
+        
         .btn {
-            background: #d4af37;
-            color: #000;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            transition: background 0.3s;
-        }
-
-        .btn:hover {
-            background: #f1c40f;
-        }
-
-        .btn.btn-sleep {
-            background: #444;
-            color: #888;
-            cursor: not-allowed;
-        }
-
-        /* Выпадающий список языков */
-        .club-lang-dropdown-wrapper {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
-        .club-lang-btn {
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #444;
-            padding: 8px 15px;
-            border-radius: 20px;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .club-lang-list {
-            position: absolute;
-            top: 45px;
-            right: 0;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            display: none;
-            flex-direction: column;
-            max-height: 250px;
-            overflow-y: auto;
-            width: 160px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .club-lang-list.open {
-            display: flex;
-        }
-
-        .club-lang-item {
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            border-bottom: 1px solid #2a2a2a;
-        }
-
-        .club-lang-item:hover {
-            background: #333;
-        }
-
-        .club-lang-item img, .club-lang-btn img {
-            width: 20px;
-            height: 14px;
-            object-fit: cover;
-            border-radius: 2px;
-        }
-
-        /* Навигационные стрелки возврата */
-        #club-nav-arrows {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            display: none;
-            z-index: 100;
-            cursor: pointer;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid #444;
-            padding: 8px 15px;
-            border-radius: 20px;
-        }
-
-        /* Бейдж пользователя */
-        #global-user-badge {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: none;
-            z-index: 100;
-            cursor: pointer;
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #444;
-            padding: 8px 15px;
-            border-radius: 30px;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #global-user-badge img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
+            background: #d4af37; color: #000; border: none; padding: 12px 25px;
+            border-radius: 6px; font-weight: bold; font-size: 16px; cursor: pointer; width: 100%; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <!-- Меню выбора языка -->
-    <div class="club-lang-dropdown-wrapper">
-        <div class="club-lang-btn" onclick="toggleLangDropdown(event)">
-            <img id="current-flag" src="https://flagcdn.com/w20/gb.png" alt="">
-            <span id="current-lang-name">English</span>
-        </div>
-        <div class="club-lang-list" id="club-lang-list">
-            <!-- Динамически заполняется скриптом -->
-        </div>
+    <!-- ИНТЕРАКТИВНОЕ МЕНЮ ТЕСТ-СТЕНДА -->
+    <div id="test-bench-menu">
+        <span class="bench-title">Test Bench:</span>
+        <button class="bench-btn active" onclick="switchModule('entrance')">1. Entrance</button>
+        <button class="bench-btn" onclick="switchModule('identity')">2. Identity</button>
+        <button class="bench-btn" onclick="switchModule('hall')">3. Hall</button>
+        <button class="bench-btn" onclick="switchModule('bar')">4. Bar</button>
+        <button class="bench-btn" onclick="switchModule('studio')">5. Studio</button>
+        <button class="bench-btn" onclick="switchModule('office')">6. Office</button>
     </div>
 
-    <!-- Стрелка назад -->
-    <div id="club-nav-arrows" onclick="handleNavigationBack()">← Back</div>
-
-    <!-- Глобальный бейдж профиля -->
-    <div id="global-user-badge" onclick="openPassport()">
-        <img id="badge-avatar-img" src="horse_welcome.png" alt="">
-        <span id="id-label">GY-000000</span>
+    <!-- МОДУЛЬ 1: ВХОД (Entrance) -->
+    <div id="mod-entrance" class="module-view active">
+        <div class="door-prompt" onclick="switchModule('identity')">Touch the door to enter</div>
     </div>
 
-    <!-- 1. ЭКРАН ВХОДА -->
-    <div id="block-entrance" class="block active">
-        <div class="door-container" onclick="handleDoor()">
-            <div class="door-prompt">Touch the door to enter</div>
-        </div>
-    </div>
-
-    <!-- 2. ЭКРАН ПРИВЕТСТВИЯ (ОНБОРДИНГ) -->
-    <div id="block-welcome" class="block">
-        <div class="welcome-card">
-            <h2>Welcome to the Club</h2>
-            <p style="color: #888; margin: 10px 0 20px 0; font-size: 14px;">Upload your avatar and enter your nickname to generate your ID passport.</p>
+    <!-- МОДУЛЬ 2: ОНБОРДИНГ (Identity) -->
+    <div id="mod-identity" class="module-view">
+        <div class="card">
+            <h2>Resident Identity</h2>
+            <p style="color: #888; margin: 10px 0 20px 0; font-size: 14px;">Setup profile & generate passport.</p>
             
             <div class="avatar-box" onclick="document.getElementById('file-input').click()">
                 <span id="txt-photo" style="font-size: 12px; color: #888;">Add Photo</span>
-                <img id="pp" src="" alt="Avatar">
+                <img id="avatar-preview" src="" alt="Avatar">
             </div>
-            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="preview(this)">
+            <input type="file" id="file-input" style="display:none;" accept="image/*" onchange="handleAvatar(this)">
 
-            <input type="text" id="input-own-nick" class="input-field" placeholder="Enter your nickname..." oninput="updateNicknameValue(this.value)">
+            <input type="text" id="input-nick" class="input-field" placeholder="Enter nickname..." oninput="saveNick(this.value)">
 
-            <button id="btn-w-hall" class="btn btn-sleep" onclick="portalTransition('block-hall')">Enter Hall</button>
+            <div id="qrcode-container" style="display:flex; justify-content:center; margin-bottom:15px;"></div>
+            <p id="id-display" style="font-family: monospace; color: #d4af37; margin-bottom: 15px;"></p>
+
+            <button class="btn" onclick="switchModule('hall')">Proceed to Hall</button>
         </div>
     </div>
 
-    <!-- Аудиоэлементы -->
-    <audio id="snd-door" src="door_open.mp3" preload="auto"></audio>
-    <audio id="snd-ambient" src="bar_ambient.mp3" loop preload="auto"></audio>
-    <audio id="snd-bar-fx" src="charlie_bar_fx.mp3" preload="auto"></audio>
+    <!-- МОДУЛЬ 3: ХОЛЛ (Hall) -->
+    <div id="mod-hall" class="module-view" style="background: #111;">
+        <h2>Grand Hall Module</h2>
+        <p style="color: #888; margin-top: 10px;">Central portals, paintings, and navigation hub.</p>
+    </div>
 
-    <!-- Скрытый элемент для Google Translate -->
-    <div id="google_translate_element" style="display:none;"></div>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <!-- МОДУЛЬ 4: БАР (Bar) -->
+    <div id="mod-bar" class="module-view" style="background: #16120e;">
+        <h2>Club Bar Module</h2>
+        <p style="color: #888; margin-top: 10px;">Tables matrix, complaints & open mic.</p>
+    </div>
 
+    <!-- МОДУЛЬ 5: СТУДИЯ (Studio) -->
+    <div id="mod-studio" class="module-view" style="background: #0e1216;">
+        <h2>Business Studio Module</h2>
+        <p style="color: #888; margin-top: 10px;">Atelier, souvenirs & archives.</p>
+    </div>
+
+    <!-- МОДУЛЬ 6: ОФИС (Office) -->
+    <div id="mod-office" class="module-view" style="background: #1a0f0f;">
+        <h2>Boss Office Module</h2>
+        <p style="color: #888; margin-top: 10px;">Restricted area / Staff management.</p>
+    </div>
+
+    <!-- Подключаем ядро логики хранения -->
+    <script src="core/storage.js"></script>
     <script>
-        const APP_VERSION = 'v2026.8';
+        function switchModule(modName) {
+            document.querySelectorAll('.bench-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) event.target.classList.add('active');
 
-        const clubLanguages = [
-            { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/gb.png', avatar: 'horse_welcome.png' },
-            { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', avatar: 'horse_welcome.png' },
-            { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png', avatar: 'horse_welcome.png' },
-            { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png', avatar: 'horse_welcome.png' },
-            { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png', avatar: 'horse_welcome.png' },
-            { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png', avatar: 'horse_welcome.png' },
-            { code: 'zh-CN', name: '中文', flag: 'https://flagcdn.com/w20/cn.png', avatar: 'horse_welcome.png' },
-            { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png', avatar: 'horse_welcome.png' },
-            { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png', avatar: 'horse_welcome.png' },
-            { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png', avatar: 'horse_welcome.png' },
-            { code: 'uk', name: 'Українська', flag: 'https://flagcdn.com/w20/ua.png', avatar: 'horse_welcome.png' },
-            { code: 'pl', name: 'Polski', flag: 'https://flagcdn.com/w20/pl.png', avatar: 'horse_welcome.png' }
-        ];
+            document.querySelectorAll('.module-view').forEach(view => view.classList.remove('active'));
+            const target = document.getElementById('mod-' + modName);
+            if (target) target.classList.add('active');
 
-        let currentID = "";
-        let currentUserImage = "";
-        let currentBlockId = 'block-entrance';
-        let ambientFadeInterval = null;
-
-        function setAmbientVolumeSmooth(targetVolume, duration = 1500) {
-            const sndAmbient = document.getElementById('snd-ambient');
-            if (!sndAmbient) return;
-
-            if (sndAmbient.paused && targetVolume > 0) {
-                sndAmbient.volume = 0;
-                sndAmbient.play().catch(e => console.log("Ambient play prevented:", e));
+            if (modName === 'identity') {
+                initIdentityTest();
             }
-
-            if (ambientFadeInterval) clearInterval(ambientFadeInterval);
-            if (targetVolume === 0 && sndAmbient.paused) return;
-
-            const steps = 15;
-            const stepTime = duration / steps;
-            const currentVol = sndAmbient.volume;
-            const volumeStep = (targetVolume - currentVol) / steps;
-
-            ambientFadeInterval = setInterval(() => {
-                let newVol = sndAmbient.volume + volumeStep;
-                if ((volumeStep > 0 && newVol >= targetVolume) || (volumeStep < 0 && newVol <= targetVolume)) {
-                    sndAmbient.volume = Math.max(0, Math.min(1, targetVolume));
-                    clearInterval(ambientFadeInterval);
-                    if (targetVolume === 0) {
-                        sndAmbient.pause();
-                        sndAmbient.currentTime = 0;
-                    }
-                } else {
-                    sndAmbient.volume = Math.max(0, Math.min(1, newVol));
-                }
-            }, stepTime);
         }
 
-        function toggleLangDropdown(event) {
-            if (event) event.stopPropagation();
-            const list = document.getElementById('club-lang-list');
-            if (list) list.classList.toggle('open');
-        }
-
-        function getCurrentLangCode() {
-            const match = document.cookie.match(new RegExp('(^| )googtrans=([^;]+)'));
-            if (match) {
-                const parts = match[2].split('/');
-                if (parts.length > 2 && parts[2]) return parts[2];
-            }
-            return localStorage.getItem('gygy_lang_code') || 'en';
-        }
-
-        function updateCurrentLangUI(langObj) {
-            const nameElem = document.getElementById('current-lang-name');
-            if (nameElem) nameElem.innerText = langObj.name;
-            const flagElem = document.getElementById('current-flag');
-            if (flagElem && langObj.flag) flagElem.src = langObj.flag;
-        }
-
-        function renderFilteredLanguageList() {
-            const listContainer = document.getElementById('club-lang-list');
-            if (!listContainer) return;
-
-            const currentLangCode = getCurrentLangCode();
-            listContainer.innerHTML = '';
+        function initIdentityTest() {
+            const id = window.GyStorage ? GyStorage.generateIdIfNeeded() : "GY-123456";
+            document.getElementById('id-display').innerText = id;
             
-            const activeLangObj = clubLanguages.find(l => l.code === currentLangCode) || clubLanguages.find(l => l.code === 'en');
-            if (activeLangObj) updateCurrentLangUI(activeLangObj);
-
-            clubLanguages.forEach(lang => {
-                if (lang.code === currentLangCode) return;
-                const item = document.createElement('div');
-                item.className = 'club-lang-item';
-                item.onclick = (e) => {
-                    e.stopPropagation();
-                    selectClubLanguage(lang.code, lang.name, lang.flag);
-                };
-                item.innerHTML = `
-                    <img src="${lang.flag}" alt="">
-                    <span>${lang.name}</span>
-                `;
-                listContainer.appendChild(item);
-            });
-        }
-
-        function selectClubLanguage(langCode, langName, flagUrl) {
-            const nameToSave = langName || 'English';
-            const flagToSave = flagUrl || 'https://flagcdn.com/w20/gb.png';
-            
-            updateCurrentLangUI({ code: langCode, name: nameToSave, flag: flagToSave });
-
-            try {
-                localStorage.setItem('gygy_lang_code', langCode);
-                localStorage.setItem('gygy_lang_name', nameToSave);
-                localStorage.setItem('gygy_lang_flag', flagToSave);
-            } catch(e) {}
-
-            const listElem = document.getElementById('club-lang-list');
-            if (listElem) listElem.classList.remove('open');
-
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            if (langCode === 'en') {
-                window.location.reload();
-                return;
-            }
-
-            const cookieValue = `/en/${langCode}`;
-            document.cookie = `googtrans=${cookieValue}; path=/;`;
-            window.location.reload();
-        }
-
-        function updateNicknameValue(val) {
-            try { localStorage.setItem('gygy_nickname', val); } catch(e) {}
-        }
-
-        function checkAndFillRegistrationForm() {
-            const savedAvatar = localStorage.getItem('gy_user_img') || localStorage.getItem('gygy_avatar');
-            currentID = localStorage.getItem('gygy_id') || "GY-" + Math.floor(100000 + Math.random() * 900000);
-            localStorage.setItem('gygy_id', currentID);
-
-            const idLabel = document.getElementById('id-label');
-            if (idLabel) idLabel.innerText = currentID;
-
-            const savedNickname = localStorage.getItem('gygy_nickname') || '';
-            const ownNickInput = document.getElementById('input-own-nick');
-            if (ownNickInput && savedNickname) {
-                ownNickInput.value = savedNickname;
-            }
-
-            if (savedAvatar) {
-                currentUserImage = savedAvatar;
-                const badgeImg = document.getElementById('badge-avatar-img');
-                if (badgeImg) badgeImg.src = savedAvatar;
-
-                const ppImg = document.getElementById('pp'); 
-                if (ppImg) { ppImg.src = savedAvatar; ppImg.style.display = "block"; }
-                const txtPhoto = document.getElementById('txt-photo'); 
-                if (txtPhoto) txtPhoto.style.display = "none";
-
-                const btnWHall = document.getElementById('btn-w-hall'); 
-                if (btnWHall) btnWHall.classList.remove('btn-sleep');
-            }
-        }
-
-        function handleNavigationBack() {
-            if (currentBlockId === 'block-welcome') portalTransition('block-entrance');
-        }
-
-        function portalTransition(nextId) {
-            if (nextId === 'block-hall') {
-                window.location.href = 'hall.html';
-                return;
-            }
-
-            const targetBlock = document.getElementById(nextId);
-            if (!targetBlock) return;
-
-            currentBlockId = nextId;
-
-            const badge = document.getElementById('global-user-badge');
-            const navArrows = document.getElementById('club-nav-arrows');
-
-            document.querySelectorAll('.block').forEach(b => {
-                b.classList.remove('active');
+            const qrContainer = document.getElementById('qrcode-container');
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+                text: id, width: 90, height: 90,
+                colorDark: "#ffffff", colorLight: "#161616"
             });
 
-            targetBlock.classList.add('active');
-
-            if (nextId === 'block-entrance') {
-                const mainDoor = document.querySelector('.door-container');
-                if (mainDoor) mainDoor.classList.remove('door-exploded');
-                if (navArrows) navArrows.style.display = 'none';
-                if (badge) badge.style.display = 'none';
-                setAmbientVolumeSmooth(0, 1000);
-            } else {
-                if (navArrows) navArrows.style.display = 'flex';
-                if (badge && currentUserImage) badge.style.display = 'flex';
-                if (nextId === 'block-welcome') {
-                    setAmbientVolumeSmooth(0.1, 1500);
-                }
+            const resident = window.GyStorage ? GyStorage.getResident() : {};
+            if (resident.name) document.getElementById('input-nick').value = resident.name;
+            if (resident.avatar) {
+                const img = document.getElementById('avatar-preview');
+                img.src = resident.avatar;
+                img.style.display = 'block';
+                document.getElementById('txt-photo').style.display = 'none';
             }
         }
 
-        function handleDoor() {
-            const sndDoor = document.getElementById('snd-door');
-            const mainDoor = document.querySelector('.door-container');
-
-            if (sndDoor) {
-                sndDoor.currentTime = 0;
-                sndDoor.play().catch(e => console.log("Door sound prevented:", e));
-            }
-            if (mainDoor) mainDoor.classList.add('door-exploded');
-
-            setAmbientVolumeSmooth(0.1, 2000);
-
-            setTimeout(() => {
-                portalTransition('block-welcome');
-            }, 700);
-        }
-
-        function preview(input) {
+        function handleAvatar(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    currentUserImage = e.target.result;
-                    try { localStorage.setItem('gy_user_img', currentUserImage); } catch(e) {}
-                    const pp = document.getElementById('pp'); 
-                    if (pp) { pp.src = currentUserImage; pp.style.display = 'block'; }
-                    const txtPhoto = document.getElementById('txt-photo'); 
-                    if (txtPhoto) txtPhoto.style.display = 'none';
-                    
-                    const badgeImg = document.getElementById('badge-avatar-img');
-                    if (badgeImg) badgeImg.src = currentUserImage;
-                    const btnWHall = document.getElementById('btn-w-hall'); 
-                    if (btnWHall) btnWHall.classList.remove('btn-sleep');
+                    const base64 = e.target.result;
+                    const img = document.getElementById('avatar-preview');
+                    img.src = base64;
+                    img.style.display = 'block';
+                    document.getElementById('txt-photo').style.display = 'none';
+                    if (window.GyStorage) GyStorage.saveResident({ avatar: base64 });
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        function openPassport() {
-            alert("Passport ID: " + currentID + "\nNickname: " + (localStorage.getItem('gygy_nickname') || 'Not set'));
+        function saveNick(val) {
+            if (window.GyStorage) GyStorage.saveResident({ name: val });
         }
-
-        function googleTranslateElementInit() {
-            try {
-                new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
-            } catch(e) {}
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            renderFilteredLanguageList();
-            checkAndFillRegistrationForm();
-
-            document.addEventListener('click', (e) => {
-                const wrapper = document.querySelector('.club-lang-dropdown-wrapper');
-                const list = document.getElementById('club-lang-list');
-                if (wrapper && list && !wrapper.contains(e.target)) {
-                    list.classList.remove('open');
-                }
-            });
-
-            setTimeout(() => {
-                document.body.classList.add('page-loaded');
-            }, 350);
-        });
     </script>
 </body>
 </html>
