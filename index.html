@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GY-GY Club - Block 1.1: Entrance</title>
+    <title>GY-GY Club - Block 1.2: Entrance</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,700;1,700&family=Montserrat:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
@@ -14,15 +14,21 @@
         html, body { width: 100%; height: 100%; background: #000000 !important; margin: 0; padding: 0; overflow: hidden; position: fixed; }
         body { color: var(--gold); font-family: 'Share Tech Mono', monospace; }
 
-        /* Языковая панель */
+        /* Языковая панель и стрелка */
         .club-lang-dropdown-wrapper { position: absolute; top: 18px; left: 20px; z-index: 1000001; width: 175px; }
-        .club-lang-current { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.95); border: 2px solid var(--gold); padding: 5px 8px; border-radius: 10px; cursor: pointer; }
-        .club-lang-current-content { display: flex; align-items: center; gap: 7px; min-width: 0; }
-        .club-lang-current .item-avatar { width: 22px; height: 22px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: #111; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .club-lang-current .item-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .club-lang-current .item-flag { width: 18px; height: 12px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; display: block; }
-        .club-lang-current .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .club-lang-current .arrow-down { color: var(--gold); font-size: 10px; font-weight: bold; flex-shrink: 0; }
+        .club-lang-current { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.95); border: 2px solid var(--gold); padding: 6px 10px; border-radius: 10px; cursor: pointer; gap: 8px; }
+        .club-lang-current-content { display: flex; align-items: center; gap: 7px; min-width: 0; flex-grow: 1; }
+        
+        .item-avatar { width: 22px; height: 22px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: #111; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .item-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        
+        .item-flag { width: 18px; height: 12px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; display: block; }
+        .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Стрелка навигации списка */
+        .arrow-down { color: var(--gold); font-size: 11px; font-weight: bold; flex-shrink: 0; transition: transform 0.3s ease; }
+        .club-lang-list.open + .club-lang-current .arrow-down, 
+        .club-lang-dropdown-wrapper.active .arrow-down { transform: rotate(180deg); }
         
         .club-lang-list { position: absolute; top: calc(100% + 5px); left: 0; background: rgba(0,0,0,0.95); border: 2px solid var(--gold); border-radius: 10px; width: 100%; max-height: 280px; overflow-y: auto; display: none; z-index: 1000002; scrollbar-width: thin; scrollbar-color: var(--gold) #111; }
         .club-lang-list.open { display: block !important; }
@@ -30,10 +36,6 @@
         .club-lang-item { display: flex; align-items: center; gap: 7px; padding: 7px 8px; cursor: pointer; border-bottom: 1px solid rgba(255,215,0,0.15); }
         .club-lang-item:last-child { border-bottom: none; }
         .club-lang-item:hover { background: rgba(255,215,0,0.15); }
-        .club-lang-item .item-avatar { width: 22px; height: 22px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); background: #111; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .club-lang-item .item-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .club-lang-item .item-flag { width: 18px; height: 12px; object-fit: cover; border: 1px solid var(--gold); flex-shrink: 0; display: block; }
-        .club-lang-item .item-text { color: var(--gold); font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Блоки и переходы */
         .block { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: #000000; z-index: 10; }
@@ -58,7 +60,7 @@
         <div class="club-lang-dropdown-wrapper notranslate">
             <div class="club-lang-current" onclick="toggleLangDropdown(event)">
                 <div class="club-lang-current-content">
-                    <div class="item-avatar"><img id="current-avatar" src="horse_welcome.png" alt="Charlie"></div>
+                    <div class="item-avatar"><img id="current-avatar" src="horse_welcome.png" alt="Charlie" onerror="this.src='https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=100'"></div>
                     <img id="current-flag" class="item-flag" src="https://flagcdn.com/w20/gb.png" alt="Flag">
                     <span id="current-lang-name" class="item-text">English</span>
                 </div>
@@ -66,14 +68,14 @@
             </div>
             <div id="club-lang-list" class="club-lang-list"></div>
         </div>
-        <img src="door_1.jpg?v=2" id="main-door" onclick="handleDoor()">
+        <img src="door_1.jpg?v=2" id="main-door" onclick="handleDoor()" onerror="this.src='https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600'">
     </div>
 
     <!-- Блок 1Б: Приветствие Чарли -->
     <div id="block-welcome" class="block">
         <div class="quote-text">I'M CHARLIE</div>
         <div class="quote-text">In every joke there is a share of whisky</div>
-        <img src="horse_welcome.png" alt="Charlie" style="max-height: 34vh; margin: 4px 0;">
+        <img src="horse_welcome.png" alt="Charlie" style="max-height: 34vh; margin: 4px 0;" onerror="this.src='https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=300'">
         <div style="font-size: 22px; font-weight: 700; letter-spacing: 8px; font-style: italic; margin-bottom: 4px; font-family: 'Cinzel', serif;">WELCOME</div>
         <button id="btn-w-hall" class="btn-gy btn-sleep" onclick="portalTransition('block-hall')">PROCEED TO HALL</button>
         <button class="btn-gy" onclick="portalTransition('block-identity')">GET ID</button>
@@ -116,7 +118,7 @@
                     listContainer.classList.remove('open');
                 };
                 item.innerHTML = `
-                    <div class="item-avatar"><img src="${lang.avatar}" alt=""></div>
+                    <div class="item-avatar"><img src="${lang.avatar}" alt="" onerror="this.src='https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=100'"></div>
                     <img class="item-flag" src="${lang.flag}" alt="">
                     <span class="item-text">${lang.name}</span>
                 `;
