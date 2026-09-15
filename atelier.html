@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ателье «Конь в пальто» — GY-GY Club</title>
-  <!-- Three.js для 3D-модели/визуализации -->
+  <!-- Three.js для 3D-модели / визуализации -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <!-- Supabase JS Client -->
@@ -13,7 +13,7 @@
   <style>
     :root {
       --bg-dark: #121214;
-      --panel-bg: rgba(24, 24, 27, 0.85);
+      --panel-bg: rgba(24, 24, 27, 0.9);
       --gold: #d4af37;
       --gold-light: #f3e5ab;
       --text-main: #f4f4f5;
@@ -31,7 +31,6 @@
       display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10;
     }
     .brand-area { display: flex; align-items: center; gap: 12px; }
-    /* Иконка Коня вместо скейта */
     .brand-logo-btn {
       width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
       background: url('horse_welcome.png') center/cover no-repeat; cursor: pointer;
@@ -60,14 +59,12 @@
     .group { display: flex; flex-direction: column; gap: 8px; }
     .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: 600; }
 
-    /* Кнопки-селекторы (единый компактный стиль без визуального шума) */
-    .select-dropdown-box {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
-      border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between;
-      align-items: center; cursor: pointer; transition: border-color 0.2s;
+    select.select-dropdown-box {
+      width: 100%; background: rgba(255, 255, 255, 0.05); color: var(--text-main);
+      border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+      font-size: 14px; font-weight: 500; cursor: pointer; outline: none; transition: border-color 0.2s;
     }
-    .select-dropdown-box:hover { border-color: var(--gold); }
-    .select-current-val { font-size: 14px; font-weight: 500; color: var(--text-main); }
+    select.select-dropdown-box:hover, select.select-dropdown-box:focus { border-color: var(--gold); }
 
     .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
     .btn-option {
@@ -76,6 +73,7 @@
       text-align: center; transition: all 0.2s;
     }
     .btn-option.active { background: var(--gold); color: #000; font-weight: 600; border-color: var(--gold); }
+    .badge { background: var(--accent); color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 10px; margin-left: 4px; }
 
     /* Цветовые палитры */
     .color-swatches { display: flex; gap: 10px; }
@@ -97,10 +95,33 @@
     .file-upload input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
     #upload-label { font-size: 13px; color: var(--gold-light); }
 
+    /* Слайдеры подгонки принта */
+    .print-controls { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .control-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); }
+    .control-row input[type="range"] { width: 65%; accent-color: var(--gold); cursor: pointer; }
+
+    /* Telegram мост */
+    .telegram-bridge-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .tg-row { display: flex; gap: 6px; }
+    .tg-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text-main); font-size: 11px; outline: none; }
+    .tg-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+    .tg-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
+    .tg-dot.active { background: #22c55e; }
+
     /* Смета */
     .summary-card { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
     .summary-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
     .summary-row.total { font-weight: 700; color: var(--gold-light); font-size: 15px; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 2px; }
+
+    /* Общий чат клуба */
+    .club-chat-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; height: 180px; overflow: hidden; }
+    .club-chat-header { background: rgba(212, 175, 55, 0.1); padding: 6px 10px; font-size: 11px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--gold); }
+    .club-chat-messages { flex: 1; padding: 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+    .chat-msg .author { font-size: 10px; color: var(--gold-light); display: flex; justify-content: space-between; opacity: 0.8; }
+    .chat-msg .text { color: var(--text-main); background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 4px; margin-top: 2px; }
+    .chat-input-row { display: flex; border-top: 1px solid var(--border); background: #09090b; }
+    .chat-input { flex: 1; background: transparent; border: none; padding: 8px; color: var(--text-main); font-size: 12px; outline: none; }
+    .chat-send-btn { background: var(--gold); border: none; padding: 0 12px; cursor: pointer; font-weight: bold; color: #000; }
 
     /* Кнопка заказа */
     .btn-submit {
@@ -131,10 +152,10 @@
     <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
     <div class="control-panel">
 
-      <!-- Выбор одежды (Выпадающий список / селектор) -->
+      <!-- Выбор одежды (Выпадающий список) -->
       <div class="group">
         <div class="section-title">Изделие</div>
-        <select id="apparel-type" class="select-dropdown-box" style="width: 100%; background: #18181b; color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 10px;">
+        <select id="apparel-type" class="select-dropdown-box">
           <option value="tshirt">Футболка классика</option>
           <option value="hoodie">Худи с капюшоном</option>
           <option value="sweatshirt">Свитшот оверсайз</option>
@@ -157,7 +178,7 @@
         <div class="btn-group" id="group-size"></div>
       </div>
 
-      <!-- Динамические параметры ткани/горловины -->
+      <!-- Динамические параметры ткани/модификаций -->
       <div id="dynamic-params"></div>
 
       <!-- Цвет -->
@@ -178,6 +199,15 @@
         </div>
       </div>
 
+      <!-- Технология нанесения -->
+      <div class="group">
+        <div class="section-title">Технология</div>
+        <div class="btn-group" id="group-tech">
+          <button class="btn-option active" data-tech-price="0">DTF-Печать</button>
+          <button class="btn-option" data-tech-price="350">Вышивка <span class="badge">+350₽</span></button>
+        </div>
+      </div>
+
       <!-- Загрузка файла PNG -->
       <div class="group">
         <div class="section-title">Принт</div>
@@ -185,21 +215,61 @@
           <input type="file" id="print-input" accept="image/png">
           <span id="upload-label">📁 Загрузить свой PNG в клуб</span>
         </div>
+        <div class="print-controls" id="print-controls">
+          <div class="control-row"><span>Масштаб:</span><input type="range" id="scale-slider" min="0.1" max="0.6" step="0.02" value="0.32"></div>
+          <div class="control-row"><span>Высота:</span><input type="range" id="posY-slider" min="-0.2" max="0.4" step="0.02" value="0.12"></div>
+        </div>
+      </div>
+
+      <!-- TELEGRAM МОСТ -->
+      <div class="group">
+        <div class="section-title">Telegram Канал / Мост</div>
+        <div class="telegram-bridge-box">
+          <div class="tg-row">
+            <input type="text" class="tg-input" id="tg-token" placeholder="Bot Token">
+            <input type="text" class="tg-input" id="tg-chat-id" placeholder="@gygy_club_chat">
+          </div>
+          <div class="tg-status">
+            <div class="tg-dot" id="tg-indicator"></div>
+            <span id="tg-status-text">Мост отключен (Локальный контур)</span>
+          </div>
+        </div>
       </div>
 
       <!-- Смета -->
       <div class="group">
         <div class="section-title">Расчет сметы</div>
         <div class="summary-card">
-          <div class="summary-row"><span>Основа:</span><span id="price-fabric">1 200 ₽</span></div>
-          <div class="summary-row"><span>Нанесение:</span><span id="price-extra">+0 ₽</span></div>
+          <div class="summary-row"><span>Основа и ткань:</span><span id="price-fabric">1 200 ₽</span></div>
+          <div class="summary-row"><span>Модификации:</span><span id="price-extra">+0 ₽</span></div>
           <div class="summary-row total"><span>Итого:</span><span id="price-total">1 200 ₽</span></div>
+        </div>
+      </div>
+
+      <!-- ОБЩИЙ ЧАТ КЛУБА -->
+      <div class="group">
+        <div class="section-title">Общий чат клуба</div>
+        <div class="club-chat-box">
+          <div class="club-chat-header">
+            <span>💬 Live Feed (Ателье)</span>
+            <span id="chat-online-count" style="color: var(--gold-light);">online: 4</span>
+          </div>
+          <div class="club-chat-messages" id="chat-messages-container">
+            <div class="chat-msg">
+              <div class="author"><span>Max_Street</span> <span>14:20</span></div>
+              <div class="text">Йоу всем! Плотность худи с начесом — пушка 🔥</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" class="chat-input" id="chat-msg-input" placeholder="Спросить совет у ребят...">
+            <button class="chat-send-btn" id="chat-send-btn">➤</button>
+          </div>
         </div>
       </div>
 
       <!-- Заказ -->
       <div class="group">
-        <button class="btn-submit" id="btn-submit-order">Подтвердить заказ в клубе</button>
+        <button class="btn-submit" id="btn-submit-order">Подтвердить и Оформить Заказ</button>
       </div>
 
     </div>
@@ -210,9 +280,9 @@
 
   <script>
     /* ========================================================
-       SUPABASE CONFIGURATION (Подключаем базу данных и Storage)
+       SUPABASE CONFIGURATION
        ======================================================== */
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Заменишь на свой ключ
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
     const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
     const supabaseClient = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
@@ -225,7 +295,7 @@
       window.location.href = 'index.html';
     });
 
-    // Three.js сценический контур
+    // Three.js сцена
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -253,6 +323,7 @@
       view: 'front',
       basePrice: 1200,
       extraPrice: 0,
+      techPrice: 0,
       frontPrint: { scale: 0.32, posY: 0.12, texture: null },
       backPrint: { scale: 0.32, posY: 0.12, texture: null }
     };
@@ -264,9 +335,30 @@
     const printMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, alphaTest: 0.02, depthWrite: false });
 
     const apparelConfigs = {
-      tshirt: { basePrice: 1200, html: `<div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="1200">Хлопок</button><button class="btn-option" data-price="1400">Стрейч</button></div>` },
-      hoodie: { basePrice: 3200, html: `<div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="3200">Без начеса</button><button class="btn-option" data-price="3600">С начесом</button></div>` },
-      sweatshirt: { basePrice: 2500, html: `<div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="2500">320 г/м²</button><button class="btn-option" data-price="2900">400 г/м²</button></div>` }
+      tshirt: {
+        basePrice: 1200,
+        html: `
+          <div class="section-title">Ткань / Горловина</div>
+          <div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="1200">Хлопок 100%</button><button class="btn-option" data-price="1400">Стрейч</button></div>
+          <div class="btn-group" id="group-extra" style="margin-top: 6px;"><button class="btn-option active" data-extra="0">О-горловина</button><button class="btn-option" data-extra="200">V-горловина <span class="badge">+200₽</span></button></div>
+        `
+      },
+      hoodie: {
+        basePrice: 3200,
+        html: `
+          <div class="section-title">Ткань / Капюшон</div>
+          <div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="3200">Без начеса</button><button class="btn-option" data-price="3600">С начесом <span class="badge">+400₽</span></button></div>
+          <div class="btn-group" id="group-extra" style="margin-top: 6px;"><button class="btn-option active" data-extra="0">Капюшон Стандарт</button><button class="btn-option" data-extra="300">Оверсайз <span class="badge">+300₽</span></button></div>
+        `
+      },
+      sweatshirt: {
+        basePrice: 2500,
+        html: `
+          <div class="section-title">Плотность / Рукав</div>
+          <div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="2500">320 г/м²</button><button class="btn-option" data-price="2900">400 г/м² <span class="badge">+400₽</span></button></div>
+          <div class="btn-group" id="group-extra" style="margin-top: 6px;"><button class="btn-option active" data-extra="0">Втачной</button><button class="btn-option" data-extra="250">Реглан <span class="badge">+250₽</span></button></div>
+        `
+      }
     };
 
     function updateSizeButtons() {
@@ -288,8 +380,27 @@
 
     function renderDynamicParams() {
       const config = apparelConfigs[state.apparelType];
-      document.getElementById('dynamic-params').innerHTML = `<div class="section-title">Материал</div>` + config.html;
+      document.getElementById('dynamic-params').innerHTML = config.html;
       state.basePrice = config.basePrice;
+      state.extraPrice = 0;
+
+      document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          state.basePrice = parseInt(e.currentTarget.dataset.price);
+          updatePricing();
+        });
+      });
+
+      document.querySelectorAll('#group-extra .btn-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('#group-extra .btn-option').forEach(b => b.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          state.extraPrice = parseInt(e.currentTarget.dataset.extra);
+          updatePricing();
+        });
+      });
       updatePricing();
     }
 
@@ -312,19 +423,62 @@
       printMaterial.opacity = currentPrint.texture ? 0.98 : 0;
       printMaterial.needsUpdate = true;
 
+      document.getElementById('scale-slider').value = currentPrint.scale;
+      document.getElementById('posY-slider').value = currentPrint.posY;
+
       const printMesh = new THREE.Mesh(new THREE.PlaneGeometry(currentPrint.scale, currentPrint.scale), printMaterial);
       printMesh.position.set(0, currentPrint.posY, (state.view === 'front') ? 0.01 : -0.01);
       atelierGroup.add(printMesh);
     }
 
     function updatePricing() {
-      let total = state.basePrice + state.extraPrice;
+      let extraTotal = state.extraPrice + state.techPrice;
+      let total = state.basePrice + extraTotal;
       document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('price-extra').innerText = '+' + extraTotal.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
-    // Загрузка PNG с сохранением в Supabase Storage (опционально)
-    document.getElementById('print-input').addEventListener('change', async (e) => {
+    // Чат клуба
+    const chatMsgContainer = document.getElementById('chat-messages-container');
+    const chatMsgInput = document.getElementById('chat-msg-input');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+
+    function sendChatMessage(text) {
+      if (!text || text.trim() === '') return;
+      const now = new Date();
+      const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-msg';
+      msgDiv.innerHTML = `<div class="author"><span>Вы (Ателье)</span> <span>${timeStr}</span></div><div class="text">${text}</div>`;
+      chatMsgContainer.appendChild(msgDiv);
+      chatMsgContainer.scrollTop = chatMsgContainer.scrollHeight;
+      chatMsgInput.value = '';
+    }
+
+    chatSendBtn.addEventListener('click', () => sendChatMessage(chatMsgInput.value));
+    chatMsgInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChatMessage(chatMsgInput.value); });
+
+    // Telegram мост
+    const tgTokenInput = document.getElementById('tg-token');
+    const tgChatInput = document.getElementById('tg-chat-id');
+    const tgIndicator = document.getElementById('tg-indicator');
+    const tgStatusText = document.getElementById('tg-status-text');
+
+    function checkTelegramBridge() {
+      if (tgTokenInput.value.trim().length > 5 && tgChatInput.value.trim().length > 2) {
+        tgIndicator.classList.add('active');
+        tgStatusText.innerText = 'Мост активен (Telegram)';
+      } else {
+        tgIndicator.classList.remove('active');
+        tgStatusText.innerText = 'Мост отключен (Локально)';
+      }
+    }
+    tgTokenInput.addEventListener('input', checkTelegramBridge);
+    tgChatInput.addEventListener('input', checkTelegramBridge);
+
+    // Загрузка PNG
+    document.getElementById('print-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
       document.getElementById('upload-label').innerText = '✓ ' + file.name.substring(0, 14);
@@ -342,13 +496,9 @@
         };
       };
       reader.readAsDataURL(file);
-
-      // Если Supabase подключен, можно отправить в Storage
-      if (supabaseClient) {
-        // const { data, error } = await supabaseClient.storage.from('prints').upload(`public/${file.name}`, file);
-      }
     });
 
+    // Обработчики интерфейса
     document.getElementById('apparel-type').addEventListener('change', (e) => {
       state.apparelType = e.target.value;
       renderDynamicParams();
@@ -364,6 +514,43 @@
         updateSizeButtons();
         buildModel();
       });
+    });
+
+    document.querySelectorAll('#group-view .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-view .btn-option').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        state.view = e.currentTarget.dataset.view;
+        buildModel();
+      });
+    });
+
+    document.querySelectorAll('#group-tech .btn-option').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('#group-tech .btn-option').forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        state.techPrice = parseInt(e.currentTarget.dataset.techPrice);
+        updatePricing();
+      });
+    });
+
+    document.getElementById('scale-slider').addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (state.view === 'front') state.frontPrint.scale = val; else state.backPrint.scale = val;
+      buildModel();
+    });
+
+    document.getElementById('posY-slider').addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      if (state.view === 'front') state.frontPrint.posY = val; else state.backPrint.posY = val;
+      buildModel();
+    });
+
+    // Оформление заказа
+    document.getElementById('btn-submit-order').addEventListener('click', () => {
+      let total = state.basePrice + state.extraPrice + state.techPrice;
+      sendChatMessage(`Заказ подтвержден! Собрал конфиг: ${state.apparelType.toUpperCase()} (${state.size}, ${state.color}) на ${total}₽ 🔥`);
+      alert(`Заказ на ${total} ₽ успешно оформлен в клубе! Конь в пальто доволен.`);
     });
 
     updateSizeButtons();
