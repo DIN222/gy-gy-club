@@ -3,712 +3,203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GY-GY Atelier | Ателье «Уличная одежда» v1.1.7 </title>
-  
-  <!-- ШРИФТЫ: Montserrat (для интерфейса) + UnifrakturMaguntia (Креативный стритвир акцент) -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=UnifrakturMaguntia&family=Russo+One&display=swap" rel="stylesheet">
-  
+  <title>Ателье «Конь в пальто» — GY-GY Club</title>
+  <!-- Three.js для 3D-модели/визуализации -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
-    /* ==========================================
-        ГЛОБАЛЬНЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
-        ========================================== */
     :root {
-      --bg: #050505;
-      --panel: #0d0d0d;
-      --panel-border: #221c08;
-      
-      --gold-primary: #d4af37; 
-      --gold-light: #f5d77f;
-      --gold-dark: #3a2e0a;
-      --gold-glow: rgba(212, 175, 55, 0.35);
-      
-      --text: #ffffff;
-      --text-muted: #8a806b;
-      --text-dark: #000000;
-      
-      --font-main: 'Montserrat', sans-serif;
-      --font-streetwear: 'UnifrakturMaguntia', cursive;
+      --bg-dark: #121214;
+      --panel-bg: rgba(24, 24, 27, 0.85);
+      --gold: #d4af37;
+      --gold-light: #f3e5ab;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #e11d48;
+      --border: rgba(212, 175, 55, 0.2);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-    body {
-      font-family: var(--font-main);
-      background-color: var(--bg);
-      color: var(--text);
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
+    /* ШАПКА КЛУБА */
+    header {
+      height: 60px; background: #09090b; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10;
     }
+    .brand-area { display: flex; align-items: center; gap: 12px; }
+    /* Иконка Коня вместо скейта */
+    .brand-logo-btn {
+      width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
+      background: url('horse_welcome.png') center/cover no-repeat; cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .brand-logo-btn:hover { transform: scale(1.08); }
+    .brand-title { font-size: 18px; font-weight: 700; color: var(--gold-light); letter-spacing: 0.5px; }
 
-    .main-wrapper {
-      display: flex;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* ==========================================
-        ПАНЕЛЬ УПРАВЛЕНИЯ
-        ========================================== */
-    .panel {
-      width: 440px;
-      height: 100%;
-      background: var(--panel);
-      border-right: 1px solid var(--panel-border);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      overflow-y: auto;
-      z-index: 10;
-      box-shadow: 10px 0 35px rgba(0,0,0,0.85);
-    }
-
-    .panel::-webkit-scrollbar {
-      width: 6px;
-    }
-    .panel::-webkit-scrollbar-track {
-      background: #080808;
-    }
-    .panel::-webkit-scrollbar-thumb {
-      background: var(--gold-dark);
-      border-radius: 3px;
-    }
-
-    /* Шапка */
-    .panel-header {
-      border-bottom: 2px solid var(--gold-dark);
-      padding-bottom: 10px;
-      margin-bottom: 2px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-arrows {
-      display: flex;
-      gap: 6px;
-    }
-
+    .nav-buttons { display: flex; gap: 10px; }
     .nav-btn {
-      background: #121212;
-      border: 1px solid var(--gold-dark);
-      color: var(--gold-primary);
-      width: 36px;
-      height: 36px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 18px;
-      font-weight: 700;
-      transition: all 0.25s ease;
-      line-height: 1;
+      background: transparent; border: 1px solid var(--border); color: var(--text-main);
+      padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;
+    }
+    .nav-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+
+    /* ОСНОВНОЙ КОНТЕЙНЕР */
+    .workspace { display: flex; flex: 1; height: calc(100vh - 60px); position: relative; }
+
+    /* ПАНЕЛЬ УПРАВЛЕНИЯ (Слева) */
+    .control-panel {
+      width: 420px; background: var(--panel-bg); backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      padding: 20px; gap: 16px; overflow-y: auto; z-index: 5;
     }
 
-    .nav-btn:hover {
-      border-color: var(--gold-light);
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-    }
+    .group { display: flex; flex-direction: column; gap: 8px; }
+    .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: 600; }
 
-    .brand-box {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
+    /* Кнопки-селекторы (единый компактный стиль без визуального шума) */
+    .select-dropdown-box {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; transition: border-color 0.2s;
     }
+    .select-dropdown-box:hover { border-color: var(--gold); }
+    .select-current-val { font-size: 14px; font-weight: 500; color: var(--text-main); }
 
-    .brand-logo {
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      color: var(--gold-primary);
-      text-transform: uppercase;
-      text-shadow: 0 0 10px var(--gold-glow);
+    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn-option {
+      flex: 1; min-width: 70px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
+      color: var(--text-muted); padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
+      text-align: center; transition: all 0.2s;
     }
+    .btn-option.active { background: var(--gold); color: #000; font-weight: 600; border-color: var(--gold); }
 
-    .version-tag {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
-
-    .section-title {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--gold-primary);
-      margin-bottom: 4px;
-      font-weight: 700;
-    }
-
-    /* КРЕАТИВНАЯ ПЛАШКА НАЗВАНИЯ АТЕЛЬЕ */
-    .atelier-title-badge {
-      background: linear-gradient(180deg, rgba(212, 175, 55, 0.12) 0%, rgba(13, 13, 13, 0.8) 100%);
-      border: 1px solid var(--gold-dark);
-      color: var(--gold-light);
-      padding: 10px 14px;
-      border-radius: 6px;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: inset 0 0 12px rgba(212, 175, 55, 0.08), 0 4px 15px rgba(0, 0, 0, 0.5);
-    }
-
-    .atelier-title-badge .title-text {
-      font-family: var(--font-streetwear);
-      font-size: 20px;
-      letter-spacing: 1px;
-      color: var(--gold-light);
-      text-shadow: 0 0 10px var(--gold-glow);
-      line-height: 1.1;
-    }
-
-    .atelier-title-badge .icon {
-      font-size: 18px;
-      filter: drop-shadow(0 0 4px var(--gold-glow));
-    }
-
-    .apparel-selector {
-      width: 100%;
-      padding: 10px;
-      background: #121212;
-      border: 1px solid var(--gold-dark);
-      border-radius: 4px;
-      color: var(--gold-primary);
-      font-family: var(--font-main);
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      cursor: pointer;
-      outline: none;
-      transition: all 0.3s ease;
-      text-shadow: 0 0 4px rgba(212, 175, 55, 0.3);
-    }
-
-    .apparel-selector:hover {
-      border-color: var(--gold-primary);
-    }
-
-    .apparel-selector option {
-      background: #0d0d0d;
-      color: var(--gold-primary);
-      padding: 10px;
-    }
-
-    .group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .btn-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 6px;
-    }
-
-    .btn-group.size-grid {
-      grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
-    }
-
-    /* СТИЛИ КНОПОК */
-    .btn-option, .swatch-btn, .btn-submit {
-      background-color: #121212;
-      border: 1px solid var(--gold-dark);
-      color: var(--gold-primary);
-      padding: 8px 4px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-      text-align: center;
-      text-transform: uppercase;
-      text-shadow: 0 0 3px rgba(212, 175, 55, 0.25);
-    }
-
-    .btn-option:hover, .swatch-btn:hover, .btn-submit:hover {
-      border-color: rgba(212, 175, 55, 0.6);
-      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
-    }
-
-    .btn-option.active, .swatch-btn.active {
-      background-color: #121212 !important;
-      border: 1.5px solid var(--gold-light) !important;
-      color: var(--gold-primary) !important;
-      box-shadow: 
-        0 0 12px rgba(245, 215, 127, 0.6),
-        inset 0 0 6px rgba(212, 175, 55, 0.3) !important;
-    }
-
-    .color-swatches {
-      display: flex;
-      gap: 8px;
-    }
-
+    /* Цветовые палитры */
+    .color-swatches { display: flex; gap: 10px; }
     .swatch-btn {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px;
+      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; color: var(--text-muted);
     }
+    .swatch-btn.active { border-color: var(--gold); color: var(--text-main); background: rgba(212,175,55,0.1); }
+    .swatch-circle { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); }
+    .swatch-circle.white { background: #ffffff; }
+    .swatch-circle.black { background: #18181b; }
 
-    .swatch-circle {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 1px solid var(--gold-primary);
-    }
-    .swatch-circle.white { background-color: #ffffff; }
-    .swatch-circle.black { background-color: #111111; }
-
+    /* Зона загрузки файлов */
     .file-upload {
-      position: relative;
-      border: 1px dashed var(--gold-primary);
-      border-radius: 4px;
-      padding: 8px;
-      text-align: center;
-      cursor: pointer;
-      background: rgba(212, 175, 55, 0.02);
-      transition: all 0.3s ease;
+      border: 1px dashed var(--border); border-radius: 8px; padding: 12px; text-align: center;
+      background: rgba(0,0,0,0.2); cursor: pointer; position: relative; transition: border-color 0.2s;
     }
+    .file-upload:hover { border-color: var(--gold); }
+    .file-upload input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+    #upload-label { font-size: 13px; color: var(--gold-light); }
 
-    .file-upload:hover {
-      background: rgba(212, 175, 55, 0.06);
-      border-color: var(--gold-light);
-    }
+    /* Смета */
+    .summary-card { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
+    .summary-row.total { font-weight: 700; color: var(--gold-light); font-size: 15px; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 2px; }
 
-    .file-upload input {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .file-upload span {
-      font-size: 11px;
-      color: var(--gold-primary);
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .print-controls {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      background: #080808;
-      border: 1px solid var(--gold-dark);
-      padding: 8px;
-      border-radius: 4px;
-      margin-top: 2px;
-    }
-
-    .control-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      color: var(--gold-primary);
-      font-weight: 700;
-    }
-
-    .control-row input[type="range"] {
-      width: 60%;
-      accent-color: var(--gold-primary);
-      cursor: pointer;
-    }
-
-    /* TELEGRAM BRIDGE MODULE */
-    .telegram-bridge-box {
-      background: #080808;
-      border: 1px solid var(--gold-dark);
-      border-radius: 6px;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .tg-row {
-      display: flex;
-      gap: 6px;
-    }
-    .tg-input {
-      flex: 1;
-      background: #121212;
-      border: 1px solid var(--gold-dark);
-      border-radius: 4px;
-      padding: 6px 8px;
-      color: var(--gold-light);
-      font-size: 10px;
-      font-family: var(--font-main);
-      outline: none;
-    }
-    .tg-input:focus {
-      border-color: var(--gold-primary);
-    }
-    .tg-status {
-      font-size: 9px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .tg-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #d9534f;
-    }
-    .tg-dot.active {
-      background: #5cb85c;
-      box-shadow: 0 0 6px #5cb85c;
-    }
-
-    /* СМЕТА (ПЕРЕД ЧАТОМ) */
-    .summary-card {
-      background: #080808;
-      border: 1px solid var(--gold-dark);
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .summary-row.total {
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--gold-primary);
-      border-top: 1px solid var(--gold-dark);
-      padding-top: 6px;
-      margin-bottom: 0;
-      text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
-    }
-
-    .badge {
-      font-size: 8px;
-      background: rgba(212, 175, 55, 0.2);
-      color: var(--gold-light);
-      padding: 2px 4px;
-      border-radius: 3px;
-      margin-left: 3px;
-    }
-
+    /* Кнопка заказа */
     .btn-submit {
-      width: 100%;
-      padding: 11px;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 1px;
+      background: linear-gradient(135deg, var(--gold), #b8860b); color: #000; font-weight: 700;
+      border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 14px; text-transform: uppercase;
+      letter-spacing: 0.5px; transition: opacity 0.2s;
     }
+    .btn-submit:hover { opacity: 0.9; }
 
-    /* ОБЩИЙ ЧАТ КЛУБА (МЕЖДУ СМЕТОЙ И ПОДТВЕРЖДЕНИЕМ) */
-    .club-chat-box {
-      background: #080808;
-      border: 1px solid var(--gold-dark);
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-      height: 190px;
-      overflow: hidden;
-      margin-top: 2px;
-    }
-    .club-chat-header {
-      background: rgba(212, 175, 55, 0.08);
-      border-bottom: 1px solid var(--gold-dark);
-      padding: 6px 10px;
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--gold-primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .club-chat-messages {
-      flex: 1;
-      padding: 8px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .club-chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
-    .club-chat-messages::-webkit-scrollbar-thumb {
-      background: var(--gold-dark);
-    }
-    .chat-msg {
-      font-size: 10px;
-      line-height: 1.3;
-      background: #121212;
-      border: 1px solid rgba(212, 175, 55, 0.15);
-      padding: 6px 8px;
-      border-radius: 4px;
-    }
-    .chat-msg .author {
-      font-weight: 700;
-      color: var(--gold-primary);
-      margin-bottom: 2px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .chat-msg .time {
-      font-size: 8px;
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-    .chat-msg .text {
-      color: var(--text);
-      word-break: break-word;
-    }
-    .chat-input-row {
-      display: flex;
-      border-top: 1px solid var(--gold-dark);
-      background: #0d0d0d;
-      padding: 4px;
-      gap: 4px;
-    }
-    .chat-input {
-      flex: 1;
-      background: #121212;
-      border: 1px solid var(--gold-dark);
-      border-radius: 4px;
-      padding: 6px 8px;
-      color: var(--text);
-      font-size: 10px;
-      font-family: var(--font-main);
-      outline: none;
-    }
-    .chat-input:focus {
-      border-color: var(--gold-primary);
-    }
-    .chat-send-btn {
-      background: #121212;
-      border: 1px solid var(--gold-dark);
-      color: var(--gold-primary);
-      padding: 0 10px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .chat-send-btn:hover {
-      border-color: var(--gold-light);
-      background: rgba(212, 175, 55, 0.1);
-    }
-
-    #canvas-container {
-      flex: 1;
-      height: 100%;
-      position: relative;
-      background-image: url('astudio_bg.jpg');
-      background-size: cover;
-      background-position: center;
-    }
-
-    #canvas-container::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at center, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.8) 100%);
-      z-index: 1;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      position: relative;
-      z-index: 2;
-    }
+    /* КАНВАС ДЛЯ 3D И ВИЗУАЛА (Справа) */
+    #canvas-container { flex: 1; height: 100%; position: relative; background: radial-gradient(circle at center, #1e1e24 0%, #0d0d0f 100%); }
   </style>
 </head>
 <body>
 
-  <div class="main-wrapper">
-    <div class="panel">
-      <!-- Шапка -->
-      <div class="panel-header">
-        <div class="nav-arrows">
-          <button class="nav-btn" id="btn-nav-back" title="Вернуться в Студио">‹</button>
-          <button class="nav-btn" id="btn-nav-door" title="Перейти в Index">«</button>
-        </div>
-        <div class="brand-box">
-          <div class="brand-logo">GY-GY</div>
-          <span class="version-tag">v1.1.7-CHAT-BEFORE-ORDER</span>
-        </div>
-      </div>
+  <header>
+    <div class="brand-area">
+      <!-- Иконка Коня на кнопке названия -->
+      <button class="brand-logo-btn" id="btn-nav-door" title="В клуб GY-GY"></button>
+      <div class="brand-title">Ателье «Конь в пальто»</div>
+    </div>
+    <div class="nav-buttons">
+      <button class="nav-btn" id="btn-nav-back">↩ Назад</button>
+    </div>
+  </header>
 
-      <!-- Креативная плашка названия -->
-      <div class="atelier-title-badge">
-        <span class="icon">🛹</span>
-        <span class="title-text">Ателье «Конь в пальто»</span>
-      </div>
+  <div class="workspace">
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
+    <div class="control-panel">
 
-      <!-- Выбор изделия -->
+      <!-- Выбор одежды (Выпадающий список / селектор) -->
       <div class="group">
-        <select class="apparel-selector" id="apparel-type">
-          <option value="tshirt">👕 Футболка </option>
-          <option value="hoodie">🧥 Худи с капюшоном </option>
-          <option value="sweatshirt">👔 Лонгслив </option>
+        <div class="section-title">Изделие</div>
+        <select id="apparel-type" class="select-dropdown-box" style="width: 100%; background: #18181b; color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 10px;">
+          <option value="tshirt">Футболка классика</option>
+          <option value="hoodie">Худи с капюшоном</option>
+          <option value="sweatshirt">Свитшот оверсайз</option>
         </select>
       </div>
 
-      <!-- Пол манекена -->
+      <!-- Гендер / Силуэт -->
       <div class="group">
+        <div class="section-title">Силуэт</div>
         <div class="btn-group" id="group-gender">
-          <button class="btn-option active" data-file="man.png" data-val="male">Мужской</button>
-          <button class="btn-option" data-file="wom.png" data-val="female">Женский</button>
-          <button class="btn-option" data-file="Chil.png" data-val="child">Детский</button>
+          <button class="btn-option active" data-val="male" data-file="man.png">Мужской</button>
+          <button class="btn-option" data-val="female" data-file="woman.png">Женский</button>
+          <button class="btn-option" data-val="child" data-file="child.png">Детский</button>
         </div>
       </div>
 
-      <!-- Размеры -->
+      <!-- Размер -->
       <div class="group">
-        <div class="btn-group size-grid" id="group-size"></div>
+        <div class="section-title">Размер</div>
+        <div class="btn-group" id="group-size"></div>
       </div>
 
-      <!-- Силуэт -->
-      <div class="group">
-        <div class="btn-group" id="group-fit">
-          <button class="btn-option active" data-val="standard">Стандарт</button>
-          <button class="btn-option" data-val="oversize">Оверсайз</button>
-        </div>
-      </div>
-
-      <!-- Динамические параметры -->
+      <!-- Динамические параметры ткани/горловины -->
       <div id="dynamic-params"></div>
 
       <!-- Цвет -->
       <div class="group">
+        <div class="section-title">Цвет ткани</div>
         <div class="color-swatches" id="group-color">
-          <button class="swatch-btn active" data-color="white">
-            <span class="swatch-circle white"></span> Белый
-          </button>
-          <button class="swatch-btn" data-color="black">
-            <span class="swatch-circle black"></span> Черный
-          </button>
+          <button class="swatch-btn active" data-color="white"><span class="swatch-circle white"></span> Белый</button>
+          <button class="swatch-btn" data-color="black"><span class="swatch-circle black"></span> Черный</button>
         </div>
       </div>
 
       <!-- Ракурс -->
       <div class="group">
+        <div class="section-title">Ракурс примерки</div>
         <div class="btn-group" id="group-view">
           <button class="btn-option active" data-view="front">Спереди (Грудь)</button>
           <button class="btn-option" data-view="back">Сзади (Спина)</button>
         </div>
       </div>
 
-      <!-- Нанесение принта -->
+      <!-- Загрузка файла PNG -->
       <div class="group">
-        <div class="section-title">Технология и Принт</div>
-        <div class="btn-group" id="group-tech" style="margin-bottom: 6px;">
-          <button class="btn-option active" data-tech-price="0">DTF-Печать</button>
-          <button class="btn-option" data-tech-price="350">Вышивка <span class="badge">+350₽</span></button>
-        </div>
-
+        <div class="section-title">Принт</div>
         <div class="file-upload">
-          <input type="file" id="print-input" accept="image/*">
-          <span id="upload-label">📁 Загрузить файл (PNG)</span>
-        </div>
-
-        <div class="print-controls" id="print-controls">
-          <div class="control-row">
-            <span>Масштаб:</span>
-            <input type="range" id="scale-slider" min="0.1" max="0.6" step="0.02" value="0.32">
-          </div>
-          <div class="control-row">
-            <span>Высота:</span>
-            <input type="range" id="posY-slider" min="-0.2" max="0.4" step="0.02" value="0.12">
-          </div>
+          <input type="file" id="print-input" accept="image/png">
+          <span id="upload-label">📁 Загрузить свой PNG в клуб</span>
         </div>
       </div>
 
-      <!-- TELEGRAM МОСТ -->
-      <div class="group">
-        <div class="section-title">Telegram Канал / Мост</div>
-        <div class="telegram-bridge-box">
-          <div class="tg-row">
-            <input type="text" class="tg-input" id="tg-token" placeholder="Bot Token (скрыт)" value="">
-            <input type="text" class="tg-input" id="tg-chat-id" placeholder="@gygy_club_chat" value="">
-          </div>
-          <div class="tg-status">
-            <div class="tg-dot" id="tg-indicator"></div>
-            <span id="tg-status-text">Мост отключен (Локальный контур)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- СМЕТА (1. СМОТРИМ СТОИМОСТЬ) -->
+      <!-- Смета -->
       <div class="group">
         <div class="section-title">Расчет сметы</div>
         <div class="summary-card">
-          <div class="summary-row">
-            <span>Основа и Ткань:</span>
-            <span id="price-fabric">1 200 ₽</span>
-          </div>
-          <div class="summary-row">
-            <span>Модификация и Нанесение:</span>
-            <span id="price-extra">+0 ₽</span>
-          </div>
-          <div class="summary-row total">
-            <span>Итого:</span>
-            <span id="price-total">1 200 ₽</span>
-          </div>
+          <div class="summary-row"><span>Основа:</span><span id="price-fabric">1 200 ₽</span></div>
+          <div class="summary-row"><span>Нанесение:</span><span id="price-extra">+0 ₽</span></div>
+          <div class="summary-row total"><span>Итого:</span><span id="price-total">1 200 ₽</span></div>
         </div>
       </div>
 
-      <!-- ОБЩИЙ ЧАТ КЛУБА (2. ОБСУЖДАЕМ С РЕБЯТАМИ) -->
+      <!-- Заказ -->
       <div class="group">
-        <div class="section-title">Общий чат клуба</div>
-        <div class="club-chat-box">
-          <div class="club-chat-header">
-            <span>💬 Live Feed (Ателье)</span>
-            <span id="chat-online-count" style="color: var(--gold-light);">online: 4</span>
-          </div>
-          <div class="club-chat-messages" id="chat-messages-container">
-            <div class="chat-msg">
-              <div class="author"><span>Max_Street</span> <span class="time">14:20</span></div>
-              <div class="text">Йоу всем! Кто заценивал новые худи с начесом? Плотность пушка 🔥</div>
-            </div>
-            <div class="chat-msg">
-              <div class="author"><span>Kira_GY</span> <span class="time">14:22</span></div>
-              <div class="text">Сделала оверсайз в черном цвете с вышивкой, стиль строгий вышел ✨</div>
-            </div>
-          </div>
-          <div class="chat-input-row">
-            <input type="text" class="chat-input" id="chat-msg-input" placeholder="Спросить совет у ребят...">
-            <button class="chat-send-btn" id="chat-send-btn" title="Отправить в чат">➤</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ФИНАЛЬНАЯ КНОПКА ПОДТВЕРЖДЕНИЯ (3. ПОДТВЕРЖДАЕМ ПОСЛЕ ОБСУЖДЕНИЯ) -->
-      <div class="group">
-        <button class="btn-submit" id="btn-submit-order">Подтвердить и Оформить Заказ</button>
+        <button class="btn-submit" id="btn-submit-order">Подтвердить заказ в клубе</button>
       </div>
 
     </div>
@@ -718,21 +209,25 @@
   </div>
 
   <script>
-    document.getElementById('btn-nav-back').addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = 'studio.html';
-      }
-    });
+    /* ========================================================
+       SUPABASE CONFIGURATION (Подключаем базу данных и Storage)
+       ======================================================== */
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Заменишь на свой ключ
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const supabaseClient = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
+    // Навигация
+    document.getElementById('btn-nav-back').addEventListener('click', () => {
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = 'studio.html';
+    });
     document.getElementById('btn-nav-door').addEventListener('click', () => {
       window.location.href = 'index.html';
     });
 
+    // Three.js сценический контур
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-
     const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
     camera.position.set(0, 0, 3.2);
 
@@ -743,10 +238,8 @@
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-    scene.add(ambientLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
 
     const adultSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
     const childSizes = ['104', '116', '128', '140', '152'];
@@ -755,15 +248,11 @@
       apparelType: 'tshirt',
       mannequinFile: 'man.png',
       gender: 'male',
-      fit: 'standard',
       size: 'M',
       color: 'white',
       view: 'front',
-      
       basePrice: 1200,
       extraPrice: 0,
-      techPrice: 0,
-      
       frontPrint: { scale: 0.32, posY: 0.12, texture: null },
       backPrint: { scale: 0.32, posY: 0.12, texture: null }
     };
@@ -772,77 +261,22 @@
     const atelierGroup = new THREE.Group();
     scene.add(atelierGroup);
 
-    const printMaterial = new THREE.MeshBasicMaterial({ 
-      transparent: true, 
-      opacity: 0, 
-      alphaTest: 0.02,
-      depthWrite: false
-    });
+    const printMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, alphaTest: 0.02, depthWrite: false });
 
     const apparelConfigs = {
-      tshirt: {
-        basePrice: 1200,
-        html: `
-          <div class="group">
-            <div class="btn-group" id="group-fabric">
-              <button class="btn-option active" data-price="1200">Хлопок 100%</button>
-              <button class="btn-option" data-price="1400">Стрейч</button>
-            </div>
-          </div>
-          <div class="group">
-            <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Горловина О</button>
-              <button class="btn-option" data-extra="200">Горловина V <span class="badge">+200₽</span></button>
-            </div>
-          </div>
-        `
-      },
-      hoodie: {
-        basePrice: 3200,
-        html: `
-          <div class="group">
-            <div class="btn-group" id="group-fabric">
-              <button class="btn-option active" data-price="3200">Без начеса</button>
-              <button class="btn-option" data-price="3600">С начесом <span class="badge">+400₽</span></button>
-            </div>
-          </div>
-          <div class="group">
-            <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Капюшон Стандарт</button>
-              <button class="btn-option" data-extra="300">Капюшон Оверсайз <span class="badge">+300₽</span></button>
-            </div>
-          </div>
-        `
-      },
-      sweatshirt: {
-        basePrice: 2500,
-        html: `
-          <div class="group">
-            <div class="btn-group" id="group-fabric">
-              <button class="btn-option active" data-price="2500">320 г/м²</button>
-              <button class="btn-option" data-price="2900">400 г/м² (Плотный)</button>
-            </div>
-          </div>
-          <div class="group">
-            <div class="btn-group" id="group-extra">
-              <button class="btn-option active" data-extra="0">Рукав Втачной</button>
-              <button class="btn-option" data-extra="250">Рукав Реглан <span class="badge">+250₽</span></button>
-            </div>
-          </div>
-        `
-      }
+      tshirt: { basePrice: 1200, html: `<div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="1200">Хлопок</button><button class="btn-option" data-price="1400">Стрейч</button></div>` },
+      hoodie: { basePrice: 3200, html: `<div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="3200">Без начеса</button><button class="btn-option" data-price="3600">С начесом</button></div>` },
+      sweatshirt: { basePrice: 2500, html: `<div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="2500">320 г/м²</button><button class="btn-option" data-price="2900">400 г/м²</button></div>` }
     };
 
     function updateSizeButtons() {
       const sizeContainer = document.getElementById('group-size');
       const sizes = (state.gender === 'child') ? childSizes : adultSizes;
-      
       sizeContainer.innerHTML = sizes.map((sz, index) => {
         const isActive = (state.size === sz) || (index === 2 && !sizes.includes(state.size));
         if (isActive) state.size = sz;
         return `<button class="btn-option ${isActive ? 'active' : ''}" data-val="${sz}">${sz}</button>`;
       }).join('');
-
       sizeContainer.querySelectorAll('.btn-option').forEach(btn => {
         btn.addEventListener('click', (e) => {
           sizeContainer.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
@@ -854,184 +288,64 @@
 
     function renderDynamicParams() {
       const config = apparelConfigs[state.apparelType];
-      document.getElementById('dynamic-params').innerHTML = config.html;
+      document.getElementById('dynamic-params').innerHTML = `<div class="section-title">Материал</div>` + config.html;
       state.basePrice = config.basePrice;
-      state.extraPrice = 0;
-
-      document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          state.basePrice = parseInt(e.currentTarget.dataset.price);
-          updatePricing();
-        });
-      });
-
-      document.querySelectorAll('#group-extra .btn-option').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('#group-extra .btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          state.extraPrice = parseInt(e.currentTarget.dataset.extra);
-          updatePricing();
-        });
-      });
-
       updatePricing();
     }
 
     function buildModel() {
-      while(atelierGroup.children.length > 0){ 
+      while(atelierGroup.children.length > 0) {
         const obj = atelierGroup.children[0];
         if (obj.geometry) obj.geometry.dispose();
-        atelierGroup.remove(obj); 
+        atelierGroup.remove(obj);
       }
-
-      const genderMult = (state.gender === 'child' ? 0.75 : (state.gender === 'female' ? 0.88 : 1.0));
-      const fitMult = (state.fit === 'oversize' ? 1.12 : 1.0);
-
-      const width = 1.2 * genderMult * fitMult;
-      const height = 1.8 * genderMult; 
-
       atelierGroup.rotation.y = (state.view === 'back') ? Math.PI : 0;
 
       textureLoader.load(state.mannequinFile, (texture) => {
-        texture.magFilter = THREE.LinearFilter;
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
-        
         const manMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false });
-        const manGeo = new THREE.PlaneGeometry(width, height);
-        const mannequinMesh = new THREE.Mesh(manGeo, manMat);
-        mannequinMesh.position.set(0, 0, 0);
+        const mannequinMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.8), manMat);
         atelierGroup.add(mannequinMesh);
       });
 
-      const currentPrintData = (state.view === 'front') ? state.frontPrint : state.backPrint;
-      
-      if (currentPrintData.texture) {
-        printMaterial.map = currentPrintData.texture;
-        printMaterial.opacity = 0.98;
-      } else {
-        printMaterial.opacity = 0;
-      }
+      const currentPrint = (state.view === 'front') ? state.frontPrint : state.backPrint;
+      printMaterial.map = currentPrint.texture;
+      printMaterial.opacity = currentPrint.texture ? 0.98 : 0;
       printMaterial.needsUpdate = true;
 
-      document.getElementById('scale-slider').value = currentPrintData.scale;
-      document.getElementById('posY-slider').value = currentPrintData.posY;
-
-      const baseChestY = (state.gender === 'child' ? 0.08 : (state.gender === 'female' ? 0.10 : 0.12));
-      const printSize = currentPrintData.scale * genderMult;
-
-      const printGeo = new THREE.PlaneGeometry(printSize, printSize);
-      const printMesh = new THREE.Mesh(printGeo, printMaterial);
-      
-      const zOffset = (state.view === 'front') ? 0.01 : -0.01;
-      printMesh.position.set(0, (baseChestY + currentPrintData.posY) * genderMult, zOffset);
-      
-      if (state.view === 'back') {
-        printMesh.rotation.y = Math.PI;
-      }
-
+      const printMesh = new THREE.Mesh(new THREE.PlaneGeometry(currentPrint.scale, currentPrint.scale), printMaterial);
+      printMesh.position.set(0, currentPrint.posY, (state.view === 'front') ? 0.01 : -0.01);
       atelierGroup.add(printMesh);
     }
 
     function updatePricing() {
-      let extraTotal = state.extraPrice + state.techPrice;
-      let total = state.basePrice + extraTotal;
-      
+      let total = state.basePrice + state.extraPrice;
       document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('price-extra').innerText = '+' + extraTotal.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
     }
 
-    // ЛОГИКА ОБЩЕГО ЧАТА КЛУБА
-    const chatMsgContainer = document.getElementById('chat-messages-container');
-    const chatMsgInput = document.getElementById('chat-msg-input');
-    const chatSendBtn = document.getElementById('chat-send-btn');
+    // Загрузка PNG с сохранением в Supabase Storage (опционально)
+    document.getElementById('print-input').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      document.getElementById('upload-label').innerText = '✓ ' + file.name.substring(0, 14);
 
-    function sendChatMessage(text) {
-      if (!text || text.trim() === '') return;
-      const now = new Date();
-      const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-      
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'chat-msg';
-      msgDiv.innerHTML = `
-        <div class="author"><span>Вы (Ателье)</span> <span class="time">${timeStr}</span></div>
-        <div class="text">${escapeHtml(text)}</div>
-      `;
-      chatMsgContainer.appendChild(msgDiv);
-      chatMsgContainer.scrollTop = chatMsgContainer.scrollHeight;
-      chatMsgInput.value = '';
-    }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const texture = new THREE.Texture(img);
+          texture.needsUpdate = true;
+          if (state.view === 'front') state.frontPrint.texture = texture;
+          else state.backPrint.texture = texture;
+          buildModel();
+        };
+      };
+      reader.readAsDataURL(file);
 
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    chatSendBtn.addEventListener('click', () => sendChatMessage(chatMsgInput.value));
-    chatMsgInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendChatMessage(chatMsgInput.value);
-    });
-
-    setTimeout(() => {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'chat-msg';
-      msgDiv.innerHTML = `
-        <div class="author"><span>Nick_VR</span> <span class="time">14:25</span></div>
-        <div class="text">Кто собирается сегодня в кальянную после кастомизации?</div>
-      `;
-      chatMsgContainer.appendChild(msgDiv);
-      chatMsgContainer.scrollTop = chatMsgContainer.scrollHeight;
-    }, 6000);
-
-    // TELEGRAM BRIDGE
-    const tgTokenInput = document.getElementById('tg-token');
-    const tgChatInput = document.getElementById('tg-chat-id');
-    const tgIndicator = document.getElementById('tg-indicator');
-    const tgStatusText = document.getElementById('tg-status-text');
-
-    function checkTelegramBridge() {
-      if (tgTokenInput.value.trim().length > 5 && tgChatInput.value.trim().length > 2) {
-        tgIndicator.classList.add('active');
-        tgStatusText.innerText = 'Мост активен (Telegram подключен)';
-      } else {
-        tgIndicator.classList.remove('active');
-        tgStatusText.innerText = 'Мост отключен (Локальный контур)';
-      }
-    }
-    tgTokenInput.addEventListener('input', checkTelegramBridge);
-    tgChatInput.addEventListener('input', checkTelegramBridge);
-
-    // ORDER SUBMISSION
-    document.getElementById('btn-submit-order').addEventListener('click', () => {
-      let total = state.basePrice + state.extraPrice + state.techPrice;
-      const orderSummary = `🚀 Новый подтвержденный заказ из Ателье GY-GY:\n` +
-                           `• Изделие: ${state.apparelType.toUpperCase()}\n` +
-                           `• Пол/Силуэт: ${state.gender} / ${state.fit}\n` +
-                           `• Размер: ${state.size}, Цвет: ${state.color}\n` +
-                           `• Итоговая сумма: ${total} ₽`;
-
-      sendChatMessage(`Заказ подтвержден! Собрал конфиг: ${state.apparelType.toUpperCase()} (${state.size}, ${state.color}) на ${total}₽ 🔥 Оформляем!`);
-
-      const token = tgTokenInput.value.trim();
-      const chatId = tgChatInput.value.trim();
-
-      if (token && chatId) {
-        const url = `https://api.telegram.org/bot${token}/sendMessage`;
-        fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text: orderSummary })
-        })
-        .then(res => {
-          if(res.ok) alert('Заказ успешно подтвержден и отправлен в Telegram-канал клуба!');
-          else alert('Заказ подтвержден и опубликован в локальном чате клуба.');
-        })
-        .catch(() => {
-          alert('Заказ подтвержден и зафиксирован в чате клуба.');
-        });
-      } else {
-        alert('Заказ успешно подтвержден и добавлен в чат клуба! (Мост Telegram не настроен)');
+      // Если Supabase подключен, можно отправить в Storage
+      if (supabaseClient) {
+        // const { data, error } = await supabaseClient.storage.from('prints').upload(`public/${file.name}`, file);
       }
     });
 
@@ -1050,86 +364,6 @@
         updateSizeButtons();
         buildModel();
       });
-    });
-
-    document.querySelectorAll('#group-fit .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-fit .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.fit = e.currentTarget.dataset.val;
-        buildModel();
-      });
-    });
-
-    document.querySelectorAll('#group-color .swatch-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-color .swatch-btn').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.color = e.currentTarget.dataset.color;
-      });
-    });
-
-    document.querySelectorAll('#group-view .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-view .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.view = e.currentTarget.dataset.view;
-        buildModel();
-      });
-    });
-
-    document.querySelectorAll('#group-tech .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-tech .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.techPrice = parseInt(e.currentTarget.dataset.techPrice);
-        updatePricing();
-      });
-    });
-
-    document.getElementById('scale-slider').addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (state.view === 'front') state.frontPrint.scale = val;
-      else state.backPrint.scale = val;
-      buildModel();
-    });
-
-    document.getElementById('posY-slider').addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (state.view === 'front') state.frontPrint.posY = val;
-      else state.backPrint.posY = val;
-      buildModel();
-    });
-
-    document.getElementById('print-input').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        document.getElementById('upload-label').innerText = '✓ ' + file.name.substring(0, 14) + '...';
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            const texture = new THREE.Texture(img);
-            texture.generateMipmaps = true;
-            texture.minFilter = THREE.LinearMipmapLinearFilter;
-            texture.magFilter = THREE.LinearFilter;
-            texture.needsUpdate = true;
-            
-            if (state.view === 'front') state.frontPrint.texture = texture;
-            else state.backPrint.texture = texture;
-
-            buildModel();
-          };
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
     updateSizeButtons();
