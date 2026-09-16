@@ -1,568 +1,428 @@
-<!DOCTYPE html>
-<html lang="ru">
+html_content = """<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ателье «Конь в пальто» — GY-GY Club</title>
-  <!-- Three.js для 3D-модели / визуализации -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <style>
-    :root {
-      --bg-dark: #121214;
-      --panel-bg: rgba(24, 24, 27, 0.9);
-      --gold: #d4af37;
-      --gold-light: #f3e5ab;
-      --text-main: #f4f4f5;
-      --text-muted: #a1a1aa;
-      --accent: #e11d48;
-      --border: rgba(212, 175, 55, 0.2);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GY-GY Club | Atelier & Antique Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #FFD700; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        html, body {
+            width: 100%; height: 100%;
+            background: #000;
+            overflow: hidden; position: fixed;
+            font-family: 'Share Tech Mono', monospace;
+        }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        /* Фоновый слой во весь экран */
+        #store-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: url('Store 0.png') no-repeat;
+            background-size: 100% 100%;
+            background-color: #000;
+        }
 
-    /* ШАПКА КЛУБА */
-    header {
-      height: 60px; background: #09090b; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10;
-    }
-    .brand-area { display: flex; align-items: center; gap: 12px; }
-    .brand-logo-btn {
-      width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
-      background: url('horse_welcome.png') center/cover no-repeat; cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .brand-logo-btn:hover { transform: scale(1.08); }
-    .brand-title { font-size: 18px; font-weight: 700; color: var(--gold-light); letter-spacing: 0.5px; }
+        /* Интерактивные зоны */
+        .store-zone {
+            position: absolute;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10;
+        }
 
-    .nav-buttons { display: flex; gap: 10px; }
-    .nav-btn {
-      background: transparent; border: 1px solid var(--border); color: var(--text-main);
-      padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.2s;
-    }
-    .nav-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+        /* Анимация пульсации ромашек */
+        .hotspot {
+            font-size: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7));
+            animation: hotspot-pulse 2.4s ease-in-out infinite;
+            transition: transform 0.2s, filter 0.2s;
+            pointer-events: none;
+            line-height: 1;
+        }
+        @keyframes hotspot-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+        .store-zone:hover .hotspot {
+            transform: scale(1.3);
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 1));
+            animation-play-state: paused;
+            opacity: 1;
+        }
 
-    /* ОСНОВНОЙ КОНТЕЙНЕР */
-    .workspace { display: flex; flex: 1; height: calc(100vh - 60px); position: relative; }
+        /* --- БОЛЬШОЕ ЦЕНТРАЛЬНОЕ ОКНО ДЕМОНСТРАЦИИ --- */
+        .central-display {
+            position: absolute;
+            top: 29%;
+            left: 28%;
+            width: 36%;
+            height: 57%;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            pointer-events: none;
+        }
+        .central-display img {
+            max-width: 85%;
+            max-height: 50%;
+            object-fit: contain;
+            border: 2px solid #5a3e1b;
+            background: #fff;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .central-display h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: bold;
+            color: #2b1d0c;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .central-display p {
+            font-size: 11px;
+            color: #442d13;
+            line-height: 1.3;
+            max-width: 90%;
+        }
 
-    /* ПАНЕЛЬ УПРАВЛЕНИЯ (Слева) */
-    .control-panel {
-      width: 420px; background: var(--panel-bg); backdrop-filter: blur(12px);
-      border-right: 1px solid var(--border); display: flex; flex-direction: column;
-      padding: 20px; gap: 16px; overflow-y: auto; z-index: 5;
-    }
+        /* Оверлеи под дизайн макета */
+        .ui-overlay-top-title {
+            position: absolute;
+            top: 19%; right: 8%; width: 24%;
+            text-align: right;
+            font-family: 'Cinzel', serif;
+            font-size: 14px; font-weight: bold;
+            color: #2b1d0c; z-index: 5; pointer-events: none;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
 
-    .group { display: flex; flex-direction: column; gap: 8px; }
-    .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); font-weight: 600; }
+        .ui-overlay-price-container {
+            position: absolute;
+            top: 51%; right: 10%; width: 20%;
+            text-align: center; z-index: 6;
+        }
+        .ui-overlay-price-input {
+            width: 80px; padding: 3px;
+            font-family: 'Cinzel', serif; font-size: 16px; font-weight: bold;
+            color: #782814; background: rgba(255,255,255,0.7);
+            border: 1px solid #5a3e1b; border-radius: 3px; text-align: center;
+            outline: none; pointer-events: auto;
+        }
 
-    select.select-dropdown-box {
-      width: 100%; background: rgba(255, 255, 255, 0.05); color: var(--text-main);
-      border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
-      font-size: 14px; font-weight: 500; cursor: pointer; outline: none; transition: border-color 0.2s;
-    }
-    select.select-dropdown-box:hover, select.select-dropdown-box:focus { border-color: var(--gold); }
+        /* --- КООРДИНАТЫ ЗОН --- */
+        .zone-catalog    { top: 11%; left: 28%; width: 9%; height: 6%; }
+        .zone-membership { top: 11%; left: 39%; width: 12%; height: 6%; }
+        .zone-speaking   { top: 11%; left: 54%; width: 13%; height: 6%; }
+        .zone-about      { top: 11%; left: 69%; width: 11%; height: 6%; }
 
-    .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
-    .btn-option {
-      flex: 1; min-width: 70px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
-      color: var(--text-muted); padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
-      text-align: center; transition: all 0.2s;
-    }
-    .btn-option.active { background: var(--gold); color: #000; font-weight: 600; border-color: var(--gold); }
-    .badge { background: var(--accent); color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 10px; margin-left: 4px; }
+        /* Категории слева (просмотр товаров магазина по категориям) */
+        .zone-glass      { top: 35%; left: 4%; width: 18%; height: 9%; }
+        .zone-porcelain  { top: 47%; left: 4%; width: 18%; height: 9%; }
+        .zone-fabric     { top: 59%; left: 4%; width: 18%; height: 9%; }
+        .zone-metal      { top: 71%; left: 4%; width: 18%; height: 9%; }
+        .zone-tech       { top: 83%; left: 4%; width: 18%; height: 9%; }
 
-    /* Цветовые палитры */
-    .color-swatches { display: flex; gap: 10px; }
-    .swatch-btn {
-      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px;
-      padding: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; color: var(--text-muted);
-    }
-    .swatch-btn.active { border-color: var(--gold); color: var(--text-main); background: rgba(212,175,55,0.1); }
-    .swatch-circle { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); }
-    .swatch-circle.white { background: #ffffff; }
-    .swatch-circle.black { background: #18181b; }
+        /* Кнопки справа */
+        .zone-add-cart      { top: 60%; left: 66%; width: 24%; height: 6%; }
+        .zone-import-photo  { top: 67%; left: 66%; width: 24%; height: 6%; } /* Импорт фото с компьютера в базу магазина */
+        .zone-reviews       { top: 74%; left: 66%; width: 24%; height: 6%; }
+        .zone-back          { top: 81%; left: 66%; width: 24%; height: 7%; }
 
-    /* Зона загрузки файлов */
-    .file-upload {
-      border: 1px dashed var(--border); border-radius: 8px; padding: 12px; text-align: center;
-      background: rgba(0,0,0,0.2); cursor: pointer; position: relative; transition: border-color 0.2s;
-    }
-    .file-upload:hover { border-color: var(--gold); }
-    .file-upload input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-    #upload-label { font-size: 13px; color: var(--gold-light); }
-
-    /* Слайдеры подгонки принта */
-    .print-controls { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-    .control-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); }
-    .control-row input[type="range"] { width: 65%; accent-color: var(--gold); cursor: pointer; }
-
-    /* Telegram мост */
-    .telegram-bridge-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-    .tg-row { display: flex; gap: 6px; }
-    .tg-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; color: var(--text-main); font-size: 11px; outline: none; }
-    .tg-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
-    .tg-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
-    .tg-dot.active { background: #22c55e; }
-
-    /* Смета */
-    .summary-card { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
-    .summary-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
-    .summary-row.total { font-weight: 700; color: var(--gold-light); font-size: 15px; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 2px; }
-
-    /* Общий чат клуба */
-    .club-chat-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; height: 180px; overflow: hidden; }
-    .club-chat-header { background: rgba(212, 175, 55, 0.1); padding: 6px 10px; font-size: 11px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--gold); }
-    .club-chat-messages { flex: 1; padding: 8px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
-    .chat-msg .author { font-size: 10px; color: var(--gold-light); display: flex; justify-content: space-between; opacity: 0.8; }
-    .chat-msg .text { color: var(--text-main); background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 4px; margin-top: 2px; }
-    .chat-input-row { display: flex; border-top: 1px solid var(--border); background: #09090b; }
-    .chat-input { flex: 1; background: transparent; border: none; padding: 8px; color: var(--text-main); font-size: 12px; outline: none; }
-    .chat-send-btn { background: var(--gold); border: none; padding: 0 12px; cursor: pointer; font-weight: bold; color: #000; }
-
-    /* Кнопка заказа */
-    .btn-submit {
-      background: linear-gradient(135deg, var(--gold), #b8860b); color: #000; font-weight: 700;
-      border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 14px; text-transform: uppercase;
-      letter-spacing: 0.5px; transition: opacity 0.2s;
-    }
-    .btn-submit:hover { opacity: 0.9; }
-
-    /* КАНВАС ДЛЯ 3D И ВИЗУАЛА (Справа) */
-    #canvas-container { flex: 1; height: 100%; position: relative; background: radial-gradient(circle at center, #1e1e24 0%, #0d0d0f 100%); }
-  </style>
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-card {
+            background: #f4ebd0; border: 3px solid #5a3e1b; padding: 20px;
+            width: 90%; max-width: 440px; border-radius: 8px; color: #2b1d0c;
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .modal-card h3 {
+            font-family: 'Cinzel', serif; margin-bottom: 12px; font-size: 15px;
+            border-bottom: 1px solid #5a3e1b; padding-bottom: 5px;
+        }
+        .modal-close { float: right; cursor: pointer; font-weight: bold; font-size: 18px; }
+        .item-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px; border-bottom: 1px solid rgba(90,62,27,0.2);
+            font-size: 12px; gap: 10px;
+        }
+        .item-row img { width: 40px; height: 40px; object-fit: cover; border: 1px solid #5a3e1b; background:#fff; }
+        .btn-select {
+            background: #5a3e1b; color: #ffd700; border: none; padding: 5px 10px;
+            cursor: pointer; font-weight: bold; font-size: 10px; border-radius: 3px;
+        }
+        .btn-select:hover { background: #782814; }
+        .form-group { margin-bottom: 10px; font-size: 11px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 3px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 6px; border: 1px solid #5a3e1b; background: #fff;
+            font-family: inherit; font-size: 11px; border-radius: 3px;
+        }
+        .action-btn {
+            background: linear-gradient(to bottom, #782814, #4a180b); color: #ffd700;
+            border: 2px solid #5a3e1b; padding: 8px; font-size: 11px; font-weight: bold;
+            cursor: pointer; border-radius: 4px; text-align: center; width: 100%; margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand-area">
-      <!-- Иконка Коня на кнопке названия -->
-      <button class="brand-logo-btn" id="btn-nav-door" title="В клуб GY-GY"></button>
-      <div class="brand-title">Ателье «Конь в пальто»</div>
+    <!-- Фоновый слой -->
+    <div id="store-bg"></div>
+
+    <!-- Центральное окно демонстрации -->
+    <div class="central-display" id="centralDisplay">
+        <img id="artifactImg" src="" alt="Artifact" style="display:none;">
+        <h3 id="artifactTitle">Выберите товар слева</h3>
+        <p id="artifactDesc">Нажмите на любую ромашку в левой колонке «KATEGORIY ARTEGORTES», чтобы просмотреть товары, или импортируйте фото с компьютера кнопкой справа.</p>
     </div>
-    <div class="nav-buttons">
-      <button class="nav-btn" id="btn-nav-back">↩ Назад</button>
+
+    <!-- Оверлей названия -->
+    <div class="ui-overlay-top-title" id="topTitleDisplay">---</div>
+
+    <!-- Оверлей цены (редактируется юзером) -->
+    <div class="ui-overlay-price-container">
+        <input type="number" class="ui-overlay-price-input" id="priceInput" value="100" oninput="updateUserPrice(this.value)" title="Назначьте свою цену">
+        <span style="font-size:10px; font-weight:bold; color:#2b1d0c;">GY-GY 🪙</span>
     </div>
-  </header>
 
-  <div class="workspace">
-    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
-    <div class="control-panel">
+    <!-- ЗОНЫ И РОМАШКИ -->
+    <div class="store-zone zone-catalog" onclick="alert('GY-GY Club Atelier v4.6.2')"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-membership" onclick="location.href='identity.html'"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-speaking" onclick="alert('Связь с Мастером Юмора активна')"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-about" onclick="alert('Строго винтаж до 1990 года.')"><span class="hotspot">🌼</span></div>
 
-      <!-- Выбор одежды (Выпадающий список) -->
-      <div class="group">
-        <div class="section-title">Изделие</div>
-        <select id="apparel-type" class="select-dropdown-box">
-          <option value="tshirt">Футболка классика</option>
-          <option value="hoodie">Худи с капюшоном</option>
-          <option value="sweatshirt">Свитшот оверсайз</option>
-        </select>
-      </div>
+    <!-- КАТЕГОРИИ СЛЕВА (Просмотр товаров магазина) -->
+    <div class="store-zone zone-glass" onclick="openStoreCategoryModal('glass')"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-porcelain" onclick="openStoreCategoryModal('porcelain')"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-fabric" onclick="openStoreCategoryModal('fabric')"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-metal" onclick="openStoreCategoryModal('metal')"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-tech" onclick="openStoreCategoryModal('tech')"><span class="hotspot">🌼</span></div>
 
-      <!-- Гендер / Силуэт -->
-      <div class="group">
-        <div class="section-title">Силуэт</div>
-        <div class="btn-group" id="group-gender">
-          <button class="btn-option active" data-val="male" data-file="man.png">Мужской</button>
-          <button class="btn-option" data-val="female" data-file="woman.png">Женский</button>
-          <button class="btn-option" data-val="child" data-file="child.png">Детский</button>
+    <!-- КНОПКИ СПРАВА -->
+    <div class="store-zone zone-add-cart" onclick="addToCart()"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-import-photo" onclick="openImportModal()" title="Взять фото с компьютера и сделать товаром"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-reviews" onclick="openReviewsModal()"><span class="hotspot">🌼</span></div>
+    <div class="store-zone zone-back" onclick="location.href='hall.html'" title="В Холл"><span class="hotspot">🌼</span></div>
+
+    <!-- МОДАЛЬНОЕ ОКНО: КАТАЛОГ МАГАЗИНА ПО КАТЕГОРИЯМ -->
+    <div class="modal-overlay" id="storeModal">
+        <div class="modal-card">
+            <span class="modal-close" onclick="closeStoreModal()">&times;</span>
+            <h3 id="storeModalTitle">Товары категории</h3>
+            <div id="storeItemsList" style="max-height: 250px; overflow-y: auto; margin-bottom: 10px;"></div>
+            <button class="action-btn" onclick="openImportModal(); closeStoreModal();">+ Превратить фото с компьютера в товар</button>
         </div>
-      </div>
+    </div>
 
-      <!-- Размер -->
-      <div class="group">
-        <div class="section-title">Размер</div>
-        <div class="btn-group" id="group-size"></div>
-      </div>
-
-      <!-- Динамические параметры ткани/модификаций -->
-      <div id="dynamic-params"></div>
-
-      <!-- Цвет -->
-      <div class="group">
-        <div class="section-title">Цвет ткани</div>
-        <div class="color-swatches" id="group-color">
-          <button class="swatch-btn active" data-color="white"><span class="swatch-circle white"></span> Белый</button>
-          <button class="swatch-btn" data-color="black"><span class="swatch-circle black"></span> Черный</button>
-        </div>
-      </div>
-
-      <!-- Ракурс -->
-      <div class="group">
-        <div class="section-title">Ракурс примерки</div>
-        <div class="btn-group" id="group-view">
-          <button class="btn-option active" data-view="front">Спереди (Грудь)</button>
-          <button class="btn-option" data-view="back">Сзади (Спина)</button>
-        </div>
-      </div>
-
-      <!-- Технология нанесения -->
-      <div class="group">
-        <div class="section-title">Технология</div>
-        <div class="btn-group" id="group-tech">
-          <button class="btn-option active" data-tech-price="0">DTF-Печать</button>
-          <button class="btn-option" data-tech-price="350">Вышивка <span class="badge">+350₽</span></button>
-        </div>
-      </div>
-
-      <!-- Загрузка файла PNG -->
-      <div class="group">
-        <div class="section-title">Принт</div>
-        <div class="file-upload">
-          <input type="file" id="print-input" accept="image/png">
-          <span id="upload-label">📁 Загрузить свой PNG в клуб</span>
-        </div>
-        <div class="print-controls" id="print-controls">
-          <div class="control-row"><span>Масштаб:</span><input type="range" id="scale-slider" min="0.1" max="0.6" step="0.02" value="0.32"></div>
-          <div class="control-row"><span>Высота:</span><input type="range" id="posY-slider" min="-0.2" max="0.4" step="0.02" value="0.12"></div>
-        </div>
-      </div>
-
-      <!-- TELEGRAM МОСТ -->
-      <div class="group">
-        <div class="section-title">Telegram Канал / Мост</div>
-        <div class="telegram-bridge-box">
-          <div class="tg-row">
-            <input type="text" class="tg-input" id="tg-token" placeholder="Bot Token">
-            <input type="text" class="tg-input" id="tg-chat-id" placeholder="@gygy_club_chat">
-          </div>
-          <div class="tg-status">
-            <div class="tg-dot" id="tg-indicator"></div>
-            <span id="tg-status-text">Мост отключен (Локальный контур)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Смета -->
-      <div class="group">
-        <div class="section-title">Расчет сметы</div>
-        <div class="summary-card">
-          <div class="summary-row"><span>Основа и ткань:</span><span id="price-fabric">1 200 ₽</span></div>
-          <div class="summary-row"><span>Модификации:</span><span id="price-extra">+0 ₽</span></div>
-          <div class="summary-row total"><span>Итого:</span><span id="price-total">1 200 ₽</span></div>
-        </div>
-      </div>
-
-      <!-- ОБЩИЙ ЧАТ КЛУБА -->
-      <div class="group">
-        <div class="section-title">Общий чат клуба</div>
-        <div class="club-chat-box">
-          <div class="club-chat-header">
-            <span>💬 Live Feed (Ателье)</span>
-            <span id="chat-online-count" style="color: var(--gold-light);">online: 4</span>
-          </div>
-          <div class="club-chat-messages" id="chat-messages-container">
-            <div class="chat-msg">
-              <div class="author"><span>Max_Street</span> <span>14:20</span></div>
-              <div class="text">Йоу всем! Плотность худи с начесом — пушка 🔥</div>
+    <!-- МОДАЛЬНОЕ ОКНО: ИМПОРТ ФОТО С КОМПЬЮТЕРА В БАЗУ ТОВАРОВ -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal-card">
+            <span class="modal-close" onclick="closeImportModal()">&times;</span>
+            <h3>Импорт фото с компьютера в магазин</h3>
+            <p style="font-size: 10px; margin-bottom: 8px; color: #555;">⚠️ Винтажный контроль: принимаются только раритеты созданные <b>строго до 1990 года</b>.</p>
+            
+            <div class="form-group">
+                <label>Выберите файл фото на компьютере:</label>
+                <input type="file" id="localPhotoFile" accept="image/*" onchange="previewLocalImage(event)">
             </div>
-          </div>
-          <div class="chat-input-row">
-            <input type="text" class="chat-input" id="chat-msg-input" placeholder="Спросить совет у ребят...">
-            <button class="chat-send-btn" id="chat-send-btn">➤</button>
-          </div>
+            
+            <div class="form-group"><label>Название товара:</label><input type="text" id="importName" placeholder="Напр. Раритетный подстаканник"></div>
+            <div class="form-group"><label>Категория в магазине:</label>
+                <select id="importCategory">
+                    <option value="glass">Glass (Стекло)</option>
+                    <option value="porcelain">Porcelain (Фарфор)</option>
+                    <option value="fabric">Fabric (Текстиль/Бумага)</option>
+                    <option value="metal">Metal (Металл)</option>
+                    <option value="tech">Techno-Junk (Техника)</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Год создания (&lt; 1990):</label><input type="number" id="importYear" placeholder="1975"></div>
+            <div class="form-group"><label>Назначьте цену (GY-GY 🪙):</label><input type="number" id="importPrice" value="100"></div>
+            <div class="form-group"><label>Описание:</label><textarea id="importDesc" rows="2" placeholder="Историческая справка..."></textarea></div>
+            
+            <button class="action-btn" onclick="importPhotoAsStoreItem()">Поместить в базу магазина как товар</button>
         </div>
-      </div>
-
-      <!-- Заказ -->
-      <div class="group">
-        <button class="btn-submit" id="btn-submit-order">Подтвердить и Оформить Заказ</button>
-      </div>
-
     </div>
 
-    <!-- 3D КАНВАС -->
-    <div id="canvas-container"></div>
-  </div>
+    <!-- МОДАЛЬНОЕ ОКНО: ОТЗЫВЫ -->
+    <div class="modal-overlay" id="reviewsModal">
+        <div class="modal-card">
+            <span class="modal-close" onclick="closeReviewsModal()">&times;</span>
+            <h3>💬 Отзывы резидентов Ателье</h3>
+            <div style="max-height: 200px; overflow-y: auto; font-size: 11px; margin-bottom: 10px;" id="reviewsList">
+                <div style="border-bottom:1px solid #ccc; padding-bottom:5px; margin-bottom:5px;"><b>#4092:</b> «Импорт фото из базы компьютера работает отлично!»</div>
+            </div>
+            <div class="form-group"><input type="text" id="newReviewText" placeholder="Ваш отзыв..."></div>
+            <button class="action-btn" onclick="addReview()">Оставить отзыв</button>
+        </div>
+    </div>
 
-  <script>
-    /* ========================================================
-       SUPABASE CONFIGURATION
-       ======================================================== */
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
-    const supabaseClient = window.supabase ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    <script>
+        if (!localStorage.getItem('gy_store_inventory')) {
+            let initialStoreItems = [
+                { id: 1, name: "Хрустальный бокал Чарли", category: "glass", year: 1978, price: 120, img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300", desc: "Ретро-бокал из бара основателей клуба. Сохранил легкий дух 70-х." },
+                { id: 2, name: "Фарфоровый конь", category: "porcelain", year: 1965, price: 340, img: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=300", desc: "Статуэтка смеющегося коня. Тончайшая работа мастеров старой школы." }
+            ];
+            localStorage.setItem('gy_store_inventory', JSON.stringify(initialStoreItems));
+        }
 
-    // Навигация
-    document.getElementById('btn-nav-back').addEventListener('click', () => {
-      if (window.history.length > 1) window.history.back();
-      else window.location.href = 'studio.html';
-    });
-    document.getElementById('btn-nav-door').addEventListener('click', () => {
-      window.location.href = 'index.html';
-    });
+        let activeItem = null;
+        let tempBase64Image = "";
 
-    // Three.js сцена
-    const container = document.getElementById('canvas-container');
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 0, 3.2);
+        function previewLocalImage(event) {
+            let file = event.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    tempBase64Image = e.target.result;
+                    if (!document.getElementById('importName').value) {
+                        let cleanName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                        document.getElementById('importName').value = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+        function openStoreCategoryModal(category) {
+            let storeInventory = JSON.parse(localStorage.getItem('gy_store_inventory') || '[]');
+            let filtered = storeInventory.filter(i => i.category === category);
+            
+            let catNames = { glass: 'GLASS (Стекло)', porcelain: 'PORCELAIN (Фарфор)', fabric: 'FABRIC (Текстиль)', metal: 'METAL (Металл)', tech: 'TECHNO-JUNK (Техника)' };
+            document.getElementById('storeModalTitle').textContent = `Каталог: ${catNames[category]}`;
 
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
+            let listContainer = document.getElementById('storeItemsList');
+            listContainer.innerHTML = '';
 
-    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `<p style="text-align:center; padding:15px; color:#555;">В этой категории пока нет товаров.<br>Импортируйте фото с компьютера!</p>`;
+            } else {
+                filtered.forEach(item => {
+                    listContainer.innerHTML += `
+                        <div class="item-row">
+                            <img src="${item.img}" alt="img">
+                            <div style="flex:1;">
+                                <b>${item.name}</b> (${item.year} г.)<br>
+                                <span style="font-size:10px; color:#555;">Цена: ${item.price} 🪙</span>
+                            </div>
+                            <button class="btn-select" onclick='selectStoreItem(${JSON.stringify(item)})'>Выбрать</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('storeModal').style.display = 'flex';
+        }
 
-    const adultSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
-    const childSizes = ['104', '116', '128', '140', '152'];
+        function closeStoreModal() { document.getElementById('storeModal').style.display = 'none'; }
 
-    const state = {
-      apparelType: 'tshirt',
-      mannequinFile: 'man.png',
-      gender: 'male',
-      size: 'M',
-      color: 'white',
-      view: 'front',
-      basePrice: 1200,
-      extraPrice: 0,
-      techPrice: 0,
-      frontPrint: { scale: 0.32, posY: 0.12, texture: null },
-      backPrint: { scale: 0.32, posY: 0.12, texture: null }
-    };
+        function selectStoreItem(item) {
+            activeItem = item;
+            
+            let imgEl = document.getElementById('artifactImg');
+            imgEl.src = item.img;
+            imgEl.style.display = 'block';
 
-    const textureLoader = new THREE.TextureLoader();
-    const atelierGroup = new THREE.Group();
-    scene.add(atelierGroup);
+            document.getElementById('artifactTitle').textContent = item.name;
+            document.getElementById('artifactDesc').textContent = `${item.desc} (Создано: ${item.year} г.)`;
+            
+            document.getElementById('topTitleDisplay').textContent = item.name;
+            document.getElementById('priceInput').value = item.price;
+            
+            closeStoreModal();
+        }
 
-    const printMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, alphaTest: 0.02, depthWrite: false });
+        function updateUserPrice(newPrice) {
+            if (activeItem) {
+                activeItem.price = parseInt(newPrice) || 0;
+                let storeInventory = JSON.parse(localStorage.getItem('gy_store_inventory') || '[]');
+                let found = storeInventory.find(i => i.id === activeItem.id);
+                if (found) {
+                    found.price = activeItem.price;
+                    localStorage.setItem('gy_store_inventory', JSON.stringify(storeInventory));
+                }
+            }
+        }
 
-    const apparelConfigs = {
-      tshirt: {
-        basePrice: 1200,
-        html: `
-          <div class="section-title">Ткань / Горловина</div>
-          <div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="1200">Хлопок 100%</button><button class="btn-option" data-price="1400">Стрейч</button></div>
-          <div class="btn-group" id="group-extra" style="margin-top: 6px;"><button class="btn-option active" data-extra="0">О-горловина</button><button class="btn-option" data-extra="200">V-горловина <span class="badge">+200₽</span></button></div>
-        `
-      },
-      hoodie: {
-        basePrice: 3200,
-        html: `
-          <div class="section-title">Ткань / Капюшон</div>
-          <div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="3200">Без начеса</button><button class="btn-option" data-price="3600">С начесом <span class="badge">+400₽</span></button></div>
-          <div class="btn-group" id="group-extra" style="margin-top: 6px;"><button class="btn-option active" data-extra="0">Капюшон Стандарт</button><button class="btn-option" data-extra="300">Оверсайз <span class="badge">+300₽</span></button></div>
-        `
-      },
-      sweatshirt: {
-        basePrice: 2500,
-        html: `
-          <div class="section-title">Плотность / Рукав</div>
-          <div class="btn-group" id="group-fabric"><button class="btn-option active" data-price="2500">320 г/м²</button><button class="btn-option" data-price="2900">400 г/м² <span class="badge">+400₽</span></button></div>
-          <div class="btn-group" id="group-extra" style="margin-top: 6px;"><button class="btn-option active" data-extra="0">Втачной</button><button class="btn-option" data-extra="250">Реглан <span class="badge">+250₽</span></button></div>
-        `
-      }
-    };
+        function openImportModal() { document.getElementById('importModal').style.display = 'flex'; }
+        function closeImportModal() { document.getElementById('importModal').style.display = 'none'; }
+        
+        function openReviewsModal() { document.getElementById('reviewsModal').style.display = 'flex'; }
+        function closeReviewsModal() { document.getElementById('reviewsModal').style.display = 'none'; }
 
-    function updateSizeButtons() {
-      const sizeContainer = document.getElementById('group-size');
-      const sizes = (state.gender === 'child') ? childSizes : adultSizes;
-      sizeContainer.innerHTML = sizes.map((sz, index) => {
-        const isActive = (state.size === sz) || (index === 2 && !sizes.includes(state.size));
-        if (isActive) state.size = sz;
-        return `<button class="btn-option ${isActive ? 'active' : ''}" data-val="${sz}">${sz}</button>`;
-      }).join('');
-      sizeContainer.querySelectorAll('.btn-option').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          sizeContainer.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          state.size = e.currentTarget.dataset.val;
-        });
-      });
-    }
+        function importPhotoAsStoreItem() {
+            let name = document.getElementById('importName').value.trim();
+            let cat = document.getElementById('importCategory').value;
+            let year = parseInt(document.getElementById('importYear').value);
+            let price = parseInt(document.getElementById('importPrice').value) || 100;
+            let desc = document.getElementById('importDesc').value.trim() || "Реликвия, импортированная резидентом из личного архива.";
 
-    function renderDynamicParams() {
-      const config = apparelConfigs[state.apparelType];
-      document.getElementById('dynamic-params').innerHTML = config.html;
-      state.basePrice = config.basePrice;
-      state.extraPrice = 0;
+            if (!name || !year) {
+                alert('Укажите название товара и год создания!');
+                return;
+            }
 
-      document.querySelectorAll('#group-fabric .btn-option').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('#group-fabric .btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          state.basePrice = parseInt(e.currentTarget.dataset.price);
-          updatePricing();
-        });
-      });
+            if (!tempBase64Image) {
+                alert('Пожалуйста, выберите файл фотографии с вашего компьютера!');
+                return;
+            }
 
-      document.querySelectorAll('#group-extra .btn-option').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('#group-extra .btn-option').forEach(b => b.classList.remove('active'));
-          e.currentTarget.classList.add('active');
-          state.extraPrice = parseInt(e.currentTarget.dataset.extra);
-          updatePricing();
-        });
-      });
-      updatePricing();
-    }
+            if (year >= 1990) {
+                alert(`⚠️ Ошибка антикварного контроля!\nГод ${year} слишком новый. Клуб принимает исключительно раритеты старше 1990 года!`);
+                return;
+            }
 
-    function buildModel() {
-      while(atelierGroup.children.length > 0) {
-        const obj = atelierGroup.children[0];
-        if (obj.geometry) obj.geometry.dispose();
-        atelierGroup.remove(obj);
-      }
-      atelierGroup.rotation.y = (state.view === 'back') ? Math.PI : 0;
+            let newItem = {
+                id: Date.now(),
+                name: name,
+                category: cat,
+                year: year,
+                price: price,
+                img: tempBase64Image,
+                desc: desc
+            };
 
-      textureLoader.load(state.mannequinFile, (texture) => {
-        const manMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false });
-        const mannequinMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.8), manMat);
-        atelierGroup.add(mannequinMesh);
-      });
+            let storeInventory = JSON.parse(localStorage.getItem('gy_store_inventory') || '[]');
+            storeInventory.push(newItem);
+            localStorage.setItem('gy_store_inventory', JSON.stringify(storeInventory));
 
-      const currentPrint = (state.view === 'front') ? state.frontPrint : state.backPrint;
-      printMaterial.map = currentPrint.texture;
-      printMaterial.opacity = currentPrint.texture ? 0.98 : 0;
-      printMaterial.needsUpdate = true;
+            alert('✅ Фото с компьютера успешно импортировано и зарегистрировано в базе магазина как товар!');
+            closeImportModal();
+            selectStoreItem(newItem);
+        }
 
-      document.getElementById('scale-slider').value = currentPrint.scale;
-      document.getElementById('posY-slider').value = currentPrint.posY;
+        function addToCart() {
+            if (!activeItem) {
+                alert('Сначала выберите товар из каталога через левую панель!');
+                return;
+            }
+            alert(`🛒 Товар "${activeItem.name}" добавлен в корзину по цене ${activeItem.price} GY-GY монет!`);
+        }
 
-      const printMesh = new THREE.Mesh(new THREE.PlaneGeometry(currentPrint.scale, currentPrint.scale), printMaterial);
-      printMesh.position.set(0, currentPrint.posY, (state.view === 'front') ? 0.01 : -0.01);
-      atelierGroup.add(printMesh);
-    }
-
-    function updatePricing() {
-      let extraTotal = state.extraPrice + state.techPrice;
-      let total = state.basePrice + extraTotal;
-      document.getElementById('price-fabric').innerText = state.basePrice.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('price-extra').innerText = '+' + extraTotal.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('price-total').innerText = total.toLocaleString('ru-RU') + ' ₽';
-    }
-
-    // Чат клуба
-    const chatMsgContainer = document.getElementById('chat-messages-container');
-    const chatMsgInput = document.getElementById('chat-msg-input');
-    const chatSendBtn = document.getElementById('chat-send-btn');
-
-    function sendChatMessage(text) {
-      if (!text || text.trim() === '') return;
-      const now = new Date();
-      const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'chat-msg';
-      msgDiv.innerHTML = `<div class="author"><span>Вы (Ателье)</span> <span>${timeStr}</span></div><div class="text">${text}</div>`;
-      chatMsgContainer.appendChild(msgDiv);
-      chatMsgContainer.scrollTop = chatMsgContainer.scrollHeight;
-      chatMsgInput.value = '';
-    }
-
-    chatSendBtn.addEventListener('click', () => sendChatMessage(chatMsgInput.value));
-    chatMsgInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChatMessage(chatMsgInput.value); });
-
-    // Telegram мост
-    const tgTokenInput = document.getElementById('tg-token');
-    const tgChatInput = document.getElementById('tg-chat-id');
-    const tgIndicator = document.getElementById('tg-indicator');
-    const tgStatusText = document.getElementById('tg-status-text');
-
-    function checkTelegramBridge() {
-      if (tgTokenInput.value.trim().length > 5 && tgChatInput.value.trim().length > 2) {
-        tgIndicator.classList.add('active');
-        tgStatusText.innerText = 'Мост активен (Telegram)';
-      } else {
-        tgIndicator.classList.remove('active');
-        tgStatusText.innerText = 'Мост отключен (Локально)';
-      }
-    }
-    tgTokenInput.addEventListener('input', checkTelegramBridge);
-    tgChatInput.addEventListener('input', checkTelegramBridge);
-
-    // Загрузка PNG
-    document.getElementById('print-input').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      document.getElementById('upload-label').innerText = '✓ ' + file.name.substring(0, 14);
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target.result;
-        img.onload = () => {
-          const texture = new THREE.Texture(img);
-          texture.needsUpdate = true;
-          if (state.view === 'front') state.frontPrint.texture = texture;
-          else state.backPrint.texture = texture;
-          buildModel();
-        };
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Обработчики интерфейса
-    document.getElementById('apparel-type').addEventListener('change', (e) => {
-      state.apparelType = e.target.value;
-      renderDynamicParams();
-      buildModel();
-    });
-
-    document.querySelectorAll('#group-gender .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-gender .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.gender = e.currentTarget.dataset.val;
-        state.mannequinFile = e.currentTarget.dataset.file;
-        updateSizeButtons();
-        buildModel();
-      });
-    });
-
-    document.querySelectorAll('#group-view .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-view .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.view = e.currentTarget.dataset.view;
-        buildModel();
-      });
-    });
-
-    document.querySelectorAll('#group-tech .btn-option').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        document.querySelectorAll('#group-tech .btn-option').forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        state.techPrice = parseInt(e.currentTarget.dataset.techPrice);
-        updatePricing();
-      });
-    });
-
-    document.getElementById('scale-slider').addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (state.view === 'front') state.frontPrint.scale = val; else state.backPrint.scale = val;
-      buildModel();
-    });
-
-    document.getElementById('posY-slider').addEventListener('input', (e) => {
-      const val = parseFloat(e.target.value);
-      if (state.view === 'front') state.frontPrint.posY = val; else state.backPrint.posY = val;
-      buildModel();
-    });
-
-    // Оформление заказа
-    document.getElementById('btn-submit-order').addEventListener('click', () => {
-      let total = state.basePrice + state.extraPrice + state.techPrice;
-      sendChatMessage(`Заказ подтвержден! Собрал конфиг: ${state.apparelType.toUpperCase()} (${state.size}, ${state.color}) на ${total}₽ 🔥`);
-      alert(`Заказ на ${total} ₽ успешно оформлен в клубе! Конь в пальто доволен.`);
-    });
-
-    updateSizeButtons();
-    renderDynamicParams();
-    buildModel();
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-  </script>
+        function addReview() {
+            let text = document.getElementById('newReviewText').value.trim();
+            if (!text) return;
+            let list = document.getElementById('reviewsList');
+            list.innerHTML += `<div style="border-bottom:1px solid #ccc; padding-bottom:5px; margin-bottom:5px;"><b>Вы:</b> «${text}»</div>`;
+            document.getElementById('newReviewText').value = '';
+        }
+    </script>
 </body>
 </html>
+"""
+
+with open("atelier.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+print("atelier.html successfully generated.")
